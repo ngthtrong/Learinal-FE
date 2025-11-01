@@ -1,0 +1,93 @@
+/**
+ * API Configuration
+ * Centralized configuration for API endpoints and settings
+ */
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1";
+
+export const API_CONFIG = {
+  BASE_URL: API_BASE_URL,
+  TIMEOUT: 30000,
+  ENDPOINTS: {
+    // Auth endpoints
+    AUTH: {
+      LOGIN: "/auth/login",
+      REGISTER: "/auth/register",
+      LOGOUT: "/auth/logout",
+      REFRESH_TOKEN: "/auth/refresh-token",
+      FORGOT_PASSWORD: "/auth/forgot-password",
+      RESET_PASSWORD: "/auth/reset-password",
+      VERIFY_EMAIL: "/auth/verify-email",
+      OAUTH_GOOGLE: "/auth/oauth/google",
+    },
+    // User endpoints
+    USERS: {
+      PROFILE: "/users/profile",
+      UPDATE_PROFILE: "/users/profile",
+      CHANGE_PASSWORD: "/users/change-password",
+      PREFERENCES: "/users/preferences",
+    },
+    // Documents endpoints
+    DOCUMENTS: {
+      LIST: "/documents",
+      CREATE: "/documents",
+      GET_BY_ID: (id) => `/documents/${id}`,
+      UPDATE: (id) => `/documents/${id}`,
+      DELETE: (id) => `/documents/${id}`,
+      UPLOAD: "/documents/upload",
+    },
+    // Subjects endpoints
+    SUBJECTS: {
+      LIST: "/subjects",
+      CREATE: "/subjects",
+      GET_BY_ID: (id) => `/subjects/${id}`,
+      UPDATE: (id) => `/subjects/${id}`,
+      DELETE: (id) => `/subjects/${id}`,
+    },
+    // Question Sets endpoints
+    QUESTION_SETS: {
+      LIST: "/question-sets",
+      CREATE: "/question-sets",
+      GET_BY_ID: (id) => `/question-sets/${id}`,
+      UPDATE: (id) => `/question-sets/${id}`,
+      DELETE: (id) => `/question-sets/${id}`,
+      GENERATE: "/question-sets/generate",
+    },
+    // Quiz Attempts endpoints
+    QUIZ_ATTEMPTS: {
+      LIST: "/quiz-attempts",
+      CREATE: "/quiz-attempts",
+      GET_BY_ID: (id) => `/quiz-attempts/${id}`,
+      SUBMIT: (id) => `/quiz-attempts/${id}/submit`,
+      HISTORY: "/quiz-attempts/history",
+    },
+    // Subscriptions endpoints
+    SUBSCRIPTIONS: {
+      PLANS: "/subscription-plans",
+      USER_SUBSCRIPTION: "/user-subscriptions",
+      SUBSCRIBE: "/user-subscriptions/subscribe",
+      CANCEL: "/user-subscriptions/cancel",
+      UPGRADE: "/user-subscriptions/upgrade",
+    },
+    // Notifications endpoints
+    NOTIFICATIONS: {
+      LIST: "/notifications",
+      MARK_READ: (id) => `/notifications/${id}/read`,
+      MARK_ALL_READ: "/notifications/mark-all-read",
+      DELETE: (id) => `/notifications/${id}`,
+    },
+    // Admin endpoints
+    ADMIN: {
+      USERS: "/admin/users",
+      STATS: "/admin/stats",
+      VALIDATION_REQUESTS: "/admin/validation-requests",
+      APPROVE_CONTENT: (id) => `/admin/validation-requests/${id}/approve`,
+      REJECT_CONTENT: (id) => `/admin/validation-requests/${id}/reject`,
+    },
+    // Health check
+    HEALTH: "/health",
+  },
+};
+
+export default API_CONFIG;
