@@ -5,10 +5,10 @@
 
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { Button, Input } from "../../components/common";
-import { oauthService } from "../../services/api";
-import { isValidEmail } from "../../utils/validators";
+import { useAuth } from "@contexts/AuthContext";
+import { Button, Input } from "@components/common";
+import { oauthService } from "@services/api";
+import { isValidEmail } from "@utils/validators";
 import "./LoginPage.css";
 
 const LoginPage = () => {
@@ -112,9 +112,7 @@ const LoginPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
-          {errorMessage && (
-            <div className="alert alert-error">{errorMessage}</div>
-          )}
+          {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
 
           <Input
             label="Email"
@@ -167,9 +165,7 @@ const LoginPage = () => {
             disabled={googleLoading}
             className="google-button"
           >
-            {!googleLoading && (
-              <img src="https://www.google.com/favicon.ico" alt="Google" />
-            )}
+            {!googleLoading && <img src="https://www.google.com/favicon.ico" alt="Google" />}
             Đăng nhập với Google
           </Button>
 

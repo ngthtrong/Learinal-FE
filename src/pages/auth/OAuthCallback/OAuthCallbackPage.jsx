@@ -5,9 +5,9 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { oauthService } from "../../services/api";
-import { APP_CONFIG } from "../../config/app.config";
+import { useAuth } from "@contexts/AuthContext";
+import { oauthService } from "@services/api";
+import { APP_CONFIG } from "@config/app.config";
 import "./OAuthCallbackPage.css";
 
 const OAuthCallbackPage = () => {
@@ -47,18 +47,9 @@ const OAuthCallbackPage = () => {
 
       if (response.accessToken && response.user) {
         // Save tokens and user data
-        localStorage.setItem(
-          APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN,
-          response.accessToken
-        );
-        localStorage.setItem(
-          APP_CONFIG.STORAGE_KEYS.REFRESH_TOKEN,
-          response.refreshToken
-        );
-        localStorage.setItem(
-          APP_CONFIG.STORAGE_KEYS.USER_DATA,
-          JSON.stringify(response.user)
-        );
+        localStorage.setItem(APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
+        localStorage.setItem(APP_CONFIG.STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
+        localStorage.setItem(APP_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(response.user));
 
         // Update auth context
         updateUser(response.user);

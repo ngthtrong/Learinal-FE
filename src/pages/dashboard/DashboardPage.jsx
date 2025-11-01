@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "@contexts/AuthContext";
 import "./DashboardPage.css";
 
 const DashboardPage = () => {

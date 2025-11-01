@@ -53,10 +53,7 @@ export const AuthProvider = ({ children }) => {
       // Save tokens and user data
       localStorage.setItem(APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN, accessToken);
       localStorage.setItem(APP_CONFIG.STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
-      localStorage.setItem(
-        APP_CONFIG.STORAGE_KEYS.USER_DATA,
-        JSON.stringify(userData)
-      );
+      localStorage.setItem(APP_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
 
       setUser(userData);
       setIsAuthenticated(true);
@@ -102,10 +99,8 @@ export const AuthProvider = ({ children }) => {
 
   const updateUser = (userData) => {
     setUser(userData);
-    localStorage.setItem(
-      APP_CONFIG.STORAGE_KEYS.USER_DATA,
-      JSON.stringify(userData)
-    );
+    setIsAuthenticated(true);
+    localStorage.setItem(APP_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
   };
 
   const value = {

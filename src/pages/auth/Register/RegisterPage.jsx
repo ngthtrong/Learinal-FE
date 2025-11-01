@@ -5,9 +5,9 @@
 
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { Button, Input } from "../../components/common";
-import { isValidEmail, isValidPassword } from "../../utils/validators";
+import { useAuth } from "@contexts/AuthContext";
+import { Button, Input } from "@components/common";
+import { isValidEmail, isValidPassword } from "@utils/validators";
 import "./RegisterPage.css";
 
 const RegisterPage = () => {
@@ -59,8 +59,7 @@ const RegisterPage = () => {
     if (!formData.password) {
       newErrors.password = "Mật khẩu là bắt buộc";
     } else if (!isValidPassword(formData.password)) {
-      newErrors.password =
-        "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số";
+      newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số";
     }
 
     if (!formData.confirmPassword) {
@@ -91,9 +90,7 @@ const RegisterPage = () => {
       const result = await register(userData);
 
       if (result.success) {
-        setSuccessMessage(
-          "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản."
-        );
+        setSuccessMessage("Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
         setTimeout(() => {
           navigate("/login");
         }, 3000);
@@ -117,13 +114,9 @@ const RegisterPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="register-form">
-          {errorMessage && (
-            <div className="alert alert-error">{errorMessage}</div>
-          )}
+          {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
 
-          {successMessage && (
-            <div className="alert alert-success">{successMessage}</div>
-          )}
+          {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
           <Input
             label="Họ và tên"
