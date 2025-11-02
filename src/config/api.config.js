@@ -3,8 +3,8 @@
  * Centralized configuration for API endpoints and settings
  */
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1";
+// In dev we default to the Vite proxy at /api/v1 so cookies remain same-site
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/v1";
 
 export const API_CONFIG = {
   BASE_URL: API_BASE_URL,
@@ -15,7 +15,8 @@ export const API_CONFIG = {
       LOGIN: "/auth/login",
       REGISTER: "/auth/register",
       LOGOUT: "/auth/logout",
-      REFRESH_TOKEN: "/auth/refresh-token",
+      // Backend uses /auth/refresh with cookie-based refresh
+      REFRESH_TOKEN: "/auth/refresh",
       FORGOT_PASSWORD: "/auth/forgot-password",
       RESET_PASSWORD: "/auth/reset-password",
       VERIFY_EMAIL: "/auth/verify-email",

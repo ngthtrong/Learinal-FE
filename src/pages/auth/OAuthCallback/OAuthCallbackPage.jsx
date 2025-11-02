@@ -48,7 +48,6 @@ const OAuthCallbackPage = () => {
       if (response.accessToken && response.user) {
         // Save tokens and user data
         localStorage.setItem(APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
-        localStorage.setItem(APP_CONFIG.STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
         localStorage.setItem(APP_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(response.user));
 
         // Update auth context

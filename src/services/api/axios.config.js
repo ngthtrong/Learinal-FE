@@ -33,7 +33,7 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor - Handle errors and token refresh
+// Response interceptor - Handle errors and token refresh (cookie-based)
 axiosInstance.interceptors.response.use(
   (response) => {
     return response;
@@ -46,27 +46,27 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem(
-          APP_CONFIG.STORAGE_KEYS.REFRESH_TOKEN
+        // Use cookie-based refresh flow: send X-Requested-By and rely on HttpOnly cookie
+        const response = await axios.post(
+          `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REFRESH_TOKEN}`,
+          {},
+          {
+            withCredentials: true,
+            headers: { "X-Requested-By": "web" },
+          }
         );
 
-        if (refreshToken) {
-          const response = await axios.post(
-            `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REFRESH_TOKEN}`,
-            { refreshToken }
-          );
+        const { accessToken } = response.data || {};
+        if (!accessToken) throw new Error("No accessToken in refresh response");
+        localStorage.setItem(APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN, accessToken);
 
-          const { accessToken } = response.data;
-          localStorage.setItem(APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN, accessToken);
-
-          // Retry original request with new token
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-          return axiosInstance(originalRequest);
-        }
+        // Retry original request with new token
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return axiosInstance(originalRequest);
       } catch (refreshError) {
         // Refresh failed - redirect to login
         localStorage.removeItem(APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN);
-        localStorage.removeItem(APP_CONFIG.STORAGE_KEYS.REFRESH_TOKEN);
         localStorage.removeItem(APP_CONFIG.STORAGE_KEYS.USER_DATA);
         window.location.href = "/login";
         return Promise.reject(refreshError);

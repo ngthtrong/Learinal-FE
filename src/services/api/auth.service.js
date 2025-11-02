@@ -22,10 +22,7 @@ export const authService = {
    * Register new user
    */
   register: async (userData) => {
-    const response = await axiosInstance.post(
-      API_CONFIG.ENDPOINTS.AUTH.REGISTER,
-      userData
-    );
+    const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.AUTH.REGISTER, userData);
     return response.data;
   },
 
@@ -40,12 +37,12 @@ export const authService = {
   /**
    * Refresh access token
    */
-  refreshToken: async (refreshToken) => {
+  refreshToken: async () => {
+    // Cookie-based refresh (no body), include anti-CSRF header
     const response = await axiosInstance.post(
       API_CONFIG.ENDPOINTS.AUTH.REFRESH_TOKEN,
-      {
-        refreshToken,
-      }
+      {},
+      { headers: { "X-Requested-By": "web" } }
     );
     return response.data;
   },
@@ -54,12 +51,9 @@ export const authService = {
    * Request password reset
    */
   forgotPassword: async (email) => {
-    const response = await axiosInstance.post(
-      API_CONFIG.ENDPOINTS.AUTH.FORGOT_PASSWORD,
-      {
-        email,
-      }
-    );
+    const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.AUTH.FORGOT_PASSWORD, {
+      email,
+    });
     return response.data;
   },
 
@@ -67,13 +61,10 @@ export const authService = {
    * Reset password with token
    */
   resetPassword: async (token, newPassword) => {
-    const response = await axiosInstance.post(
-      API_CONFIG.ENDPOINTS.AUTH.RESET_PASSWORD,
-      {
-        token,
-        newPassword,
-      }
-    );
+    const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.AUTH.RESET_PASSWORD, {
+      token,
+      newPassword,
+    });
     return response.data;
   },
 
@@ -81,12 +72,9 @@ export const authService = {
    * Verify email address
    */
   verifyEmail: async (token) => {
-    const response = await axiosInstance.post(
-      API_CONFIG.ENDPOINTS.AUTH.VERIFY_EMAIL,
-      {
-        token,
-      }
-    );
+    const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.AUTH.VERIFY_EMAIL, {
+      token,
+    });
     return response.data;
   },
 
@@ -94,12 +82,9 @@ export const authService = {
    * OAuth Google login
    */
   googleOAuth: async (code) => {
-    const response = await axiosInstance.post(
-      API_CONFIG.ENDPOINTS.AUTH.OAUTH_GOOGLE,
-      {
-        code,
-      }
-    );
+    const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.AUTH.OAUTH_GOOGLE, {
+      code,
+    });
     return response.data;
   },
 };

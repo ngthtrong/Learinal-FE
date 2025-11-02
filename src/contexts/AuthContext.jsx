@@ -48,11 +48,10 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await authService.login(email, password);
-      const { accessToken, refreshToken, user: userData } = response;
+      const { accessToken, user: userData } = response;
 
       // Save tokens and user data
       localStorage.setItem(APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN, accessToken);
-      localStorage.setItem(APP_CONFIG.STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
       localStorage.setItem(APP_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
 
       setUser(userData);
@@ -89,7 +88,6 @@ export const AuthProvider = ({ children }) => {
     } finally {
       // Clear local storage
       localStorage.removeItem(APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN);
-      localStorage.removeItem(APP_CONFIG.STORAGE_KEYS.REFRESH_TOKEN);
       localStorage.removeItem(APP_CONFIG.STORAGE_KEYS.USER_DATA);
 
       setUser(null);

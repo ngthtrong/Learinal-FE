@@ -26,6 +26,16 @@ export default defineConfig({
   server: {
     port: 5173,
     open: false,
+    proxy: {
+      // Proxy API requests to the backend during development
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+        secure: false,
+        // Ensure paths like /api/v1/... are forwarded unchanged
+        rewrite: (path) => path,
+      },
+    },
   },
   build: {
     outDir: "dist",
