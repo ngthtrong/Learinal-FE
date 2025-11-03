@@ -23,6 +23,14 @@ const OAuthCallbackPage = () => {
       const state = searchParams.get("state");
       const errorParam = searchParams.get("error");
       const errorDescription = searchParams.get("error_description");
+      // Prevent duplicate processing in React StrictMode (dev) or double navigations
+      const processedKey = "oauth_processed_code";
+      const lastCode = sessionStorage.getItem(processedKey);
+      if (lastCode && lastCode === code) {
+        // Already processed this code; avoid a second /auth/exchange call
+        return;
+      }
+      sessionStorage.setItem(processedKey, code);
 
       if (errorParam) {
         setStatus("error");

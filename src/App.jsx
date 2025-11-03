@@ -8,7 +8,15 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
 // Pages
-import { LoginPage, RegisterPage, OAuthCallbackPage, DashboardPage } from "./pages";
+import {
+  LoginPage,
+  RegisterPage,
+  OAuthCallbackPage,
+  DashboardPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  VerifyEmailPage,
+} from "./pages";
 
 // Styles
 import "./styles/global.css";
@@ -21,6 +29,9 @@ function App() {
           {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route path="/oauth/google/callback" element={<OAuthCallbackPage />} />
 
           {/* Protected routes */}

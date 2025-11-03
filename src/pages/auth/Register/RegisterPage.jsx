@@ -3,12 +3,15 @@
  * User registration form
  */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import { Button, Input } from "@components/common";
 import { isValidEmail, isValidPassword } from "@utils/validators";
+import { APP_CONFIG } from "@config/app.config";
 import "./RegisterPage.css";
+import logoLight from "@/assets/images/logo/learinal-logo-light.png";
+import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -19,13 +22,49 @@ const RegisterPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "student",
   });
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [theme, setTheme] = useState("light");
+
+  // Initialize theme from global app preference (no toggle at register)
+  useEffect(() => {
+    const globalTheme = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.THEME);
+    if (globalTheme === "dark") setTheme("dark");
+  }, []);
+
+  useEffect(() => {
+    const root = document.getElementById("registerRoot");
+    if (root) root.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  // Prevent zoom interactions while on this page
+  useEffect(() => {
+    const preventKeyZoom = (e) => {
+      if ((e.ctrlKey || e.metaKey) && ["+", "=", "-", "0"].includes(e.key)) {
+        e.preventDefault();
+      }
+    };
+    const preventWheelZoom = (e) => {
+      if (e.ctrlKey) e.preventDefault();
+    };
+    const preventGesture = (e) => e.preventDefault();
+    window.addEventListener("keydown", preventKeyZoom, { passive: false });
+    window.addEventListener("wheel", preventWheelZoom, { passive: false });
+    document.addEventListener("gesturestart", preventGesture, { passive: false });
+    document.addEventListener("gesturechange", preventGesture, { passive: false });
+    document.addEventListener("gestureend", preventGesture, { passive: false });
+    return () => {
+      window.removeEventListener("keydown", preventKeyZoom);
+      window.removeEventListener("wheel", preventWheelZoom);
+      document.removeEventListener("gesturestart", preventGesture);
+      document.removeEventListener("gesturechange", preventGesture);
+      document.removeEventListener("gestureend", preventGesture);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -106,92 +145,92 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="register-page">
-      <div className="register-container">
-        <div className="register-header">
-          <h1>Learinal</h1>
-          <p>Tạo tài khoản mới</p>
-        </div>
+    <div id="registerRoot" className="register-root" data-theme={theme}>
+      <div className="register-page">
+        <div className="register-card card">
+          <header className="register-brand">
+            <img
+              src={theme === "dark" ? logoDark : logoLight}
+              alt="Learinal"
+              className="brand-logo"
+            />
+            <div className="brand-title">
+              <span className="brand-le">Lear</span>
+              <span className="brand-inal">inal</span>
+            </div>
+          </header>
 
-        <form onSubmit={handleSubmit} className="register-form">
-          {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
-
-          {successMessage && <div className="alert alert-success">{successMessage}</div>}
-
-          <Input
-            label="Họ và tên"
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            error={errors.fullName}
-            placeholder="Nguyễn Văn A"
-            required
-          />
-
-          <Input
-            label="Email"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            error={errors.email}
-            placeholder="your@email.com"
-            required
-          />
-
-          <div className="input-wrapper">
-            <label htmlFor="role" className="input-label">
-              Vai trò <span className="input-required">*</span>
-            </label>
-            <select
-              id="role"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="input-field"
-            >
-              <option value="student">Học viên</option>
-              <option value="educator">Giảng viên</option>
-            </select>
+          <div className="register-header">
+            <h1>Tạo tài khoản</h1>
+            <p className="muted">Đăng ký để bắt đầu sử dụng Learinal</p>
           </div>
 
-          <Input
-            label="Mật khẩu"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            error={errors.password}
-            placeholder="••••••••"
-            required
-          />
+          <form onSubmit={handleSubmit} className="register-form">
+            {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
 
-          <Input
-            label="Xác nhận mật khẩu"
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            error={errors.confirmPassword}
-            placeholder="••••••••"
-            required
-          />
+            {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="large"
-            loading={loading}
-            className="register-button"
-          >
-            Đăng ký
-          </Button>
+            <Input
+              label="Họ và tên"
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              error={errors.fullName}
+              placeholder="Nguyễn Văn A"
+              required
+            />
 
-          <p className="login-link">
-            Đã có tài khoản? <Link to="/login">Đăng nhập ngay</Link>
-          </p>
-        </form>
+            <Input
+              label="Email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={errors.email}
+              placeholder="your@email.com"
+              required
+            />
+
+            {/** Vai trò mặc định là Học viên (Learner). Ẩn lựa chọn vai trò trên UI. */}
+
+            <Input
+              label="Mật khẩu"
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              error={errors.password}
+              placeholder="••••••••"
+              required
+            />
+
+            <Input
+              label="Xác nhận mật khẩu"
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              error={errors.confirmPassword}
+              placeholder="••••••••"
+              required
+            />
+
+            <Button
+              type="submit"
+              variant="primary"
+              size="large"
+              loading={loading}
+              className="register-button"
+            >
+              Đăng ký
+            </Button>
+
+            <p className="login-link">
+              Đã có tài khoản? <Link to="/login">Đăng nhập ngay</Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

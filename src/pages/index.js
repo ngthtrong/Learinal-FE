@@ -2,6 +2,9 @@
 export { default as LoginPage } from "./auth/Login";
 export { default as RegisterPage } from "./auth/Register";
 export { default as OAuthCallbackPage } from "./auth/OAuthCallback";
+export { default as ForgotPasswordPage } from "./auth/ForgotPassword";
+export { default as ResetPasswordPage } from "./auth/ResetPassword";
+export { default as VerifyEmailPage } from "./auth/VerifyEmail";
 
 // Dashboard
 export { default as DashboardPage } from "./dashboard";
