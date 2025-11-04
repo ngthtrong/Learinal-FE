@@ -6,6 +6,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import { TopbarLayout } from "@/components/layout";
 
 // Pages
 import {
@@ -16,6 +17,12 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   VerifyEmailPage,
+  LearnerHomePage,
+  DocumentUploadPage,
+  QuizListPage,
+  PublicSetsPage,
+  ProfileViewPage,
+  ProfileEditPage,
 } from "./pages";
 
 // Styles
@@ -36,10 +43,70 @@ function App() {
 
           {/* Protected routes */}
           <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <LearnerHomePage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/documents/upload"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <DocumentUploadPage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <QuizListPage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/public"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <PublicSetsPage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <ProfileViewPage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/edit"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <ProfileEditPage />
+                </TopbarLayout>
               </ProtectedRoute>
             }
           />

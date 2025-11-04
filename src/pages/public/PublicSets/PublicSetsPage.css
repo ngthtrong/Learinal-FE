@@ -1,0 +1,75 @@
+.public-root {
+  --bg-secondary: #f6f7fb;
+  --accent-primary: #22c55e;
+  --accent-light: #dcfce7;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --border-default: #e2e8f0;
+  --card-bg: #fff;
+  --card-shadow: rgba(15, 23, 42, 0.08);
+  --card-hover-shadow: rgba(15, 23, 42, 0.15);
+  --brand-le: #22c55e;
+  --brand-inal: #f97416ee;
+}
+.public-main {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px var(--card-shadow);
+  padding: 20px;
+}
+.muted {
+  color: var(--text-secondary);
+}
+.sets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.set-card {
+  position: relative;
+  overflow: hidden;
+}
+.set-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-primary), #3b82f6);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+.set-card:hover::before {
+  transform: scaleX(1);
+}
+.set-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+.btn.ghost {
+  background: transparent;
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+}
+.btn.primary {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #16a34a 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.35);
+}

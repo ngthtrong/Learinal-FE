@@ -1,6 +1,61 @@
 /* Global Styles */
 
 :root {
+  /* THEME TOKENS (light defaults) */
+  /* Backgrounds */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f6f7fb;
+  --bg-tertiary: #eef1f6;
+
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+
+  /* Accent */
+  --accent-primary: #22c55e; /* green-500 */
+  --accent-secondary: #16a34a; /* green-600 */
+  --accent-light: #dcfce7;
+  --accent-hover: #34d399;
+
+  /* Semantic */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+
+  /* Semantic (light) */
+  --success-light: #d1fae5;
+  --warning-light: #fef3c7;
+  --danger-light: #fee2e2;
+  --info-light: #dbeafe;
+
+  /* Borders */
+  --border-default: #d8dee7;
+  --border-muted: #e9edf3;
+
+  /* Surfaces */
+  --card-bg: #ffffff;
+  --card-shadow: rgba(15, 23, 42, 0.12);
+  --card-hover-shadow: rgba(15, 23, 42, 0.2);
+
+  /* App backgrounds */
+  --app-bg-start: #f8f3ea;
+  --app-bg-end: #fffaf2;
+  --promo-start: #e0f2fe;
+  --promo-end: #ccfbf1;
+
+  /* Effects */
+  --focus-ring: rgba(34, 197, 94, 0.25);
+  --btn-accent-start: #22c55e;
+  --btn-accent-end: #16a34a;
+  --btn-shadow: rgba(34, 197, 94, 0.35);
+  --btn-shadow-hover: rgba(34, 197, 94, 0.45);
+
+  /* Branding */
+  --brand-le: #22c55e;
+  --brand-inal: #f97416ee;
+
   /* Colors */
   --color-primary: #3b82f6;
   --color-primary-dark: #2563eb;
@@ -49,11 +104,9 @@
   --transition-slow: 0.3s ease-in-out;
 
   /* Font Families */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  --font-mono: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-mono: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 
   /* Font Sizes */
   --font-size-xs: 0.75rem;
@@ -66,9 +119,95 @@
   --font-size-4xl: 2.25rem;
 }
 
-/* Dark mode colors (optional) */
+/* Dark theme overrides (activated by <html data-theme="dark">) */
+:root[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-primary: #0b1220;
+  --bg-secondary: #0f172a;
+  --bg-tertiary: #111b2c;
+
+  /* Text */
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #7a8aa0;
+
+  /* Accent */
+  --accent-primary: #38bdf8; /* sky */
+  --accent-secondary: #22d3ee; /* cyan */
+  --accent-light: rgba(56, 189, 248, 0.12);
+  --accent-hover: #7dd3fc;
+
+  /* Semantic (tinted) */
+  --success-light: rgba(16, 185, 129, 0.12);
+  --warning-light: rgba(245, 158, 11, 0.15);
+  --danger-light: rgba(239, 68, 68, 0.15);
+  --info-light: rgba(59, 130, 246, 0.15);
+
+  /* Borders */
+  --border-default: #1f2a37;
+  --border-muted: #122033;
+
+  /* Surfaces */
+  --card-bg: #0f172a;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --card-hover-shadow: rgba(0, 0, 0, 0.45);
+
+  /* App backgrounds */
+  --app-bg-start: #0b1220;
+  --app-bg-end: #0f172a;
+
+  /* Effects */
+  --btn-accent-start: var(--accent-primary);
+  --btn-accent-end: var(--accent-primary);
+  --btn-shadow: rgba(56, 189, 248, 0.18);
+  --btn-shadow-hover: rgba(56, 189, 248, 0.26);
+
+  /* Branding */
+  --brand-le: #38bdf8;
+  --brand-inal: #f97316;
+
+  /* System utility palette in dark for generic UI */
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #d1d5db;
+  --color-text-light: #9ca3af;
+  --color-bg-primary: #1f2937;
+  --color-bg-secondary: #111827;
+  --color-bg-tertiary: #374151;
+  --color-border: #4b5563;
+  --color-border-light: #374151;
+}
+
+/* Optional: auto mode when no explicit theme stored */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]),
+  :root[data-theme="auto"] {
+    --bg-primary: #0b1220;
+    --bg-secondary: #0f172a;
+    --bg-tertiary: #111b2c;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #7a8aa0;
+    --accent-primary: #38bdf8;
+    --accent-secondary: #22d3ee;
+    --accent-light: rgba(56, 189, 248, 0.12);
+    --accent-hover: #7dd3fc;
+    --success-light: rgba(16, 185, 129, 0.12);
+    --warning-light: rgba(245, 158, 11, 0.15);
+    --danger-light: rgba(239, 68, 68, 0.15);
+    --info-light: rgba(59, 130, 246, 0.15);
+    --border-default: #1f2a37;
+    --border-muted: #122033;
+    --card-bg: #0f172a;
+    --card-shadow: rgba(0, 0, 0, 0.3);
+    --card-hover-shadow: rgba(0, 0, 0, 0.45);
+    --app-bg-start: #0b1220;
+    --app-bg-end: #0f172a;
+    --btn-accent-start: var(--accent-primary);
+    --btn-accent-end: var(--accent-primary);
+    --btn-shadow: rgba(56, 189, 248, 0.18);
+    --btn-shadow-hover: rgba(56, 189, 248, 0.26);
+    --brand-le: #38bdf8;
+    --brand-inal: #f97316;
     --color-text-primary: #f9fafb;
     --color-text-secondary: #d1d5db;
     --color-text-light: #9ca3af;

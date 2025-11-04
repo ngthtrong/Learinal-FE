@@ -3,12 +3,11 @@
  * User registration form
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import { Button, Input } from "@components/common";
 import { isValidEmail, isValidPassword } from "@utils/validators";
-import { APP_CONFIG } from "@config/app.config";
 import "./RegisterPage.css";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
 import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
@@ -28,18 +27,15 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [theme, setTheme] = useState("light");
-
-  // Initialize theme from global app preference (no toggle at register)
-  useEffect(() => {
-    const globalTheme = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.THEME);
-    if (globalTheme === "dark") setTheme("dark");
+  const isDark = useMemo(() => {
+    try {
+      return (
+        (document.documentElement.getAttribute("data-theme") || "light").toLowerCase() === "dark"
+      );
+    } catch {
+      return false;
+    }
   }, []);
-
-  useEffect(() => {
-    const root = document.getElementById("registerRoot");
-    if (root) root.setAttribute("data-theme", theme);
-  }, [theme]);
 
   // Prevent zoom interactions while on this page
   useEffect(() => {
@@ -145,15 +141,11 @@ const RegisterPage = () => {
   };
 
   return (
-    <div id="registerRoot" className="register-root" data-theme={theme}>
+    <div className="register-root">
       <div className="register-page">
         <div className="register-card card">
           <header className="register-brand">
-            <img
-              src={theme === "dark" ? logoDark : logoLight}
-              alt="Learinal"
-              className="brand-logo"
-            />
+            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="brand-logo" />
             <div className="brand-title">
               <span className="brand-le">Lear</span>
               <span className="brand-inal">inal</span>

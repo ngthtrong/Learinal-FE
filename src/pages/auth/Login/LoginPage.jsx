@@ -3,11 +3,11 @@
  * User login form with validation (restyled to match aigen.html)
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import { Button, Input } from "@components/common";
-import { APP_CONFIG } from "@config/app.config";
+// Theme is now global via <html data-theme>; no per-page state
 import { oauthService } from "@services/api";
 import { isValidEmail } from "@utils/validators";
 import "./LoginPage.css";
@@ -27,18 +27,16 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [theme, setTheme] = useState("light");
 
-  // Initialize theme from global preference (set inside app). Default to light.
-  useEffect(() => {
-    const globalTheme = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.THEME);
-    if (globalTheme === "dark") setTheme("dark");
+  const isDark = useMemo(() => {
+    try {
+      return (
+        (document.documentElement.getAttribute("data-theme") || "light").toLowerCase() === "dark"
+      );
+    } catch {
+      return false;
+    }
   }, []);
-
-  useEffect(() => {
-    const root = document.getElementById("loginRoot");
-    if (root) root.setAttribute("data-theme", theme);
-  }, [theme]);
 
   // Attempt to prevent zooming interactions on the login page (best-effort)
   useEffect(() => {
@@ -120,7 +118,8 @@ const LoginPage = () => {
       const result = await login(formData.email, formData.password);
 
       if (result.success) {
-        navigate("/dashboard");
+        const next = result.user?.role === "Learner" ? "/home" : "/dashboard";
+        navigate(next);
       } else {
         setErrorMessage(result.error || "Đăng nhập thất bại");
       }
@@ -152,15 +151,11 @@ const LoginPage = () => {
   };
 
   return (
-    <div id="loginRoot" className="login-root" data-theme={theme}>
+    <div className="login-root">
       <div className="login-page">
         <div className="login-card card">
           <header className="login-brand">
-            <img
-              src={theme === "dark" ? logoDark : logoLight}
-              alt="Learinal"
-              className="brand-logo"
-            />
+            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="brand-logo" />
             <div className="brand-title">
               <span className="brand-le">Lear</span>
               <span className="brand-inal">inal</span>

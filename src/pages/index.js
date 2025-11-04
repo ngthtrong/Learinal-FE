@@ -5,6 +5,10 @@ export { default as OAuthCallbackPage } from "./auth/OAuthCallback";
 export { default as ForgotPasswordPage } from "./auth/ForgotPassword";
 export { default as ResetPasswordPage } from "./auth/ResetPassword";
 export { default as VerifyEmailPage } from "./auth/VerifyEmail";
+// Home pages
+export { default as LearnerHomePage } from "./home/LearnerHome";
+// Public
+export { default as PublicSetsPage } from "./public/PublicSets";
 
 // Dashboard
 export { default as DashboardPage } from "./dashboard";

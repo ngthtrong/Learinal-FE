@@ -3,12 +3,11 @@
  * Request password reset via email
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Input } from "@components/common";
 import { isValidEmail } from "@utils/validators";
 import { authService } from "@services/api";
-import { APP_CONFIG } from "@config/app.config";
 import "./ForgotPasswordPage.css";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
 import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
@@ -18,18 +17,15 @@ const ForgotPasswordPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [theme, setTheme] = useState("light");
-
-  // Initialize theme from global app preference (no toggle at forgot-password)
-  useEffect(() => {
-    const globalTheme = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.THEME);
-    if (globalTheme === "dark") setTheme("dark");
+  const isDark = useMemo(() => {
+    try {
+      return (
+        (document.documentElement.getAttribute("data-theme") || "light").toLowerCase() === "dark"
+      );
+    } catch {
+      return false;
+    }
   }, []);
-
-  useEffect(() => {
-    const root = document.getElementById("forgotRoot");
-    if (root) root.setAttribute("data-theme", theme);
-  }, [theme]);
 
   // Prevent zoom interactions while on this page
   useEffect(() => {
@@ -82,15 +78,11 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div id="forgotRoot" className="forgot-root" data-theme={theme}>
+    <div className="forgot-root">
       <div className="forgot-page">
         <div className="forgot-card card">
           <header className="forgot-brand">
-            <img
-              src={theme === "dark" ? logoDark : logoLight}
-              alt="Learinal"
-              className="brand-logo"
-            />
+            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="brand-logo" />
             <div className="brand-title">
               <span className="brand-le">Lear</span>
               <span className="brand-inal">inal</span>

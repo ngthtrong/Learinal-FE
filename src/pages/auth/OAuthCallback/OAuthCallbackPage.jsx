@@ -63,9 +63,10 @@ const OAuthCallbackPage = () => {
 
         setStatus("success");
 
-        // Redirect to dashboard
+        // Redirect based on role
         setTimeout(() => {
-          navigate("/dashboard");
+          const next = response?.user?.role === "Learner" ? "/home" : "/dashboard";
+          navigate(next);
         }, 1500);
       } else {
         throw new Error("Invalid response from server");

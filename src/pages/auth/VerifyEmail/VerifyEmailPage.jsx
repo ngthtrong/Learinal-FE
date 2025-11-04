@@ -4,11 +4,10 @@
  * Shows success message then redirects to login.
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Button } from "@components/common";
 import { authService } from "@services/api";
-import { APP_CONFIG } from "@config/app.config";
 import "./VerifyEmailPage.css";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
 import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
@@ -17,21 +16,18 @@ const VerifyEmailPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [theme, setTheme] = useState("light");
   const [status, setStatus] = useState("pending"); // pending | success | error
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
-
-  // Initialize theme from global app preference (no toggle on this page)
-  useEffect(() => {
-    const globalTheme = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.THEME);
-    if (globalTheme === "dark") setTheme("dark");
+  const isDark = useMemo(() => {
+    try {
+      return (
+        (document.documentElement.getAttribute("data-theme") || "light").toLowerCase() === "dark"
+      );
+    } catch {
+      return false;
+    }
   }, []);
-
-  useEffect(() => {
-    const root = document.getElementById("verifyRoot");
-    if (root) root.setAttribute("data-theme", theme);
-  }, [theme]);
 
   // Prevent zoom interactions while on this page
   useEffect(() => {
@@ -84,15 +80,11 @@ const VerifyEmailPage = () => {
   }, [navigate, searchParams]);
 
   return (
-    <div id="verifyRoot" className="verify-root" data-theme={theme}>
+    <div className="verify-root">
       <div className="verify-page">
         <div className="verify-card card">
           <header className="verify-brand">
-            <img
-              src={theme === "dark" ? logoDark : logoLight}
-              alt="Learinal"
-              className="brand-logo"
-            />
+            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="brand-logo" />
             <div className="brand-title">
               <span className="brand-le">Lear</span>
               <span className="brand-inal">inal</span>
