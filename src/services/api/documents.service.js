@@ -8,17 +8,6 @@ import { API_CONFIG } from "../../config/api.config";
 
 export const documentsService = {
   /**
-   * Get list of documents
-   */
-  getDocuments: async (params = {}) => {
-    const response = await axiosInstance.get(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.LIST,
-      { params }
-    );
-    return response.data;
-  },
-
-  /**
    * Get document by ID
    */
   getDocumentById: async (id) => {
@@ -29,25 +18,18 @@ export const documentsService = {
   },
 
   /**
-   * Create new document
+   * Upload document file with subjectId
+   * @param {File} file - The file to upload
+   * @param {string} subjectId - The subject ID to associate with the document
+   * @param {function} onUploadProgress - Progress callback
    */
-  createDocument: async (documentData) => {
-    const response = await axiosInstance.post(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.CREATE,
-      documentData
-    );
-    return response.data;
-  },
-
-  /**
-   * Upload document file
-   */
-  uploadDocument: async (file, onUploadProgress) => {
+  uploadDocument: async (file, subjectId, onUploadProgress) => {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("subjectId", subjectId);
 
     const response = await axiosInstance.post(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.UPLOAD,
+      API_CONFIG.ENDPOINTS.DOCUMENTS.CREATE,
       formData,
       {
         headers: {
@@ -60,22 +42,12 @@ export const documentsService = {
   },
 
   /**
-   * Update document
+   * Get document summary
+   * @param {string} id - Document ID
    */
-  updateDocument: async (id, documentData) => {
-    const response = await axiosInstance.put(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.UPDATE(id),
-      documentData
-    );
-    return response.data;
-  },
-
-  /**
-   * Delete document
-   */
-  deleteDocument: async (id) => {
-    const response = await axiosInstance.delete(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.DELETE(id)
+  getDocumentSummary: async (id) => {
+    const response = await axiosInstance.get(
+      `${API_CONFIG.ENDPOINTS.DOCUMENTS.GET_BY_ID(id)}/summary`
     );
     return response.data;
   },

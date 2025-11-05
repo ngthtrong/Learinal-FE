@@ -6,6 +6,7 @@ import HomeIcon from "@/components/icons/HomeIcon";
 import UploadIcon from "@/components/icons/UploadIcon";
 import QuizIcon from "@/components/icons/QuizIcon";
 import GlobeIcon from "@/components/icons/GlobeIcon";
+import SubjectsIcon from "@/components/icons/SubjectsIcon";
 
 const SidebarLayout = ({ children }) => {
   const { user } = useAuth();
@@ -60,6 +61,13 @@ const SidebarLayout = ({ children }) => {
       label: "Home",
       to: "/home",
       icon: HomeIcon,
+      roles: ["Learner", "Educator", "Admin"],
+    },
+    {
+      key: "subjects",
+      label: "Subjects",
+      to: "/subjects",
+      icon: SubjectsIcon,
       roles: ["Learner", "Educator", "Admin"],
     },
     {

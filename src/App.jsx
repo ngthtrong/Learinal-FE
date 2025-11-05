@@ -19,10 +19,14 @@ import {
   VerifyEmailPage,
   LearnerHomePage,
   DocumentUploadPage,
+  DocumentListPage,
+  DocumentDetailPage,
   QuizListPage,
   PublicSetsPage,
   ProfileViewPage,
   ProfileEditPage,
+  SubjectListPage,
+  SubjectDetailPage,
 } from "./pages";
 
 // Styles
@@ -73,6 +77,30 @@ function App() {
             }
           />
           <Route
+            path="/documents/list"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <DocumentListPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/documents/:id"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <DocumentDetailPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/quiz"
             element={
               <ProtectedRoute>
@@ -108,6 +136,30 @@ function App() {
               <ProtectedRoute>
                 <TopbarLayout>
                   <ProfileEditPage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subjects"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <SubjectListPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subjects/:id"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <SubjectDetailPage />
+                  </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
