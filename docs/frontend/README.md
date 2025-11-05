@@ -49,7 +49,7 @@ Bộ tài liệu này mô tả chi tiết **tất cả các tính năng frontend
 - UC-009: Xóa tài liệu
 - **Status**: 🟡 2/12 hoàn thành
 
-### 📝 [03-QUESTIONS-QUIZ.md](./03-QUESTIONS-QUIZ.md) _(Chưa tạo)_
+### 📝 [03-QUESTIONS-QUIZ.md](./03-QUESTIONS-QUIZ.md)
 
 **Câu hỏi & Bài thi** (0% complete)
 
@@ -60,26 +60,49 @@ Bộ tài liệu này mô tả chi tiết **tất cả các tính năng frontend
 - UC-011: Chia sẻ bộ đề
 - **Status**: 🔴 0/10 chưa bắt đầu
 
-### ✅ [04-VALIDATION-WORKFLOW.md](./04-VALIDATION-WORKFLOW.md) _(Chưa tạo)_
-
-**Quy trình xác thực bởi Expert** (0% complete)
-
-- UC-010: Yêu cầu xác thực (Learner)
-- UC-012: Kiểm duyệt câu hỏi (Expert)
-- UC-015: Phân công yêu cầu (Admin)
-- **Status**: 🔴 0/6 chưa bắt đầu
-
-### 💳 [05-SUBSCRIPTIONS-PAYMENTS.md](./05-SUBSCRIPTIONS-PAYMENTS.md) _(Chưa tạo)_
+### 💳 [04-SUBSCRIPTIONS-PAYMENTS.md](./04-SUBSCRIPTIONS-PAYMENTS.md)
 
 **Đăng ký gói & Thanh toán** (0% complete)
 
-- UC-020: Quản lý gói đăng ký
+- UC-020: Xem gói dịch vụ & So sánh
+- UC-PAYMENT: Thanh toán qua Sepay
+- UC-MY-SUBSCRIPTION: Quản lý gói đăng ký
+- UC-INVOICE: Tải hóa đơn điện tử
+- **Status**: 🔴 0/6 chưa bắt đầu
+
+### 🔔 [05-NOTIFICATIONS.md](./05-NOTIFICATIONS.md)
+
+**Hệ thống thông báo** (0% complete)
+
+- UC-021: Nhận thông báo realtime (WebSocket)
+- UC-NOTIF-LIST: Xem danh sách thông báo
+- UC-NOTIF-MARK: Đánh dấu đã đọc/chưa đọc
+- UC-NOTIF-DELETE: Xóa thông báo
+- UC-NOTIF-PREFS: Cài đặt thông báo
+- **Status**: 🔴 0/5 chưa bắt đầu
+
+### 👤 [06-PROFILE-SETTINGS.md](./06-PROFILE-SETTINGS.md)
+
+**Hồ sơ & Cài đặt cá nhân** (0% complete)
+
+- UC-PROFILE-VIEW: Xem hồ sơ cá nhân
+- UC-PROFILE-EDIT: Chỉnh sửa hồ sơ
+- UC-PASSWORD-CHANGE: Đổi mật khẩu
+- UC-SETTINGS: Cài đặt ứng dụng
+- UC-SECURITY: Quản lý bảo mật
+- **Status**: 🔴 0/5 chưa bắt đầu
+
+### � [04-SUBSCRIPTIONS-PAYMENTS.md](./04-SUBSCRIPTIONS-PAYMENTS.md) _(Chưa tạo)_
+
+**Đăng ký gói & Thanh toán** (0% complete)
+
+- Subscription plans page
 - Sepay QR payment integration
 - My subscription page
 - Entitlements enforcement
 - **Status**: 🔴 0/5 chưa bắt đầu
 
-### 🔔 [06-NOTIFICATIONS.md](./06-NOTIFICATIONS.md) _(Chưa tạo)_
+### 🔔 [05-NOTIFICATIONS.md](./05-NOTIFICATIONS.md) _(Chưa tạo)_
 
 **Hệ thống thông báo** (0% complete)
 
@@ -89,32 +112,224 @@ Bộ tài liệu này mô tả chi tiết **tất cả các tính năng frontend
 - Notification types & filters
 - **Status**: 🔴 0/4 chưa bắt đầu
 
-### 👨‍💼 [07-ADMIN-FEATURES.md](./07-ADMIN-FEATURES.md) _(Chưa tạo)_
+### 👤 [06-PROFILE-SETTINGS.md](./06-PROFILE-SETTINGS.md) _(Chưa tạo)_
 
-**Tính năng Quản trị viên** (0% complete)
+**Hồ sơ & Cài đặt cá nhân** (0% complete)
 
-- UC-016: Quản lý người dùng
-- UC-017: Báo cáo doanh thu
-- UC-018: Quản lý thanh toán hoa hồng
-- UC-019: Duyệt nội dung premium
-- Statistics dashboard
-- **Status**: 🔴 0/8 chưa bắt đầu
+- View profile
+- Edit profile
+- Change password
+- Notification preferences
+- **Status**: 🔴 0/4 chưa bắt đầu
 
-### 👨‍🏫 [08-EXPERT-FEATURES.md](./08-EXPERT-FEATURES.md) _(Chưa tạo)_
+---
 
-**Tính năng Chuyên gia** (0% complete)
+## 🎓 Expert Features (Chuyên gia)
 
-- UC-012: Dashboard kiểm duyệt
-- UC-013: Tạo bộ câu hỏi premium
+### 🔍 [07-EXPERT-VALIDATION.md](./07-EXPERT-VALIDATION.md)
+
+**Kiểm duyệt & Xác thực** (0% complete)
+
+- UC-012: Tiếp nhận và kiểm duyệt bộ câu hỏi
+- UC-013: Tạo bộ câu hỏi chuẩn (premium content)
+- Expert dashboard
+- Review workflow với editor
+- **Status**: 🔴 0/6 chưa bắt đầu
+
+### 💰 [08-EXPERT-EARNINGS.md](./08-EXPERT-EARNINGS.md)
+
+**Quản lý Thu nhập** (0% complete)
+
 - UC-014: Theo dõi thu nhập & hoa hồng
+- Earnings overview & chart
+- Commission history
+- Export earnings report
+- **Status**: 🔴 0/3 chưa bắt đầu
+
+---
+
+## 🎛️ Admin Features (Quản trị viên)
+
+### 👥 [09-ADMIN-SYSTEM-PART1.md](./09-ADMIN-SYSTEM-PART1.md)
+
+**Quản lý Hệ thống (Phần 1)** (0% complete)
+
+- UC-015: Phân công yêu cầu xác thực
+- UC-016: Quản lý người dùng
+- Admin dashboard
+- Validation requests management
+- User management (view, edit, deactivate, change role)
+- **Status**: 🔴 0/4 chưa bắt đầu
+
+### 💵 [10-ADMIN-FINANCE.md](./10-ADMIN-FINANCE.md)
+
+**Quản lý Tài chính & Nội dung (Phần 2)** (0% complete)
+
+- UC-017: Theo dõi doanh thu
+- UC-018: Quản lý thanh toán cho Expert
+- UC-019: Duyệt và xuất bản nội dung Expert
+- UC-020: Cấu hình gói dịch vụ & chính sách
+- Revenue dashboard & reports
+- Expert payment management
+- Content approval workflow
+- System settings & policies
+- **Status**: 🔴 0/4 chưa bắt đầu
+
+---
+
+## 🎨 UI/UX & Cross-cutting Concerns
+
+### 🎨 [11-UI-UX-REQUIREMENTS.md](./11-UI-UX-REQUIREMENTS.md) _(Chưa tạo)_
+
+**Thiết kế & Trải nghiệm người dùng** (Partial)
+
+- Design system & component library
+- Responsive design guidelines
+- Accessibility (WCAG 2.1 Level AA)
+- Loading states & skeletons
+- Error handling & empty states
+- Toast notifications
+- **Status**: � Một phần đã hoàn thành
+
+### ⚡ [12-PERFORMANCE-SECURITY.md](./12-PERFORMANCE-SECURITY.md) _(Chưa tạo)_
+
+**Hiệu năng & Bảo mật** (Partial)
+
+- Performance optimization
+- Code splitting & lazy loading
+- Caching strategies
+- Security best practices
+- Input validation & sanitization
+- HTTPS & CORS
+- **Status**: 🟡 Một phần đã hoàn thành
+
+---
+
+## 📊 [13-IMPLEMENTATION-STATUS.md](./13-IMPLEMENTATION-STATUS.md)
+
+### 💳 [04-SUBSCRIPTIONS-PAYMENTS.md](./04-SUBSCRIPTIONS-PAYMENTS.md) _(Chưa tạo)_
+
+**Đăng ký gói & Thanh toán** (0% complete)
+
+- UC-020: Quản lý gói đăng ký
+- Sepay QR payment integration
+- My subscription page
+- Entitlements enforcement
 - **Status**: 🔴 0/5 chưa bắt đầu
 
-### 👤 [09-PROFILE-SETTINGS.md](./09-PROFILE-SETTINGS.md) _(Chưa tạo)_
+### 🔔 [05-NOTIFICATIONS.md](./05-NOTIFICATIONS.md) _(Chưa tạo)_
 
-**Hồ sơ & Cài đặt** (0% complete)
+**Hệ thống thông báo** (0% complete)
 
-- View/Edit profile
+- UC-021: Notification center
+- WebSocket realtime
+- Mark as read
+- Notification types & filters
+- **Status**: 🔴 0/4 chưa bắt đầu
+
+### � [06-PROFILE-SETTINGS.md](./06-PROFILE-SETTINGS.md) _(Chưa tạo)_
+
+**Hồ sơ & Cài đặt cá nhân** (0% complete)
+
+- View profile
+- Edit profile
 - Change password
+- Notification preferences
+- **Status**: 🔴 0/4 chưa bắt đầu
+
+---
+
+## 🎓 Expert Features (Chuyên gia)
+
+### � [07-EXPERT-VALIDATION.md](./07-EXPERT-VALIDATION.md)
+
+**Kiểm duyệt & Xác thực** (0% complete)
+
+- UC-012: Tiếp nhận và kiểm duyệt bộ câu hỏi
+- UC-013: Tạo bộ câu hỏi chuẩn (premium content)
+- Expert dashboard
+- Review workflow với editor
+- **Status**: 🔴 0/6 chưa bắt đầu
+
+### 💰 [08-EXPERT-EARNINGS.md](./08-EXPERT-EARNINGS.md)
+
+**Quản lý Thu nhập** (0% complete)
+
+- UC-014: Theo dõi thu nhập & hoa hồng
+- Earnings overview & chart
+- Commission history
+- Export earnings report
+- **Status**: 🔴 0/3 chưa bắt đầu
+
+---
+
+## 🎛️ Admin Features (Quản trị viên)
+
+### 👥 [09-ADMIN-SYSTEM-PART1.md](./09-ADMIN-SYSTEM-PART1.md)
+
+**Quản lý Hệ thống (Phần 1)** (0% complete)
+
+- UC-015: Phân công yêu cầu xác thực
+- UC-016: Quản lý người dùng
+- Admin dashboard
+- Validation requests management
+- User management (view, edit, deactivate, change role)
+- **Status**: 🔴 0/4 chưa bắt đầu
+
+### 💵 [10-ADMIN-FINANCE.md](./10-ADMIN-FINANCE.md)
+
+**Quản lý Tài chính & Nội dung (Phần 2)** (0% complete)
+
+- UC-017: Theo dõi doanh thu
+- UC-018: Quản lý thanh toán cho Expert
+- UC-019: Duyệt và xuất bản nội dung Expert
+- UC-020: Cấu hình gói dịch vụ & chính sách
+- Revenue dashboard & reports
+- Expert payment management
+- Content approval workflow
+- System settings & policies
+- **Status**: 🔴 0/4 chưa bắt đầu
+
+---
+
+## 🎨 UI/UX & Cross-cutting Concerns
+
+### 🎨 [11-UI-UX-REQUIREMENTS.md](./11-UI-UX-REQUIREMENTS.md)
+
+**Thiết kế & Trải nghiệm người dùng**
+
+- Design system (colors, typography, spacing)
+- Component library (Button, Input, Card, Modal, Toast)
+- Responsive design guidelines
+- Accessibility (WCAG 2.1 Level AA)
+- Animations & micro-interactions
+- Grid system & layouts
+- i18n & number formatting
+- Best practices checklist
+- **Status**: � Tài liệu tham khảo
+
+### ⚡ [12-PERFORMANCE-SECURITY.md](./12-PERFORMANCE-SECURITY.md)
+
+**Hiệu năng & Bảo mật**
+
+- Performance optimization (code splitting, lazy loading, memoization)
+- Image optimization
+- Virtual scrolling
+- Debounce & throttle
+- Bundle size optimization
+- Authentication & authorization
+- XSS & CSRF prevention
+- Input validation & sanitization
+- Error handling & monitoring
+- Testing requirements
+- **Status**: � Tài liệu tham khảo
+
+---
+
+## 📊 [13-IMPLEMENTATION-STATUS.md](./13-IMPLEMENTATION-STATUS.md)
+
+## � [13-IMPLEMENTATION-STATUS.md](./13-IMPLEMENTATION-STATUS.md)
+
 - Preferences
 - Language settings (i18n)
 - **Status**: 🔴 0/4 chưa bắt đầu
