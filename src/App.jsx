@@ -19,13 +19,16 @@ import {
   VerifyEmailPage,
   LearnerHomePage,
   DocumentUploadPage,
+  DocumentListPage,
+  DocumentDetailPage,
   QuizListPage,
   PublicSetsPage,
   ProfileViewPage,
   ProfileEditPage,
-  MySubscriptionPage,
   SubjectListPage,
-  DocumentListPage,
+  SubjectDetailPage,
+  SubscriptionPlansPage,
+  MySubscriptionPage,
 } from "./pages";
 
 // Styles
@@ -71,6 +74,30 @@ function App() {
               <ProtectedRoute>
                 <TopbarLayout>
                   <DocumentUploadPage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/documents/list"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <DocumentListPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/documents/:id"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <DocumentDetailPage />
+                  </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -139,6 +166,54 @@ function App() {
               <ProtectedRoute>
                 <TopbarLayout>
                   <ProfileEditPage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subjects"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <SubjectListPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subjects/:id"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <SubjectDetailPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subscriptions/plans"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <SubscriptionPlansPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subscriptions/me"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <MySubscriptionPage />
+                  </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }

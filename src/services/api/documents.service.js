@@ -42,9 +42,10 @@ export const documentsService = {
   /**
    * Upload document file
    */
-  uploadDocument: async (file, onUploadProgress) => {
+  uploadDocument: async (file, subjectId, onUploadProgress) => {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("subjectId", subjectId);
 
     const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.DOCUMENTS.UPLOAD, formData, {
       headers: {
@@ -56,18 +57,8 @@ export const documentsService = {
   },
 
   /**
-   * Update document
-   */
-  updateDocument: async (id, documentData) => {
-    const response = await axiosInstance.put(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.UPDATE(id),
-      documentData
-    );
-    return response.data;
-  },
-
-  /**
-   * Delete document
+   * Get document summary
+   * @param {string} id - Document ID
    */
   deleteDocument: async (id) => {
     const response = await axiosInstance.delete(API_CONFIG.ENDPOINTS.DOCUMENTS.DELETE(id));

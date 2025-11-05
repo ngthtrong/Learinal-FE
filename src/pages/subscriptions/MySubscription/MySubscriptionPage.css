@@ -1,7 +1,329 @@
-/* My Subscription Page Styles */
-
 .my-subscription-page {
   padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Subscription Card */
+.subscription-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-muted);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.subscription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-muted);
+  margin-bottom: 1.5rem;
+}
+
+.plan-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.plan-info h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.status-badge {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-active {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+}
+
+.status-expired {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error-color);
+}
+
+.status-cancelled {
+  background: rgba(251, 146, 60, 0.1);
+  color: var(--warning-color);
+}
+
+.status-pending {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary-color);
+}
+
+.plan-price {
+  text-align: right;
+}
+
+.price-amount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.price-cycle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-left: 0.25rem;
+}
+
+.plan-description {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+/* Subscription Details */
+.subscription-details {
+  margin-bottom: 1.5rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.detail-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Entitlements */
+.entitlements-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--background-secondary);
+  border-radius: 8px;
+}
+
+.entitlements-section h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+.entitlements-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.entitlement-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.entitlement-icon {
+  color: var(--success-color);
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.entitlement-content {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.entitlement-key {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.entitlement-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Status Messages */
+.status-message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+
+.status-message strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.status-message p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.status-message.warning {
+  background: rgba(251, 146, 60, 0.1);
+  border: 1px solid rgba(251, 146, 60, 0.2);
+  color: var(--warning-color);
+}
+
+.status-message.info {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: var(--primary-color);
+}
+
+.status-message.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--error-color);
+}
+
+/* Actions */
+.subscription-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-muted);
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+/* No Subscription State */
+.no-subscription {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-muted);
+  border-radius: 12px;
+}
+
+.no-subscription-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.no-subscription h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.no-subscription p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 1.125rem;
+}
+
+/* Loading & Error States */
+.loading,
+.error-message {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+}
+
+.error-message {
+  color: var(--error-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .my-subscription-page {
+    padding: 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .subscription-card {
+    padding: 1.5rem;
+  }
+
+  .subscription-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .plan-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .plan-info h2 {
+    font-size: 1.5rem;
+  }
+
+  .plan-price {
+    text-align: left;
+  }
+
+  .price-amount {
+    font-size: 1.5rem;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .subscription-actions {
+    flex-direction: column;
+  }
+
+  .subscription-actions button {
+    width: 100%;
+  }
+
+  .no-subscription {
+    padding: 3rem 1.5rem;
+  }
+
+  .no-subscription h2 {
+    font-size: 1.5rem;
+  }
 }
 
 .sub-card {

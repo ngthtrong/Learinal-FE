@@ -11,3 +11,4 @@ export { default as subjectsService } from "./subjects.service";
 export { default as questionSetsService } from "./questionSets.service";
 export { default as oauthService } from "./oauth.service";
 export { default as subscriptionsService } from "./subscriptions.service";
+export { default as paymentsService } from "./payments.service";
