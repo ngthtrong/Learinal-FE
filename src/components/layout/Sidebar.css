@@ -26,23 +26,27 @@
 }
 
 .side-nav {
-  /* Sidebar is fixed like Topbar; uses its own scroll */
   position: fixed;
   left: 0;
-  top: var(--topbar-h, 56px);
+  top: calc(var(--topbar-h, 56px) + var(--sidebar-top-gap, 0px));
   width: var(--sidebar-w, 260px);
-  height: calc(100vh - var(--topbar-h, 56px));
-  z-index: 20; /* below FAB, above content */
+  height: calc(100vh - var(--topbar-h, 56px) - var(--sidebar-top-gap, 0px));
+  z-index: 20;
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 16px;
+  /* enforce square corners for the sidebar frame */
+  border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
   border-right: 1px solid var(--border-default);
   transition: padding 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  /* vertical-only scrollbar */
   overflow-y: auto;
   overflow-x: hidden;
-  overscroll-behavior: contain; /* don't bubble to page when hitting bounds */
+  overscroll-behavior: contain;
   background: var(--header-bg, rgba(255, 255, 255, 0.92));
   backdrop-filter: blur(10px);
 }
@@ -69,7 +73,7 @@
 /* Floating circular collapse button (hidden by default; shows on sidebar hover) */
 .side-collapse-fab {
   position: fixed; /* stay visible regardless of scrolling */
-  top: var(--collapse-fab-y, calc(var(--topbar-h, 56px) + 46px));
+  top: var(--collapse-fab-y, calc(var(--topbar-h, 56px) + var(--sidebar-top-gap, 0px) + 46px));
   /* align half over the sidebar edge; keep in sync with size (32px -> 16px offset) */
   left: calc(var(--sidebar-w, 260px) - 16px);
   transform: none;
@@ -84,9 +88,9 @@
   color: var(--text-primary);
   cursor: pointer;
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
-  z-index: 2000; /* ensure above topbar/sidebars */
-  opacity: 0; /* hidden by default */
-  pointer-events: none; /* not interactive when hidden */
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
   transition: opacity 160ms ease, filter 160ms ease;
 }
 .side-collapse-fab:hover {
@@ -105,7 +109,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-top: 8px;
+  margin-top: 16px;
 }
 .side-link {
   display: grid;
@@ -184,7 +188,7 @@
 }
 
 .app-content {
-  padding: 20px;
+  padding: 0;
   /* main page uses global document scroll */
   height: auto;
   overflow: visible;

@@ -2,9 +2,12 @@
 
 /* Layout */
 .learner-home-root {
-  min-height: 100vh;
-  background: linear-gradient(180deg, var(--app-bg-start) 0%, var(--app-bg-end) 100%);
+  min-height: calc(100vh - var(--topbar-h, 56px));
+  /* Use card surface; no page background should bleed around */
+  background: var(--card-bg);
   color: var(--text-primary);
+  /* Flush edges with Topbar/Sidebar */
+  border-radius: 0 !important;
 }
 
 .card {
@@ -24,17 +27,61 @@
   margin-bottom: 16px;
 }
 .home-search {
-  display: flex;
-  align-items: center;
+  position: relative; /* to place icon button inside */
+  display: block;
   margin-top: 8px;
 }
 .home-search input {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border-default);
+  padding: 14px 18px; /* bigger input */
+  padding-right: 48px; /* room for icon button */
+  /* grayscale border for light theme */
+  border: 1px solid rgba(0, 0, 0, 0.14); /* subtle thin look */
   background: var(--bg-secondary);
   color: var(--text-primary);
-  border-radius: 10px;
+  border-radius: 999px; /* rounder corners */
+  font-size: 16px;
+  line-height: 1.4;
+  outline: none; /* avoid double-thickness focus ring */
+}
+
+.home-search input:focus {
+  border-color: rgba(0, 0, 0, 0.38);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Dark theme: switch to white-ish grayscale */
+:root[data-theme="dark"] .home-search input {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+:root[data-theme="dark"] .home-search input:focus {
+  border-color: rgba(255, 255, 255, 0.48);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Inline icon button inside input */
+.search-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.search-btn:hover {
+  color: var(--text-primary);
+}
+.search-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 .search-results {
@@ -61,6 +108,13 @@
   background: var(--bg-secondary);
 }
 
+/* Grid re-use in main content results section */
+.search-results-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
 /* Single container, vertical sections */
 .home-content {
   padding: 16px;
@@ -82,6 +136,13 @@
   justify-content: space-between;
   margin-bottom: 8px;
 }
+.section-title h3 {
+  transition: color 0.15s ease;
+}
+.section-title h3:hover {
+  color: var(--brand, #2563eb);
+}
+
 .list-vertical {
   list-style: none;
   padding: 0;
@@ -136,4 +197,57 @@
   .search-results {
     grid-template-columns: 1fr;
   }
+  .search-results-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal {
+  width: min(920px, 92vw);
+  max-height: 80vh;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-muted);
+}
+.modal-close {
+  border: 1px solid var(--border-default);
+  background: transparent;
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.modal-close:hover {
+  color: var(--text-primary);
+}
+.modal-body {
+  padding: 16px;
+  overflow: auto;
 }

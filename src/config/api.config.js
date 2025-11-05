@@ -55,6 +55,11 @@ export const API_CONFIG = {
       DELETE: (id) => `/question-sets/${id}`,
       GENERATE: "/question-sets/generate",
     },
+    // Search endpoints
+    SEARCH: {
+      ROOT: "/search",
+      QUESTION_SETS: "/search/question-sets",
+    },
     // Quiz Attempts endpoints
     QUIZ_ATTEMPTS: {
       LIST: "/quiz-attempts",

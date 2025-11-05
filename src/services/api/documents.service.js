@@ -11,10 +11,15 @@ export const documentsService = {
    * Get list of documents
    */
   getDocuments: async (params = {}) => {
-    const response = await axiosInstance.get(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.LIST,
-      { params }
-    );
+    const response = await axiosInstance.get(API_CONFIG.ENDPOINTS.DOCUMENTS.LIST, { params });
+    return response.data;
+  },
+
+  /**
+   * Get documents by subject id
+   */
+  getDocumentsBySubject: async (subjectId, params = {}) => {
+    const response = await axiosInstance.get(`/subjects/${subjectId}/documents`, { params });
     return response.data;
   },
 
@@ -22,9 +27,7 @@ export const documentsService = {
    * Get document by ID
    */
   getDocumentById: async (id) => {
-    const response = await axiosInstance.get(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.GET_BY_ID(id)
-    );
+    const response = await axiosInstance.get(API_CONFIG.ENDPOINTS.DOCUMENTS.GET_BY_ID(id));
     return response.data;
   },
 
@@ -32,10 +35,7 @@ export const documentsService = {
    * Create new document
    */
   createDocument: async (documentData) => {
-    const response = await axiosInstance.post(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.CREATE,
-      documentData
-    );
+    const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.DOCUMENTS.CREATE, documentData);
     return response.data;
   },
 
@@ -46,16 +46,12 @@ export const documentsService = {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await axiosInstance.post(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.UPLOAD,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress,
-      }
-    );
+    const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.DOCUMENTS.UPLOAD, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress,
+    });
     return response.data;
   },
 
@@ -74,9 +70,7 @@ export const documentsService = {
    * Delete document
    */
   deleteDocument: async (id) => {
-    const response = await axiosInstance.delete(
-      API_CONFIG.ENDPOINTS.DOCUMENTS.DELETE(id)
-    );
+    const response = await axiosInstance.delete(API_CONFIG.ENDPOINTS.DOCUMENTS.DELETE(id));
     return response.data;
   },
 };

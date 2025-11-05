@@ -22,24 +22,14 @@ const Topbar = ({ theme = "light" }) => {
     }
   });
 
+  // Only keep a single Upgrade entry in the topbar nav
   const items = [
-    { key: "home", label: "Home", to: "/home", roles: ["Learner", "Educator", "Admin"] },
     {
-      key: "upload",
-      label: "Upload",
-      to: "/documents/upload",
+      key: "upgrade",
+      label: "Upgrade",
+      to: "/mysubscription",
       roles: ["Learner", "Educator", "Admin"],
     },
-    { key: "quiz", label: "Quiz", to: "/quiz", roles: ["Learner", "Educator", "Admin"] },
-    { key: "public", label: "Public", to: "/public", roles: ["Learner", "Educator", "Admin"] },
-    // Educator/Reviewer-only example (wire up when page ready)
-    {
-      key: "review",
-      label: "Review",
-      to: "/admin/validation-requests",
-      roles: ["Educator", "Admin"],
-    },
-    { key: "admin", label: "Admin", to: "/admin", roles: ["Admin"] },
   ];
 
   const visible = items.filter((it) => it.roles.includes(role));
@@ -119,7 +109,45 @@ const Topbar = ({ theme = "light" }) => {
             to={it.to}
             className={({ isActive }) => "tb-btn" + (isActive ? " active" : "")}
           >
-            {it.label}
+            {it.key === "upgrade" && (
+              <svg
+                className="tb-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                focusable="false"
+              >
+                {/* Wallet body */}
+                <rect
+                  x="3"
+                  y="7"
+                  width="18"
+                  height="12"
+                  rx="3"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                {/* Wallet flap */}
+                <path
+                  d="M3 9h10a3 3 0 0 0 3-3v0a2 2 0 0 0-2-2H6a3 3 0 0 0-3 3v2z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                />
+                {/* Pocket/Payment notch */}
+                <path
+                  d="M17 12h4v6h-4a3 3 0 1 1 0-6z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                />
+                <circle cx="18.5" cy="15" r="1" fill="currentColor" />
+              </svg>
+            )}
+            <span>{it.label}</span>
           </NavLink>
         ))}
       </nav>

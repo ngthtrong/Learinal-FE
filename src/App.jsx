@@ -23,6 +23,9 @@ import {
   PublicSetsPage,
   ProfileViewPage,
   ProfileEditPage,
+  MySubscriptionPage,
+  SubjectListPage,
+  DocumentListPage,
 } from "./pages";
 
 // Styles
@@ -89,6 +92,34 @@ function App() {
                 <TopbarLayout>
                   <PublicSetsPage />
                 </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subjects"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SubjectListPage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/documents"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <DocumentListPage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mysubscription"
+            element={
+              <ProtectedRoute>
+                <MySubscriptionPage />
               </ProtectedRoute>
             }
           />
