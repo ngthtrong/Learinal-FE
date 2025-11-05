@@ -3,65 +3,203 @@
  * Landing page for role "Learner", styled per aigen.html palette
  */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@contexts/AuthContext";
+import { documentsService, subjectsService, questionSetsService } from "@/services/api";
 import "./LearnerHomePage.css";
 
 const LearnerHomePage = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+
+  const [q, setQ] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState({ subjects: [], sets: [], documents: [] });
+  const [lists, setLists] = useState({
+    mySets: [],
+    publicSets: [],
+    mySubjects: [],
+    publicSubjects: [],
+    myDocuments: [],
+  });
+
+  // Fetch initial lists (best-effort; backend params may vary)
+  useEffect(() => {
+    (async () => {
+      try {
+        const [myDocs, mySubs, pubSubs, mySets, pubSets] = await Promise.all([
+          documentsService.getDocuments({ limit: 5 }).catch(() => ({ data: [] })),
+          subjectsService.getSubjects({ limit: 5 }).catch(() => ({ data: [] })),
+          subjectsService
+            .getSubjects({ limit: 5, visibility: "public" })
+            .catch(() => ({ data: [] })),
+          questionSetsService.getSets({ limit: 5 }).catch(() => ({ data: [] })),
+          questionSetsService
+            .getSets({ limit: 5, visibility: "public" })
+            .catch(() => ({ data: [] })),
+        ]);
+        setLists({
+          mySets: mySets?.data || mySets?.items || [],
+          publicSets: pubSets?.data || pubSets?.items || [],
+          mySubjects: mySubs?.data || mySubs?.items || [],
+          publicSubjects: pubSubs?.data || pubSubs?.items || [],
+          myDocuments: myDocs?.data || myDocs?.items || [],
+        });
+      } catch (err) {
+        void err; // no-op
+      }
+    })();
+  }, []);
+
+  // Simple search across entities
+  useEffect(() => {
+    const id = setTimeout(async () => {
+      const term = q.trim();
+      if (!term) {
+        setResults({ subjects: [], sets: [], documents: [] });
+        return;
+      }
+      setLoading(true);
+      try {
+        const [subRes, setRes, docRes] = await Promise.all([
+          subjectsService.getSubjects({ q: term, limit: 5 }).catch(() => ({ data: [] })),
+          questionSetsService.getSets({ q: term, limit: 5 }).catch(() => ({ data: [] })),
+          documentsService.getDocuments({ q: term, limit: 5 }).catch(() => ({ data: [] })),
+        ]);
+        setResults({
+          subjects: subRes?.data || subRes?.items || [],
+          sets: setRes?.data || setRes?.items || [],
+          documents: docRes?.data || docRes?.items || [],
+        });
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+    return () => clearTimeout(id);
+  }, [q]);
 
   return (
     <div className="learner-home-root">
-      <main className="lh-main">
-        <div className="grid">
-          {/* HERO */}
-          <section className="hero card">
-            <div className="left">
-              <h1 style={{ margin: 0 }}>Học tập thông minh cùng Learinal</h1>
-              <p className="muted">
-                Tải tài liệu của bạn lên để tạo câu hỏi luyện tập, hoặc bắt đầu làm các bộ đề sẵn
-                có.
-              </p>
-              <div className="actions">
-                <button className="btn primary" onClick={() => navigate("/documents/upload")}>
-                  Tải file & tạo đề
-                </button>
-                <button className="btn ghost" onClick={() => navigate("/quiz")}>
-                  Xem bộ đề
-                </button>
-              </div>
-            </div>
-            <div className="right">
-              <div className="card promo-card">
-                <div className="promo-title">Thống kê nhanh</div>
-                <div className="promo-stats">
-                  <div className="promo-stat">
-                    <div className="muted">Đã học</div>
-                    <div className="value">{user?.stats?.completed || 0}</div>
-                  </div>
-                  <div className="promo-stat">
-                    <div className="muted">Điểm TB</div>
-                    <div className="value">{user?.stats?.avgScore || 0}%</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* GUIDE */}
-          <section className="card">
-            <h3 style={{ marginTop: 0 }}>Hướng dẫn nhanh</h3>
-            <ol className="muted lh-steps">
-              <li>Tải file tài liệu (PDF, DOCX, TXT) tại mục "Tải file & tạo đề".</li>
-              <li>Tùy chọn loại câu hỏi, số lượng và hướng dẫn AI.</li>
-              <li>Xem, chỉnh sửa các câu hỏi nháp; lưu hoặc luyện tập.</li>
-              <li>Theo dõi tiến độ và điểm trung bình của bạn.</li>
-            </ol>
-          </section>
+      <div className="home-header card">
+        <h1 style={{ margin: 0 }}>Trang chủ</h1>
+        <div className="home-search">
+          <input
+            type="text"
+            placeholder="Tìm môn học, bộ đề, tài liệu..."
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+          />
+          {loading && (
+            <span className="muted" style={{ marginLeft: 8 }}>
+              Đang tìm...
+            </span>
+          )}
         </div>
-      </main>
+        {q.trim() && (
+          <div className="search-results card">
+            <div className="sr-col">
+              <div className="sr-title">Môn học</div>
+              <ul>
+                {results.subjects.map((s) => (
+                  <li key={s._id || s.id}>{s.name || s.title || "Môn học"}</li>
+                ))}
+                {results.subjects.length === 0 && <li className="muted">Không có kết quả</li>}
+              </ul>
+            </div>
+            <div className="sr-col">
+              <div className="sr-title">Bộ đề</div>
+              <ul>
+                {results.sets.map((s) => (
+                  <li key={s._id || s.id}>{s.name || s.title || "Bộ đề"}</li>
+                ))}
+                {results.sets.length === 0 && <li className="muted">Không có kết quả</li>}
+              </ul>
+            </div>
+            <div className="sr-col">
+              <div className="sr-title">Tài liệu</div>
+              <ul>
+                {results.documents.map((d) => (
+                  <li key={d._id || d.id}>{d.name || d.filename || d.title || "Tài liệu"}</li>
+                ))}
+                {results.documents.length === 0 && <li className="muted">Không có kết quả</li>}
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="home-content card">
+        <section className="home-section">
+          <div className="section-title">
+            <h3 style={{ margin: 0 }}>Danh mục đề (cá nhân)</h3>
+            <button className="btn ghost" onClick={() => navigate("/quiz")}>
+              Xem tất cả
+            </button>
+          </div>
+          <ul className="list-vertical">
+            {lists.mySets.map((it) => (
+              <li key={it._id || it.id}>{it.name || it.title}</li>
+            ))}
+            {lists.mySets.length === 0 && <li className="muted">Chưa có bộ đề</li>}
+          </ul>
+        </section>
+
+        <section className="home-section">
+          <div className="section-title">
+            <h3 style={{ margin: 0 }}>Danh mục đề (public)</h3>
+            <button className="btn ghost" onClick={() => navigate("/public")}>
+              Xem tất cả
+            </button>
+          </div>
+          <ul className="list-vertical">
+            {lists.publicSets.map((it) => (
+              <li key={it._id || it.id}>{it.name || it.title}</li>
+            ))}
+            {lists.publicSets.length === 0 && <li className="muted">Chưa có bộ đề</li>}
+          </ul>
+        </section>
+
+        <section className="home-section">
+          <div className="section-title">
+            <h3 style={{ margin: 0 }}>Danh mục môn học (cá nhân)</h3>
+            <button className="btn ghost" onClick={() => navigate("/subjects")}>
+              Xem tất cả
+            </button>
+          </div>
+          <ul className="list-vertical">
+            {lists.mySubjects.map((it) => (
+              <li key={it._id || it.id}>{it.name || it.title}</li>
+            ))}
+            {lists.mySubjects.length === 0 && <li className="muted">Chưa có môn học</li>}
+          </ul>
+        </section>
+
+        <section className="home-section">
+          <div className="section-title">
+            <h3 style={{ margin: 0 }}>Danh mục môn học (public)</h3>
+          </div>
+          <ul className="list-vertical">
+            {lists.publicSubjects.map((it) => (
+              <li key={it._id || it.id}>{it.name || it.title}</li>
+            ))}
+            {lists.publicSubjects.length === 0 && <li className="muted">Chưa có môn học</li>}
+          </ul>
+        </section>
+
+        <section className="home-section">
+          <div className="section-title">
+            <h3 style={{ margin: 0 }}>Danh mục tài liệu (cá nhân)</h3>
+            <button className="btn ghost" onClick={() => navigate("/documents")}>
+              Xem tất cả
+            </button>
+          </div>
+          <ul className="list-vertical">
+            {lists.myDocuments.map((it) => (
+              <li key={it._id || it.id}>{it.name || it.filename || it.title}</li>
+            ))}
+            {lists.myDocuments.length === 0 && <li className="muted">Chưa có tài liệu</li>}
+          </ul>
+        </section>
+      </div>
 
       <footer className="lh-footer">© 2025 Learinal</footer>
     </div>

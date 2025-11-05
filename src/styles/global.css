@@ -117,6 +117,9 @@
   --font-size-2xl: 1.5rem;
   --font-size-3xl: 1.875rem;
   --font-size-4xl: 2.25rem;
+
+  /* Collapse FAB position */
+  --collapse-fab-y: calc(var(--topbar-h, 56px) + 48px);
 }
 
 /* Dark theme overrides (activated by <html data-theme="dark">) */

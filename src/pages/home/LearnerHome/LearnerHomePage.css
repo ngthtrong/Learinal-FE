@@ -1,4 +1,4 @@
-/* Aigen-like theme for Learner Home (theme tokens are global) */
+/* Learner Home with vertical sidebar layout (theme tokens are global) */
 
 /* Layout */
 .learner-home-root {
@@ -14,134 +14,112 @@
   box-shadow: 0 1px 3px var(--card-shadow);
 }
 
-.lh-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 20px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  backdrop-filter: blur(10px);
-  background: var(--header-bg);
-  border-bottom: 1px solid var(--border-default);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.brand-logo {
-  height: 40px;
-  width: auto;
-  display: block;
-  border-radius: 12px;
-}
-.brand-title {
-  font-weight: 800;
-  font-size: 22px;
-  letter-spacing: 0.2px;
-}
-.brand-title .brand-le {
-  color: var(--brand-le);
-}
-.brand-title .brand-inal {
-  color: var(--brand-inal);
-}
-.nav-spacer {
-  flex: 1;
-}
-.lh-welcome {
-  font-size: 14px;
-}
-
-.lh-main {
-  padding: 24px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-.grid {
-  display: grid;
-  gap: 18px;
-}
-.hero {
-  display: flex;
-  gap: 18px;
-  align-items: stretch;
-}
-.hero .left {
-  flex: 1;
-}
-.hero .right {
-  width: 320px;
-}
-
 .muted {
   color: var(--text-secondary);
 }
-.actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 14px;
+
+/* New header + search */
+.home-header {
+  padding: 16px;
+  margin-bottom: 16px;
 }
+.home-search {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+.home-search input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 10px;
+}
+
+.search-results {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px;
+}
+.sr-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.search-results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.search-results li {
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+.search-results li:hover {
+  background: var(--bg-secondary);
+}
+
+/* Single container, vertical sections */
+.home-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.home-section {
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border-muted);
+}
+.home-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.list-vertical {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.list-vertical li {
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: var(--card-bg);
+}
+
 .btn {
   padding: 10px 18px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid var(--border-default);
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
   transition: all 0.2s ease;
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+.btn.ghost {
+  background: transparent;
 }
 .btn.primary {
   background: linear-gradient(135deg, var(--btn-accent-start) 0%, var(--btn-accent-end) 100%);
   color: #fff;
+  border: none;
   box-shadow: 0 4px 12px var(--btn-shadow);
 }
 .btn.primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px var(--btn-shadow-hover);
-}
-.btn.ghost {
-  background: transparent;
-  border: 1px solid var(--border-default);
-  color: var(--text-primary);
-}
-.btn.ghost:hover {
-  background: var(--bg-secondary);
-  border-color: var(--accent-primary);
-  color: var(--accent-primary);
-}
-
-.promo-card {
-  padding: 20px;
-  background: linear-gradient(135deg, var(--accent-light) 0%, var(--bg-secondary) 100%);
-  border: 2px solid var(--accent-primary);
-  box-shadow: 0 8px 24px var(--card-hover-shadow);
-  border-radius: 12px;
-}
-.promo-title {
-  font-weight: 700;
-  color: var(--accent-secondary);
-  font-size: 16px;
-}
-.promo-stats {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-}
-.promo-stat {
-  flex: 1;
-}
-.promo-stat .value {
-  font-weight: 700;
-  font-size: 22px;
-  color: var(--accent-primary);
-}
-
-.lh-steps {
-  padding-left: 20px;
 }
 
 .lh-footer {
@@ -154,14 +132,8 @@
   margin-top: 28px;
 }
 
-@media (max-width: 800px) {
-  .hero {
-    flex-direction: column;
-  }
-  .hero .right {
-    width: 100%;
-  }
-  .lh-main {
-    padding: 16px;
+@media (max-width: 900px) {
+  .search-results {
+    grid-template-columns: 1fr;
   }
 }

@@ -6,7 +6,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
-import { TopbarLayout } from "@/components/layout";
+import { TopbarLayout, SidebarLayout } from "@/components/layout";
 
 // Pages
 import {
@@ -47,7 +47,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <LearnerHomePage />
+                  <SidebarLayout>
+                    <LearnerHomePage />
+                  </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
