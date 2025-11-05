@@ -27,6 +27,8 @@ import {
   ProfileEditPage,
   SubjectListPage,
   SubjectDetailPage,
+  SubscriptionPlansPage,
+  MySubscriptionPage,
 } from "./pages";
 
 // Styles
@@ -159,6 +161,30 @@ function App() {
                 <TopbarLayout>
                   <SidebarLayout>
                     <SubjectDetailPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subscriptions/plans"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <SubscriptionPlansPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subscriptions/me"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <MySubscriptionPage />
                   </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
