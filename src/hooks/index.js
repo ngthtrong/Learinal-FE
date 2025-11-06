@@ -4,3 +4,4 @@
  */
 
 export { default as useAuth } from "./useAuth";
+export { useDocumentStatus } from "./useDocumentStatus";

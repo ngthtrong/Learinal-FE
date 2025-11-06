@@ -20,6 +20,7 @@ export const API_CONFIG = {
       FORGOT_PASSWORD: "/auth/forgot-password",
       RESET_PASSWORD: "/auth/reset-password",
       VERIFY_EMAIL: "/auth/verify-email",
+      RESEND_VERIFICATION: "/auth/resend-verification",
       OAUTH_GOOGLE: "/auth/oauth/google",
     },
     // User endpoints
@@ -36,7 +37,7 @@ export const API_CONFIG = {
       GET_BY_ID: (id) => `/documents/${id}`,
       UPDATE: (id) => `/documents/${id}`,
       DELETE: (id) => `/documents/${id}`,
-      UPLOAD: "/documents/upload",
+      GET_SUMMARY: (id) => `/documents/${id}/summary`,
     },
     // Subjects endpoints
     SUBJECTS: {
@@ -45,6 +46,8 @@ export const API_CONFIG = {
       GET_BY_ID: (id) => `/subjects/${id}`,
       UPDATE: (id) => `/subjects/${id}`,
       DELETE: (id) => `/subjects/${id}`,
+      GENERATE_TOC: (id) => `/subjects/${id}/generate-toc`,
+      GENERATE_SUMMARY: (id) => `/subjects/${id}/generate-summary`,
     },
     // Question Sets endpoints
     QUESTION_SETS: {

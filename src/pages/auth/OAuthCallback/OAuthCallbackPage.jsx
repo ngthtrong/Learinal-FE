@@ -6,14 +6,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import { useToast } from "@components/common";
 import { oauthService } from "@services/api";
 import { APP_CONFIG } from "@config/app.config";
+import { getErrorMessage, logError } from "@utils/errorHandler";
 import "./OAuthCallbackPage.css";
 
 const OAuthCallbackPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { updateUser } = useAuth();
+  const toast = useToast();
   const [status, setStatus] = useState("processing");
   const [error, setError] = useState("");
 
@@ -23,59 +26,126 @@ const OAuthCallbackPage = () => {
       const state = searchParams.get("state");
       const errorParam = searchParams.get("error");
       const errorDescription = searchParams.get("error_description");
+
       // Prevent duplicate processing in React StrictMode (dev) or double navigations
       const processedKey = "oauth_processed_code";
-      const lastCode = sessionStorage.getItem(processedKey);
-      if (lastCode && lastCode === code) {
-        // Already processed this code; avoid a second /auth/exchange call
-        return;
-      }
-      sessionStorage.setItem(processedKey, code);
+      const lastProcessed = sessionStorage.getItem(processedKey);
 
+      if (lastProcessed) {
+        const { code: lastCode, timestamp } = JSON.parse(lastProcessed);
+        const timeSinceProcessed = Date.now() - timestamp;
+
+        // If same code was processed within last 5 seconds, skip
+        if (lastCode === code && timeSinceProcessed < 5000) {
+          console.log("Duplicate OAuth callback detected, skipping...");
+          return;
+        }
+      }
+
+      // Mark this code as processed
+      sessionStorage.setItem(processedKey, JSON.stringify({ code, timestamp: Date.now() }));
+
+      // Handle OAuth errors from provider
       if (errorParam) {
-        setStatus("error");
-        setError(
-          errorParam === "access_denied"
-            ? "Bạn đã từ chối quyền truy cập"
-            : `Đăng nhập thất bại: ${errorDescription || errorParam}`
+        logError(
+          new Error(`OAuth Error: ${errorParam} - ${errorDescription}`),
+          "OAuth Provider Error"
         );
+
+        setStatus("error");
+
+        let errorMessage = "Đăng nhập thất bại";
+        switch (errorParam) {
+          case "access_denied":
+            errorMessage = "Bạn đã từ chối quyền truy cập";
+            break;
+          case "invalid_request":
+            errorMessage = "Yêu cầu không hợp lệ";
+            break;
+          case "unauthorized_client":
+            errorMessage = "Ứng dụng không được phép truy cập";
+            break;
+          case "unsupported_response_type":
+            errorMessage = "Loại phản hồi không được hỗ trợ";
+            break;
+          case "invalid_scope":
+            errorMessage = "Phạm vi quyền không hợp lệ";
+            break;
+          case "server_error":
+            errorMessage = "Lỗi máy chủ OAuth";
+            break;
+          case "temporarily_unavailable":
+            errorMessage = "Dịch vụ OAuth tạm thời không khả dụng";
+            break;
+          default:
+            errorMessage = errorDescription || `Lỗi: ${errorParam}`;
+        }
+
+        setError(errorMessage);
+        toast.showError(errorMessage);
         setTimeout(() => navigate("/login"), 3000);
         return;
       }
 
-      if (!code || !state) {
-        setStatus("error");
-        setError("Thiếu thông tin xác thực");
-        setTimeout(() => navigate("/login"), 3000);
-        return;
+      // Validate required parameters
+      if (!code) {
+        throw new Error("Missing authorization code");
+      }
+
+      if (!state) {
+        throw new Error("Missing state parameter");
+      }
+
+      // Validate state parameter
+      const savedState = sessionStorage.getItem("oauth_state");
+      if (!savedState) {
+        throw new Error("No saved state found - please try logging in again");
+      }
+
+      if (state !== savedState) {
+        throw new Error("State mismatch - possible CSRF attack detected");
       }
 
       // Exchange code for tokens
       const response = await oauthService.handleCallback(code, state);
 
-      if (response.accessToken && response.user) {
-        // Save tokens and user data
-        localStorage.setItem(APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
-        localStorage.setItem(APP_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(response.user));
-
-        // Update auth context
-        updateUser(response.user);
-
-        setStatus("success");
-
-        // Redirect based on role
-        setTimeout(() => {
-          const next = response?.user?.role === "Learner" ? "/home" : "/dashboard";
-          navigate(next);
-        }, 1500);
-      } else {
-        throw new Error("Invalid response from server");
+      if (!response || !response.accessToken || !response.user) {
+        throw new Error("Invalid response from server - missing tokens or user data");
       }
+
+      // Save tokens and user data
+      localStorage.setItem(APP_CONFIG.STORAGE_KEYS.AUTH_TOKEN, response.accessToken);
+      localStorage.setItem(APP_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(response.user));
+
+      // Update auth context
+      updateUser(response.user);
+
+      setStatus("success");
+      toast.showSuccess("Đăng nhập thành công!");
+
+      // Clean up processed code after successful login
+      sessionStorage.removeItem(processedKey);
+
+      // Redirect based on role
+      setTimeout(() => {
+        const next = response?.user?.role === "Learner" ? "/home" : "/dashboard";
+        navigate(next, { replace: true });
+      }, 1500);
     } catch (err) {
+      logError(err, "OAuth Callback Handler");
       console.error("OAuth callback error:", err);
+
       setStatus("error");
-      setError(err.message || "Có lỗi xảy ra khi xác thực");
-      setTimeout(() => navigate("/login"), 3000);
+      const errorMsg = getErrorMessage(err);
+      setError(errorMsg);
+      toast.showError(errorMsg);
+
+      // Clean up on error
+      sessionStorage.removeItem("oauth_state");
+      sessionStorage.removeItem("oauth_code_verifier");
+      sessionStorage.removeItem("oauth_processed_code");
+
+      setTimeout(() => navigate("/login", { replace: true }), 3000);
     }
   };
 

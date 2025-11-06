@@ -1,209 +1,187 @@
 /**
  * Subject List Page
- * Display available subjects
+ * Display available subjects with grid layout
  */
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import subjectsService from "@/services/api/subjects.service";
 import Button from "@/components/common/Button";
+import { SubjectCard } from "@/components/subjects";
+import { useToast } from "@/components/common";
+import { getErrorMessage } from "@/utils/errorHandler";
 import "./SubjectListPage.css";
 
 function SubjectListPage() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newSubject, setNewSubject] = useState({
-    subjectName: "",
-    description: "",
-  });
-  const [creating, setCreating] = useState(false);
+  const [sortBy, setSortBy] = useState("updatedAt");
+  const [order, setOrder] = useState("desc");
+  const [deleting, setDeleting] = useState(null);
 
   useEffect(() => {
     fetchSubjects();
-  }, [page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, sortBy, order]);
 
   const fetchSubjects = async () => {
     try {
       setLoading(true);
-      setError(null);
-      const data = await subjectsService.getSubjects({ page, pageSize: 12 });
+      const data = await subjectsService.getSubjects({
+        page,
+        pageSize: 12,
+        sortBy,
+        order,
+      });
       setSubjects(data.items || []);
       setTotalPages(data.meta?.totalPages || 1);
     } catch (err) {
-      setError(err.response?.data?.message || "Không thể tải danh sách môn học");
+      const message = getErrorMessage(err);
+      toast.showError(message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCreateSubject = async (e) => {
-    e.preventDefault();
-    if (!newSubject.subjectName.trim()) {
-      alert("Vui lòng nhập tên môn học");
+  const handleDeleteSubject = async (id) => {
+    const subject = subjects.find((s) => s.id === id);
+    if (!subject) return;
+
+    if (!window.confirm(`Bạn có chắc chắn muốn xóa môn học "${subject.subjectName}"?`)) {
       return;
     }
 
     try {
-      setCreating(true);
-      const created = await subjectsService.createSubject(newSubject);
-      setSubjects([created, ...subjects]);
-      setShowCreateModal(false);
-      setNewSubject({ subjectName: "", description: "" });
-    } catch (err) {
-      alert(err.response?.data?.message || "Không thể tạo môn học");
-    } finally {
-      setCreating(false);
-    }
-  };
-
-  const handleDeleteSubject = async (id, name) => {
-    if (!confirm(`Bạn có chắc chắn muốn xóa môn học "${name}"?`)) return;
-
-    try {
+      setDeleting(id);
       await subjectsService.deleteSubject(id);
       setSubjects(subjects.filter((s) => s.id !== id));
+      toast.showSuccess("Xóa môn học thành công!");
     } catch (err) {
-      alert(err.response?.data?.message || "Không thể xóa môn học");
+      const message = getErrorMessage(err);
+      toast.showError(message);
+    } finally {
+      setDeleting(null);
     }
   };
 
-  const handleViewDetail = (id) => {
-    navigate(`/subjects/${id}`);
+  const handleEditSubject = (id) => {
+    navigate(`/subjects/${id}/edit`);
+  };
+
+  const handleSortChange = (newSortBy) => {
+    if (sortBy === newSortBy) {
+      setOrder(order === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(newSortBy);
+      setOrder("desc");
+    }
   };
 
   return (
     <div className="subject-list-page">
       <div className="page-header">
-        <h1>Môn học của tôi</h1>
-        <Button onClick={() => setShowCreateModal(true)}>+ Tạo môn học mới</Button>
+        <div className="header-content">
+          <h1>Môn học của tôi</h1>
+          <br />
+          <p className="header-subtitle"> Quản lý tất cả môn học và tài liệu của bạn</p>
+        </div>
+        <Button onClick={() => navigate("/subjects/create")}>+ Tạo môn học mới</Button>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
-
-      {loading ? (
-        <div className="loading">Đang tải...</div>
-      ) : subjects.length === 0 ? (
-        <div className="empty-state">
-          <p>Bạn chưa có môn học nào</p>
-          <Button onClick={() => setShowCreateModal(true)}>Tạo môn học đầu tiên</Button>
+      {/* Sort & Filter Controls */}
+      {subjects.length > 0 && !loading && (
+        <div className="controls-bar">
+          <div className="sort-controls">
+            <span className="sort-label">Sắp xếp:</span>
+            <button
+              className={`sort-btn ${sortBy === "updatedAt" ? "active" : ""}`}
+              onClick={() => handleSortChange("updatedAt")}
+            >
+              Mới cập nhật {sortBy === "updatedAt" && (order === "asc" ? "↑" : "↓")}
+            </button>
+            <button
+              className={`sort-btn ${sortBy === "subjectName" ? "active" : ""}`}
+              onClick={() => handleSortChange("subjectName")}
+            >
+              Tên A-Z {sortBy === "subjectName" && (order === "asc" ? "↑" : "↓")}
+            </button>
+            <button
+              className={`sort-btn ${sortBy === "createdAt" ? "active" : ""}`}
+              onClick={() => handleSortChange("createdAt")}
+            >
+              Mới tạo {sortBy === "createdAt" && (order === "asc" ? "↑" : "↓")}
+            </button>
+          </div>
+          <div className="results-count">{subjects.length} môn học</div>
         </div>
-      ) : (
+      )}
+
+      {/* Loading Skeleton */}
+      {loading && (
+        <div className="subjects-grid">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <div key={n} className="subject-card skeleton">
+              <div className="skeleton-header"></div>
+              <div className="skeleton-body">
+                <div className="skeleton-line"></div>
+                <div className="skeleton-line short"></div>
+              </div>
+              <div className="skeleton-footer"></div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!loading && subjects.length === 0 && (
+        <div className="empty-state">
+          <div className="empty-icon">📚</div>
+          <h2>Chưa có môn học nào</h2>
+          <p>Bắt đầu bằng cách tạo môn học đầu tiên của bạn để quản lý tài liệu và câu hỏi</p>
+          <Button onClick={() => navigate("/subjects/create")}>+ Tạo môn học đầu tiên</Button>
+        </div>
+      )}
+
+      {/* Subjects Grid */}
+      {!loading && subjects.length > 0 && (
         <>
           <div className="subjects-grid">
             {subjects.map((subject) => (
-              <div key={subject.id} className="subject-card">
-                <div className="subject-card-header">
-                  <h3>{subject.subjectName}</h3>
-                </div>
-                <div className="subject-card-body">
-                  {subject.description && (
-                    <p className="subject-description">{subject.description}</p>
-                  )}
-                  <div className="subject-meta">
-                    <span className="subject-topics-count">
-                      {subject.tableOfContents?.length || 0} chủ đề
-                    </span>
-                  </div>
-                </div>
-                <div className="subject-card-actions">
-                  <Button variant="secondary" size="small" onClick={() => handleViewDetail(subject.id)}>
-                    Chi tiết
-                  </Button>
-                  <Button
-                    variant="danger"
-                    size="small"
-                    onClick={() => handleDeleteSubject(subject.id, subject.subjectName)}
-                  >
-                    Xóa
-                  </Button>
-                </div>
-              </div>
+              <SubjectCard
+                key={subject.id}
+                subject={subject}
+                onDelete={handleDeleteSubject}
+                onEdit={handleEditSubject}
+                disabled={deleting === subject.id}
+              />
             ))}
           </div>
 
+          {/* Pagination */}
           {totalPages > 1 && (
             <div className="pagination">
-              <Button
-                variant="secondary"
-                disabled={page === 1}
-                onClick={() => setPage(page - 1)}
-              >
-                Trang trước
+              <Button variant="secondary" disabled={page === 1} onClick={() => setPage(page - 1)}>
+                ← Trang trước
               </Button>
-              <span className="page-info">
-                Trang {page} / {totalPages}
-              </span>
+              <div className="page-info">
+                <span className="current-page">Trang {page}</span>
+                <span className="page-separator">/</span>
+                <span className="total-pages">{totalPages}</span>
+              </div>
               <Button
                 variant="secondary"
                 disabled={page === totalPages}
                 onClick={() => setPage(page + 1)}
               >
-                Trang sau
+                Trang sau →
               </Button>
             </div>
           )}
         </>
-      )}
-
-      {/* Create Modal */}
-      {showCreateModal && (
-        <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Tạo môn học mới</h2>
-              <button className="modal-close" onClick={() => setShowCreateModal(false)}>
-                ×
-              </button>
-            </div>
-            <form onSubmit={handleCreateSubject}>
-              <div className="form-group">
-                <label htmlFor="subjectName">
-                  Tên môn học <span className="required">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="subjectName"
-                  value={newSubject.subjectName}
-                  onChange={(e) =>
-                    setNewSubject({ ...newSubject, subjectName: e.target.value })
-                  }
-                  placeholder="Ví dụ: Toán học, Vật lý..."
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="description">Mô tả</label>
-                <textarea
-                  id="description"
-                  value={newSubject.description}
-                  onChange={(e) =>
-                    setNewSubject({ ...newSubject, description: e.target.value })
-                  }
-                  placeholder="Mô tả về môn học này..."
-                  rows="4"
-                />
-              </div>
-              <div className="modal-actions">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => setShowCreateModal(false)}
-                  disabled={creating}
-                >
-                  Hủy
-                </Button>
-                <Button type="submit" loading={creating}>
-                  Tạo môn học
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
       )}
     </div>
   );

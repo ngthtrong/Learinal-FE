@@ -5,7 +5,6 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import documentsService from "@/services/api/documents.service";
 import subjectsService from "@/services/api/subjects.service";
 import Button from "@/components/common/Button";
 import "./DocumentListPage.css";
@@ -20,24 +19,15 @@ function DocumentListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (subjectId) {
-      fetchSubjectAndDocuments();
-    } else {
-      setError("Vui lòng chọn môn học");
-      setLoading(false);
-    }
-  }, [subjectId]);
-
   const fetchSubjectAndDocuments = async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Fetch subject details
       const subjectData = await subjectsService.getSubjectById(subjectId);
       setSubject(subjectData);
-      
+
       // Backend chưa có API list documents
       // Hiển thị thông báo và cho phép upload
       setDocuments([]);
@@ -48,8 +38,19 @@ function DocumentListPage() {
     }
   };
 
+  useEffect(() => {
+    if (subjectId) {
+      fetchSubjectAndDocuments();
+    } else {
+      setError("Vui lòng chọn môn học");
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subjectId]);
+
   const handleUploadDocument = () => {
-    navigate(`/documents/upload?subjectId=${subjectId}`);
+    // Navigate to subject detail page where upload is now integrated
+    navigate(`/subjects/${subjectId}`);
   };
 
   const handleViewDocument = (docId) => {
@@ -101,9 +102,7 @@ function DocumentListPage() {
           </Button>
           <div className="header-title">
             <h1>Tài liệu: {subject?.subjectName}</h1>
-            {subject?.description && (
-              <p className="subject-description">{subject.description}</p>
-            )}
+            {subject?.description && <p className="subject-description">{subject.description}</p>}
           </div>
         </div>
         <Button onClick={handleUploadDocument}>+ Tải lên tài liệu</Button>

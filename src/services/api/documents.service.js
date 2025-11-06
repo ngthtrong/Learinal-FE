@@ -17,10 +17,44 @@ export const documentsService = {
 
   /**
    * Get documents by subject id
+   * According to API spec: GET /subjects/{subjectId}/documents
+   *
+   * Query params: page, pageSize, status
+   *
+   * Backend returns: { items: Document[] }
+   * We normalize to: { data: Document[], meta: {...} }
+   *
+   * @param {string} subjectId - Subject ID
+   * @param {Object} params - Query parameters
+   * @returns {Promise<Object>} { data: Document[], meta: PaginationMeta }
    */
   getDocumentsBySubject: async (subjectId, params = {}) => {
-    const response = await axiosInstance.get(`/subjects/${subjectId}/documents`, { params });
-    return response.data;
+    try {
+      const response = await axiosInstance.get(`/subjects/${subjectId}/documents`, { params });
+      console.log(`GET /subjects/${subjectId}/documents response:`, response.data);
+
+      // Backend returns { items: [...] }, normalize to { data: [...] }
+      if (response.data.items) {
+        return {
+          data: response.data.items,
+          meta: {
+            page: 1,
+            pageSize: response.data.items.length,
+            total: response.data.items.length,
+            totalPages: 1,
+          },
+        };
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error(`Failed to get documents for subject ${subjectId}:`, error);
+      // If 404 or no documents, return empty structure
+      if (error.response?.status === 404) {
+        return { data: [], meta: { page: 1, pageSize: 20, total: 0, totalPages: 0 } };
+      }
+      throw error;
+    }
   },
 
   /**
@@ -33,6 +67,7 @@ export const documentsService = {
 
   /**
    * Create new document
+   * This endpoint is NOT used for file upload
    */
   createDocument: async (documentData) => {
     const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.DOCUMENTS.CREATE, documentData);
@@ -41,13 +76,30 @@ export const documentsService = {
 
   /**
    * Upload document file
+   * According to API spec: POST /documents with multipart/form-data
+   * This creates a new document with file upload in one request
+   *
+   * File limits:
+   * - Max size: 20MB
+   * - Formats: .pdf, .docx, .txt
+   *
+   * Process:
+   * 1. File uploaded to storage
+   * 2. Text extraction (async)
+   * 3. AI summary generation (async)
+   * 4. Status updates: Uploading → Processing → Completed/Error
+   *
+   * @param {File} file - Document file
+   * @param {string} subjectId - Subject ID
+   * @param {Function} onUploadProgress - Progress callback
+   * @returns {Promise<Document>} Created document with status "Uploading"
    */
   uploadDocument: async (file, subjectId, onUploadProgress) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("subjectId", subjectId);
 
-    const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.DOCUMENTS.UPLOAD, formData, {
+    const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.DOCUMENTS.CREATE, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -57,11 +109,29 @@ export const documentsService = {
   },
 
   /**
-   * Get document summary
+   * Delete document
    * @param {string} id - Document ID
    */
   deleteDocument: async (id) => {
     const response = await axiosInstance.delete(API_CONFIG.ENDPOINTS.DOCUMENTS.DELETE(id));
+    return response.data;
+  },
+
+  /**
+   * Get document summary
+   * According to API spec: GET /documents/{id}/summary
+   *
+   * Returns:
+   * - summaryShort: Short summary (3-5 sentences)
+   * - summaryFull: Full summary
+   * - summaryUpdatedAt: When summary was last updated
+   * - tableOfContents: Array of TOC items
+   *
+   * @param {string} id - Document ID
+   * @returns {Promise<Object>} Document summary
+   */
+  getDocumentSummary: async (id) => {
+    const response = await axiosInstance.get(API_CONFIG.ENDPOINTS.DOCUMENTS.GET_SUMMARY(id));
     return response.data;
   },
 };

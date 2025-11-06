@@ -107,6 +107,21 @@
   justify-content: center;
 }
 
+.resend-section {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  border: 1px dashed var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  text-align: center;
+}
+
+.resend-text {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
 /* Button theme overrides */
 .verify-root .btn-primary {
   background: linear-gradient(135deg, var(--btn-accent-start) 0%, var(--btn-accent-end) 100%);

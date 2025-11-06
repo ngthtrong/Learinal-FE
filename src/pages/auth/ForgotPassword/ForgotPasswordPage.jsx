@@ -5,8 +5,8 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Input } from "@components/common";
-import { isValidEmail } from "@utils/validators";
+import { Button, Input, useToast } from "@components/common";
+import { isValidEmail, getErrorMessage } from "@utils";
 import { authService } from "@services/api";
 import "./ForgotPasswordPage.css";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
@@ -15,8 +15,11 @@ import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [rateLimitInfo, setRateLimitInfo] = useState(null);
+  const toast = useToast();
+
   const isDark = useMemo(() => {
     try {
       return (
@@ -55,7 +58,8 @@ const ForgotPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
+    setSuccess(false);
+    setRateLimitInfo(null);
 
     if (!email) {
       setError("Email là bắt buộc");
@@ -69,9 +73,35 @@ const ForgotPasswordPage = () => {
     setLoading(true);
     try {
       await authService.forgotPassword(email);
-      setSuccess("Đã gửi email đặt lại mật khẩu (nếu email tồn tại)");
+      setSuccess(true);
+      toast.showSuccess("Đã gửi email đặt lại mật khẩu (nếu email tồn tại)");
+
+      // Clear rate limit info on success
+      setRateLimitInfo(null);
     } catch (err) {
-      setError(err?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại");
+      // Check for rate limit error (429)
+      if (err?.response?.status === 429) {
+        const retryAfter = err?.response?.headers?.["retry-after"];
+        const remainingRequests = err?.response?.headers?.["x-ratelimit-remaining"];
+        const limit = err?.response?.headers?.["x-ratelimit-limit"];
+
+        setRateLimitInfo({
+          retryAfter: retryAfter ? parseInt(retryAfter) : null,
+          remaining: remainingRequests !== undefined ? parseInt(remainingRequests) : null,
+          limit: limit ? parseInt(limit) : 5,
+        });
+
+        const errorMsg = retryAfter
+          ? `Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau ${retryAfter} giây.`
+          : "Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau.";
+
+        setError(errorMsg);
+        toast.showWarning(errorMsg);
+      } else {
+        const errorMsg = getErrorMessage(err);
+        setError(errorMsg);
+        toast.showError(errorMsg);
+      }
     } finally {
       setLoading(false);
     }
@@ -97,6 +127,19 @@ const ForgotPasswordPage = () => {
           <form onSubmit={handleSubmit} className="forgot-form">
             {error && <div className="alert alert-error">{error}</div>}
             {success && <div className="alert alert-success">{success}</div>}
+
+            {rateLimitInfo && rateLimitInfo.limit && (
+              <div className="rate-limit-info">
+                <div className="rate-limit-message">
+                  Giới hạn: {rateLimitInfo.limit} yêu cầu / 15 phút
+                </div>
+                {rateLimitInfo.remaining !== null && (
+                  <div className="rate-limit-remaining">
+                    Còn lại: <strong>{rateLimitInfo.remaining}</strong> yêu cầu
+                  </div>
+                )}
+              </div>
+            )}
 
             <Input
               label="Email"

@@ -10,8 +10,7 @@ import { API_CONFIG } from "../../config/api.config";
  * Generate random string for PKCE
  */
 const generateRandomString = (length) => {
-  const charset =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
   let result = "";
   const randomValues = new Uint8Array(length);
   crypto.getRandomValues(randomValues);
@@ -78,11 +77,24 @@ export const oauthService = {
    */
   initiateGoogleLogin: async () => {
     try {
+      // Clean up any previous OAuth state
+      sessionStorage.removeItem("oauth_state");
+      sessionStorage.removeItem("oauth_code_verifier");
+      sessionStorage.removeItem("oauth_processed_code");
+
       // Get OAuth config from backend
       const config = await oauthService.getConfig();
 
+      if (!config || !config.clientId || !config.redirectUri || !config.authEndpoint) {
+        throw new Error("Invalid OAuth configuration from server");
+      }
+
       // Get OAuth state from backend
       const stateData = await oauthService.getState();
+
+      if (!stateData || !stateData.state) {
+        throw new Error("Failed to generate OAuth state");
+      }
 
       // Generate PKCE if required
       let pkceParams = {};
@@ -106,8 +118,10 @@ export const oauthService = {
         client_id: config.clientId,
         redirect_uri: config.redirectUri,
         response_type: "code",
-        scope: config.scope,
+        scope: config.scope || "openid email profile",
         state: stateData.state,
+        access_type: "offline", // Request refresh token
+        prompt: "select_account", // Always show account selection
         ...pkceParams,
       });
 
@@ -119,7 +133,16 @@ export const oauthService = {
       return { success: true };
     } catch (error) {
       console.error("Failed to initiate Google login:", error);
-      return { success: false, error: error.message };
+
+      // Clean up on error
+      sessionStorage.removeItem("oauth_state");
+      sessionStorage.removeItem("oauth_code_verifier");
+
+      return {
+        success: false,
+        error:
+          error.response?.data?.message || error.message || "Không thể khởi tạo đăng nhập Google",
+      };
     }
   },
 
@@ -128,22 +151,55 @@ export const oauthService = {
    */
   handleCallback: async (code, state) => {
     try {
+      // Validate inputs
+      if (!code) {
+        throw new Error("Authorization code is required");
+      }
+
+      if (!state) {
+        throw new Error("State parameter is required");
+      }
+
       // Verify state matches
       const savedState = sessionStorage.getItem("oauth_state");
 
+      if (!savedState) {
+        throw new Error("No saved OAuth state found. Please try logging in again.");
+      }
+
       if (state !== savedState) {
-        throw new Error("State mismatch - possible CSRF attack");
+        throw new Error("State mismatch - possible CSRF attack detected");
       }
 
       // Get code verifier if PKCE was used
       const codeVerifier = sessionStorage.getItem("oauth_code_verifier");
 
-      // Exchange code for tokens
-      const response = await axiosInstance.post("/auth/exchange", {
+      // Build request payload
+      const payload = {
         code,
-        state, // Send state so backend can verify against cookie
-        codeVerifier,
-      });
+        state,
+      };
+
+      // Only include codeVerifier if it exists
+      if (codeVerifier) {
+        payload.codeVerifier = codeVerifier;
+      }
+
+      // Exchange code for tokens
+      const response = await axiosInstance.post("/auth/exchange", payload);
+
+      // Validate response
+      if (!response.data) {
+        throw new Error("Empty response from server");
+      }
+
+      if (!response.data.accessToken) {
+        throw new Error("No access token received from server");
+      }
+
+      if (!response.data.user) {
+        throw new Error("No user data received from server");
+      }
 
       // Clean up
       sessionStorage.removeItem("oauth_state");
@@ -152,7 +208,21 @@ export const oauthService = {
       return response.data;
     } catch (error) {
       console.error("OAuth callback failed:", error);
-      throw error;
+
+      // Clean up on error
+      sessionStorage.removeItem("oauth_state");
+      sessionStorage.removeItem("oauth_code_verifier");
+
+      // Re-throw with better error message
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else if (error.response?.status === 400) {
+        throw new Error("Mã xác thực không hợp lệ hoặc đã hết hạn");
+      } else if (error.response?.status === 401) {
+        throw new Error("Xác thực thất bại");
+      } else {
+        throw error;
+      }
     }
   },
 };

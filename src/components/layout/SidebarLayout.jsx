@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import "./Sidebar.css";
 import HomeIcon from "@/components/icons/HomeIcon";
-import UploadIcon from "@/components/icons/UploadIcon";
 import QuizIcon from "@/components/icons/QuizIcon";
 import GlobeIcon from "@/components/icons/GlobeIcon";
 import SubjectsIcon from "@/components/icons/SubjectsIcon";
@@ -68,13 +67,6 @@ const SidebarLayout = ({ children }) => {
       label: "Subjects",
       to: "/subjects",
       icon: SubjectsIcon,
-      roles: ["Learner", "Educator", "Admin"],
-    },
-    {
-      key: "upload",
-      label: "Upload",
-      to: "/documents/upload",
-      icon: UploadIcon,
       roles: ["Learner", "Educator", "Admin"],
     },
     {

@@ -18,7 +18,6 @@ import {
   ResetPasswordPage,
   VerifyEmailPage,
   LearnerHomePage,
-  DocumentUploadPage,
   DocumentListPage,
   DocumentDetailPage,
   QuizListPage,
@@ -27,8 +26,13 @@ import {
   ProfileEditPage,
   SubjectListPage,
   SubjectDetailPage,
+  SubjectCreatePage,
   SubscriptionPlansPage,
   MySubscriptionPage,
+  QuestionSetDetailPage,
+  QuizStartPage,
+  QuizTakingPage,
+  QuizResultPage,
 } from "./pages";
 
 // Styles
@@ -65,16 +69,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/documents/upload"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <DocumentUploadPage />
-                </TopbarLayout>
               </ProtectedRoute>
             }
           />
@@ -118,16 +112,6 @@ function App() {
               <ProtectedRoute>
                 <TopbarLayout>
                   <PublicSetsPage />
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/subjects"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SubjectListPage />
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -183,6 +167,18 @@ function App() {
             }
           />
           <Route
+            path="/subjects/create"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <SubjectCreatePage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/subjects/:id"
             element={
               <ProtectedRoute>
@@ -194,6 +190,55 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Quiz routes */}
+          <Route
+            path="/question-sets/:id"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <QuestionSetDetailPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz/start/:id"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <QuizStartPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz/take/:attemptId"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <QuizTakingPage />
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz/result/:attemptId"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <QuizResultPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/subscriptions/plans"
             element={
@@ -220,7 +265,7 @@ function App() {
           />
 
           {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
 
           {/* 404 - Not found */}
           <Route path="*" element={<Navigate to="/login" replace />} />

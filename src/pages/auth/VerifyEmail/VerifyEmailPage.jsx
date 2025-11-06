@@ -19,6 +19,10 @@ const VerifyEmailPage = () => {
   const [status, setStatus] = useState("pending"); // pending | success | error
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [resending, setResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [email, setEmail] = useState("");
+
   const isDark = useMemo(() => {
     try {
       return (
@@ -57,6 +61,12 @@ const VerifyEmailPage = () => {
   // Handle verification on mount
   useEffect(() => {
     const token = searchParams.get("token");
+    const emailParam = searchParams.get("email");
+
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+
     if (!token) {
       setStatus("error");
       setMessage("Thiếu token. Vui lòng mở lại liên kết trong email.");
@@ -78,6 +88,36 @@ const VerifyEmailPage = () => {
       }
     })();
   }, [navigate, searchParams]);
+
+  // Countdown timer for resend button
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setTimeout(() => {
+        setResendCooldown(resendCooldown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendCooldown]);
+
+  const handleResendEmail = async () => {
+    if (!email) {
+      setMessage("Không tìm thấy email. Vui lòng đăng ký lại.");
+      return;
+    }
+
+    setResending(true);
+    try {
+      await authService.resendVerification(email);
+      setMessage("Email xác thực đã được gửi lại. Vui lòng kiểm tra hộp thư.");
+      setStatus("info");
+      setResendCooldown(60); // 60 seconds cooldown
+    } catch (err) {
+      const msg = err?.response?.data?.message || "Không thể gửi lại email. Vui lòng thử lại.";
+      setMessage(msg);
+    } finally {
+      setResending(false);
+    }
+  };
 
   return (
     <div className="verify-root">
@@ -102,6 +142,21 @@ const VerifyEmailPage = () => {
               <div className="alert alert-success">{message}</div>
             )}
             {!loading && status === "error" && <div className="alert alert-error">{message}</div>}
+            {!loading && status === "info" && <div className="alert alert-info">{message}</div>}
+
+            {!loading && status === "error" && email && (
+              <div className="resend-section">
+                <p className="resend-text">Không nhận được email?</p>
+                <Button
+                  onClick={handleResendEmail}
+                  variant="outline"
+                  disabled={resending || resendCooldown > 0}
+                  loading={resending}
+                >
+                  {resendCooldown > 0 ? `Gửi lại (${resendCooldown}s)` : "Gửi lại email xác thực"}
+                </Button>
+              </div>
+            )}
 
             {!loading && status === "error" && (
               <div className="actions">

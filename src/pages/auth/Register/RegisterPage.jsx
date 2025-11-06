@@ -6,8 +6,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
-import { Button, Input } from "@components/common";
-import { isValidEmail, isValidPassword } from "@utils/validators";
+import { Button, Input, PasswordStrengthIndicator, useToast } from "@components/common";
+import { isValidEmail, isValidPassword, getErrorMessage } from "@utils";
 import "./RegisterPage.css";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
 import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
@@ -15,6 +15,7 @@ import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
 const RegisterPage = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
+  const toast = useToast();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -25,8 +26,6 @@ const RegisterPage = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const isDark = useMemo(() => {
     try {
       return (
@@ -108,8 +107,6 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
 
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
@@ -125,15 +122,16 @@ const RegisterPage = () => {
       const result = await register(userData);
 
       if (result.success) {
-        setSuccessMessage("Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
+        toast.showSuccess("Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
         setTimeout(() => {
           navigate("/login");
         }, 3000);
       } else {
-        setErrorMessage(result.error || "Đăng ký thất bại");
+        toast.showError(result.error || "Đăng ký thất bại");
       }
     } catch (err) {
-      setErrorMessage("Có lỗi xảy ra. Vui lòng thử lại.");
+      const errorMsg = getErrorMessage(err);
+      toast.showError(errorMsg);
       console.error("Register error:", err);
     } finally {
       setLoading(false);
@@ -158,10 +156,6 @@ const RegisterPage = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="register-form">
-            {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
-
-            {successMessage && <div className="alert alert-success">{successMessage}</div>}
-
             <Input
               label="Họ và tên"
               type="text"
@@ -186,16 +180,19 @@ const RegisterPage = () => {
 
             {/** Vai trò mặc định là Học viên (Learner). Ẩn lựa chọn vai trò trên UI. */}
 
-            <Input
-              label="Mật khẩu"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              error={errors.password}
-              placeholder="••••••••"
-              required
-            />
+            <div>
+              <Input
+                label="Mật khẩu"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                error={errors.password}
+                placeholder="••••••••"
+                required
+              />
+              <PasswordStrengthIndicator password={formData.password} />
+            </div>
 
             <Input
               label="Xác nhận mật khẩu"

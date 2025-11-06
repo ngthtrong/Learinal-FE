@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import { Modal } from "@/components/common";
 import { APP_CONFIG } from "@/config/app.config";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
 import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
@@ -11,6 +12,8 @@ const Topbar = ({ theme = "light" }) => {
   const { user, logout } = useAuth();
   const role = user?.role || "Learner";
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const menuRef = useRef(null);
   const [currentTheme, setCurrentTheme] = useState(() => {
     try {
@@ -35,8 +38,21 @@ const Topbar = ({ theme = "light" }) => {
   const visible = items.filter((it) => it.roles.includes(role));
 
   const handleLogout = async () => {
-    await logout();
-    navigate("/login", { replace: true });
+    setLoggingOut(true);
+    try {
+      await logout();
+      setShowLogoutModal(false);
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setLoggingOut(false);
+    }
+  };
+
+  const openLogoutModal = () => {
+    setMenuOpen(false);
+    setShowLogoutModal(true);
   };
 
   // Toggle dark/light mode: persist to localStorage and update <html data-theme>
@@ -198,20 +214,30 @@ const Topbar = ({ theme = "light" }) => {
                 Liên hệ hỗ trợ
               </a>
               <div className="tb-menu-sep" />
-              <button
-                className="tb-menu-item danger"
-                role="menuitem"
-                onClick={() => {
-                  setMenuOpen(false);
-                  handleLogout();
-                }}
-              >
+              <button className="tb-menu-item danger" role="menuitem" onClick={openLogoutModal}>
                 Đăng xuất
               </button>
             </div>
           )}
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        title="Xác nhận đăng xuất"
+        confirmText="Đăng xuất"
+        cancelText="Hủy"
+        onConfirm={handleLogout}
+        variant="danger"
+        loading={loggingOut}
+      >
+        <p>Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?</p>
+        <p style={{ marginTop: "0.5rem", color: "var(--text-muted)", fontSize: "0.875rem" }}>
+          Bạn sẽ cần đăng nhập lại để tiếp tục sử dụng Learinal.
+        </p>
+      </Modal>
     </header>
   );
 };

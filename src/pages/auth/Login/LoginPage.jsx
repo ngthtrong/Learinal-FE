@@ -6,7 +6,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
-import { Button, Input } from "@components/common";
+import { Button, Input, useToast } from "@components/common";
+import { getErrorMessage } from "@utils/errorHandler";
 // Theme is now global via <html data-theme>; no per-page state
 import { oauthService } from "@services/api";
 import { isValidEmail } from "@utils/validators";
@@ -17,15 +18,16 @@ import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const toast = useToast();
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const isDark = useMemo(() => {
@@ -35,6 +37,14 @@ const LoginPage = () => {
       );
     } catch {
       return false;
+    }
+  }, []);
+
+  // Load remembered email on mount
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+      setFormData((prev) => ({ ...prev, email: rememberedEmail, rememberMe: true }));
     }
   }, []);
 
@@ -73,10 +83,10 @@ const LoginPage = () => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
     if (errors[name]) {
       setErrors((prev) => ({
@@ -104,7 +114,6 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
 
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
@@ -118,13 +127,22 @@ const LoginPage = () => {
       const result = await login(formData.email, formData.password);
 
       if (result.success) {
+        // Handle Remember Me
+        if (formData.rememberMe) {
+          localStorage.setItem("rememberedEmail", formData.email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
+
+        toast.showSuccess("Đăng nhập thành công!");
         const next = result.user?.role === "Learner" ? "/home" : "/dashboard";
         navigate(next);
       } else {
-        setErrorMessage(result.error || "Đăng nhập thất bại");
+        toast.showError(result.error || "Đăng nhập thất bại");
       }
     } catch (err) {
-      setErrorMessage("Có lỗi xảy ra. Vui lòng thử lại.");
+      const errorMsg = getErrorMessage(err);
+      toast.showError(errorMsg);
       console.error("Login error:", err);
     } finally {
       setLoading(false);
@@ -133,19 +151,19 @@ const LoginPage = () => {
 
   const handleGoogleLogin = async () => {
     setGoogleLoading(true);
-    setErrorMessage("");
 
     try {
       const result = await oauthService.initiateGoogleLogin();
 
       if (!result.success) {
-        setErrorMessage(result.error || "Không thể kết nối với Google");
+        toast.showError(result.error || "Không thể kết nối với Google");
         setGoogleLoading(false);
       }
       // If successful, redirect happens via OAuth
     } catch (error) {
       console.error("Google login error:", error);
-      setErrorMessage("Có lỗi xảy ra khi đăng nhập với Google");
+      const errorMsg = getErrorMessage(error);
+      toast.showError(errorMsg);
       setGoogleLoading(false);
     }
   };
@@ -168,8 +186,6 @@ const LoginPage = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
-            {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
-
             <Input
               label="Email"
               type="email"
@@ -192,7 +208,18 @@ const LoginPage = () => {
               required
             />
 
-            <div className="form-footer">
+            <div className="form-options">
+              <label className="remember-me-label">
+                <input
+                  type="checkbox"
+                  name="rememberMe"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                  className="remember-me-checkbox"
+                />
+                <span>Ghi nhớ đăng nhập</span>
+              </label>
+
               <Link to="/forgot-password" className="forgot-link">
                 Quên mật khẩu?
               </Link>

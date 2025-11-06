@@ -5,8 +5,8 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { Button, Input } from "@components/common";
-import { isValidPassword } from "@utils/validators";
+import { Button, Input, PasswordStrengthIndicator, useToast } from "@components/common";
+import { isValidPassword, getErrorMessage } from "@utils";
 import { authService } from "@services/api";
 import "./ResetPasswordPage.css";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
@@ -15,11 +15,11 @@ import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const toast = useToast();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const isDark = useMemo(() => {
     try {
@@ -59,11 +59,12 @@ const ResetPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
 
     const token = searchParams.get("token");
     if (!token) {
-      setError("Thiếu token. Vui lòng mở lại liên kết trong email.");
+      const msg = "Thiếu token. Vui lòng mở lại liên kết trong email.";
+      setError(msg);
+      toast.showError(msg);
       return;
     }
 
@@ -83,10 +84,12 @@ const ResetPasswordPage = () => {
     setLoading(true);
     try {
       await authService.resetPassword(token, password);
-      setSuccess("Đặt lại mật khẩu thành công. Đang chuyển về trang đăng nhập...");
+      toast.showSuccess("Đặt lại mật khẩu thành công!");
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      setError(err?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại");
+      const errorMsg = getErrorMessage(err);
+      setError(errorMsg);
+      toast.showError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -111,7 +114,6 @@ const ResetPasswordPage = () => {
 
           <form onSubmit={handleSubmit} className="reset-form">
             {error && <div className="alert alert-error">{error}</div>}
-            {success && <div className="alert alert-success">{success}</div>}
 
             <Input
               label="Mật khẩu mới"
@@ -122,6 +124,8 @@ const ResetPasswordPage = () => {
               placeholder="••••••••"
               required
             />
+
+            <PasswordStrengthIndicator password={password} />
 
             <Input
               label="Xác nhận mật khẩu"
