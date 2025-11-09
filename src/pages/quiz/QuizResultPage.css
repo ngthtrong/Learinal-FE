@@ -187,6 +187,10 @@
   border-left-color: var(--color-error);
 }
 
+.question-item.unanswered {
+  border-left-color: var(--color-border);
+}
+
 .question-item-header {
   display: flex;
   justify-content: space-between;
@@ -215,6 +219,11 @@
 .result-badge.incorrect {
   background: var(--color-error-bg, #fee);
   color: var(--color-error);
+}
+
+.result-badge.unanswered {
+  background: var(--color-background);
+  color: var(--color-text-secondary);
 }
 
 .question-text {
@@ -276,6 +285,12 @@
   color: var(--color-error);
   font-weight: 600;
   font-size: 0.875rem;
+}
+
+.unanswered-message {
+  margin-top: 0.75rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
 }
 
 /* Explanation */
