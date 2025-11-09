@@ -8,8 +8,6 @@ import { useParams, useNavigate } from "react-router";
 import Button from "@/components/common/Button";
 import { quizAttemptsService, questionSetsService } from "@/services/api";
 import { getErrorMessage } from "@/utils/errorHandler";
-import "./QuizResultPage.css";
-
 function QuizResultPage() {
   const { attemptId } = useParams();
   const navigate = useNavigate();

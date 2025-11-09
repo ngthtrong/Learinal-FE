@@ -36,8 +36,6 @@ import {
 } from "./pages";
 
 // Styles
-import "./styles/global.css";
-
 function App() {
   return (
     <AuthProvider>

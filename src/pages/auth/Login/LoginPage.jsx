@@ -11,7 +11,6 @@ import { getErrorMessage } from "@utils/errorHandler";
 // Theme is now global via <html data-theme>; no per-page state
 import { oauthService } from "@services/api";
 import { isValidEmail } from "@utils/validators";
-import "./LoginPage.css";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
 import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
 
@@ -169,23 +168,26 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-root">
-      <div className="login-page">
-        <div className="login-card card">
-          <header className="login-brand">
-            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="brand-logo" />
-            <div className="brand-title">
-              <span className="brand-le">Lear</span>
-              <span className="brand-inal">inal</span>
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-2xl shadow-large p-8">
+          {/* Brand Header */}
+          <header className="flex flex-col items-center mb-8">
+            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="h-16 w-auto mb-3" />
+            <div className="text-2xl font-bold">
+              <span className="text-primary-600">Lear</span>
+              <span className="text-gray-800">inal</span>
             </div>
           </header>
 
-          <div className="login-header">
-            <h1>Đăng nhập</h1>
-            <p className="muted">Truy cập tài khoản Learinal của bạn</p>
+          {/* Page Header */}
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Đăng nhập</h1>
+            <p className="text-gray-600">Truy cập tài khoản Learinal của bạn</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="login-form">
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="Email"
               type="email"
@@ -208,37 +210,49 @@ const LoginPage = () => {
               required
             />
 
-            <div className="form-options">
-              <label className="remember-me-label">
+            {/* Form Options */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   name="rememberMe"
                   checked={formData.rememberMe}
                   onChange={handleChange}
-                  className="remember-me-checkbox"
+                  className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                 />
-                <span>Ghi nhớ đăng nhập</span>
+                <span className="text-sm text-gray-700">Ghi nhớ đăng nhập</span>
               </label>
 
-              <Link to="/forgot-password" className="forgot-link">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              >
                 Quên mật khẩu?
               </Link>
             </div>
 
+            {/* Submit Button */}
             <Button
               type="submit"
               variant="primary"
               size="large"
               loading={loading}
-              className="login-button"
+              className="w-full"
             >
               Đăng nhập
             </Button>
 
-            <div className="divider">
-              <span>hoặc</span>
+            {/* Divider */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">hoặc</span>
+              </div>
             </div>
 
+            {/* Google Login */}
             <Button
               type="button"
               variant="outline"
@@ -246,14 +260,24 @@ const LoginPage = () => {
               onClick={handleGoogleLogin}
               loading={googleLoading}
               disabled={googleLoading}
-              className="google-button"
+              className="w-full"
             >
-              {!googleLoading && <img src="https://www.google.com/favicon.ico" alt="Google" />}
+              {!googleLoading && (
+                <img
+                  src="https://www.google.com/favicon.ico"
+                  alt="Google"
+                  className="w-5 h-5 mr-2"
+                />
+              )}
               Đăng nhập với Google
             </Button>
 
-            <p className="signup-link">
-              Chưa có tài khoản? <Link to="/register">Đăng ký ngay</Link>
+            {/* Signup Link */}
+            <p className="text-center text-sm text-gray-600 mt-6">
+              Chưa có tài khoản?{" "}
+              <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+                Đăng ký ngay
+              </Link>
             </p>
           </form>
         </div>

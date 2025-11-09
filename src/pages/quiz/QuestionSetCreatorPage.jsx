@@ -8,8 +8,6 @@ import { useParams, useNavigate } from "react-router";
 import Button from "@/components/common/Button";
 import Modal from "@/components/common/Modal";
 import { questionSetsService, subjectsService } from "@/services/api";
-import "./QuestionSetCreatorPage.css";
-
 function QuestionSetCreatorPage() {
   const { subjectId } = useParams();
   const navigate = useNavigate();

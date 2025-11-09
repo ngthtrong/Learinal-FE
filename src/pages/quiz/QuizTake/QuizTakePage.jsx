@@ -3,8 +3,6 @@
  * Take a quiz with timer and question navigation
  */
 
-import "./QuizTakePage.css";
-
 function QuizTakePage() {
   return (
     <div className="quiz-take-page">

@@ -6,7 +6,6 @@
 import PropTypes from "prop-types";
 import Button from "@/components/common/Button";
 import { formatDate } from "@/utils/formatters";
-import "./DocumentCard.css";
 
 const DOCUMENT_STATUS = {
   UPLOADING: "Uploading",
@@ -55,60 +54,77 @@ function DocumentCard({ document, onView, onDelete, onGenerateSummary }) {
     }
   };
 
+  const statusColorMap = {
+    Uploading: "bg-blue-50 text-blue-600 border-blue-200",
+    Processing: "bg-amber-50 text-amber-600 border-amber-200",
+    Completed: "bg-green-50 text-green-600 border-green-200",
+    Error: "bg-red-50 text-red-600 border-red-200",
+  };
+
   return (
-    <div className="document-card" onClick={handleCardClick}>
-      <div className="document-icon">{getFileIcon(document.originalFileName)}</div>
+    <div
+      className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-medium transition-all cursor-pointer"
+      onClick={handleCardClick}
+    >
+      <div className="flex items-start gap-4">
+        <div className="text-4xl">{getFileIcon(document.originalFileName)}</div>
 
-      <div className="document-info">
-        <h3 className="document-title">{document.title || document.originalFileName}</h3>
-        <p className="document-meta">
-          {formatFileSize(document.fileSize)} •{" "}
-          {formatDate(document.uploadedAt || document.createdAt)}
-        </p>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-semibold text-gray-900 truncate mb-1">
+            {document.title || document.originalFileName}
+          </h3>
+          <p className="text-sm text-gray-500 mb-2">
+            {formatFileSize(document.fileSize)} •{" "}
+            {formatDate(document.uploadedAt || document.createdAt)}
+          </p>
 
-        {document.summary && (
-          <p className="document-summary">{document.summary.substring(0, 100)}...</p>
-        )}
-      </div>
-
-      <div className="document-status">
-        <span
-          className="status-badge"
-          style={{ backgroundColor: `${statusConfig.color}20`, color: statusConfig.color }}
-        >
-          {statusConfig.icon} {statusConfig.label}
-        </span>
-      </div>
-
-      {document.status === DOCUMENT_STATUS.COMPLETED && (
-        <div className="document-actions">
-          {!document.summary && onGenerateSummary && (
-            <Button
-              variant="outline"
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                onGenerateSummary();
-              }}
-            >
-              🤖 Tạo tóm tắt
-            </Button>
+          {document.summary && (
+            <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+              {document.summary.substring(0, 100)}...
+            </p>
           )}
 
-          {onDelete && (
-            <button
-              className="document-delete-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete();
-              }}
-              aria-label="Xóa tài liệu"
+          <div className="mb-3">
+            <span
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${
+                statusColorMap[document.status] || statusColorMap.Completed
+              }`}
             >
-              🗑️
-            </button>
+              {statusConfig.icon} {statusConfig.label}
+            </span>
+          </div>
+
+          {document.status === DOCUMENT_STATUS.COMPLETED && (
+            <div className="flex items-center gap-2">
+              {!document.summary && onGenerateSummary && (
+                <Button
+                  variant="outline"
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onGenerateSummary();
+                  }}
+                >
+                  🤖 Tạo tóm tắt
+                </Button>
+              )}
+
+              {onDelete && (
+                <button
+                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete();
+                  }}
+                  aria-label="Xóa tài liệu"
+                >
+                  🗑️
+                </button>
+              )}
+            </div>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

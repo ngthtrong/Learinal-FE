@@ -7,8 +7,6 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import subjectsService from "@/services/api/subjects.service";
 import Button from "@/components/common/Button";
-import "./DocumentListPage.css";
-
 function DocumentListPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -78,77 +76,106 @@ function DocumentListPage() {
 
   if (loading) {
     return (
-      <div className="document-list-page">
-        <div className="loading">Đang tải...</div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+          <p className="text-gray-600">Đang tải...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="document-list-page">
-        <div className="error-message">{error}</div>
-        <Button onClick={() => navigate("/subjects")}>Quay lại môn học</Button>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="text-6xl mb-4">⚠️</div>
+          <p className="text-error-600 text-lg font-medium">{error}</p>
+          <Button onClick={() => navigate("/subjects")}>Quay lại môn học</Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="document-list-page">
-      <div className="page-header">
-        <div className="header-left">
-          <Button variant="secondary" onClick={() => navigate("/subjects")}>
-            ← Quay lại
-          </Button>
-          <div className="header-title">
-            <h1>Tài liệu: {subject?.subjectName}</h1>
-            {subject?.description && <p className="subject-description">{subject.description}</p>}
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-8">
+          <div className="flex items-start gap-4">
+            <Button variant="secondary" onClick={() => navigate("/subjects")}>
+              ← Quay lại
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                📚 Tài liệu: {subject?.subjectName}
+              </h1>
+              {subject?.description && <p className="text-gray-600">{subject.description}</p>}
+            </div>
           </div>
+          <Button onClick={handleUploadDocument}>+ Tải lên tài liệu</Button>
         </div>
-        <Button onClick={handleUploadDocument}>+ Tải lên tài liệu</Button>
-      </div>
 
-      {documents.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon">📚</div>
-          <h3>Chưa có tài liệu nào</h3>
-          <p>Tải lên tài liệu đầu tiên để bắt đầu học tập</p>
-          <Button onClick={handleUploadDocument}>Tải lên tài liệu</Button>
-        </div>
-      ) : (
-        <div className="documents-grid">
-          {documents.map((doc) => {
-            const statusBadge = getStatusBadge(doc.status);
-            return (
-              <div key={doc.id} className="document-card">
-                <div className="document-icon">{getFileIcon(doc.fileType)}</div>
-                <div className="document-content">
-                  <h3 className="document-name">{doc.originalFileName}</h3>
-                  <div className="document-meta">
-                    <span className="file-size">{doc.fileSize} MB</span>
-                    <span className={`status-badge ${statusBadge.className}`}>
-                      {statusBadge.text}
-                    </span>
+        {documents.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-medium p-12 text-center">
+            <div className="text-6xl mb-4">📚</div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Chưa có tài liệu nào</h3>
+            <p className="text-gray-600 mb-6">Tải lên tài liệu đầu tiên để bắt đầu học tập</p>
+            <Button onClick={handleUploadDocument}>Tải lên tài liệu</Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {documents.map((doc) => {
+              const statusBadge = getStatusBadge(doc.status);
+              return (
+                <div
+                  key={doc.id}
+                  className="bg-white rounded-xl shadow-medium hover:shadow-large transition-shadow p-6"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="text-4xl">{getFileIcon(doc.fileType)}</div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 mb-2 truncate">
+                        {doc.originalFileName}
+                      </h3>
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-sm text-gray-600">{doc.fileSize} MB</span>
+                        <span
+                          className={`text-xs font-medium px-2 py-1 rounded-full ${
+                            doc.status === "Completed"
+                              ? "bg-success-100 text-success-700"
+                              : doc.status === "Processing"
+                              ? "bg-warning-100 text-warning-700"
+                              : doc.status === "Error"
+                              ? "bg-error-100 text-error-700"
+                              : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {statusBadge.text}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500">
+                        {new Date(doc.uploadedAt).toLocaleDateString("vi-VN")}
+                      </p>
+                    </div>
                   </div>
-                  <div className="document-date">
-                    {new Date(doc.uploadedAt).toLocaleDateString("vi-VN")}
+                  <div className="mt-4">
+                    <Button
+                      variant="secondary"
+                      size="small"
+                      onClick={() => handleViewDocument(doc.id)}
+                      disabled={doc.status !== "Completed"}
+                      className="w-full"
+                    >
+                      Chi tiết
+                    </Button>
                   </div>
                 </div>
-                <div className="document-actions">
-                  <Button
-                    variant="secondary"
-                    size="small"
-                    onClick={() => handleViewDocument(doc.id)}
-                    disabled={doc.status !== "Completed"}
-                  >
-                    Chi tiết
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

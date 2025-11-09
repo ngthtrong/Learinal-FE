@@ -5,7 +5,6 @@
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@contexts/AuthContext";
-import "./DashboardPage.css";
 
 const DashboardPage = () => {
   const { user, logout } = useAuth();
@@ -40,117 +39,140 @@ const DashboardPage = () => {
 
   if (loading) {
     return (
-      <div className="dashboard-page">
-        <div className="loading">Đang tải...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-lg text-gray-600">Đang tải...</div>
       </div>
     );
   }
 
   return (
-    <div className="dashboard-page">
-      <header className="dashboard-header">
-        <div className="header-content">
-          <h1>Learinal</h1>
-          <div className="header-actions">
-            <span className="user-greeting">Xin chào, {user?.fullName}</span>
-            <button onClick={handleLogout} className="btn-logout">
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-primary-600">Learinal</h1>
+          <div className="flex items-center gap-4">
+            <span className="text-gray-700">Xin chào, {user?.fullName}</span>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
+            >
               Đăng xuất
             </button>
           </div>
         </div>
       </header>
 
-      <main className="dashboard-main">
-        <div className="dashboard-container">
-          <div className="welcome-section">
-            <h2>Chào mừng trở lại! 👋</h2>
-            <p>Đây là dashboard của bạn. Hãy bắt đầu học tập ngay hôm nay!</p>
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        <div className="space-y-8">
+          {/* Welcome Section */}
+          <div className="bg-linear-to-r from-primary-500 to-secondary-500 rounded-2xl p-8 text-white shadow-large">
+            <h2 className="text-3xl font-bold mb-2">Chào mừng trở lại! 👋</h2>
+            <p className="text-lg opacity-90">
+              Đây là dashboard của bạn. Hãy bắt đầu học tập ngay hôm nay!
+            </p>
           </div>
 
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-icon" style={{ backgroundColor: "#dbeafe" }}>
-                📚
-              </div>
-              <div className="stat-content">
-                <h3>{stats?.documents || 0}</h3>
-                <p>Tài liệu</p>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon" style={{ backgroundColor: "#fef3c7" }}>
-                📝
-              </div>
-              <div className="stat-content">
-                <h3>{stats?.quizzes || 0}</h3>
-                <p>Bộ câu hỏi</p>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-white rounded-xl p-6 shadow-medium hover:shadow-large transition-shadow">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-2xl">
+                  📚
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-gray-900">{stats?.documents || 0}</h3>
+                  <p className="text-gray-600">Tài liệu</p>
+                </div>
               </div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-icon" style={{ backgroundColor: "#d1fae5" }}>
-                ✅
-              </div>
-              <div className="stat-content">
-                <h3>{stats?.completedQuizzes || 0}</h3>
-                <p>Hoàn thành</p>
+            <div className="bg-white rounded-xl p-6 shadow-medium hover:shadow-large transition-shadow">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center text-2xl">
+                  📝
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-gray-900">{stats?.quizzes || 0}</h3>
+                  <p className="text-gray-600">Bộ câu hỏi</p>
+                </div>
               </div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-icon" style={{ backgroundColor: "#fce7f3" }}>
-                🎯
+            <div className="bg-white rounded-xl p-6 shadow-medium hover:shadow-large transition-shadow">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center text-2xl">
+                  ✅
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-gray-900">
+                    {stats?.completedQuizzes || 0}
+                  </h3>
+                  <p className="text-gray-600">Hoàn thành</p>
+                </div>
               </div>
-              <div className="stat-content">
-                <h3>{stats?.avgScore || 0}%</h3>
-                <p>Điểm TB</p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-medium hover:shadow-large transition-shadow">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-2xl">
+                  🎯
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-gray-900">{stats?.avgScore || 0}%</h3>
+                  <p className="text-gray-600">Điểm TB</p>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="user-info-section">
-            <h3>Thông tin tài khoản</h3>
-            <div className="info-grid">
-              <div className="info-item">
-                <span className="info-label">Email:</span>
-                <span className="info-value">{user?.email}</span>
+          {/* User Info Section */}
+          <div className="bg-white rounded-xl p-6 shadow-medium">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Thông tin tài khoản</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex flex-col">
+                <span className="text-sm text-gray-500 mb-1">Email:</span>
+                <span className="text-gray-900 font-medium">{user?.email}</span>
               </div>
-              <div className="info-item">
-                <span className="info-label">Vai trò:</span>
-                <span className="info-value role-badge">{user?.role}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Trạng thái:</span>
-                <span className="info-value">
-                  {user?.isEmailVerified ? (
-                    <span className="status-verified">✓ Đã xác thực</span>
-                  ) : (
-                    <span className="status-unverified">⚠ Chưa xác thực</span>
-                  )}
+              <div className="flex flex-col">
+                <span className="text-sm text-gray-500 mb-1">Vai trò:</span>
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary-100 text-primary-700 font-medium text-sm w-fit">
+                  {user?.role}
                 </span>
               </div>
+              <div className="flex flex-col">
+                <span className="text-sm text-gray-500 mb-1">Trạng thái:</span>
+                {user?.isEmailVerified ? (
+                  <span className="inline-flex items-center gap-1 text-green-600 font-medium">
+                    ✓ Đã xác thực
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-amber-600 font-medium">
+                    ⚠ Chưa xác thực
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="quick-actions">
-            <h3>Hành động nhanh</h3>
-            <div className="actions-grid">
-              <button className="action-card">
-                <span className="action-icon">📤</span>
-                <span>Upload tài liệu</span>
+          {/* Quick Actions */}
+          <div className="bg-white rounded-xl p-6 shadow-medium">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Hành động nhanh</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <button className="flex flex-col items-center gap-2 p-4 rounded-lg border-2 border-gray-200 hover:border-primary-400 hover:bg-primary-50 transition-all">
+                <span className="text-3xl">📤</span>
+                <span className="text-sm font-medium text-gray-700">Upload tài liệu</span>
               </button>
-              <button className="action-card">
-                <span className="action-icon">❓</span>
-                <span>Tạo câu hỏi</span>
+              <button className="flex flex-col items-center gap-2 p-4 rounded-lg border-2 border-gray-200 hover:border-primary-400 hover:bg-primary-50 transition-all">
+                <span className="text-3xl">❓</span>
+                <span className="text-sm font-medium text-gray-700">Tạo câu hỏi</span>
               </button>
-              <button className="action-card">
-                <span className="action-icon">📊</span>
-                <span>Xem thống kê</span>
+              <button className="flex flex-col items-center gap-2 p-4 rounded-lg border-2 border-gray-200 hover:border-primary-400 hover:bg-primary-50 transition-all">
+                <span className="text-3xl">📊</span>
+                <span className="text-sm font-medium text-gray-700">Xem thống kê</span>
               </button>
-              <button className="action-card">
-                <span className="action-icon">⚙️</span>
-                <span>Cài đặt</span>
+              <button className="flex flex-col items-center gap-2 p-4 rounded-lg border-2 border-gray-200 hover:border-primary-400 hover:bg-primary-50 transition-all">
+                <span className="text-3xl">⚙️</span>
+                <span className="text-sm font-medium text-gray-700">Cài đặt</span>
               </button>
             </div>
           </div>

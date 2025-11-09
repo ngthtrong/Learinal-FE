@@ -15,7 +15,6 @@ import { DocumentUpload } from "@/components/documents";
 import { GenerateQuizModal } from "@/components/questionSets";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { formatDate } from "@/utils/formatters";
-import "./SubjectDetailPage.css";
 
 function SubjectDetailPage() {
   const { id } = useParams();

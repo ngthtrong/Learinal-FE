@@ -1,11 +1,10 @@
 /**
  * Toast Container Component
- * Manages multiple toast notifications
+ * Manages multiple toast notifications using Tailwind CSS
  */
 
 import { createContext, useContext, useState, useCallback } from "react";
 import Toast from "./Toast";
-import "./ToastContainer.css";
 
 const ToastContext = createContext(null);
 
@@ -70,15 +69,16 @@ export const ToastProvider = ({ children }) => {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="toast-container">
+      <div className="fixed top-4 right-4 z-9999 flex flex-col gap-3 pointer-events-none">
         {toasts.map((toast) => (
-          <Toast
-            key={toast.id}
-            message={toast.message}
-            type={toast.type}
-            duration={0} // Duration handled by container
-            onClose={() => removeToast(toast.id)}
-          />
+          <div key={toast.id} className="pointer-events-auto">
+            <Toast
+              message={toast.message}
+              type={toast.type}
+              duration={0} // Duration handled by container
+              onClose={() => removeToast(toast.id)}
+            />
+          </div>
         ))}
       </div>
     </ToastContext.Provider>

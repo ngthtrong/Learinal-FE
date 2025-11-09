@@ -1,11 +1,10 @@
 /**
  * Modal Component
- * Reusable modal dialog with overlay
+ * Reusable modal dialog with overlay using Tailwind CSS
  */
 
 import React, { useEffect } from "react";
 import { Button } from "@/components/common";
-import "./Modal.css";
 
 const Modal = ({
   isOpen,
@@ -52,23 +51,51 @@ const Modal = ({
     }
   };
 
+  // Size styles
+  const sizeStyles = {
+    small: "max-w-md",
+    medium: "max-w-lg",
+    large: "max-w-2xl",
+  };
+
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
-      <div className={`modal-container modal-${variant} modal-size-${size}`}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in"
+      onClick={handleOverlayClick}
+    >
+      <div
+        className={`
+        relative w-full ${sizeStyles[size] || sizeStyles.medium}
+        bg-white rounded-2xl shadow-large
+        animate-slide-up
+        max-h-[90vh] flex flex-col
+      `}
+      >
         {title && (
-          <div className="modal-header">
-            <h3 className="modal-title">{title}</h3>
-            <button className="modal-close" onClick={onClose} aria-label="Close">
-              ×
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+            <button
+              className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+              onClick={onClose}
+              aria-label="Close"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
             </button>
           </div>
         )}
 
-        <div className="modal-body">{children}</div>
+        <div className="px-6 py-4 overflow-y-auto flex-1">{children}</div>
 
         {onConfirm && (
-          <div className="modal-footer">
-            <Button variant="outline" onClick={onClose} disabled={loading}>
+          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+            <Button variant="secondary" onClick={onClose} disabled={loading}>
               {cancelText}
             </Button>
             <Button

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import "./Sidebar.css";
 import HomeIcon from "@/components/icons/HomeIcon";
 import QuizIcon from "@/components/icons/QuizIcon";
 import GlobeIcon from "@/components/icons/GlobeIcon";
@@ -89,9 +88,15 @@ const SidebarLayout = ({ children }) => {
   // Theme and logout controls have been moved to Topbar; keep theme state for logo only.
 
   return (
-    <div className={"app-with-sidebar" + (collapsed ? " is-collapsed" : "")}>
-      <aside className="side-nav card" ref={sideNavRef}>
-        <nav className="side-links">
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
+      <aside
+        ref={sideNavRef}
+        className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40 overflow-y-auto ${
+          collapsed ? "w-20" : "w-64"
+        }`}
+      >
+        <nav className="flex flex-col gap-1 p-3 pt-20">
           {visible.map((it) => {
             const Icon = it.icon;
             return (
@@ -99,20 +104,29 @@ const SidebarLayout = ({ children }) => {
                 key={it.key}
                 to={it.to}
                 title={it.label}
-                className={({ isActive }) => "side-link" + (isActive ? " active" : "")}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                    isActive
+                      ? "bg-primary-50 text-primary-700 font-medium"
+                      : "text-gray-700 hover:bg-gray-100"
+                  } ${collapsed ? "justify-center" : ""}`
+                }
               >
-                <span className="link-icon" aria-hidden="true">
+                <span className="text-xl" aria-hidden="true">
                   <Icon />
                 </span>
-                <span className="link-label">{it.label}</span>
+                {!collapsed && <span className="text-sm font-medium">{it.label}</span>}
               </NavLink>
             );
           })}
         </nav>
       </aside>
-      {/* Floating collapse button rendered OUTSIDE sidebar to bypass its stacking context */}
+
+      {/* Floating collapse button */}
       <button
-        className="side-collapse-fab"
+        className={`fixed top-24 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-all z-50 ${
+          collapsed ? "left-16" : "left-60"
+        }`}
         onClick={(e) => {
           e.stopPropagation();
           const next = !collapsed;
@@ -128,7 +142,11 @@ const SidebarLayout = ({ children }) => {
       >
         {collapsed ? "⟩" : "⟨"}
       </button>
-      <main className="app-content">{children}</main>
+
+      {/* Main content */}
+      <main className={`flex-1 transition-all duration-300 ${collapsed ? "ml-20" : "ml-64"} pt-16`}>
+        {children}
+      </main>
     </div>
   );
 };

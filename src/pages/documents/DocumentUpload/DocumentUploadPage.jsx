@@ -8,8 +8,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import documentsService from "@/services/api/documents.service";
 import subjectsService from "@/services/api/subjects.service";
 import Button from "@/components/common/Button";
-import "./DocumentUploadPage.css";
-
 function DocumentUploadPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -77,14 +75,10 @@ function DocumentUploadPage() {
       setError(null);
       setUploadProgress(0);
 
-      await documentsService.uploadDocument(
-        selectedFile,
-        selectedSubject,
-        (progressEvent) => {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          setUploadProgress(progress);
-        }
-      );
+      await documentsService.uploadDocument(selectedFile, selectedSubject, (progressEvent) => {
+        const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        setUploadProgress(progress);
+      });
 
       setSuccess(true);
       setSelectedFile(null);
@@ -107,7 +101,7 @@ function DocumentUploadPage() {
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
   };
 
   const getFileIcon = (fileName) => {
@@ -121,29 +115,29 @@ function DocumentUploadPage() {
   };
 
   return (
-    <div className="document-upload-page">
-      <div className="upload-container">
-        <div className="upload-header">
-          <h1>Tải lên tài liệu</h1>
-          <p className="upload-description">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Tải lên tài liệu</h1>
+          <p className="text-gray-600">
             Tải lên tài liệu để hệ thống tự động trích xuất nội dung và tạo tóm tắt
           </p>
         </div>
 
         {success && (
-          <div className="success-message">
-            <div className="success-icon">✅</div>
-            <h3>Tải lên thành công!</h3>
-            <p>Tài liệu đang được xử lý. Đang chuyển hướng...</p>
+          <div className="bg-success-50 border border-success-200 rounded-xl p-8 text-center">
+            <div className="text-6xl mb-4">✅</div>
+            <h3 className="text-xl font-bold text-success-900 mb-2">Tải lên thành công!</h3>
+            <p className="text-success-700">Tài liệu đang được xử lý. Đang chuyển hướng...</p>
           </div>
         )}
 
         {!success && (
-          <form onSubmit={handleUpload} className="upload-form">
+          <form onSubmit={handleUpload} className="space-y-6">
             {/* Subject Selection */}
-            <div className="form-group">
-              <label htmlFor="subject">
-                Chọn môn học <span className="required">*</span>
+            <div>
+              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                Chọn môn học <span className="text-error-600">*</span>
               </label>
               <select
                 id="subject"
@@ -151,6 +145,7 @@ function DocumentUploadPage() {
                 onChange={(e) => setSelectedSubject(e.target.value)}
                 required
                 disabled={uploading}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
               >
                 <option value="">-- Chọn môn học --</option>
                 {subjects.map((subject) => (
@@ -162,38 +157,43 @@ function DocumentUploadPage() {
             </div>
 
             {/* File Upload */}
-            <div className="form-group">
-              <label htmlFor="file">
-                Chọn file <span className="required">*</span>
+            <div>
+              <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-2">
+                Chọn file <span className="text-error-600">*</span>
               </label>
-              <div className="file-input-wrapper">
+              <div className="relative">
                 <input
                   type="file"
                   id="file"
                   onChange={handleFileChange}
                   accept=".pdf,.docx,.txt"
                   disabled={uploading}
-                  className="file-input"
+                  className="hidden"
                 />
-                <label htmlFor="file" className="file-input-label">
-                  <span className="file-icon">📁</span>
-                  {selectedFile ? selectedFile.name : "Chọn file (.pdf, .docx, .txt)"}
+                <label
+                  htmlFor="file"
+                  className="flex items-center justify-center gap-3 w-full px-4 py-8 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-colors"
+                >
+                  <span className="text-4xl">📁</span>
+                  <span className="text-gray-600">
+                    {selectedFile ? selectedFile.name : "Chọn file (.pdf, .docx, .txt)"}
+                  </span>
                 </label>
               </div>
-              <p className="file-hint">Kích thước tối đa: 20MB</p>
+              <p className="mt-2 text-sm text-gray-500">Kích thước tối đa: 20MB</p>
             </div>
 
             {/* Selected File Preview */}
             {selectedFile && (
-              <div className="file-preview">
-                <div className="file-preview-icon">{getFileIcon(selectedFile.name)}</div>
-                <div className="file-preview-info">
-                  <p className="file-preview-name">{selectedFile.name}</p>
-                  <p className="file-preview-size">{formatFileSize(selectedFile.size)}</p>
+              <div className="flex items-center gap-4 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="text-4xl">{getFileIcon(selectedFile.name)}</div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">{selectedFile.name}</p>
+                  <p className="text-sm text-gray-500">{formatFileSize(selectedFile.size)}</p>
                 </div>
                 <button
                   type="button"
-                  className="file-remove-btn"
+                  className="text-gray-400 hover:text-error-600 transition-colors p-2"
                   onClick={() => setSelectedFile(null)}
                   disabled={uploading}
                 >
@@ -204,22 +204,28 @@ function DocumentUploadPage() {
 
             {/* Upload Progress */}
             {uploading && (
-              <div className="upload-progress">
-                <div className="progress-bar">
+              <div className="space-y-2">
+                <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className="progress-fill"
+                    className="h-full bg-primary-600 transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
-                <p className="progress-text">Đang tải lên... {uploadProgress}%</p>
+                <p className="text-center text-sm text-gray-600">
+                  Đang tải lên... {uploadProgress}%
+                </p>
               </div>
             )}
 
             {/* Error Message */}
-            {error && <div className="error-message">{error}</div>}
+            {error && (
+              <div className="bg-error-50 border border-error-200 text-error-800 px-4 py-3 rounded-lg">
+                {error}
+              </div>
+            )}
 
             {/* Actions */}
-            <div className="form-actions">
+            <div className="flex gap-4 justify-end">
               <Button
                 type="button"
                 variant="secondary"
@@ -228,7 +234,11 @@ function DocumentUploadPage() {
               >
                 Hủy
               </Button>
-              <Button type="submit" loading={uploading} disabled={!selectedFile || !selectedSubject}>
+              <Button
+                type="submit"
+                loading={uploading}
+                disabled={!selectedFile || !selectedSubject}
+              >
                 {uploading ? "Đang tải lên..." : "Tải lên"}
               </Button>
             </div>
@@ -236,13 +246,25 @@ function DocumentUploadPage() {
         )}
 
         {/* Info Section */}
-        <div className="upload-info">
-          <h3>📌 Lưu ý</h3>
-          <ul>
-            <li>Chỉ chấp nhận file định dạng: PDF, DOCX, TXT</li>
-            <li>Kích thước file tối đa: 20MB</li>
-            <li>Hệ thống sẽ tự động trích xuất nội dung từ tài liệu</li>
-            <li>Sau khi upload, tài liệu sẽ được xử lý và tạo tóm tắt tự động</li>
+        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+          <h3 className="text-lg font-bold text-blue-900 mb-4">📌 Lưu ý</h3>
+          <ul className="space-y-2 text-blue-800">
+            <li className="flex items-start gap-2">
+              <span className="mt-1">•</span>
+              <span>Chỉ chấp nhận file định dạng: PDF, DOCX, TXT</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1">•</span>
+              <span>Kích thước file tối đa: 20MB</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1">•</span>
+              <span>Hệ thống sẽ tự động trích xuất nội dung từ tài liệu</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1">•</span>
+              <span>Sau khi upload, tài liệu sẽ được xử lý và tạo tóm tắt tự động</span>
+            </li>
           </ul>
         </div>
       </div>

@@ -6,7 +6,6 @@
 import { useState, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 import Button from "@/components/common/Button";
-import "./DocumentUpload.css";
 
 const UPLOAD_CONSTRAINTS = {
   maxFileSize: 20 * 1024 * 1024, // 20MB
@@ -188,27 +187,33 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
   };
 
   return (
-    <div className="document-upload">
+    <div className="space-y-4">
       {/* Drop Zone */}
       <div
-        className={`drop-zone ${dragActive ? "drag-active" : ""} ${error ? "error" : ""}`}
+        className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
+          dragActive
+            ? "border-primary-500 bg-primary-50"
+            : error
+            ? "border-red-300 bg-red-50"
+            : "border-gray-300 hover:border-primary-400 bg-gray-50"
+        } ${uploading ? "pointer-events-none opacity-60" : ""}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
         onClick={() => !uploading && fileInputRef.current?.click()}
       >
-        <div className="drop-zone-content">
-          <div className="drop-icon">📁</div>
-          <p className="drop-text">
+        <div className="flex flex-col items-center">
+          <div className="text-6xl mb-4">📁</div>
+          <p className="text-lg font-medium text-gray-700 mb-2">
             {dragActive ? "Thả file vào đây" : "Kéo thả file vào đây hoặc click để chọn"}
           </p>
-          <p className="drop-hint">Hỗ trợ: PDF, DOCX, DOC, TXT | Tối đa: 20MB</p>
+          <p className="text-sm text-gray-500">Hỗ trợ: PDF, DOCX, DOC, TXT | Tối đa: 20MB</p>
         </div>
         <input
           ref={fileInputRef}
           type="file"
-          className="file-input"
+          className="hidden"
           accept={UPLOAD_CONSTRAINTS.allowedExtensions.join(",")}
           onChange={handleFileInputChange}
           disabled={uploading}
@@ -216,19 +221,28 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
       </div>
 
       {/* Error Message */}
-      {error && <div className="upload-error">{error}</div>}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600 flex items-center gap-2">
+          <span className="text-lg">⚠️</span>
+          {error}
+        </div>
+      )}
 
       {/* Selected File Preview */}
       {selectedFile && (
-        <div className="file-preview">
-          <div className="file-info">
-            <span className="file-icon">{getFileIcon(selectedFile)}</span>
-            <div className="file-details">
-              <p className="file-name">{selectedFile.name}</p>
-              <p className="file-size">{formatFileSize(selectedFile.size)}</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">{getFileIcon(selectedFile)}</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-gray-900 truncate">{selectedFile.name}</p>
+              <p className="text-sm text-gray-500">{formatFileSize(selectedFile.size)}</p>
             </div>
             {!uploading && (
-              <button className="remove-file-btn" onClick={handleRemoveFile} aria-label="Xóa file">
+              <button
+                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                onClick={handleRemoveFile}
+                aria-label="Xóa file"
+              >
                 ✕
               </button>
             )}
@@ -236,18 +250,21 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
 
           {/* Upload Progress */}
           {uploading && (
-            <div className="upload-progress">
-              <div className="progress-bar">
-                <div className="progress-fill" style={{ width: `${uploadProgress}%` }}></div>
+            <div className="space-y-2">
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary-600 transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
               </div>
-              <span className="progress-text">{uploadProgress}%</span>
+              <span className="text-sm font-medium text-gray-700">{uploadProgress}%</span>
             </div>
           )}
         </div>
       )}
 
       {/* Action Buttons */}
-      <div className="upload-actions">
+      <div className="flex justify-end gap-3">
         <Button variant="secondary" onClick={onCancel} disabled={uploading}>
           Hủy
         </Button>

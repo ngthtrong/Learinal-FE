@@ -10,8 +10,6 @@ import quizAttemptsService from "@/services/api/quizAttempts.service";
 import Button from "@/components/common/Button";
 import { useToast, Modal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
-import "./QuizTakingPage.css";
-
 function QuizTakingPage() {
   const { attemptId } = useParams();
   const location = useLocation();
@@ -238,10 +236,10 @@ function QuizTakingPage() {
 
   if (loading) {
     return (
-      <div className="quiz-taking-page">
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <p>Đang tải câu hỏi...</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+          <p className="text-gray-600">Đang tải câu hỏi...</p>
         </div>
       </div>
     );
@@ -249,9 +247,9 @@ function QuizTakingPage() {
 
   if (!questionSet || questions.length === 0) {
     return (
-      <div className="quiz-taking-page">
-        <div className="empty-state">
-          <h2>Không có câu hỏi</h2>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl font-bold text-gray-900">Không có câu hỏi</h2>
           <Button onClick={() => navigate("/question-sets")}>← Quay lại</Button>
         </div>
       </div>
@@ -263,129 +261,168 @@ function QuizTakingPage() {
   const isWarningTime = useTimer && timeRemaining !== null && timeRemaining <= 60;
 
   return (
-    <div className="quiz-taking-page">
+    <div className="min-h-screen bg-gray-50 pb-24">
       {/* Header - Fixed */}
-      <div className="quiz-header">
-        <div className="quiz-header-left">
-          <h1>{questionSet.title}</h1>
-          <div className="quiz-meta">
-            <span>Tổng số câu: {questions.length}</span>
-            <span>•</span>
-            <span>
-              Đã trả lời: {answeredCount}/{questions.length}
-            </span>
+      <div className="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">{questionSet.title}</h1>
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <span className="flex items-center gap-1">
+                  <span className="font-medium">Tổng số câu:</span> {questions.length}
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <span className="font-medium">Đã trả lời:</span>
+                  <span className="text-primary-600 font-bold">
+                    {answeredCount}/{questions.length}
+                  </span>
+                </span>
+              </div>
+            </div>
+            {useTimer && timeRemaining !== null && (
+              <div
+                className={`flex items-center gap-3 px-6 py-3 rounded-lg font-bold text-lg ${
+                  isWarningTime
+                    ? "bg-error-50 text-error-700 border-2 border-error-300 animate-pulse"
+                    : "bg-primary-50 text-primary-700 border-2 border-primary-200"
+                }`}
+              >
+                <span className="text-2xl">⏱️</span>
+                <span className="text-xl font-mono">{formatTime(timeRemaining)}</span>
+              </div>
+            )}
           </div>
         </div>
-        {useTimer && timeRemaining !== null && (
-          <div className={`timer ${isWarningTime ? "warning" : ""}`}>
-            <div className="timer-icon">⏱️</div>
-            <div className="timer-text">{formatTime(timeRemaining)}</div>
-          </div>
-        )}
-      </div>
 
-      {/* Progress Bar */}
-      <div className="progress-bar">
-        <div className="progress-fill" style={{ width: `${progress}%` }}></div>
-        <div className="progress-text">
+        {/* Progress Bar */}
+        <div className="relative h-2 bg-gray-200">
+          <div
+            className="absolute top-0 left-0 h-full bg-linear-to-r from-primary-500 to-secondary-500 transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs font-medium text-gray-600 bg-white px-2 py-0.5 rounded shadow-sm">
           {answeredCount}/{questions.length} câu ({Math.round(progress)}%)
         </div>
       </div>
 
       {/* All Questions List */}
-      <div className="quiz-content-all">
-        <div className="questions-list">
-          {questions.map((question, qIndex) => {
-            const questionKey = question.id || `q-${qIndex}`;
-            console.log(`Question ${qIndex}:`, {
-              id: question.id,
-              questionKey: questionKey,
-              hasAnswer: userAnswers[questionKey] !== undefined,
-              answerValue: userAnswers[questionKey],
-            });
-            return (
-              <div
-                key={`question-${questionKey}`}
-                className="question-card"
-                id={`question-${qIndex}`}
-              >
-                <div className="question-header">
-                  <span className="question-number">Câu hỏi {qIndex + 1}</span>
-                  {userAnswers[questionKey] !== undefined && (
-                    <span className="answered-badge">✓ Đã trả lời</span>
-                  )}
-                </div>
-                <div className="question-text">{question.questionText}</div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-6">
+            {questions.map((question, qIndex) => {
+              const questionKey = question.id || `q-${qIndex}`;
+              console.log(`Question ${qIndex}:`, {
+                id: question.id,
+                questionKey: questionKey,
+                hasAnswer: userAnswers[questionKey] !== undefined,
+                answerValue: userAnswers[questionKey],
+              });
+              return (
+                <div
+                  key={`question-${questionKey}`}
+                  className="bg-white rounded-xl shadow-medium p-6 scroll-mt-32"
+                  id={`question-${qIndex}`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-lg font-bold text-primary-600">Câu hỏi {qIndex + 1}</span>
+                    {userAnswers[questionKey] !== undefined && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-success-100 text-success-700 rounded-full text-sm font-medium">
+                        ✓ Đã trả lời
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-gray-900 text-lg font-medium mb-6 leading-relaxed">
+                    {question.questionText}
+                  </div>
 
-                <div className="options-list">
-                  {question.options?.map((option, optIndex) => {
-                    const isSelected = userAnswers[questionKey] === optIndex;
-                    return (
-                      <div
-                        key={`${questionKey}-option-${optIndex}`}
-                        className={`option-item ${isSelected ? "selected" : ""}`}
-                        onClick={() => handleAnswerSelect(questionKey, optIndex)}
-                      >
-                        <div className="option-radio">
-                          <input
-                            type="radio"
-                            name={`question-${qIndex}-${questionKey}`}
-                            value={optIndex}
-                            checked={isSelected}
-                            onChange={() => handleAnswerSelect(questionKey, optIndex)}
-                          />
+                  <div className="space-y-3">
+                    {question.options?.map((option, optIndex) => {
+                      const isSelected = userAnswers[questionKey] === optIndex;
+                      return (
+                        <div
+                          key={`${questionKey}-option-${optIndex}`}
+                          className={`flex items-start gap-4 p-4 rounded-lg border-2 transition-all cursor-pointer hover:shadow-sm ${
+                            isSelected
+                              ? "border-primary-500 bg-primary-50"
+                              : "border-gray-200 hover:border-primary-300 bg-white"
+                          }`}
+                          onClick={() => handleAnswerSelect(questionKey, optIndex)}
+                        >
+                          <div className="flex items-center justify-center w-6 h-6 mt-0.5">
+                            <input
+                              type="radio"
+                              name={`question-${qIndex}-${questionKey}`}
+                              value={optIndex}
+                              checked={isSelected}
+                              onChange={() => handleAnswerSelect(questionKey, optIndex)}
+                              className="w-5 h-5 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 cursor-pointer"
+                            />
+                          </div>
+                          <div className="flex-1 flex items-start gap-2">
+                            <span className="font-bold text-gray-700 min-w-6">
+                              {String.fromCharCode(65 + optIndex)}.
+                            </span>
+                            <span
+                              className={`flex-1 ${
+                                isSelected ? "text-primary-900 font-medium" : "text-gray-700"
+                              }`}
+                            >
+                              {option}
+                            </span>
+                          </div>
                         </div>
-                        <div className="option-content">
-                          <span className="option-label">
-                            {String.fromCharCode(65 + optIndex)}.
-                          </span>
-                          <span className="option-text">{option}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
 
-        {/* Question Navigator Sidebar */}
-        <div className="question-navigator-sidebar">
-          <div className="navigator-sticky">
-            <h3>Danh sách câu hỏi</h3>
-            <div className="question-grid">
-              {questions.map((q, index) => {
-                const questionKey = q.id || `q-${index}`;
-                return (
-                  <a
-                    key={`question-nav-${questionKey}`}
-                    href={`#question-${index}`}
-                    className={`question-nav-btn ${
-                      userAnswers[questionKey] !== undefined ? "answered" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      document.getElementById(`question-${index}`)?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start",
-                      });
-                    }}
-                  >
-                    {index + 1}
-                  </a>
-                );
-              })}
-            </div>
-
-            <div className="navigator-stats">
-              <div className="stat-item">
-                <span className="stat-label">Đã làm:</span>
-                <span className="stat-value answered">{answeredCount}</span>
+          {/* Question Navigator Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-36 bg-white rounded-xl shadow-medium p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Danh sách câu hỏi</h3>
+              <div className="grid grid-cols-5 gap-2 mb-6">
+                {questions.map((q, index) => {
+                  const questionKey = q.id || `q-${index}`;
+                  const isAnswered = userAnswers[questionKey] !== undefined;
+                  return (
+                    <button
+                      key={`question-nav-${questionKey}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById(`question-${index}`)?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }}
+                      className={`w-full aspect-square flex items-center justify-center rounded-lg font-bold text-sm transition-all ${
+                        isAnswered
+                          ? "bg-success-500 text-white hover:bg-success-600 shadow-sm"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300"
+                      }`}
+                    >
+                      {index + 1}
+                    </button>
+                  );
+                })}
               </div>
-              <div className="stat-item">
-                <span className="stat-label">Chưa làm:</span>
-                <span className="stat-value unanswered">{questions.length - answeredCount}</span>
+
+              <div className="space-y-3 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Đã làm:</span>
+                  <span className="text-lg font-bold text-success-600">{answeredCount}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Chưa làm:</span>
+                  <span className="text-lg font-bold text-gray-500">
+                    {questions.length - answeredCount}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -393,15 +430,18 @@ function QuizTakingPage() {
       </div>
 
       {/* Submit Button - Fixed at bottom */}
-      <div className="quiz-actions-fixed">
-        <Button
-          variant="danger"
-          onClick={() => setShowSubmitModal(true)}
-          disabled={submitting}
-          size="large"
-        >
-          📝 Nộp bài ({answeredCount}/{questions.length})
-        </Button>
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <Button
+            variant="primary"
+            onClick={() => setShowSubmitModal(true)}
+            disabled={submitting}
+            size="large"
+            className="w-full sm:w-auto"
+          >
+            📝 Nộp bài ({answeredCount}/{questions.length})
+          </Button>
+        </div>
       </div>
 
       {/* Submit Confirmation Modal */}
@@ -410,18 +450,25 @@ function QuizTakingPage() {
         onClose={() => setShowSubmitModal(false)}
         title="Xác nhận nộp bài"
       >
-        <div className="submit-confirmation">
-          <p>
-            Bạn đã trả lời <strong>{answeredCount}</strong> / <strong>{questions.length}</strong>{" "}
-            câu hỏi.
-          </p>
-          {answeredCount < questions.length && (
-            <p className="warning-text">
-              ⚠️ Còn {questions.length - answeredCount} câu chưa trả lời. Bạn có chắc muốn nộp bài
-              không?
+        <div className="space-y-6">
+          <div className="text-center">
+            <p className="text-gray-700 text-lg">
+              Bạn đã trả lời <strong className="text-primary-600">{answeredCount}</strong> /{" "}
+              <strong>{questions.length}</strong> câu hỏi.
             </p>
+          </div>
+          {answeredCount < questions.length && (
+            <div className="bg-warning-50 border border-warning-200 rounded-lg p-4">
+              <p className="text-warning-800 flex items-start gap-2">
+                <span className="text-xl">⚠️</span>
+                <span>
+                  Còn <strong>{questions.length - answeredCount}</strong> câu chưa trả lời. Bạn có
+                  chắc muốn nộp bài không?
+                </span>
+              </p>
+            </div>
           )}
-          <div className="modal-actions">
+          <div className="flex items-center justify-end gap-3 pt-4">
             <Button variant="secondary" onClick={() => setShowSubmitModal(false)}>
               Hủy
             </Button>

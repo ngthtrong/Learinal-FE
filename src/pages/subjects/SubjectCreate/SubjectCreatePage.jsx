@@ -9,7 +9,6 @@ import { SubjectForm } from "@components/subjects";
 import { useToast } from "@components/common";
 import { subjectsService } from "@services/api";
 import { getErrorMessage } from "@utils";
-import "./SubjectCreatePage.css";
 
 const SubjectCreatePage = () => {
   const navigate = useNavigate();
@@ -42,19 +41,25 @@ const SubjectCreatePage = () => {
   };
 
   return (
-    <div className="subject-create-page">
-      <div className="page-container">
-        <div className="page-header">
-          <button className="back-button" onClick={handleCancel} aria-label="Quay lại">
+    <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="space-y-6">
+        {/* Header */}
+        <div>
+          <button
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+            onClick={handleCancel}
+            aria-label="Quay lại"
+          >
             ← Quay lại
           </button>
-          <h1>Tạo môn học mới</h1>
-          <p className="page-subtitle">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Tạo môn học mới</h1>
+          <p className="text-gray-600">
             Tạo một môn học để bắt đầu thêm tài liệu và câu hỏi học tập
           </p>
         </div>
 
-        <div className="form-container">
+        {/* Form Container */}
+        <div className="bg-white rounded-xl shadow-medium p-6">
           <SubjectForm
             onSubmit={handleSubmit}
             onCancel={handleCancel}

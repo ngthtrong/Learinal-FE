@@ -7,8 +7,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import Button from "@/components/common/Button";
 import { questionSetsService, quizAttemptsService } from "@/services/api";
-import "./QuizTakePage.css";
-
 function QuizTakePage() {
   const { setId } = useParams();
   const navigate = useNavigate();

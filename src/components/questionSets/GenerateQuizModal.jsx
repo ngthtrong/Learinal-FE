@@ -7,8 +7,6 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "@/components/common/Button";
 import Modal from "@/components/common/Modal";
-import "./GenerateQuizModal.css";
-
 function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
   const [title, setTitle] = useState("");
   const [numQuestions, setNumQuestions] = useState(10);

@@ -10,8 +10,6 @@ import Modal from "@/components/common/Modal";
 import DocumentCard from "@/components/documents/DocumentCard";
 import DocumentUpload from "@/components/documents/DocumentUpload";
 import { documentsService, subjectsService } from "@/services/api";
-import "./DocumentListPage.css";
-
 function DocumentListPage() {
   const { subjectId } = useParams();
   const navigate = useNavigate();

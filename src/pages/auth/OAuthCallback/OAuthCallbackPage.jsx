@@ -10,7 +10,6 @@ import { useToast } from "@components/common";
 import { oauthService } from "@services/api";
 import { APP_CONFIG } from "@config/app.config";
 import { getErrorMessage, logError } from "@utils/errorHandler";
-import "./OAuthCallbackPage.css";
 
 const OAuthCallbackPage = () => {
   const navigate = useNavigate();
@@ -155,31 +154,35 @@ const OAuthCallbackPage = () => {
   }, []);
 
   return (
-    <div className="oauth-callback-page">
-      <div className="callback-container">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-large p-12 max-w-md w-full text-center">
         {status === "processing" && (
-          <>
-            <div className="spinner"></div>
-            <h2>Đang xử lý đăng nhập...</h2>
-            <p>Vui lòng đợi trong giây lát</p>
-          </>
+          <div className="space-y-4">
+            <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+            <h2 className="text-2xl font-bold text-gray-900">Đang xử lý đăng nhập...</h2>
+            <p className="text-gray-600">Vui lòng đợi trong giây lát</p>
+          </div>
         )}
 
         {status === "success" && (
-          <>
-            <div className="success-icon">✓</div>
-            <h2>Đăng nhập thành công!</h2>
-            <p>Đang chuyển hướng...</p>
-          </>
+          <div className="space-y-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full text-4xl text-green-600">
+              ✓
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900">Đăng nhập thành công!</h2>
+            <p className="text-gray-600">Đang chuyển hướng...</p>
+          </div>
         )}
 
         {status === "error" && (
-          <>
-            <div className="error-icon">✗</div>
-            <h2>Đăng nhập thất bại</h2>
-            <p>{error}</p>
-            <p className="redirect-text">Đang quay lại trang đăng nhập...</p>
-          </>
+          <div className="space-y-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full text-4xl text-red-600">
+              ✗
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900">Đăng nhập thất bại</h2>
+            <p className="text-red-600">{error}</p>
+            <p className="text-sm text-gray-500">Đang quay lại trang đăng nhập...</p>
+          </div>
         )}
       </div>
     </div>

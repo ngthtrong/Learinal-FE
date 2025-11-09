@@ -10,7 +10,6 @@ import quizAttemptsService from "@/services/api/quizAttempts.service";
 import Button from "@/components/common/Button";
 import { useToast } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
-import "./QuizStartPage.css";
 
 function QuizStartPage() {
   const { id } = useParams();
@@ -77,10 +76,10 @@ function QuizStartPage() {
 
   if (loading) {
     return (
-      <div className="quiz-start-page">
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <p>Đang tải thông tin...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center space-y-4">
+          <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+          <p className="text-gray-600">Đang tải thông tin...</p>
         </div>
       </div>
     );
@@ -91,33 +90,35 @@ function QuizStartPage() {
   }
 
   return (
-    <div className="quiz-start-page">
-      <div className="quiz-start-container">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-3xl mx-auto px-6">
         {/* Header */}
-        <div className="quiz-start-header">
+        <div className="mb-6">
           <Button variant="secondary" onClick={() => navigate(`/question-sets/${id}`)}>
             ← Quay lại
           </Button>
         </div>
 
         {/* Quiz Info */}
-        <div className="quiz-info-card">
-          <div className="quiz-icon">🎯</div>
-          <h1>{questionSet.title}</h1>
-          {questionSet.description && <p className="quiz-description">{questionSet.description}</p>}
+        <div className="bg-white rounded-xl shadow-medium p-8 text-center mb-6">
+          <div className="text-6xl mb-4">🎯</div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-3">{questionSet.title}</h1>
+          {questionSet.description && (
+            <p className="text-gray-600 mb-6">{questionSet.description}</p>
+          )}
 
-          <div className="quiz-info-stats">
-            <div className="info-stat">
-              <span className="stat-icon">📊</span>
-              <span className="stat-text">
-                <strong>{questionSet.questionCount || 0}</strong> câu hỏi
+          <div className="flex items-center justify-center gap-8 mt-6">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">📊</span>
+              <span className="text-gray-700">
+                <strong className="text-gray-900">{questionSet.questionCount || 0}</strong> câu hỏi
               </span>
             </div>
             {useTimer && (
-              <div className="info-stat">
-                <span className="stat-icon">⏱️</span>
-                <span className="stat-text">
-                  <strong>{timerMinutes}</strong> phút
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">⏱️</span>
+                <span className="text-gray-700">
+                  <strong className="text-gray-900">{timerMinutes}</strong> phút
                 </span>
               </div>
             )}
@@ -125,31 +126,36 @@ function QuizStartPage() {
         </div>
 
         {/* Settings */}
-        <div className="quiz-settings-card">
-          <h2>⚙️ Cài đặt bài thi</h2>
+        <div className="bg-white rounded-xl shadow-medium p-6 mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">⚙️ Cài đặt bài thi</h2>
 
           {/* Timer Setting */}
-          <div className="setting-group">
-            <div className="setting-header">
-              <label className="setting-label">
-                <input
-                  type="checkbox"
-                  checked={useTimer}
-                  onChange={(e) => setUseTimer(e.target.checked)}
-                  className="setting-checkbox"
-                />
-                <span>⏱️ Sử dụng bộ đếm thời gian</span>
-              </label>
-            </div>
+          <div className="border-b border-gray-200 pb-6 mb-6">
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={useTimer}
+                onChange={(e) => setUseTimer(e.target.checked)}
+                className="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 mt-0.5"
+              />
+              <div className="flex-1">
+                <span className="text-lg font-medium text-gray-900 group-hover:text-primary-600 transition-colors">
+                  ⏱️ Sử dụng bộ đếm thời gian
+                </span>
+              </div>
+            </label>
+
             {useTimer && (
-              <div className="setting-content">
-                <div className="timer-controls">
-                  <label htmlFor="timer-minutes">Thời gian (phút):</label>
-                  <div className="timer-input-group">
+              <div className="mt-4 ml-8 space-y-4">
+                <div className="flex items-center gap-4">
+                  <label htmlFor="timer-minutes" className="text-sm font-medium text-gray-700">
+                    Thời gian (phút):
+                  </label>
+                  <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => setTimerMinutes(Math.max(10, timerMinutes - 10))}
-                      className="timer-btn"
+                      className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-gray-700 transition-colors"
                     >
                       −
                     </button>
@@ -162,57 +168,81 @@ function QuizStartPage() {
                       onChange={(e) =>
                         setTimerMinutes(Math.max(10, parseInt(e.target.value) || 10))
                       }
-                      className="timer-input"
+                      className="w-20 px-3 py-2 text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent font-bold text-lg"
                     />
                     <button
                       type="button"
                       onClick={() => setTimerMinutes(Math.min(180, timerMinutes + 10))}
-                      className="timer-btn"
+                      className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-gray-700 transition-colors"
                     >
                       +
                     </button>
                   </div>
                 </div>
-                <p className="setting-note">
-                  ⚠️ Hết thời gian sẽ tự động nộp bài. Đảm bảo bạn có đủ thời gian để hoàn thành.
-                </p>
+                <div className="flex items-start gap-2 bg-warning-50 border border-warning-200 rounded-lg p-3">
+                  <span className="text-warning-600 text-lg">⚠️</span>
+                  <p className="text-sm text-warning-800">
+                    Hết thời gian sẽ tự động nộp bài. Đảm bảo bạn có đủ thời gian để hoàn thành.
+                  </p>
+                </div>
               </div>
             )}
           </div>
 
           {/* Shuffle Setting */}
-          <div className="setting-group">
-            <label className="setting-label">
+          <div>
+            <label className="flex items-start gap-3 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={shuffleQuestions}
                 onChange={(e) => setShuffleQuestions(e.target.checked)}
-                className="setting-checkbox"
+                className="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 mt-0.5"
               />
-              <span>🔀 Xáo trộn câu hỏi</span>
+              <div className="flex-1">
+                <div className="text-lg font-medium text-gray-900 group-hover:text-primary-600 transition-colors mb-1">
+                  🔀 Xáo trộn câu hỏi
+                </div>
+                <p className="text-sm text-gray-600">
+                  Các câu hỏi sẽ xuất hiện theo thứ tự ngẫu nhiên
+                </p>
+              </div>
             </label>
-            <p className="setting-description">Các câu hỏi sẽ xuất hiện theo thứ tự ngẫu nhiên</p>
           </div>
         </div>
 
         {/* Instructions */}
-        <div className="quiz-instructions">
-          <h3>📋 Hướng dẫn</h3>
-          <ul>
-            <li>Đọc kỹ từng câu hỏi trước khi chọn đáp án</li>
-            <li>Chỉ có thể chọn một đáp án cho mỗi câu hỏi</li>
-            <li>Có thể xem lại và thay đổi câu trả lời trước khi nộp bài</li>
+        <div className="bg-primary-50 border border-primary-200 rounded-xl p-6 mb-6">
+          <h3 className="text-lg font-bold text-primary-900 mb-4">📋 Hướng dẫn</h3>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3 text-gray-700">
+              <span className="text-primary-600 font-bold">•</span>
+              <span>Đọc kỹ từng câu hỏi trước khi chọn đáp án</span>
+            </li>
+            <li className="flex items-start gap-3 text-gray-700">
+              <span className="text-primary-600 font-bold">•</span>
+              <span>Chỉ có thể chọn một đáp án cho mỗi câu hỏi</span>
+            </li>
+            <li className="flex items-start gap-3 text-gray-700">
+              <span className="text-primary-600 font-bold">•</span>
+              <span>Có thể xem lại và thay đổi câu trả lời trước khi nộp bài</span>
+            </li>
             {useTimer && (
-              <li>
-                <strong>Khi hết thời gian, bài thi sẽ tự động được nộp</strong>
+              <li className="flex items-start gap-3 text-gray-700">
+                <span className="text-warning-600 font-bold">•</span>
+                <strong className="text-warning-800">
+                  Khi hết thời gian, bài thi sẽ tự động được nộp
+                </strong>
               </li>
             )}
-            <li>Sau khi nộp bài, bạn sẽ xem được kết quả và đáp án chi tiết</li>
+            <li className="flex items-start gap-3 text-gray-700">
+              <span className="text-primary-600 font-bold">•</span>
+              <span>Sau khi nộp bài, bạn sẽ xem được kết quả và đáp án chi tiết</span>
+            </li>
           </ul>
         </div>
 
         {/* Start Button */}
-        <div className="quiz-start-actions">
+        <div className="text-center">
           <Button
             variant="primary"
             size="large"

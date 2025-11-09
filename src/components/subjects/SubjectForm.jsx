@@ -5,8 +5,6 @@
 
 import { useState } from "react";
 import { Input, Button } from "@components/common";
-import "./SubjectForm.css";
-
 /**
  * SubjectForm component
  * @param {Object} props

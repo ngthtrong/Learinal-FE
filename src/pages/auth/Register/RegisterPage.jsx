@@ -8,7 +8,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import { Button, Input, PasswordStrengthIndicator, useToast } from "@components/common";
 import { isValidEmail, isValidPassword, getErrorMessage } from "@utils";
-import "./RegisterPage.css";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
 import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
 
@@ -139,23 +138,26 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="register-root">
-      <div className="register-page">
-        <div className="register-card card">
-          <header className="register-brand">
-            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="brand-logo" />
-            <div className="brand-title">
-              <span className="brand-le">Lear</span>
-              <span className="brand-inal">inal</span>
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-2xl shadow-large p-8">
+          {/* Brand Header */}
+          <header className="flex flex-col items-center mb-8">
+            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="h-16 w-auto mb-3" />
+            <div className="text-2xl font-bold">
+              <span className="text-primary-600">Lear</span>
+              <span className="text-gray-800">inal</span>
             </div>
           </header>
 
-          <div className="register-header">
-            <h1>Tạo tài khoản</h1>
-            <p className="muted">Đăng ký để bắt đầu sử dụng Learinal</p>
+          {/* Page Header */}
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Tạo tài khoản</h1>
+            <p className="text-gray-600">Đăng ký để bắt đầu sử dụng Learinal</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="register-form">
+          {/* Register Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="Họ và tên"
               type="text"
@@ -210,13 +212,16 @@ const RegisterPage = () => {
               variant="primary"
               size="large"
               loading={loading}
-              className="register-button"
+              className="w-full mt-6"
             >
               Đăng ký
             </Button>
 
-            <p className="login-link">
-              Đã có tài khoản? <Link to="/login">Đăng nhập ngay</Link>
+            <p className="text-center text-sm text-gray-600 mt-4">
+              Đã có tài khoản?{" "}
+              <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+                Đăng nhập ngay
+              </Link>
             </p>
           </form>
         </div>

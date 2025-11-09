@@ -5,7 +5,6 @@
 
 import React from "react";
 import { getPasswordStrength } from "@/utils/validators";
-import "./PasswordStrengthIndicator.css";
 
 const PasswordStrengthIndicator = ({ password }) => {
   if (!password) return null;
@@ -20,26 +19,32 @@ const PasswordStrengthIndicator = ({ password }) => {
   };
 
   const strengthColors = {
-    weak: "#ef4444", // red
-    medium: "#f59e0b", // orange
-    strong: "#3b82f6", // blue
-    "very-strong": "#10b981", // green
+    weak: "bg-red-500",
+    medium: "bg-amber-500",
+    strong: "bg-blue-500",
+    "very-strong": "bg-green-500",
+  };
+
+  const strengthTextColors = {
+    weak: "text-red-500",
+    medium: "text-amber-500",
+    strong: "text-blue-500",
+    "very-strong": "text-green-500",
   };
 
   return (
-    <div className="password-strength-indicator">
-      <div className="strength-bars">
+    <div className="mt-3">
+      <div className="flex gap-2 mb-2">
         {[1, 2, 3, 4].map((bar) => (
           <div
             key={bar}
-            className={`strength-bar ${bar <= score ? "active" : ""}`}
-            style={{
-              backgroundColor: bar <= score ? strengthColors[strength] : "var(--border-muted)",
-            }}
+            className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
+              bar <= score ? strengthColors[strength] : "bg-gray-200"
+            }`}
           />
         ))}
       </div>
-      <div className="strength-label" style={{ color: strengthColors[strength] }}>
+      <div className={`text-sm font-medium ${strengthTextColors[strength]}`}>
         {strengthLabels[strength]}
       </div>
     </div>

@@ -5,8 +5,6 @@
 
 import { useNavigate } from "react-router-dom";
 import { BookIcon } from "@components/icons";
-import "./SubjectCard.css";
-
 /**
  * SubjectCard component
  * @param {Object} props
