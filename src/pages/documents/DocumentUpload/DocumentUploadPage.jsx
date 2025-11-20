@@ -30,6 +30,7 @@ function DocumentUploadPage() {
       const data = await subjectsService.getSubjects({ pageSize: 100 });
       setSubjects(data.items || []);
     } catch (err) {
+      const _ignore = err;
       setError("Không thể tải danh sách môn học");
     }
   };

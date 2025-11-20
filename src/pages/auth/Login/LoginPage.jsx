@@ -134,8 +134,11 @@ const LoginPage = () => {
         }
 
         toast.showSuccess("Đăng nhập thành công!");
-        const next = result.user?.role === "Learner" ? "/home" : "/dashboard";
-        navigate(next);
+        const role = result.user?.role;
+        let next = "/dashboard";
+        if (role === "Learner") next = "/home";
+        else if (role === "Admin") next = "/admin";
+        navigate(next, { replace: true });
       } else {
         toast.showError(result.error || "Đăng nhập thất bại");
       }

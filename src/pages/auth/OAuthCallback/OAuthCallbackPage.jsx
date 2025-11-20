@@ -127,7 +127,10 @@ const OAuthCallbackPage = () => {
 
       // Redirect based on role
       setTimeout(() => {
-        const next = response?.user?.role === "Learner" ? "/home" : "/dashboard";
+        const role = response?.user?.role;
+        let next = "/dashboard";
+        if (role === "Learner") next = "/home";
+        else if (role === "Admin") next = "/admin";
         navigate(next, { replace: true });
       }, 1500);
     } catch (err) {

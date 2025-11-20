@@ -6,7 +6,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
-import { TopbarLayout, SidebarLayout } from "@/components/layout";
+import { TopbarLayout, SidebarLayout, AdminSidebarLayout } from "@/components/layout";
+import { AdminRoute } from "./components/common";
 
 // Pages
 import {
@@ -33,6 +34,12 @@ import {
   QuizStartPage,
   QuizTakingPage,
   QuizResultPage,
+  AdminDashboardPage,
+  UserManagementPage,
+  CommissionRecordsPage,
+  AdminSubscriptionPlansPage,
+  AdminFinancialsPage,
+  SubscriptionPurchasesPage,
 } from "./pages";
 
 // Styles
@@ -258,6 +265,92 @@ function App() {
                     <MySubscriptionPage />
                   </SidebarLayout>
                 </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin routes */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminRoute>
+                  <TopbarLayout>
+                    <AdminSidebarLayout>
+                      <AdminDashboardPage />
+                    </AdminSidebarLayout>
+                  </TopbarLayout>
+                </AdminRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute>
+                <AdminRoute>
+                  <TopbarLayout>
+                    <AdminSidebarLayout>
+                      <UserManagementPage />
+                    </AdminSidebarLayout>
+                  </TopbarLayout>
+                </AdminRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/subscription-plans"
+            element={
+              <ProtectedRoute>
+                <AdminRoute>
+                  <TopbarLayout>
+                    <AdminSidebarLayout>
+                      <AdminSubscriptionPlansPage />
+                    </AdminSidebarLayout>
+                  </TopbarLayout>
+                </AdminRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/subscription-purchases"
+            element={
+              <ProtectedRoute>
+                <AdminRoute>
+                  <TopbarLayout>
+                    <AdminSidebarLayout>
+                      <SubscriptionPurchasesPage />
+                    </AdminSidebarLayout>
+                  </TopbarLayout>
+                </AdminRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/commission-records"
+            element={
+              <ProtectedRoute>
+                <AdminRoute>
+                  <TopbarLayout>
+                    <AdminSidebarLayout>
+                      <CommissionRecordsPage />
+                    </AdminSidebarLayout>
+                  </TopbarLayout>
+                </AdminRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/financials"
+            element={
+              <ProtectedRoute>
+                <AdminRoute>
+                  <TopbarLayout>
+                    <AdminSidebarLayout>
+                      <AdminFinancialsPage />
+                    </AdminSidebarLayout>
+                  </TopbarLayout>
+                </AdminRoute>
               </ProtectedRoute>
             }
           />

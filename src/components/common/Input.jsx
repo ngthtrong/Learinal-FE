@@ -17,12 +17,17 @@ const Input = ({
   onChange,
   onBlur,
   className = "",
+  inputClassName = "",
+  labelClassName = "",
   ...props
 }) => {
   return (
     <div className={`w-full ${className}`}>
       {label && (
-        <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1.5">
+        <label
+          htmlFor={name}
+          className={`block text-sm font-medium text-gray-700 mb-1.5 ${labelClassName}`}
+        >
           {label}
           {required && <span className="text-error-500 ml-1">*</span>}
         </label>
@@ -47,7 +52,7 @@ const Input = ({
             error
               ? "border-error-500 focus:border-error-500 focus:ring-error-500/20"
               : "border-gray-300 focus:border-primary-500 focus:ring-primary-500/20"
-          }
+          } ${inputClassName}
         `}
         {...props}
       />

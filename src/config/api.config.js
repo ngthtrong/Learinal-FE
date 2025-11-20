@@ -94,6 +94,13 @@ export const API_CONFIG = {
       APPROVE_CONTENT: (id) => `/admin/validation-requests/${id}/approve`,
       REJECT_CONTENT: (id) => `/admin/validation-requests/${id}/reject`,
     },
+    // Commission records (Expert + Admin)
+    COMMISSIONS: {
+      LIST: "/commission-records",
+      GET_BY_ID: (id) => `/commission-records/${id}`,
+      SUMMARY: "/commission-records/summary",
+      MARK_PAID: (id) => `/commission-records/${id}/mark-paid`,
+    },
     // Health check
     HEALTH: "/health",
   },

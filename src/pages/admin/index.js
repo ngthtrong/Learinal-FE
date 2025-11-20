@@ -1,5 +1,7 @@
 // Admin pages
 export { default as AdminDashboardPage } from "./AdminDashboard";
 export { default as UserManagementPage } from "./UserManagement";
-export { default as ValidationRequestsPage } from "./ValidationRequests";
 export { default as CommissionRecordsPage } from "./CommissionRecords";
+export { default as AdminSubscriptionPlansPage } from "./SubscriptionPlans";
+export { default as AdminFinancialsPage } from "./Financials";
+export { SubscriptionPurchasesPage } from "./SubscriptionPurchases";

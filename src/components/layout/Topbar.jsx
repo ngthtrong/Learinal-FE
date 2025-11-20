@@ -106,12 +106,17 @@ const Topbar = ({ theme = "light" }) => {
     <header className="bg-white border-b border-gray-200 px-6 py-3 sticky top-0 z-50 shadow-sm">
       <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
         {/* Left: Logo & Brand */}
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3 cursor-pointer select-none"
+          onClick={() => navigate(role === "Admin" ? "/admin" : "/home")}
+          title={role === "Admin" ? "Về trang quản trị" : "Về trang chính"}
+          aria-label="Đi tới trang chính"
+          role="link"
+        >
           <img
             src={currentTheme === "dark" ? logoDark : logoLight}
             alt="Learinal"
-            className="h-10 w-auto cursor-pointer"
-            onClick={() => navigate("/home")}
+            className="h-10 w-auto"
           />
           <div className="text-xl font-bold">
             <span className="text-primary-600">Lear</span>

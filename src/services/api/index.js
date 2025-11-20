@@ -13,3 +13,5 @@ export { default as quizAttemptsService } from "./quizAttempts.service";
 export { default as oauthService } from "./oauth.service";
 export { default as subscriptionsService } from "./subscriptions.service";
 export { default as paymentsService } from "./payments.service";
+export { default as adminService } from "./admin.service";
+export { default as commissionRecordsService } from "./commissionRecords.service";

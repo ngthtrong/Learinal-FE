@@ -52,6 +52,33 @@ export const subscriptionsService = {
     const response = await axiosInstance.post(`/user-subscriptions/${subscriptionId}/cancel`);
     return response.data;
   },
+
+  // Admin: create a new subscription plan
+  createPlan: async (payload) => {
+    const response = await axiosInstance.post(`/subscription-plans`, payload);
+    return response.data;
+  },
+
+  // Admin: update an existing subscription plan
+  updatePlan: async (id, payload) => {
+    const response = await axiosInstance.patch(`/subscription-plans/${id}`, payload);
+    return response.data;
+  },
+
+  // Admin: archive/delete a subscription plan
+  deletePlan: async (id) => {
+    const response = await axiosInstance.delete(`/subscription-plans/${id}`);
+    return response.data;
+  },
+
+  // Admin: list all plans with optional status filter
+  getAllPlans: async ({ status } = {}) => {
+    const response = await axiosInstance.get(`/admin/subscription-plans`, {
+      params: { status: status || undefined },
+      headers: { "Cache-Control": "no-cache" },
+    });
+    return response.data;
+  },
 };
 
 export default subscriptionsService;
