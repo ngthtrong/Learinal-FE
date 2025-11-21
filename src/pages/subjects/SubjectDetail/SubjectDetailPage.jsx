@@ -218,15 +218,19 @@ function SubjectDetailPage() {
     if (!topics || topics.length === 0) return null;
 
     return (
-      <ul className={`topic-list level-${level}`}>
+      <ul className={`pl-4 ${level > 0 ? "border-l border-gray-200 ml-2" : ""}`}>
         {topics.map((topic, index) => (
-          <li key={index} className="topic-item">
-            <div className="topic-content">
-              <span className="topic-id">{topic.topicId}</span>
-              <span className="topic-name">{topic.topicName}</span>
+          <li key={index} className="relative py-2">
+            <div className="flex items-start gap-3 group">
+              <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded bg-gray-100 text-xs font-medium text-gray-600 group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors mt-0.5">
+                {topic.topicId}
+              </span>
+              <span className="text-gray-700 group-hover:text-gray-900 transition-colors">
+                {topic.topicName}
+              </span>
             </div>
             {topic.childTopics && topic.childTopics.length > 0 && (
-              <div className="topic-children">{renderTopicTree(topic.childTopics, level + 1)}</div>
+              <div className="mt-1">{renderTopicTree(topic.childTopics, level + 1)}</div>
             )}
           </li>
         ))}
@@ -269,102 +273,145 @@ function SubjectDetailPage() {
   }
 
   return (
-    <div className="subject-detail-page">
+    <div className="max-w-7xl mx-auto px-6 py-8">
       {/* Header */}
-      <div className="page-header">
-        <Button variant="secondary" onClick={() => navigate("/subjects")}>
-          ← Quay lại
+      <div className="flex items-center justify-between mb-6">
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/subjects")}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+        >
+          ← Quay lại danh sách
         </Button>
-        <div className="header-actions">
-          <Button onClick={() => setIsUploadModalOpen(true)}>📤 Tải lên tài liệu</Button>
-          <Button onClick={() => setIsGenerateQuizModalOpen(true)}>🎯 Tạo đề thi</Button>
-          <Button variant="secondary" onClick={() => setIsEditModalOpen(true)}>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            onClick={() => setIsEditModalOpen(true)}
+            className="flex items-center gap-2"
+          >
             ✏️ Chỉnh sửa
           </Button>
-          <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
+          <Button
+            variant="danger-outline"
+            onClick={() => setIsDeleteModalOpen(true)}
+            className="flex items-center gap-2"
+          >
             🗑️ Xóa
           </Button>
         </div>
       </div>
 
-      {/* Subject Info */}
-      <div className="subject-info-card">
-        <div className="subject-header">
-          <h1>{subject.subjectName}</h1>
-          <div className="subject-badges">
-            <span className="badge badge-documents">📄 {documents.length} tài liệu</span>
-            <span className="badge badge-questions">❓ {questionSets.length} bộ câu hỏi</span>
+      {/* Subject Info Card */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8">
+        <div className="flex flex-col md:flex-row justify-between gap-6 mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-3">{subject.subjectName}</h1>
+            <div className="flex items-center gap-4">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-sm font-medium">
+                📄 {documents.length} tài liệu
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-sm font-medium">
+                ❓ {questionSets.length} bộ câu hỏi
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 min-w-[200px]">
+            <div className="text-sm text-gray-500 text-right">
+              📅 Tạo: {formatDate(subject.createdAt)}
+            </div>
+            {subject.updatedAt !== subject.createdAt && (
+              <div className="text-sm text-gray-500 text-right">
+                🔄 Cập nhật: {formatDate(subject.updatedAt)}
+              </div>
+            )}
           </div>
         </div>
 
         {subject.description && (
-          <div className="subject-section">
-            <h3 className="section-title">📝 Mô tả</h3>
-            <p className="subject-description">{subject.description}</p>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">📝 Mô tả</h3>
+            <p className="text-gray-600 leading-relaxed">{subject.description}</p>
           </div>
         )}
 
         {subject.summary && (
-          <div className="subject-section">
-            <h3 className="section-title">📊 Tóm tắt</h3>
-            <div className="subject-summary">{subject.summary}</div>
+          <div className="mb-6 bg-gray-50 rounded-xl p-6 border border-gray-100">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">📊 Tóm tắt nội dung</h3>
+            <div className="prose prose-sm max-w-none text-gray-600">{subject.summary}</div>
           </div>
         )}
 
         {subject.tableOfContents && subject.tableOfContents.length > 0 && (
-          <div className="subject-section">
-            <h3 className="section-title">📚 Nội dung ({subject.tableOfContents.length} chủ đề)</h3>
-            <div className="table-of-contents">{renderTopicTree(subject.tableOfContents)}</div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              📚 Mục lục ({subject.tableOfContents.length} chủ đề)
+            </h3>
+            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              {renderTopicTree(subject.tableOfContents)}
+            </div>
           </div>
         )}
+      </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Documents Section */}
-        <div className="subject-section">
-          <div className="section-header">
-            <h3 className="section-title">📄 Tài liệu ({documents.length})</h3>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold text-gray-900">📄 Tài liệu ({documents.length})</h3>
             <Button size="small" onClick={() => setIsUploadModalOpen(true)}>
               + Thêm tài liệu
             </Button>
           </div>
 
           {loadingDocuments ? (
-            <div className="documents-loading">
-              <p>Đang tải tài liệu...</p>
+            <div className="bg-white rounded-xl p-8 text-center border border-gray-100">
+              <div className="animate-spin w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+              <p className="text-gray-500">Đang tải tài liệu...</p>
             </div>
           ) : documents.length > 0 ? (
-            <div className="documents-grid">
+            <div className="grid gap-4">
               {documents.map((doc) => (
-                <div key={doc.id} className="document-card">
-                  <div
-                    className="document-card-content"
-                    onClick={() => navigate(`/documents/${doc.id}`)}
-                  >
-                    <div className="document-icon">
+                <div
+                  key={doc.id}
+                  className="group bg-white rounded-xl p-4 border border-gray-100 hover:border-primary-200 hover:shadow-md transition-all cursor-pointer flex items-center justify-between"
+                  onClick={() => navigate(`/documents/${doc.id}`)}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-xl">
                       {doc.fileType === ".pdf" ? "📄" : doc.fileType === ".docx" ? "📝" : "📃"}
                     </div>
-                    <div className="document-info">
-                      <h4 className="document-name">{doc.originalFileName || doc.fileName}</h4>
-                      <div className="document-meta">
-                        <span className={`document-status status-${doc.status?.toLowerCase()}`}>
+                    <div>
+                      <h4 className="font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1">
+                        {doc.originalFileName || doc.fileName}
+                      </h4>
+                      <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                        <span>{formatFileSize(doc.fileSize)}</span>
+                        <span>•</span>
+                        <span>{formatDate(doc.uploadedAt)}</span>
+                        <span
+                          className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                            doc.status === "Completed"
+                              ? "bg-green-50 text-green-700"
+                              : doc.status === "Processing"
+                              ? "bg-blue-50 text-blue-700"
+                              : "bg-gray-100 text-gray-600"
+                          }`}
+                        >
                           {doc.status === "Uploading"
-                            ? "⏳ Đang tải"
+                            ? "Đang tải"
                             : doc.status === "Processing"
-                            ? "⚙️ Đang xử lý"
+                            ? "Đang xử lý"
                             : doc.status === "Completed"
-                            ? "✅ Hoàn tất"
+                            ? "Hoàn tất"
                             : doc.status === "Error"
-                            ? "❌ Lỗi"
+                            ? "Lỗi"
                             : doc.status}
                         </span>
-                        {doc.fileSize > 0 && (
-                          <span className="document-size">{formatFileSize(doc.fileSize)}</span>
-                        )}
                       </div>
-                      <p className="document-date">📅 {formatDate(doc.uploadedAt)}</p>
                     </div>
                   </div>
                   <button
-                    className="delete-document-btn"
+                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors opacity-0 group-hover:opacity-100"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteDocument(doc.id, doc.originalFileName || doc.fileName);
@@ -377,54 +424,78 @@ function SubjectDetailPage() {
               ))}
             </div>
           ) : (
-            <div className="empty-documents">
-              <p>📭 Chưa có tài liệu nào. Hãy tải lên tài liệu đầu tiên!</p>
-              <Button onClick={() => setIsUploadModalOpen(true)}>📤 Tải lên tài liệu</Button>
+            <div className="bg-white rounded-xl p-8 text-center border border-dashed border-gray-300">
+              <p className="text-gray-500 mb-4">Chưa có tài liệu nào</p>
+              <Button variant="outline" onClick={() => setIsUploadModalOpen(true)}>
+                📤 Tải lên ngay
+              </Button>
             </div>
           )}
         </div>
 
         {/* Question Sets Section */}
-        <div className="subject-section">
-          <div className="section-header">
-            <h3 className="section-title">❓ Bộ câu hỏi ({questionSets.length})</h3>
-            <Button onClick={() => setIsGenerateQuizModalOpen(true)}>🎯 Tạo đề thi mới</Button>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold text-gray-900">
+              ❓ Bộ câu hỏi ({questionSets.length})
+            </h3>
+            <Button size="small" onClick={() => setIsGenerateQuizModalOpen(true)}>
+              🎯 Tạo đề thi
+            </Button>
           </div>
 
           {loadingQuestionSets ? (
-            <div className="question-sets-loading">
-              <p>Đang tải bộ câu hỏi...</p>
+            <div className="bg-white rounded-xl p-8 text-center border border-gray-100">
+              <div className="animate-spin w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+              <p className="text-gray-500">Đang tải bộ câu hỏi...</p>
             </div>
           ) : questionSets.length > 0 ? (
-            <div className="question-sets-grid">
+            <div className="grid gap-4">
               {questionSets.map((set) => (
-                <div key={set.id} className="question-set-card">
-                  <div
-                    className="question-set-card-content"
-                    onClick={() => navigate(`/question-sets/${set.id}`)}
-                  >
-                    <div className="question-set-header">
-                      <h4 className="question-set-title">{set.title}</h4>
-                      <span className={`question-set-status status-${set.status?.toLowerCase()}`}>
+                <div
+                  key={set.id}
+                  className="group bg-white rounded-xl p-4 border border-gray-100 hover:border-primary-200 hover:shadow-md transition-all cursor-pointer flex items-center justify-between"
+                  onClick={() => navigate(`/question-sets/${set.id}`)}
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1">
+                        {set.title}
+                      </h4>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          set.status === "Published"
+                            ? "bg-green-50 text-green-700"
+                            : set.status === "Draft"
+                            ? "bg-gray-100 text-gray-700"
+                            : "bg-blue-50 text-blue-700"
+                        }`}
+                      >
                         {set.status === "Draft"
-                          ? "📝 Nháp"
+                          ? "Nháp"
                           : set.status === "Processing"
-                          ? "⚙️ Đang xử lý"
+                          ? "Đang xử lý"
                           : set.status === "Published"
-                          ? "✅ Đã xuất bản"
+                          ? "Đã xuất bản"
                           : set.status === "Public"
-                          ? "🌐 Công khai"
+                          ? "Công khai"
                           : set.status}
                       </span>
                     </div>
-                    <div className="question-set-meta">
-                      <span>📊 {set.questionCount || 0} câu hỏi</span>
-                      {set.isShared && <span>🔗 Đã chia sẻ</span>}
-                      <span>📅 {formatDate(set.createdAt)}</span>
+                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        📊 {set.questionCount || 0} câu
+                      </span>
+                      <span className="flex items-center gap-1">
+                        📅 {formatDate(set.createdAt)}
+                      </span>
+                      {set.isShared && (
+                        <span className="text-blue-600 flex items-center gap-1">🔗 Đã chia sẻ</span>
+                      )}
                     </div>
                   </div>
                   <button
-                    className="delete-question-set-btn"
+                    className="ml-4 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors opacity-0 group-hover:opacity-100"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteQuestionSet(set.id, set.title);
@@ -437,17 +508,12 @@ function SubjectDetailPage() {
               ))}
             </div>
           ) : (
-            <div className="empty-question-sets">
-              <p>📭 Chưa có bộ câu hỏi nào. Hãy tạo đề thi đầu tiên!</p>
-              <Button onClick={() => setIsGenerateQuizModalOpen(true)}>🎯 Tạo đề thi</Button>
+            <div className="bg-white rounded-xl p-8 text-center border border-dashed border-gray-300">
+              <p className="text-gray-500 mb-4">Chưa có bộ câu hỏi nào</p>
+              <Button variant="outline" onClick={() => setIsGenerateQuizModalOpen(true)}>
+                🎯 Tạo đề thi ngay
+              </Button>
             </div>
-          )}
-        </div>
-
-        <div className="subject-meta">
-          <span>📅 Tạo: {formatDate(subject.createdAt)}</span>
-          {subject.updatedAt !== subject.createdAt && (
-            <span>🔄 Cập nhật: {formatDate(subject.updatedAt)}</span>
           )}
         </div>
       </div>
@@ -477,32 +543,28 @@ function SubjectDetailPage() {
         title="Xác nhận xóa môn học"
       >
         <div className="delete-confirmation">
-          <div className="warning-icon">⚠️</div>
-          <h3>Bạn có chắc chắn muốn xóa môn học này?</h3>
-          <div className="subject-info">
-            <p>
-              <strong>{subject.subjectName}</strong>
-            </p>
-            {subject.documentCount > 0 && (
-              <p className="warning-text">
-                ⚠️ Môn học này có <strong>{subject.documentCount} tài liệu</strong>. Tất cả tài liệu
-                sẽ bị xóa cùng.
-              </p>
-            )}
-            {subject.questionSetCount > 0 && (
-              <p className="warning-text">
-                ⚠️ Môn học này có <strong>{subject.questionSetCount} bộ câu hỏi</strong>. Tất cả câu
-                hỏi sẽ bị xóa cùng.
-              </p>
+          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+            ⚠️
+          </div>
+          <h3 className="text-lg font-bold text-center text-gray-900 mb-2">
+            Bạn có chắc chắn muốn xóa môn học này?
+          </h3>
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <p className="font-medium text-gray-900 mb-2 text-center">{subject.subjectName}</p>
+            {(subject.documentCount > 0 || subject.questionSetCount > 0) && (
+              <div className="text-sm text-red-600 space-y-1 text-center">
+                {subject.documentCount > 0 && <p>• {subject.documentCount} tài liệu sẽ bị xóa</p>}
+                {subject.questionSetCount > 0 && (
+                  <p>• {subject.questionSetCount} bộ câu hỏi sẽ bị xóa</p>
+                )}
+              </div>
             )}
           </div>
-          <p className="danger-text">Hành động này không thể hoàn tác!</p>
-          <div className="modal-actions">
-            <Button
-              variant="secondary"
-              onClick={() => setIsDeleteModalOpen(false)}
-              disabled={deleting}
-            >
+          <p className="text-sm text-gray-500 text-center mb-6">
+            Hành động này không thể hoàn tác. Vui lòng cân nhắc kỹ trước khi xóa.
+          </p>
+          <div className="flex items-center gap-3 justify-end">
+            <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)} disabled={deleting}>
               Hủy
             </Button>
             <Button variant="danger" onClick={handleDelete} loading={deleting}>

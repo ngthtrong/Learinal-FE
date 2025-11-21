@@ -13,3 +13,4 @@ export { default as Toast } from "./Toast";
 export { ToastProvider, useToast } from "./ToastContainer";
 export { default as ErrorBoundary } from "./ErrorBoundary";
 export { default as AdminRoute } from "./AdminRoute";
+export { default as ExpertRoute } from "./ExpertRoute";

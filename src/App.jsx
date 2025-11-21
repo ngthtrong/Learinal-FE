@@ -6,8 +6,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
-import { TopbarLayout, SidebarLayout, AdminSidebarLayout } from "@/components/layout";
-import { AdminRoute } from "./components/common";
+import {
+  TopbarLayout,
+  SidebarLayout,
+  AdminSidebarLayout,
+  ExpertSidebarLayout,
+} from "@/components/layout";
+import { AdminRoute, ExpertRoute } from "./components/common";
 
 // Pages
 import {
@@ -40,6 +45,9 @@ import {
   AdminSubscriptionPlansPage,
   AdminFinancialsPage,
   SubscriptionPurchasesPage,
+  ExpertDashboardPage,
+  ValidationRequestListPage,
+  ValidationRequestDetailPage,
 } from "./pages";
 
 // Styles
@@ -351,6 +359,86 @@ function App() {
                     </AdminSidebarLayout>
                   </TopbarLayout>
                 </AdminRoute>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Expert routes */}
+          <Route
+            path="/expert"
+            element={
+              <ProtectedRoute>
+                <ExpertRoute>
+                  <TopbarLayout>
+                    <ExpertSidebarLayout>
+                      <ExpertDashboardPage />
+                    </ExpertSidebarLayout>
+                  </TopbarLayout>
+                </ExpertRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/expert/requests"
+            element={
+              <ProtectedRoute>
+                <ExpertRoute>
+                  <TopbarLayout>
+                    <ExpertSidebarLayout>
+                      <ValidationRequestListPage />
+                    </ExpertSidebarLayout>
+                  </TopbarLayout>
+                </ExpertRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/expert/requests/:id"
+            element={
+              <ProtectedRoute>
+                <ExpertRoute>
+                  <TopbarLayout>
+                    <ExpertSidebarLayout>
+                      <ValidationRequestDetailPage />
+                    </ExpertSidebarLayout>
+                  </TopbarLayout>
+                </ExpertRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/expert/history"
+            element={
+              <ProtectedRoute>
+                <ExpertRoute>
+                  <TopbarLayout>
+                    <ExpertSidebarLayout>
+                      {/* Reuse list page with Completed filter or create new page if needed */}
+                      <ValidationRequestListPage />
+                    </ExpertSidebarLayout>
+                  </TopbarLayout>
+                </ExpertRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/expert/commissions"
+            element={
+              <ProtectedRoute>
+                <ExpertRoute>
+                  <TopbarLayout>
+                    <ExpertSidebarLayout>
+                      {/* Reuse commission page or create new one. For now placeholder or reuse admin one if applicable?
+                          Actually Expert likely needs their own view.
+                          I'll point to a placeholder or reuse CommissionRecordsPage if it supports 'me' context.
+                          Let's assume we need to create it later or reuse.
+                          For now, I will point to ExpertDashboardPage as placeholder or just omit if not ready.
+                          But I added it to sidebar. Let's point to Dashboard for now or create a simple placeholder.
+                      */}
+                      <div className="p-8 text-center">Tính năng đang phát triển</div>
+                    </ExpertSidebarLayout>
+                  </TopbarLayout>
+                </ExpertRoute>
               </ProtectedRoute>
             }
           />

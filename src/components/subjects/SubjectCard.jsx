@@ -40,40 +40,47 @@ const SubjectCard = ({ subject, onDelete, onEdit }) => {
   };
 
   return (
-    <div className="subject-card" onClick={handleClick}>
-      <div className="subject-card-icon">
-        <BookIcon />
+    <div
+      className="subject-card group hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-gray-200"
+      onClick={handleClick}
+    >
+      <div className="subject-card-icon bg-primary-50 text-primary-600 group-hover:scale-110 transition-transform duration-300">
+        <BookIcon size={32} />
       </div>
 
       <div className="subject-card-content">
-        <h3 className="subject-card-title">{subject.subjectName}</h3>
+        <h3 className="subject-card-title text-lg font-semibold text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1">
+          {subject.subjectName}
+        </h3>
 
-        {subject.description && <p className="subject-card-description">{subject.description}</p>}
+        {subject.description && (
+          <p className="subject-card-description text-sm text-gray-500 line-clamp-2 mt-2 h-10">
+            {subject.description}
+          </p>
+        )}
 
-        <div className="subject-card-stats">
-          <div className="stat-item">
+        <div className="subject-card-stats flex items-center gap-4 mt-4">
+          <div className="stat-item flex items-center gap-1.5 text-sm text-gray-600">
             <span className="stat-icon">📄</span>
-            <span className="stat-value">{subject.documentCount || 0}</span>
-            <span className="stat-label">tài liệu</span>
+            <span className="stat-value font-medium">{subject.documentCount || 0}</span>
           </div>
 
-          <div className="stat-item">
+          <div className="stat-item flex items-center gap-1.5 text-sm text-gray-600">
             <span className="stat-icon">❓</span>
-            <span className="stat-value">{subject.questionSetCount || 0}</span>
-            <span className="stat-label">câu hỏi</span>
+            <span className="stat-value font-medium">{subject.questionSetCount || 0}</span>
           </div>
         </div>
 
-        <div className="subject-card-footer">
-          <span className="last-updated">
-            Cập nhật: {formatDate(subject.updatedAt || subject.createdAt)}
+        <div className="subject-card-footer mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+          <span className="last-updated text-xs text-gray-400">
+            {formatDate(subject.updatedAt || subject.createdAt)}
           </span>
 
           {(onEdit || onDelete) && (
-            <div className="subject-card-actions">
+            <div className="subject-card-actions flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
               {onEdit && (
                 <button
-                  className="action-btn edit-btn"
+                  className="action-btn edit-btn p-1.5 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-full transition-colors"
                   onClick={handleEdit}
                   title="Chỉnh sửa"
                   aria-label="Chỉnh sửa môn học"
@@ -83,7 +90,7 @@ const SubjectCard = ({ subject, onDelete, onEdit }) => {
               )}
               {onDelete && (
                 <button
-                  className="action-btn delete-btn"
+                  className="action-btn delete-btn p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
                   onClick={handleDelete}
                   title="Xóa"
                   aria-label="Xóa môn học"
