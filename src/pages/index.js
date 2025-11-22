@@ -33,3 +33,5 @@ export * from "./profile";
 
 // Admin
 export * from "./admin";
+// Expert
+export * from "./expert";

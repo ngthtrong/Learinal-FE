@@ -130,6 +130,15 @@ export const questionSetsService = {
     const res = await api.post(`/question-sets/${id}/unshare`);
     return res.data;
   },
+
+  /**
+   * Request expert review (validation) for a question set
+   * @param {string} id - Question set ID
+   */
+  requestReview: async (id) => {
+    const res = await api.post(`/question-sets/${id}/review`);
+    return res.data;
+  },
 };
 
 export default questionSetsService;

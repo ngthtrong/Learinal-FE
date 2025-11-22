@@ -15,3 +15,4 @@ export { default as subscriptionsService } from "./subscriptions.service";
 export { default as paymentsService } from "./payments.service";
 export { default as adminService } from "./admin.service";
 export { default as commissionRecordsService } from "./commissionRecords.service";
+export { default as validationRequestsService } from "./validationRequests.service";
