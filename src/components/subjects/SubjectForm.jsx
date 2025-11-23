@@ -73,39 +73,52 @@ const SubjectForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="subject-form">
-      <Input
-        label="Tên môn học"
-        type="text"
-        name="subjectName"
-        value={formData.subjectName}
-        onChange={handleChange}
-        error={errors.subjectName}
-        placeholder="Ví dụ: Toán Cao Cấp A1"
-        required
-        maxLength={200}
-        autoFocus
-      />
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-2">
+        <label htmlFor="subjectName" className="block text-sm font-semibold text-gray-900">
+          Tên môn học <span className="text-red-500">*</span>
+        </label>
+        <input
+          id="subjectName"
+          type="text"
+          name="subjectName"
+          value={formData.subjectName}
+          onChange={handleChange}
+          placeholder="Ví dụ: Toán Cao Cấp A1"
+          maxLength={200}
+          autoFocus
+          className={`w-full px-4 py-3 border ${
+            errors.subjectName ? "border-red-300" : "border-gray-300"
+          } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400`}
+        />
+        {errors.subjectName && <p className="text-sm text-red-600 mt-1">{errors.subjectName}</p>}
+        <p className="text-xs text-gray-500">Mô tả ngắn gọn về môn học này...</p>
+      </div>
 
-      <div className="form-group">
-        <label htmlFor="description" className="form-label">
-          Mô tả <span className="optional">(tùy chọn)</span>
+      <div className="space-y-2">
+        <label htmlFor="description" className="block text-sm font-semibold text-gray-900">
+          Mô tả <span className="text-gray-500 font-normal">(tùy chọn)</span>
         </label>
         <textarea
           id="description"
           name="description"
-          className={`form-textarea ${errors.description ? "error" : ""}`}
           value={formData.description}
           onChange={handleChange}
           placeholder="Mô tả ngắn gọn về môn học này..."
           rows={4}
           maxLength={1000}
+          className={`w-full px-4 py-3 border ${
+            errors.description ? "border-red-300" : "border-gray-300"
+          } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none text-gray-900 placeholder-gray-400`}
         />
-        {errors.description && <span className="error-message">{errors.description}</span>}
-        <div className="char-count">{formData.description.length} / 1000 ký tự</div>
+        {errors.description && <p className="text-sm text-red-600 mt-1">{errors.description}</p>}
+        <div className="flex justify-between items-center text-xs text-gray-500">
+          <span>Thêm mô tả chi tiết về nội dung, mục tiêu của môn học</span>
+          <span className="font-medium">{formData.description.length} / 1000 ký tự</span>
+        </div>
       </div>
 
-      <div className="form-actions">
+      <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
             Hủy

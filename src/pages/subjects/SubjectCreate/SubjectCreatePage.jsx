@@ -41,25 +41,29 @@ const SubjectCreatePage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
-      <div className="space-y-6">
-        {/* Header */}
-        <div>
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
           <button
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 mb-4 transition-colors"
             onClick={handleCancel}
             aria-label="Quay lại"
           >
-            ← Quay lại
+            ← Quay lại danh sách môn học
           </button>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Tạo môn học mới</h1>
-          <p className="text-gray-600">
-            Tạo một môn học để bắt đầu thêm tài liệu và câu hỏi học tập
-          </p>
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold text-gray-900">📚 Tạo môn học mới</h1>
+            <p className="text-lg text-gray-600">
+              Tạo một môn học để bắt đầu thêm tài liệu và câu hỏi học tập
+            </p>
+          </div>
         </div>
+      </div>
 
-        {/* Form Container */}
-        <div className="bg-white rounded-xl shadow-medium p-6">
+      {/* Form Container */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
           <SubjectForm
             onSubmit={handleSubmit}
             onCancel={handleCancel}

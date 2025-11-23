@@ -153,10 +153,10 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Tạo bộ đề thi tự động" size="large">
-      <form onSubmit={handleSubmit} className="generate-quiz-form">
+      <form onSubmit={handleSubmit} className="generate-quiz-form space-y-6">
         {/* Title Input */}
         <div className="form-group">
-          <label htmlFor="quiz-title">Tên bộ đề *</label>
+          <label htmlFor="quiz-title">Tên bộ đề : </label>
           <input
             id="quiz-title"
             type="text"
@@ -183,8 +183,7 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
             className="slider"
           />
           <div className="slider-labels">
-            <span>1</span>
-            <span>20</span>
+            <span>1 - 20 câu hỏi</span>
           </div>
         </div>
 
@@ -210,7 +209,7 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
         {/* Topic Distribution */}
         {selectedTopics.length > 0 && (
           <div className="form-group">
-            <label>Tỉ lệ câu hỏi theo chương</label>
+            <label>Tỉ lệ câu hỏi theo chương :</label>
             <div className="distribution-list">
               {selectedTopics.map((topicId) => {
                 const topic = allTopics.find((t) => t.topicId === topicId);
@@ -245,7 +244,7 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
         )}
 
         {/* Form Actions */}
-        <div className="form-actions">
+        <div className="form-actions mt-6 flex justify-start gap-3">
           <Button type="button" variant="secondary" onClick={handleReset} disabled={loading}>
             Đặt lại
           </Button>
