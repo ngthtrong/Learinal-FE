@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import { Modal } from "@/components/common";
 import { APP_CONFIG } from "@/config/app.config";
@@ -8,11 +8,14 @@ import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
 
 const Topbar = ({ theme = "light" }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
   const role = user?.role || "Learner";
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchOnScroll, setShowSearchOnScroll] = useState(false);
   const menuRef = useRef(null);
   const [currentTheme, setCurrentTheme] = useState(() => {
     try {
@@ -28,9 +31,9 @@ const Topbar = ({ theme = "light" }) => {
   const items = [
     {
       key: "upgrade",
-      label: "Upgrade",
+      label: "Nâng cấp",
       to: "/mysubscription",
-      roles: ["Learner", "Educator", "Admin"],
+      roles: ["Learner", "Expert", "Admin"],
     },
   ];
 
@@ -52,6 +55,13 @@ const Topbar = ({ theme = "light" }) => {
   const openLogoutModal = () => {
     setMenuOpen(false);
     setShowLogoutModal(true);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/home?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
   };
 
   // Toggle dark/light mode: persist to localStorage and update <html data-theme>
@@ -102,6 +112,23 @@ const Topbar = ({ theme = "light" }) => {
     return () => mo.disconnect();
   }, []);
 
+  // Handle scroll to show search bar on home page when scrolled down
+  useEffect(() => {
+    if (location.pathname !== "/home") {
+      setShowSearchOnScroll(false);
+      return;
+    }
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      // Show search bar when scrolled down past 200px (adjust as needed)
+      setShowSearchOnScroll(scrollY > 200);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [location.pathname]);
+
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-3 sticky top-0 z-50 shadow-sm">
       <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
@@ -123,61 +150,103 @@ const Topbar = ({ theme = "light" }) => {
             <span className="text-gray-800">inal</span>
           </div>
         </div>
-
-        {/* Center: Navigation */}
-        <nav className="flex items-center gap-2">
-          {visible.map((it) => (
-            <NavLink
-              key={it.key}
-              to={it.to}
-              className={({ isActive }) =>
-                `flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                  isActive
-                    ? "bg-primary-50 text-primary-700"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                }`
-              }
-            >
-              {it.key === "upgrade" && (
+        {/* Search Bar - Show when not on home page, or on home page when scrolled down, and only for Learners */}
+        <div
+          className={`transition-all duration-300 ease-in-out ${
+            (location.pathname !== "/home" || showSearchOnScroll) && role === "Learner"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 -translate-x-4 pointer-events-none"
+          }`}
+        >
+          {(location.pathname !== "/home" || showSearchOnScroll) && role === "Learner" && (
+            <form onSubmit={handleSearch} className="flex items-center gap-2 flex-1 mx-4">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Tìm môn học, bộ đề..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-3 py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                />
                 <svg
-                  className="w-4 h-4"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  focusable="false"
                 >
-                  <rect
-                    x="3"
-                    y="7"
-                    width="18"
-                    height="12"
-                    rx="3"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
                   <path
-                    d="M3 9h10a3 3 0 0 0 3-3v0a2 2 0 0 0-2-2H6a3 3 0 0 0-3 3v2z"
+                    d="M20 20l-3.5-3.5"
                     stroke="currentColor"
                     strokeWidth="2"
-                    fill="none"
+                    strokeLinecap="round"
                   />
-                  <path
-                    d="M17 12h4v6h-4a3 3 0 1 1 0-6z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    fill="none"
-                  />
-                  <circle cx="18.5" cy="15" r="1" fill="currentColor" />
                 </svg>
-              )}
-              <span>{it.label}</span>
-            </NavLink>
-          ))}
-        </nav>
+              </div>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 text-sm font-medium"
+                aria-label="Tìm kiếm"
+              >
+                Tìm
+              </button>
+            </form>
+          )}
+        </div>{" "}
+        {/* Right: Navigation, Theme Toggle & User Menu */}
+        <div className="flex items-center gap-4 ">
+          {/* Navigation */}
+          <nav className={`flex items-center gap-2 `}>
+            {visible.map((it) => (
+              <NavLink
+                key={it.key}
+                to={it.to}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary-50 text-primary-700"
+                      : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  }`
+                }
+              >
+                {it.key === "upgrade" && (
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <rect
+                      x="3"
+                      y="7"
+                      width="18"
+                      height="12"
+                      rx="3"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M3 9h10a3 3 0 0 0 3-3v0a2 2 0 0 0-2-2H6a3 3 0 0 0-3 3v2z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      fill="none"
+                    />
+                    <path
+                      d="M17 12h4v6h-4a3 3 0 1 1 0-6z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      fill="none"
+                    />
+                    <circle cx="18.5" cy="15" r="1" fill="currentColor" />
+                  </svg>
+                )}
+                <span>{it.label}</span>
+              </NavLink>
+            ))}
+          </nav>
 
-        {/* Right: Theme Toggle & User Menu */}
-        <div className="flex items-center gap-4">
           {/* Theme Toggle */}
           <button
             className={`relative w-12 h-6 rounded-full transition-colors ${
@@ -258,6 +327,7 @@ const Topbar = ({ theme = "light" }) => {
         onConfirm={handleLogout}
         variant="danger"
         loading={loggingOut}
+        showCloseButton={false}
       >
         <p className="text-gray-700">Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?</p>
         <p className="mt-2 text-sm text-gray-500">

@@ -236,8 +236,8 @@ const LearnerHomePage = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
       {/* Header with Search */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
           <form
             className="flex items-center gap-2 max-w-2xl mx-auto"
             onSubmit={(e) => {
@@ -280,7 +280,7 @@ const LearnerHomePage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-12">
         {/* Môn học Section */}
         <section className="space-y-6">
           <div className="flex items-center justify-between">
@@ -311,7 +311,7 @@ const LearnerHomePage = () => {
                   subtitle=""
                   cta=""
                   Icon={BookIcon}
-                  onClick={() => navigate("/subjects")}
+                  onClick={() => navigate(`/subjects/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
@@ -358,7 +358,7 @@ const LearnerHomePage = () => {
                   title={it.name || it.title}
                   cta=""
                   Icon={PenIcon}
-                  onClick={() => navigate("/quiz")}
+                  onClick={() => navigate(`/quiz/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
@@ -405,7 +405,7 @@ const LearnerHomePage = () => {
                   title={it.name || it.title}
                   cta=""
                   Icon={GlobeIcon}
-                  onClick={() => navigate("/public")}
+                  onClick={() => navigate(`/quiz/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
@@ -446,7 +446,7 @@ const LearnerHomePage = () => {
                   title={it.originalFileName || it.fileName || it.name || it.filename || it.title}
                   cta=""
                   Icon={UploadIcon}
-                  onClick={() => navigate("/documents")}
+                  onClick={() => navigate(`/documents/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>

@@ -195,7 +195,7 @@ function MySubscriptionPage() {
   }
 
   // Nếu đã qua điều kiện trên, subscription.status === "Active"
-  const plan = subscription.planId;
+  const plan = subscription.plan;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -227,6 +227,10 @@ function MySubscriptionPage() {
 
           <div className="p-8 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex justify-between py-3 border-b border-gray-100">
+                <span className="text-gray-600">Tên gói:</span>
+                <span className="font-medium text-gray-900">{plan?.planName || "N/A"}</span>
+              </div>
               <div className="flex justify-between py-3 border-b border-gray-100">
                 <span className="text-gray-600">Ngày bắt đầu:</span>
                 <span className="font-medium text-gray-900">

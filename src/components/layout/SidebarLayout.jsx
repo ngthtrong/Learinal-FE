@@ -56,31 +56,31 @@ const SidebarLayout = ({ children }) => {
   const items = [
     {
       key: "home",
-      label: "Home",
+      label: "Trang chủ",
       to: "/home",
       icon: HomeIcon,
-      roles: ["Learner", "Educator", "Admin"],
+      roles: ["Learner", "Expert", "Admin"],
     },
     {
       key: "subjects",
-      label: "Subjects",
+      label: "Môn học",
       to: "/subjects",
       icon: SubjectsIcon,
-      roles: ["Learner", "Educator", "Admin"],
+      roles: ["Learner", "Expert", "Admin"],
     },
     {
       key: "quiz",
-      label: "Quiz",
+      label: "Bộ đề thi",
       to: "/quiz",
       icon: QuizIcon,
-      roles: ["Learner", "Educator", "Admin"],
+      roles: ["Learner", "Expert", "Admin"],
     },
     {
       key: "public",
-      label: "Public",
+      label: "Công khai",
       to: "/public",
       icon: GlobeIcon,
-      roles: ["Learner", "Educator", "Admin"],
+      roles: ["Learner", "Expert", "Admin"],
     },
   ];
   const visible = items.filter((it) => it.roles.includes(role));
@@ -96,7 +96,20 @@ const SidebarLayout = ({ children }) => {
           collapsed ? "w-20" : "w-64"
         }`}
       >
-        <nav className="flex flex-col gap-1 p-3 pt-20">
+        {/* Logo/Brand */}
+        <div
+          className={`flex items-center ${
+            collapsed ? "justify-center" : "px-6"
+          } h-16 border-b border-gray-200`}
+        >
+          {collapsed ? (
+            <span className="text-2xl font-bold text-primary-600">L</span>
+          ) : (
+            <span className="text-xl font-bold text-primary-600">📚 Learinal</span>
+          )}
+        </div>
+
+        <nav className="flex flex-col gap-1 p-3 pt-4">
           {visible.map((it) => {
             const Icon = it.icon;
             return (
@@ -107,14 +120,12 @@ const SidebarLayout = ({ children }) => {
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                     isActive
-                      ? "bg-primary-50 text-primary-700 font-medium"
-                      : "text-gray-700 hover:bg-gray-100"
+                      ? "bg-primary-50 text-primary-700 font-semibold shadow-sm"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-primary-600"
                   } ${collapsed ? "justify-center" : ""}`
                 }
               >
-                <span className="text-xl" aria-hidden="true">
-                  <Icon />
-                </span>
+                {Icon && <Icon size={20} className="flex-shrink-0" />}
                 {!collapsed && <span className="text-sm font-medium">{it.label}</span>}
               </NavLink>
             );

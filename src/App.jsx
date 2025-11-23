@@ -110,7 +110,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <QuizListPage />
+                  <SidebarLayout>
+                    <QuizListPage />
+                  </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -139,7 +141,11 @@ function App() {
             path="/mysubscription"
             element={
               <ProtectedRoute>
-                <MySubscriptionPage />
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <MySubscriptionPage />
+                  </SidebarLayout>
+                </TopbarLayout>
               </ProtectedRoute>
             }
           />
@@ -148,7 +154,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <ProfileViewPage />
+                  <SidebarLayout>
+                    <ProfileViewPage />
+                  </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -201,6 +209,18 @@ function App() {
           />
 
           {/* Quiz routes */}
+          <Route
+            path="/quiz/:id"
+            element={
+              <ProtectedRoute>
+                <TopbarLayout>
+                  <SidebarLayout>
+                    <QuestionSetDetailPage />
+                  </SidebarLayout>
+                </TopbarLayout>
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/question-sets/:id"
             element={

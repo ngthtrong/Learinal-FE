@@ -5,6 +5,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@contexts/AuthContext";
+import { usersService } from "@/services/api";
 
 const DashboardPage = () => {
   const { user, logout } = useAuth();
@@ -17,14 +18,8 @@ const DashboardPage = () => {
 
   const fetchDashboardData = async () => {
     try {
-      // Simulate fetching dashboard stats
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setStats({
-        documents: 12,
-        quizzes: 8,
-        completedQuizzes: 5,
-        avgScore: 85,
-      });
+      const data = await usersService.getDashboardStats();
+      setStats(data);
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
     } finally {

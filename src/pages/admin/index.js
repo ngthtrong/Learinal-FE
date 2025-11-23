@@ -1,7 +1,7 @@
 // Admin pages
-export { default as AdminDashboardPage } from "./AdminDashboard";
-export { default as UserManagementPage } from "./UserManagement";
-export { default as CommissionRecordsPage } from "./CommissionRecords";
-export { default as AdminSubscriptionPlansPage } from "./SubscriptionPlans";
-export { default as AdminFinancialsPage } from "./Financials";
-export { SubscriptionPurchasesPage } from "./SubscriptionPurchases";
+export { default as AdminDashboardPage } from "./AdminDashboard/AdminDashboardPage";
+export { default as UserManagementPage } from "./UserManagement/UserManagementPage";
+export { default as CommissionRecordsPage } from "./CommissionRecords/CommissionRecordsPage";
+export { default as AdminSubscriptionPlansPage } from "./SubscriptionPlans/SubscriptionPlansPage";
+export { default as AdminFinancialsPage } from "./Financials/FinancialsPage";
+export { default as SubscriptionPurchasesPage } from "./SubscriptionPurchases/SubscriptionPurchasesPage";
