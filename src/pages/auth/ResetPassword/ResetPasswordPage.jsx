@@ -5,21 +5,20 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { Button, Input } from "@components/common";
-import { isValidPassword } from "@utils/validators";
+import { Button, Input, PasswordStrengthIndicator, useToast } from "@components/common";
+import { isValidPassword, getErrorMessage } from "@utils";
 import { authService } from "@services/api";
-import "./ResetPasswordPage.css";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
 import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const toast = useToast();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const isDark = useMemo(() => {
     try {
@@ -59,11 +58,12 @@ const ResetPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
 
     const token = searchParams.get("token");
     if (!token) {
-      setError("Thiếu token. Vui lòng mở lại liên kết trong email.");
+      const msg = "Thiếu token. Vui lòng mở lại liên kết trong email.";
+      setError(msg);
+      toast.showError(msg);
       return;
     }
 
@@ -83,45 +83,53 @@ const ResetPasswordPage = () => {
     setLoading(true);
     try {
       await authService.resetPassword(token, password);
-      setSuccess("Đặt lại mật khẩu thành công. Đang chuyển về trang đăng nhập...");
+      toast.showSuccess("Đặt lại mật khẩu thành công!");
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      setError(err?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại");
+      const errorMsg = getErrorMessage(err);
+      setError(errorMsg);
+      toast.showError(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="reset-root">
-      <div className="reset-page">
-        <div className="reset-card card">
-          <header className="reset-brand">
-            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="brand-logo" />
-            <div className="brand-title">
-              <span className="brand-le">Lear</span>
-              <span className="brand-inal">inal</span>
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-2xl shadow-large p-8">
+          <header className="flex flex-col items-center mb-8">
+            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="h-16 w-auto mb-3" />
+            <div className="text-2xl font-bold">
+              <span className="text-primary-600">Lear</span>
+              <span className="text-gray-800">inal</span>
             </div>
           </header>
 
-          <div className="reset-header">
-            <h1>Đặt lại mật khẩu</h1>
-            <p className="muted">Nhập mật khẩu mới của bạn</p>
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Đặt lại mật khẩu</h1>
+            <p className="text-gray-600">Nhập mật khẩu mới của bạn</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="reset-form">
-            {error && <div className="alert alert-error">{error}</div>}
-            {success && <div className="alert alert-success">{success}</div>}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600">
+                {error}
+              </div>
+            )}
 
-            <Input
-              label="Mật khẩu mới"
-              type="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
+            <div>
+              <Input
+                label="Mật khẩu mới"
+                type="password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+              <PasswordStrengthIndicator password={password} />
+            </div>
 
             <Input
               label="Xác nhận mật khẩu"
@@ -138,13 +146,16 @@ const ResetPasswordPage = () => {
               variant="primary"
               size="large"
               loading={loading}
-              className="reset-button"
+              className="w-full"
             >
               Cập nhật mật khẩu
             </Button>
 
-            <p className="back-link">
-              Quay lại <Link to="/login">Đăng nhập</Link>
+            <p className="text-center text-sm text-gray-600 mt-4">
+              Quay lại{" "}
+              <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+                Đăng nhập
+              </Link>
             </p>
           </form>
         </div>

@@ -18,7 +18,7 @@ export const ROUTES = {
   // Documents
   DOCUMENTS: "/documents",
   DOCUMENT_DETAIL: "/documents/:id",
-  DOCUMENT_UPLOAD: "/documents/upload",
+  // Document upload is now integrated into subject detail page
 
   // Subjects
   SUBJECTS: "/subjects",
@@ -26,9 +26,9 @@ export const ROUTES = {
 
   // Quiz
   QUIZ: "/quiz",
-  QUIZ_START: "/quiz/:id/start",
-  QUIZ_ATTEMPT: "/quiz/:id/attempt",
-  QUIZ_RESULTS: "/quiz/:id/results",
+  QUIZ_START_WITH_ID: "/quiz/start/:id",
+  QUIZ_TAKE: "/quiz/take/:attemptId",
+  QUIZ_RESULT: "/quiz/result/:attemptId",
   QUIZ_HISTORY: "/quiz/history",
 
   // Questions

@@ -6,15 +6,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
-import { Button, Input } from "@components/common";
-import { isValidEmail, isValidPassword } from "@utils/validators";
-import "./RegisterPage.css";
+import { Button, Input, PasswordStrengthIndicator, useToast } from "@components/common";
+import { isValidEmail, isValidPassword, getErrorMessage } from "@utils";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
 import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
+  const toast = useToast();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -25,8 +25,6 @@ const RegisterPage = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const isDark = useMemo(() => {
     try {
       return (
@@ -108,8 +106,6 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
 
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
@@ -125,15 +121,16 @@ const RegisterPage = () => {
       const result = await register(userData);
 
       if (result.success) {
-        setSuccessMessage("Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
+        toast.showSuccess("Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
         setTimeout(() => {
           navigate("/login");
         }, 3000);
       } else {
-        setErrorMessage(result.error || "Đăng ký thất bại");
+        toast.showError(result.error || "Đăng ký thất bại");
       }
     } catch (err) {
-      setErrorMessage("Có lỗi xảy ra. Vui lòng thử lại.");
+      const errorMsg = getErrorMessage(err);
+      toast.showError(errorMsg);
       console.error("Register error:", err);
     } finally {
       setLoading(false);
@@ -141,27 +138,26 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="register-root">
-      <div className="register-page">
-        <div className="register-card card">
-          <header className="register-brand">
-            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="brand-logo" />
-            <div className="brand-title">
-              <span className="brand-le">Lear</span>
-              <span className="brand-inal">inal</span>
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-2xl shadow-large p-8">
+          {/* Brand Header */}
+          <header className="flex flex-col items-center mb-8">
+            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="h-16 w-auto mb-3" />
+            <div className="text-2xl font-bold">
+              <span className="text-primary-600">Lear</span>
+              <span className="text-gray-800">inal</span>
             </div>
           </header>
 
-          <div className="register-header">
-            <h1>Tạo tài khoản</h1>
-            <p className="muted">Đăng ký để bắt đầu sử dụng Learinal</p>
+          {/* Page Header */}
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Tạo tài khoản</h1>
+            <p className="text-gray-600">Đăng ký để bắt đầu sử dụng Learinal</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="register-form">
-            {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
-
-            {successMessage && <div className="alert alert-success">{successMessage}</div>}
-
+          {/* Register Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="Họ và tên"
               type="text"
@@ -186,16 +182,19 @@ const RegisterPage = () => {
 
             {/** Vai trò mặc định là Học viên (Learner). Ẩn lựa chọn vai trò trên UI. */}
 
-            <Input
-              label="Mật khẩu"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              error={errors.password}
-              placeholder="••••••••"
-              required
-            />
+            <div>
+              <Input
+                label="Mật khẩu"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                error={errors.password}
+                placeholder="••••••••"
+                required
+              />
+              <PasswordStrengthIndicator password={formData.password} />
+            </div>
 
             <Input
               label="Xác nhận mật khẩu"
@@ -213,13 +212,16 @@ const RegisterPage = () => {
               variant="primary"
               size="large"
               loading={loading}
-              className="register-button"
+              className="w-full mt-6"
             >
               Đăng ký
             </Button>
 
-            <p className="login-link">
-              Đã có tài khoản? <Link to="/login">Đăng nhập ngay</Link>
+            <p className="text-center text-sm text-gray-600 mt-4">
+              Đã có tài khoản?{" "}
+              <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+                Đăng nhập ngay
+              </Link>
             </p>
           </form>
         </div>

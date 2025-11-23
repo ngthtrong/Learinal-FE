@@ -79,6 +79,16 @@ export const authService = {
   },
 
   /**
+   * Resend verification email
+   */
+  resendVerification: async (email) => {
+    const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.AUTH.RESEND_VERIFICATION, {
+      email,
+    });
+    return response.data;
+  },
+
+  /**
    * OAuth Google login
    */
   googleOAuth: async (code) => {

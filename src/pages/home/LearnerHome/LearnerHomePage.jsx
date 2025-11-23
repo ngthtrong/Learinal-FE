@@ -13,15 +13,13 @@ import BookIcon from "@/components/icons/BookIcon";
 import UploadIcon from "@/components/icons/UploadIcon";
 import GlobeIcon from "@/components/icons/GlobeIcon";
 import PenIcon from "@/components/icons/PenIcon";
-import "./LearnerHomePage.css";
-
 const LearnerHomePage = () => {
   const navigate = useNavigate();
 
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState({ subjects: [], sets: [], documents: [] });
-  const [hasSearched, setHasSearched] = useState(false);
+  const [_hasSearched, setHasSearched] = useState(false);
   const [submittedQ, setSubmittedQ] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
   const [lists, setLists] = useState({
@@ -236,53 +234,58 @@ const LearnerHomePage = () => {
   }, [lists.myDocuments]);
 
   return (
-    <div className="learner-home-root card">
-      <div className="home-header">
-        <form
-          className="home-search"
-          onSubmit={(e) => {
-            e.preventDefault();
-            performSearch(q);
-          }}
-        >
-          <input
-            type="text"
-            placeholder="Tìm môn học, bộ đề, tài liệu..."
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                // form submit already handles it
-              }
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      {/* Header with Search */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+          <form
+            className="flex items-center gap-2 max-w-2xl mx-auto"
+            onSubmit={(e) => {
+              e.preventDefault();
+              performSearch(q);
             }}
-          />
-          <button type="submit" className="search-btn" aria-label="Tìm kiếm" disabled={loading}>
-            {/* magnifying glass icon */}
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-              <path
-                d="M20 20l-3.5-3.5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
+          >
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Tìm môn học, bộ đề, tài liệu..."
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
               />
-            </svg>
-          </button>
-        </form>
+              <svg
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+                <path
+                  d="M20 20l-3.5-3.5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+            <button
+              type="submit"
+              className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
+              aria-label="Tìm kiếm"
+              disabled={loading}
+            >
+              {loading ? "Đang tìm..." : "Tìm kiếm"}
+            </button>
+          </form>
+        </div>
       </div>
 
-      <div className="home-content">
-        {/* Mục có phạm vi cao hơn: Môn học */}
-        <section className="home-section">
-          <div className="section-title">
-            <h3
-              style={{ margin: 0, cursor: "pointer" }}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-12">
+        {/* Môn học Section */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2
+              className="text-2xl font-bold text-gray-900 cursor-pointer hover:text-primary-600 transition-colors"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/subjects")}
@@ -290,8 +293,14 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/subjects");
               }}
             >
-              Môn Học
-            </h3>
+              📚 Môn Học
+            </h2>
+            <button
+              onClick={() => navigate("/subjects")}
+              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            >
+              Xem tất cả →
+            </button>
           </div>
           {subjectsToShow.length > 0 ? (
             <CardGrid>
@@ -302,18 +311,29 @@ const LearnerHomePage = () => {
                   subtitle=""
                   cta=""
                   Icon={BookIcon}
-                  onClick={() => navigate("/subjects")}
+                  onClick={() => navigate(`/subjects/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
           ) : (
-            <div className="muted">Chưa có môn học</div>
+            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <BookIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+              <p className="text-gray-500">Chưa có môn học nào</p>
+              <button
+                onClick={() => navigate("/subjects/create")}
+                className="mt-4 text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Tạo môn học đầu tiên
+              </button>
+            </div>
           )}
         </section>
-        <section className="home-section">
-          <div className="section-title">
-            <h3
-              style={{ margin: 0, cursor: "pointer" }}
+
+        {/* Đề thi cá nhân Section */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2
+              className="text-2xl font-bold text-gray-900 cursor-pointer hover:text-primary-600 transition-colors"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/quiz")}
@@ -321,8 +341,14 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/quiz");
               }}
             >
-              Đề Thi (Cá Nhân)
-            </h3>
+              📝 Đề Thi (Cá Nhân)
+            </h2>
+            <button
+              onClick={() => navigate("/quiz")}
+              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            >
+              Xem tất cả →
+            </button>
           </div>
           {lists.mySets.length > 0 ? (
             <CardGrid>
@@ -332,19 +358,29 @@ const LearnerHomePage = () => {
                   title={it.name || it.title}
                   cta=""
                   Icon={PenIcon}
-                  onClick={() => navigate("/quiz")}
+                  onClick={() => navigate(`/quiz/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
           ) : (
-            <div className="muted">Chưa có bộ đề</div>
+            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <PenIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+              <p className="text-gray-500">Chưa có bộ đề nào</p>
+              <button
+                onClick={() => navigate("/quiz/create")}
+                className="mt-4 text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Tạo bộ đề đầu tiên
+              </button>
+            </div>
           )}
         </section>
 
-        <section className="home-section">
-          <div className="section-title">
-            <h3
-              style={{ margin: 0, cursor: "pointer" }}
+        {/* Đề thi công khai Section */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2
+              className="text-2xl font-bold text-gray-900 cursor-pointer hover:text-primary-600 transition-colors"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/public")}
@@ -352,8 +388,14 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/public");
               }}
             >
-              Đề Thi (Công Khai)
-            </h3>
+              🌐 Đề Thi (Công Khai)
+            </h2>
+            <button
+              onClick={() => navigate("/public")}
+              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            >
+              Xem tất cả →
+            </button>
           </div>
           {lists.publicSets.length > 0 ? (
             <CardGrid>
@@ -362,20 +404,24 @@ const LearnerHomePage = () => {
                   key={it._id || it.id}
                   title={it.name || it.title}
                   cta=""
-                  Icon={PenIcon}
-                  onClick={() => navigate("/public")}
+                  Icon={GlobeIcon}
+                  onClick={() => navigate(`/quiz/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
           ) : (
-            <div className="muted">Chưa có bộ đề</div>
+            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <GlobeIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+              <p className="text-gray-500">Chưa có bộ đề công khai</p>
+            </div>
           )}
         </section>
 
-        <section className="home-section">
-          <div className="section-title">
-            <h3
-              style={{ margin: 0, cursor: "pointer" }}
+        {/* Tài liệu Section */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2
+              className="text-2xl font-bold text-gray-900 cursor-pointer hover:text-primary-600 transition-colors"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/documents")}
@@ -383,8 +429,14 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/documents");
               }}
             >
-              Tài Liệu{myDocumentsDedup?.length ? ` (${myDocumentsDedup.length})` : ""}
-            </h3>
+              📄 Tài Liệu{myDocumentsDedup?.length ? ` (${myDocumentsDedup.length})` : ""}
+            </h2>
+            <button
+              onClick={() => navigate("/documents")}
+              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            >
+              Xem tất cả →
+            </button>
           </div>
           {myDocumentsDedup.length > 0 ? (
             <CardGrid>
@@ -393,64 +445,136 @@ const LearnerHomePage = () => {
                   key={it._id || it.id}
                   title={it.originalFileName || it.fileName || it.name || it.filename || it.title}
                   cta=""
-                  Icon={QuizIcon}
-                  onClick={() => navigate("/documents")}
+                  Icon={UploadIcon}
+                  onClick={() => navigate(`/documents/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
           ) : (
-            <div className="muted">Chưa có tài liệu</div>
+            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <UploadIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+              <p className="text-gray-500">Chưa có tài liệu nào</p>
+              <button
+                onClick={() => navigate("/documents/upload")}
+                className="mt-4 text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Tải lên tài liệu đầu tiên
+              </button>
+            </div>
           )}
         </section>
       </div>
 
-      <footer className="lh-footer">© 2025 Learinal</footer>
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
 
       {/* Search Results Modal */}
       {isModalOpen && (
-        <div className="modal-overlay" role="presentation" onClick={() => setModalOpen(false)}>
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+          role="presentation"
+          onClick={() => setModalOpen(false)}
+        >
           <div
-            className="modal"
+            className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-labelledby="search-modal-title"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="modal-header">
-              <h3 id="search-modal-title" style={{ margin: 0 }}>
-                Kết quả gần đúng{submittedQ ? `: "${submittedQ}"` : ""}
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-linear-to-r from-primary-50 to-secondary-50">
+              <h3 id="search-modal-title" className="text-xl font-bold text-gray-900">
+                Kết quả tìm kiếm{submittedQ ? `: "${submittedQ}"` : ""}
               </h3>
-              <button className="modal-close" onClick={() => setModalOpen(false)} aria-label="Đóng">
-                ×
+              <button
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors text-gray-600 hover:text-gray-900"
+                onClick={() => setModalOpen(false)}
+                aria-label="Đóng"
+              >
+                <span className="text-2xl leading-none">×</span>
               </button>
             </div>
-            <div className="modal-body">
-              <div className="search-results-grid">
-                <div>
-                  <div className="sr-title">Môn học</div>
-                  <ul>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)]">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Môn học */}
+                <div className="space-y-3">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <BookIcon className="w-5 h-5 text-primary-600" />
+                    Môn học
+                  </h4>
+                  <ul className="space-y-2">
                     {results.subjects.map((s) => (
-                      <li key={s._id || s.id}>{s.subjectName || s.name || s.title || "Môn học"}</li>
+                      <li
+                        key={s._id || s.id}
+                        className="px-3 py-2 bg-gray-50 rounded-lg hover:bg-primary-50 hover:text-primary-700 transition-colors cursor-pointer border border-transparent hover:border-primary-200"
+                        onClick={() => {
+                          navigate(`/subjects/${s._id || s.id}`);
+                          setModalOpen(false);
+                        }}
+                      >
+                        {s.subjectName || s.name || s.title || "Môn học"}
+                      </li>
                     ))}
-                    {results.subjects.length === 0 && <li className="muted">Không có kết quả</li>}
+                    {results.subjects.length === 0 && (
+                      <li className="px-3 py-2 text-gray-400 text-sm italic">Không có kết quả</li>
+                    )}
                   </ul>
                 </div>
-                <div>
-                  <div className="sr-title">Bộ đề</div>
-                  <ul>
+
+                {/* Bộ đề */}
+                <div className="space-y-3">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <PenIcon className="w-5 h-5 text-secondary-600" />
+                    Bộ đề
+                  </h4>
+                  <ul className="space-y-2">
                     {results.sets.map((s) => (
-                      <li key={s._id || s.id}>{s.name || s.title || "Bộ đề"}</li>
+                      <li
+                        key={s._id || s.id}
+                        className="px-3 py-2 bg-gray-50 rounded-lg hover:bg-secondary-50 hover:text-secondary-700 transition-colors cursor-pointer border border-transparent hover:border-secondary-200"
+                        onClick={() => {
+                          navigate(`/quiz/${s._id || s.id}`);
+                          setModalOpen(false);
+                        }}
+                      >
+                        {s.name || s.title || "Bộ đề"}
+                      </li>
                     ))}
-                    {results.sets.length === 0 && <li className="muted">Không có kết quả</li>}
+                    {results.sets.length === 0 && (
+                      <li className="px-3 py-2 text-gray-400 text-sm italic">Không có kết quả</li>
+                    )}
                   </ul>
                 </div>
-                <div>
-                  <div className="sr-title">Tài liệu</div>
-                  <ul>
+
+                {/* Tài liệu */}
+                <div className="space-y-3">
+                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <UploadIcon className="w-5 h-5 text-success-600" />
+                    Tài liệu
+                  </h4>
+                  <ul className="space-y-2">
                     {results.documents.map((d) => (
-                      <li key={d._id || d.id}>{d.name || d.filename || d.title || "Tài liệu"}</li>
+                      <li
+                        key={d._id || d.id}
+                        className="px-3 py-2 bg-gray-50 rounded-lg hover:bg-success-50 hover:text-success-700 transition-colors cursor-pointer border border-transparent hover:border-success-200"
+                        onClick={() => {
+                          navigate(`/documents/${d._id || d.id}`);
+                          setModalOpen(false);
+                        }}
+                      >
+                        {d.name || d.filename || d.title || "Tài liệu"}
+                      </li>
                     ))}
-                    {results.documents.length === 0 && <li className="muted">Không có kết quả</li>}
+                    {results.documents.length === 0 && (
+                      <li className="px-3 py-2 text-gray-400 text-sm italic">Không có kết quả</li>
+                    )}
                   </ul>
                 </div>
               </div>
