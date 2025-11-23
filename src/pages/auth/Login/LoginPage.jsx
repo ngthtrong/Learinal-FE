@@ -138,6 +138,8 @@ const LoginPage = () => {
         let next = "/dashboard";
         if (role === "Learner") next = "/home";
         else if (role === "Admin") next = "/admin";
+        else if (role === "Expert") next = "/expert"; // Redirect chuyên gia
+        else if (role === "Expert") next = "/expert";
         navigate(next, { replace: true });
       } else {
         toast.showError(result.error || "Đăng nhập thất bại");

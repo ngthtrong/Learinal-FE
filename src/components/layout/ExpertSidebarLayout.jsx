@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { NavLink, Navigate } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import DashboardIcon from "@/components/icons/DashboardIcon";
-import ShieldCheckIcon from "@/components/icons/ShieldCheckIcon";
 import CoinsIcon from "@/components/icons/CoinsIcon";
+import ShieldCheckIcon from "@/components/icons/ShieldCheckIcon";
 
 /**
  * ExpertSidebarLayout
- * Sidebar for Expert area.
+ * Sidebar dành cho chuyên gia (Expert): Dashboard, Hoa hồng, Yêu cầu kiểm duyệt
  */
 const ExpertSidebarLayout = ({ children }) => {
   const { user } = useAuth();
@@ -33,8 +33,7 @@ const ExpertSidebarLayout = ({ children }) => {
       if (isInSidebar) {
         e.preventDefault();
         const maxScroll = side.scrollHeight - side.clientHeight;
-        const next = Math.min(Math.max(0, side.scrollTop + dy), maxScroll);
-        side.scrollTop = next;
+        side.scrollTop = Math.min(Math.max(0, side.scrollTop + dy), maxScroll);
       }
     };
     window.addEventListener("wheel", onWheelGlobal, { passive: false, capture: true });
@@ -43,24 +42,8 @@ const ExpertSidebarLayout = ({ children }) => {
 
   const items = [
     { key: "expert_dashboard", label: "Tổng quan", to: "/expert", icon: DashboardIcon },
-    {
-      key: "expert_requests",
-      label: "Yêu cầu kiểm duyệt",
-      to: "/expert/requests",
-      icon: ShieldCheckIcon,
-    },
-    {
-      key: "expert_history",
-      label: "Lịch sử",
-      to: "/expert/history",
-      icon: ShieldCheckIcon, // Fallback if HistoryIcon doesn't exist
-    },
-    {
-      key: "expert_commission",
-      label: "Thu nhập",
-      to: "/expert/commissions",
-      icon: CoinsIcon,
-    },
+    { key: "expert_commission", label: "Hoa hồng", to: "/expert/commission-records", icon: CoinsIcon },
+    { key: "expert_validations", label: "Kiểm duyệt", to: "/expert/validation-requests", icon: ShieldCheckIcon },
   ];
 
   if (role !== "Expert") {

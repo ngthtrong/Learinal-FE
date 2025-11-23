@@ -1,210 +1,185 @@
-/**
- * Validation Request Detail Page
- * Review and approve/reject question sets
- */
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { validationRequestsService } from "@/services/api";
-import Button from "@/components/common/Button";
+import { useEffect, useState, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { validationRequestsService } from '@/services/api';
+import { Button, Input, useToast } from '@/components/common';
 
 function ValidationRequestDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const [request, setRequest] = useState(null);
+  const { pushToast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [processing, setProcessing] = useState(false);
-  const [error, setError] = useState("");
-  const [rejectReason, setRejectReason] = useState("");
-  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [completedMessage, setCompletedMessage] = useState('');
+  const [error, setError] = useState('');
+  const [data, setData] = useState(null);
+  const [feedback, setFeedback] = useState('');
+  const [editedQuestions, setEditedQuestions] = useState([]);
+  const [viewMode, setViewMode] = useState('view');
 
-  useEffect(() => {
-    loadRequest();
-  }, [id]);
-
-  const loadRequest = async () => {
+  const fetchDetail = useCallback(async () => {
+    setLoading(true);
+    setError('');
     try {
-      setLoading(true);
-      const data = await validationRequestsService.getById(id);
-      setRequest(data);
-    } catch (err) {
-      console.error("Failed to load request", err);
-      setError("Không thể tải thông tin yêu cầu");
+      const res = await validationRequestsService.getValidationRequestDetail(id);
+      setData(res);
+      setFeedback(res?.request?.feedback || '');
+      if (res?.questionSet?.questions) {
+        setEditedQuestions(res.questionSet.questions.map(q => ({ ...q })));
+      }
+    } catch (e) {
+      console.error(e);
+      setError(e?.response?.data?.message || 'Không tải được chi tiết yêu cầu');
     } finally {
       setLoading(false);
     }
+  }, [id]);
+
+  useEffect(() => {
+    fetchDetail();
+  }, [fetchDetail]);
+
+  const canComplete = data?.request?.status === 'Assigned';
+
+  const handleQuestionChange = (index, field, value) => {
+    setEditedQuestions(prev => prev.map((q, i) => i === index ? { ...q, [field]: value } : q));
   };
 
-  const handleApprove = async () => {
-    if (!window.confirm("Bạn có chắc chắn muốn duyệt bộ câu hỏi này?")) return;
-
+  const submitCompletion = async (decision) => {
+    if (!canComplete) return;
+    setSaving(true);
+    setError('');
+    setCompletedMessage('');
     try {
-      setProcessing(true);
-      await validationRequestsService.approve(id);
-      alert("Đã duyệt thành công!");
-      navigate("/expert/requests");
-    } catch (err) {
-      console.error("Approve failed", err);
-      alert("Có lỗi xảy ra khi duyệt.");
+      const payload = { decision, feedback: feedback || undefined };
+      if (decision === 'Approved') payload.correctedQuestions = editedQuestions;
+      await validationRequestsService.complete(id, payload);
+      await fetchDetail();
+      const msg = decision === 'Approved' ? '✅ Phê duyệt thành công' : '❌ Đã từ chối bộ đề';
+      setCompletedMessage(msg);
+      pushToast({ type: decision === 'Approved' ? 'success' : 'error', message: msg });
+    } catch (e) {
+      console.error(e);
+      const msg = e?.response?.data?.message || 'Hoàn thành thất bại';
+      setError(msg);
+      pushToast({ type: 'error', message: msg });
     } finally {
-      setProcessing(false);
+      setSaving(false);
     }
   };
-
-  const handleReject = async () => {
-    if (!rejectReason.trim()) {
-      alert("Vui lòng nhập lý do từ chối.");
-      return;
-    }
-
-    try {
-      setProcessing(true);
-      await validationRequestsService.reject(id, { rejectionReason: rejectReason });
-      alert("Đã từ chối yêu cầu.");
-      navigate("/expert/requests");
-    } catch (err) {
-      console.error("Reject failed", err);
-      alert("Có lỗi xảy ra khi từ chối.");
-    } finally {
-      setProcessing(false);
-      setShowRejectModal(false);
-    }
-  };
-
-  if (loading) return <div className="p-8 text-center">Đang tải...</div>;
-  if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
-  if (!request) return <div className="p-8 text-center text-red-600">Không tìm thấy yêu cầu</div>;
-
-  const isPending = request.status === "Pending";
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-200">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span
-                  className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    request.status === "Pending"
-                      ? "bg-blue-100 text-blue-800"
-                      : request.status === "Approved"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  {request.status === "Pending"
-                    ? "Chờ duyệt"
-                    : request.status === "Approved"
-                    ? "Đã duyệt"
-                    : "Đã từ chối"}
-                </span>
-                <span className="text-gray-400 text-sm">#{request.id}</span>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900">{request.questionSetTitle}</h1>
-              <p className="text-gray-500 mt-1">
-                Người gửi:{" "}
-                <span className="font-medium text-gray-900">{request.requesterName}</span> • Ngày
-                gửi: {new Date(request.createdAt).toLocaleDateString("vi-VN")}
-              </p>
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-semibold">Chi tiết kiểm duyệt</h1>
+        <Button variant="secondary" onClick={() => navigate(-1)}>Quay lại</Button>
+      </div>
+      {loading && <div className="text-gray-600">Đang tải...</div>}
+      {error && !loading && <div className="mb-4 text-sm text-red-600">{error}</div>}
+      {!loading && data && (
+        <div className="space-y-6">
+          <div className="bg-white shadow rounded p-4">
+            <h2 className="font-medium text-lg">Thông tin yêu cầu</h2>
+            <div className="mt-2 text-sm space-y-1">
+              <div><span className="font-medium">ID:</span> {data.request.id}</div>
+              <div><span className="font-medium">Trạng thái:</span> {data.request.status}</div>
+              <div><span className="font-medium">Quyết định:</span> {data.request.decision || '—'}</div>
+              <div><span className="font-medium">Người tạo:</span> {data.learner?.name || '—'} ({data.learner?.email || '—'})</div>
+              <div><span className="font-medium">Expert:</span> {data.expert?.name || '—'}</div>
+              <div><span className="font-medium">Bộ câu hỏi:</span> {data.questionSet?.title || '—'}</div>
+              <div><span className="font-medium">Số câu hỏi:</span> {data.questionSet?.questionCount ?? '—'}</div>
+              {data.request.completionTime && (
+                <div><span className="font-medium">Hoàn thành:</span> {new Date(data.request.completionTime).toLocaleString('vi-VN')}</div>
+              )}
             </div>
-
-            {isPending && (
-              <div className="flex gap-3">
-                <Button
-                  variant="danger"
-                  onClick={() => setShowRejectModal(true)}
-                  disabled={processing}
-                >
-                  Từ chối
-                </Button>
-                <Button variant="primary" onClick={handleApprove} disabled={processing}>
-                  Duyệt bài
-                </Button>
-              </div>
-            )}
           </div>
-        </div>
-
-        {/* Content Preview */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h2 className="font-bold text-gray-900">Nội dung bộ câu hỏi</h2>
-          </div>
-          <div className="p-6">
-            {/* Assuming request.questionSet contains the questions or we fetch them separately */}
-            {/* For MVP, we display what's in the request object or fetch set details */}
-            {request.questions && request.questions.length > 0 ? (
-              <div className="space-y-6">
-                {request.questions.map((q, idx) => (
-                  <div
-                    key={q.id || idx}
-                    className="p-4 rounded-lg border border-gray-100 bg-gray-50"
-                  >
-                    <div className="flex gap-3">
-                      <span className="font-bold text-gray-500">Câu {idx + 1}:</span>
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900 mb-3">{q.questionText}</p>
-                        <div className="space-y-2">
-                          {q.options?.map((opt, i) => (
-                            <div
-                              key={i}
-                              className={`flex items-center gap-2 ${
-                                i === q.correctAnswerIndex
-                                  ? "text-green-700 font-medium"
-                                  : "text-gray-600"
-                              }`}
-                            >
-                              <div
-                                className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${
-                                  i === q.correctAnswerIndex
-                                    ? "border-green-600 bg-green-50"
-                                    : "border-gray-400"
-                                }`}
-                              >
-                                {String.fromCharCode(65 + i)}
-                              </div>
-                              <span>{opt}</span>
-                              {i === q.correctAnswerIndex && <span>(Đáp án đúng)</span>}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+          <div className="bg-white shadow rounded p-4">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="font-medium text-lg">Câu hỏi trong bộ đề</h2>
+              {canComplete && (
+                <Button variant="secondary" size="small" onClick={() => setViewMode(m => m === 'view' ? 'edit' : 'view')}>
+                  {viewMode === 'view' ? 'Chỉnh sửa' : 'Xem'}
+                </Button>
+              )}
+            </div>
+            {data.questionSet?.questions?.length ? (
+              <div className="space-y-4">
+                {editedQuestions.map((q, idx) => (
+                  <div key={q.questionId || idx} className="border rounded p-3">
+                    <div className="flex justify-between mb-2">
+                      <div className="text-xs text-gray-500">Câu #{idx + 1}</div>
+                      {q.difficultyLevel && <span className="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-600">{q.difficultyLevel}</span>}
                     </div>
+                    {viewMode === 'edit' ? (
+                      <Input label="Nội dung" value={q.questionText || ''} onChange={(e) => handleQuestionChange(idx, 'questionText', e.target.value)} />
+                    ) : (
+                      <p className="text-sm font-medium leading-relaxed">{q.questionText}</p>
+                    )}
+                    <div className="mt-3 space-y-2">
+                      <div className="text-xs font-medium text-gray-600">Phương án trả lời</div>
+                      {q.options?.map((opt, ai) => (
+                        <div key={ai} className="flex items-start gap-2">
+                          <div className={`text-xs px-2 py-0.5 rounded ${q.correctAnswerIndex === ai ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>{String.fromCharCode(65 + ai)}</div>
+                          {viewMode === 'edit' ? (
+                            <Input value={opt} onChange={(e) => {
+                              const val = e.target.value;
+                              setEditedQuestions(prev => prev.map((qq, qi) => {
+                                if (qi !== idx) return qq;
+                                const options = qq.options.map((o, oi) => oi === ai ? val : o);
+                                return { ...qq, options };
+                              }));
+                            }} />
+                          ) : (
+                            <p className="text-sm">{opt}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {q.explanation && (
+                      <div className="mt-3">
+                        <div className="text-xs font-medium text-gray-600 mb-1">Giải thích</div>
+                        {viewMode === 'edit' ? (
+                          <textarea className="w-full px-3 py-2 border border-gray-300 rounded text-sm" value={q.explanation} onChange={(e) => handleQuestionChange(idx, 'explanation', e.target.value)} />
+                        ) : (
+                          <p className="text-sm text-gray-700 whitespace-pre-line">{q.explanation}</p>
+                        )}
+                      </div>
+                    )}
+                    {q.topicTags?.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {q.topicTags.map(tag => (
+                          <span key={tag} className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded">{tag}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 italic">Không có dữ liệu câu hỏi chi tiết.</p>
+              <div className="text-sm text-gray-500">Không có câu hỏi để hiển thị.</div>
             )}
           </div>
-        </div>
-      </div>
-
-      {/* Reject Modal */}
-      {showRejectModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Từ chối yêu cầu</h3>
-            <p className="text-gray-600 mb-4">
-              Vui lòng cho biết lý do từ chối để người dùng chỉnh sửa lại.
-            </p>
-            <textarea
-              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-hidden mb-4"
-              rows={4}
-              placeholder="Nhập lý do từ chối..."
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-            />
-            <div className="flex justify-end gap-3">
-              <Button variant="secondary" onClick={() => setShowRejectModal(false)}>
-                Hủy
-              </Button>
-              <Button variant="danger" onClick={handleReject} loading={processing}>
-                Xác nhận từ chối
-              </Button>
-            </div>
+          <div className="bg-white shadow rounded p-4 relative">
+            {saving && (
+              <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex flex-col items-center justify-center z-10">
+                <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-2" />
+                <div className="text-sm text-indigo-700">Đang xử lý...</div>
+              </div>
+            )}
+            <h2 className="font-medium text-lg mb-2">Phản hồi</h2>
+            <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder="Nhận xét của bạn..." className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[120px] text-sm" />
+            {canComplete ? (
+              <div className="flex gap-3 mt-4">
+                <Button disabled={saving} onClick={() => submitCompletion('Approved')}>Phê duyệt</Button>
+                <Button variant="secondary" disabled={saving} onClick={() => submitCompletion('Rejected')}>Từ chối</Button>
+              </div>
+            ) : (
+              <div className="text-xs text-gray-500 mt-2">
+                {data.request.status === 'Completed' && 'Yêu cầu đã hoàn thành.'}
+                {data.request.status === 'Rejected' && 'Yêu cầu đã bị từ chối.'}
+                {!['Completed','Rejected','Assigned'].includes(data.request.status) && 'Không thể hoàn thành vì trạng thái hiện tại không phải Assigned.'}
+              </div>
+            )}
+            {completedMessage && <div className="mt-4 text-sm font-medium text-indigo-700">{completedMessage}</div>}
           </div>
         </div>
       )}
