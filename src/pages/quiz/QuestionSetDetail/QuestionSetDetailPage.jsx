@@ -80,7 +80,7 @@ function QuestionSetDetailPage() {
           <div className="text-6xl mb-4">📋</div>
           <h2 className="text-2xl font-bold text-gray-900">Không tìm thấy bộ câu hỏi</h2>
           <p className="text-gray-600">Bộ câu hỏi này có thể đã bị xóa hoặc không tồn tại</p>
-          <Button onClick={() => navigate("/question-sets")}>← Quay lại danh sách</Button>
+          <Button onClick={() => navigate(-1)}>← Quay lại</Button>
         </div>
       </div>
     );
@@ -99,7 +99,7 @@ function QuestionSetDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <Button variant="secondary" onClick={() => navigate("/question-sets")}>
+          <Button variant="secondary" onClick={() => navigate(-1)}>
             ← Quay lại
           </Button>
           <Button onClick={handleStartQuiz} variant="primary" size="large">

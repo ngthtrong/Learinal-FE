@@ -268,7 +268,7 @@ function SubjectDetailPage() {
             <p className="text-gray-600 text-center mb-6">
               Môn học này có thể đã bị xóa hoặc không tồn tại
             </p>
-            <Button onClick={() => navigate("/subjects")}>← Quay lại danh sách</Button>
+            <Button onClick={() => navigate(-1)}>← Quay lại</Button>
           </div>
         </div>
       </div>
@@ -281,8 +281,8 @@ function SubjectDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
           <div className="flex items-center justify-between">
-            <Button variant="secondary" onClick={() => navigate("/subjects")}>
-              ← Quay lại danh sách
+            <Button variant="secondary" onClick={() => navigate(-1)}>
+              ← Quay lại
             </Button>
             <div className="flex items-center gap-2">
               <Button onClick={() => setIsUploadModalOpen(true)}>📤 Tải tài liệu</Button>

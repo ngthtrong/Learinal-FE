@@ -311,7 +311,7 @@ const LearnerHomePage = () => {
                   subtitle=""
                   cta=""
                   Icon={BookIcon}
-                  onClick={() => navigate("/subjects")}
+                  onClick={() => navigate(`/subjects/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
@@ -358,7 +358,7 @@ const LearnerHomePage = () => {
                   title={it.name || it.title}
                   cta=""
                   Icon={PenIcon}
-                  onClick={() => navigate("/quiz")}
+                  onClick={() => navigate(`/quiz/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
@@ -405,7 +405,7 @@ const LearnerHomePage = () => {
                   title={it.name || it.title}
                   cta=""
                   Icon={GlobeIcon}
-                  onClick={() => navigate("/public")}
+                  onClick={() => navigate(`/quiz/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
@@ -446,7 +446,7 @@ const LearnerHomePage = () => {
                   title={it.originalFileName || it.fileName || it.name || it.filename || it.title}
                   cta=""
                   Icon={UploadIcon}
-                  onClick={() => navigate("/documents")}
+                  onClick={() => navigate(`/documents/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
