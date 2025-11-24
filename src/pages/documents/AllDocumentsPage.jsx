@@ -1,0 +1,265 @@
+/**
+ * AllDocumentsPage Component
+ * Display all documents of the user across all subjects
+ */
+
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Button from "@/components/common/Button";
+import { documentsService, subjectsService } from "@/services/api";
+import DocumentIcon from "@/components/icons/DocumentIcon";
+
+function AllDocumentsPage() {
+  const navigate = useNavigate();
+
+  // State
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Load all documents from all subjects
+  useEffect(() => {
+    const loadAllDocuments = async () => {
+      try {
+        setLoading(true);
+
+        // First, get all subjects
+        const fetchAllSubjects = async () => {
+          const pageSize = 50;
+          let page = 1;
+          const all = [];
+          for (let i = 0; i < 50; i++) {
+            const resp = await subjectsService
+              .getSubjects({ page, pageSize, sort: "-updatedAt" })
+              .catch(() => ({ items: [], meta: { totalPages: page } }));
+            const items = resp?.items || resp?.data?.items || [];
+            all.push(...items);
+            const totalPages = resp?.meta?.totalPages || 1;
+            if (page >= totalPages) break;
+            page += 1;
+          }
+          return all;
+        };
+
+        const subjects = await fetchAllSubjects();
+
+        // Then, fetch documents for each subject
+        const fetchDocsBySubject = async (subjectId) => {
+          const pageSize = 50;
+          let page = 1;
+          const agg = [];
+          for (let i = 0; i < 50; i++) {
+            const resp = await documentsService
+              .getDocumentsBySubject(subjectId, { page, pageSize })
+              .catch(() => ({ data: [], meta: { totalPages: page } }));
+            const items = resp?.data || resp?.items || [];
+            agg.push(...items);
+            const totalPages = resp?.meta?.totalPages || 1;
+            if (page >= totalPages) break;
+            page += 1;
+          }
+          return agg;
+        };
+
+        const docsArrays = await Promise.all(
+          subjects.map((s) => fetchDocsBySubject(s.id || s._id).catch(() => []))
+        );
+        const allDocs = docsArrays.flat();
+
+        // Deduplicate by id
+        const docMap = new Map();
+        for (const doc of allDocs) {
+          const key = doc?.id || doc?._id;
+          if (key && !docMap.has(key)) {
+            docMap.set(key, doc);
+          }
+        }
+
+        setDocuments(Array.from(docMap.values()));
+      } catch (err) {
+        setError(err.response?.data?.message || "Không thể tải danh sách tài liệu");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAllDocuments();
+  }, []);
+
+  // Handle delete document
+  const handleDeleteDocument = async (documentId) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa tài liệu này?")) {
+      return;
+    }
+
+    try {
+      await documentsService.deleteDocument(documentId);
+      setDocuments((prev) => prev.filter((doc) => (doc.id || doc._id) !== documentId));
+    } catch (err) {
+      alert(err.response?.data?.message || "Không thể xóa tài liệu");
+    }
+  };
+
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleDateString("vi-VN");
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="flex items-center justify-center py-16">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Đang tải tài liệu...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold text-gray-900">📄 Tài liệu của tôi</h1>
+              <p className="text-lg text-gray-600">
+                Quản lý tất cả tài liệu học tập ({documents.length} tài liệu)
+              </p>
+            </div>
+            <Button onClick={() => navigate("/subjects")}>Chọn môn học để upload</Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+            {error}
+          </div>
+        )}
+
+        {/* Documents Grid */}
+        {documents.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-xl shadow-sm border border-gray-200">
+            <div className="text-6xl mb-4">📄</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Chưa có tài liệu nào</h2>
+            <p className="text-gray-600 text-center mb-6 max-w-md">
+              Upload tài liệu đầu tiên để bắt đầu học tập. Chọn môn học để upload tài liệu.
+            </p>
+            <Button onClick={() => navigate("/subjects")}>Đến trang môn học</Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {documents.map((doc) => {
+              const docId = doc.id || doc._id;
+              const fileName = doc.originalFileName || doc.fileName || doc.filename || "Tài liệu";
+              const status = doc.status || "Unknown";
+              const createdAt = doc.createdAt;
+              const subjectName = doc.subject?.name || doc.subject?.subjectName || "";
+
+              const statusColors = {
+                Uploading: "bg-blue-100 text-blue-700 border-blue-200",
+                Processing: "bg-yellow-100 text-yellow-700 border-yellow-200",
+                Completed: "bg-green-100 text-green-700 border-green-200",
+                Error: "bg-red-100 text-red-700 border-red-200",
+              };
+
+              return (
+                <div
+                  key={docId}
+                  className="group relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br from-white via-primary-50/40 to-secondary-50/60 border border-gray-100 hover:border-primary-300 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  onClick={() => navigate(`/documents/${docId}`)}
+                >
+                  {/* Decorative blob */}
+                  <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-200/40 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
+
+                  {/* Icon & Title */}
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-primary-100 text-primary-700 shadow-inner group-hover:scale-110 transition-transform flex-shrink-0">
+                      <DocumentIcon size={24} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3
+                        className="text-lg font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-primary-700 transition-colors"
+                        title={fileName}
+                      >
+                        {fileName}
+                      </h3>
+                      {createdAt && (
+                        <p className="text-xs text-gray-500 mt-1">{formatDate(createdAt)}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Subject info */}
+                  {subjectName && (
+                    <div className="text-sm text-gray-600 mb-3">
+                      <span className="font-medium">Môn học:</span> {subjectName}
+                    </div>
+                  )}
+
+                  {/* Status Badge */}
+                  <div className="mt-4 flex flex-wrap gap-2 items-center">
+                    <span
+                      className={`px-2.5 py-1 text-xs font-medium rounded-full border ${
+                        statusColors[status] || "bg-gray-100 text-gray-700 border-gray-200"
+                      }`}
+                    >
+                      {status === "Uploading"
+                        ? "Đang tải lên"
+                        : status === "Processing"
+                        ? "Đang xử lý"
+                        : status === "Completed"
+                        ? "Hoàn tất"
+                        : status === "Error"
+                        ? "Lỗi"
+                        : status}
+                    </span>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/documents/${docId}`);
+                      }}
+                      className="flex-1 px-3 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
+                    >
+                      👁️ Xem chi tiết
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteDocument(docId);
+                      }}
+                      className="px-3 py-2 text-sm font-medium text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default AllDocumentsPage;

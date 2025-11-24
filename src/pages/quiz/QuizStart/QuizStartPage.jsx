@@ -35,7 +35,8 @@ function QuizStartPage() {
       const data = await questionSetsService.getSetById(id);
       setQuestionSet(data);
       // Set default timer based on question count (2 minutes per question)
-      const defaultTime = Math.max(30, Math.min(120, (data.questionCount || 10) * 2));
+      const questionCount = data.questionCount || data.questions?.length || 10;
+      const defaultTime = Math.max(30, Math.min(120, questionCount * 2));
       setTimerMinutes(defaultTime);
     } catch (err) {
       const message = getErrorMessage(err);
@@ -90,7 +91,7 @@ function QuizStartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
       <div className="max-w-3xl mx-auto px-6">
         {/* Header */}
         <div className="mb-6">
@@ -111,7 +112,10 @@ function QuizStartPage() {
             <div className="flex items-center gap-2">
               <span className="text-2xl">📊</span>
               <span className="text-gray-700">
-                <strong className="text-gray-900">{questionSet.questionCount || 0}</strong> câu hỏi
+                <strong className="text-gray-900">
+                  {questionSet.questionCount || questionSet.questions?.length || 0}
+                </strong>{" "}
+                câu hỏi
               </span>
             </div>
             {useTimer && (
@@ -254,6 +258,13 @@ function QuizStartPage() {
           </Button>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

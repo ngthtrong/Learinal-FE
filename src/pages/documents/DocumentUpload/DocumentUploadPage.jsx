@@ -116,15 +116,20 @@ function DocumentUploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Tải lên tài liệu</h1>
-          <p className="text-gray-600">
-            Tải lên tài liệu để hệ thống tự động trích xuất nội dung và tạo tóm tắt
-          </p>
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold text-gray-900">📄 Tải lên tài liệu</h1>
+            <p className="text-lg text-gray-600">
+              Tải lên tài liệu để hệ thống tự động trích xuất nội dung và tạo tóm tắt
+            </p>
+          </div>
         </div>
+      </div>
 
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {success && (
           <div className="bg-success-50 border border-success-200 rounded-xl p-8 text-center">
             <div className="text-6xl mb-4">✅</div>
@@ -269,6 +274,13 @@ function DocumentUploadPage() {
           </ul>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

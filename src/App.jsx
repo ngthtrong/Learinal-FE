@@ -6,7 +6,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
-import { TopbarLayout, SidebarLayout, AdminSidebarLayout, ExpertSidebarLayout } from "@/components/layout";
+import {
+  TopbarLayout,
+  SidebarLayout,
+  AdminSidebarLayout,
+  ExpertSidebarLayout,
+} from "@/components/layout";
+import RoleBasedSidebarLayout from "./components/layout/RoleBasedSidebarLayout";
 import { AdminRoute, ExpertRoute } from "./components/common";
 
 // Pages
@@ -21,6 +27,7 @@ import {
   LearnerHomePage,
   DocumentListPage,
   DocumentDetailPage,
+  AllDocumentsPage,
   QuizListPage,
   PublicSetsPage,
   ProfileViewPage,
@@ -30,6 +37,7 @@ import {
   SubjectCreatePage,
   SubscriptionPlansPage,
   MySubscriptionPage,
+  ViewSubscriptionPage,
   QuestionSetDetailPage,
   QuizStartPage,
   QuizTakingPage,
@@ -122,7 +130,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <PublicSetsPage />
+                  <SidebarLayout>
+                    <PublicSetsPage />
+                  </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -132,7 +142,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <DocumentListPage />
+                  <SidebarLayout>
+                    <AllDocumentsPage />
+                  </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -154,9 +166,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <SidebarLayout>
+                  <RoleBasedSidebarLayout>
                     <ProfileViewPage />
-                  </SidebarLayout>
+                  </RoleBasedSidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -166,7 +178,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <ProfileEditPage />
+                  <RoleBasedSidebarLayout>
+                    <ProfileEditPage />
+                  </RoleBasedSidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -281,6 +295,18 @@ function App() {
             }
           />
           <Route
+            path="/subscriptions/view"
+            element={
+              <AdminRoute>
+                <TopbarLayout>
+                  <AdminSidebarLayout>
+                    <ViewSubscriptionPage />
+                  </AdminSidebarLayout>
+                </TopbarLayout>
+              </AdminRoute>
+            }
+          />
+          <Route
             path="/subscriptions/me"
             element={
               <ProtectedRoute>
@@ -379,63 +405,63 @@ function App() {
             }
           />
 
-            {/* Expert routes */}
-            <Route
-              path="/expert"
-              element={
-                <ProtectedRoute>
-                  <ExpertRoute>
-                    <TopbarLayout>
-                      <ExpertSidebarLayout>
-                        <ExpertDashboardPage />
-                      </ExpertSidebarLayout>
-                    </TopbarLayout>
-                  </ExpertRoute>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/expert/commission-records"
-              element={
-                <ProtectedRoute>
-                  <ExpertRoute>
-                    <TopbarLayout>
-                      <ExpertSidebarLayout>
-                        <ExpertCommissionRecordsPage />
-                      </ExpertSidebarLayout>
-                    </TopbarLayout>
-                  </ExpertRoute>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/expert/validation-requests"
-              element={
-                <ProtectedRoute>
-                  <ExpertRoute>
-                    <TopbarLayout>
-                      <ExpertSidebarLayout>
-                        <ExpertValidationRequestsPage />
-                      </ExpertSidebarLayout>
-                    </TopbarLayout>
-                  </ExpertRoute>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/expert/validation-requests/:id"
-              element={
-                <ProtectedRoute>
-                  <ExpertRoute>
-                    <TopbarLayout>
-                      <ExpertSidebarLayout>
-                        <ExpertValidationRequestDetailPage />
-                      </ExpertSidebarLayout>
-                    </TopbarLayout>
-                  </ExpertRoute>
-                </ProtectedRoute>
-              }
-            />
+          {/* Expert routes */}
+          <Route
+            path="/expert"
+            element={
+              <ProtectedRoute>
+                <ExpertRoute>
+                  <TopbarLayout>
+                    <ExpertSidebarLayout>
+                      <ExpertDashboardPage />
+                    </ExpertSidebarLayout>
+                  </TopbarLayout>
+                </ExpertRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/expert/commission-records"
+            element={
+              <ProtectedRoute>
+                <ExpertRoute>
+                  <TopbarLayout>
+                    <ExpertSidebarLayout>
+                      <ExpertCommissionRecordsPage />
+                    </ExpertSidebarLayout>
+                  </TopbarLayout>
+                </ExpertRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/expert/validation-requests"
+            element={
+              <ProtectedRoute>
+                <ExpertRoute>
+                  <TopbarLayout>
+                    <ExpertSidebarLayout>
+                      <ExpertValidationRequestsPage />
+                    </ExpertSidebarLayout>
+                  </TopbarLayout>
+                </ExpertRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/expert/validation-requests/:id"
+            element={
+              <ProtectedRoute>
+                <ExpertRoute>
+                  <TopbarLayout>
+                    <ExpertSidebarLayout>
+                      <ExpertValidationRequestDetailPage />
+                    </ExpertSidebarLayout>
+                  </TopbarLayout>
+                </ExpertRoute>
+              </ProtectedRoute>
+            }
+          />
 
           {/* Default redirect */}
           <Route path="/" element={<Navigate to="/login" replace />} />

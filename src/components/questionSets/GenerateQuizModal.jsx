@@ -152,17 +152,35 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Tạo bộ đề thi tự động" size="large">
-      <form onSubmit={handleSubmit} className="generate-quiz-form space-y-6">
+    <Modal isOpen={isOpen} onClose={onClose} title="Tạo bộ đề thi mới" size="large">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Subject Info */}
+        {subject && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="text-blue-600 text-xl">ℹ️</div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-blue-900 mb-1">
+                  Môn học: {subject.subjectName}
+                </p>
+                <p className="text-sm text-blue-700">📚 {allTopics.length} chương</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Title Input */}
         <div className="form-group">
-          <label htmlFor="quiz-title">Tên bộ đề : </label>
+          <label htmlFor="quiz-title" className="block text-sm font-medium text-gray-700 mb-2">
+            Tên bộ đề <span className="text-red-500">*</span>
+          </label>
           <input
             id="quiz-title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Ví dụ: Đề thi cuối kỳ"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             required
             maxLength={100}
           />
@@ -170,8 +188,8 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
 
         {/* Number of Questions Slider */}
         <div className="form-group">
-          <label htmlFor="num-questions">
-            Số lượng câu hỏi: <strong>{numQuestions}</strong>
+          <label htmlFor="num-questions" className="block text-sm font-medium text-gray-700 mb-2">
+            Số lượng câu hỏi: <strong className="text-primary-600">{numQuestions}</strong>
           </label>
           <input
             id="num-questions"
@@ -180,63 +198,81 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
             max="20"
             value={numQuestions}
             onChange={(e) => setNumQuestions(parseInt(e.target.value))}
-            className="slider"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
           />
-          <div className="slider-labels">
-            <span>1 - 20 câu hỏi</span>
+          <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <span>1 câu</span>
+            <span>20 câu</span>
           </div>
         </div>
 
-        {/* Topic Selection */}
-        <div className="form-group">
-          <label>Chọn chương ({selectedTopics.length} đã chọn)</label>
-          <div className="topics-list">
-            {allTopics.map((topic) => (
-              <div key={topic.topicId} className="topic-item">
-                <label className="topic-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={selectedTopics.includes(topic.topicId)}
-                    onChange={() => handleTopicToggle(topic.topicId)}
-                  />
-                  <span>{topic.topicName}</span>
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Topic Distribution */}
-        {selectedTopics.length > 0 && (
+        {/* Topic Selection and Distribution */}
+        {allTopics.length > 0 && (
           <div className="form-group">
-            <label>Tỉ lệ câu hỏi theo chương :</label>
-            <div className="distribution-list">
-              {selectedTopics.map((topicId) => {
-                const topic = allTopics.find((t) => t.topicId === topicId);
-                const percentage = topicDistribution[topicId] || 0;
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Chọn chương và tỉ lệ câu hỏi ({selectedTopics.length}/{allTopics.length} đã chọn)
+            </label>
+            <div className="border border-gray-300 rounded-lg p-3 space-y-3">
+              {allTopics.map((topic) => {
+                const isSelected = selectedTopics.includes(topic.topicId);
+                const percentage = topicDistribution[topic.topicId] || 0;
 
                 return (
-                  <div key={topicId} className="distribution-item">
-                    <div className="distribution-header">
-                      <span className="topic-name">{topic?.topicName}</span>
-                      <span className="percentage-value">{Math.round(percentage)}%</span>
-                    </div>
+                  <div
+                    key={topic.topicId}
+                    className={`p-3 rounded-lg border ${
+                      isSelected ? "border-primary-300 bg-primary-50" : "border-gray-200 bg-gray-50"
+                    }`}
+                  >
+                    <label className="flex items-center gap-3 cursor-pointer mb-2">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => handleTopicToggle(topic.topicId)}
+                        className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                      />
+                      <span
+                        className={`text-sm font-medium flex-1 ${
+                          isSelected ? "text-gray-900" : "text-gray-500"
+                        }`}
+                      >
+                        {topic.topicName}
+                      </span>
+                      <span
+                        className={`text-sm font-bold ${
+                          isSelected ? "text-primary-600" : "text-gray-400"
+                        }`}
+                      >
+                        {Math.round(percentage)}%
+                      </span>
+                    </label>
                     <input
                       type="range"
                       min="0"
                       max="100"
                       step="1"
                       value={percentage}
-                      onChange={(e) => handleDistributionChange(topicId, e.target.value)}
-                      className="slider distribution-slider"
+                      onChange={(e) => handleDistributionChange(topic.topicId, e.target.value)}
+                      disabled={!isSelected}
+                      className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${
+                        isSelected ? "bg-gray-200" : "bg-gray-100 opacity-50 cursor-not-allowed"
+                      }`}
                     />
                   </div>
                 );
               })}
             </div>
-            <div className="distribution-total">
+            <div className="mt-2 text-sm text-gray-600">
               Tổng:{" "}
-              <strong>
+              <strong
+                className={`${
+                  Math.round(
+                    Object.values(topicDistribution).reduce((sum, val) => sum + val, 0)
+                  ) === 100
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
                 {Math.round(Object.values(topicDistribution).reduce((sum, val) => sum + val, 0))}%
               </strong>
             </div>
@@ -244,7 +280,7 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
         )}
 
         {/* Form Actions */}
-        <div className="form-actions mt-6 flex justify-start gap-3">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
           <Button type="button" variant="secondary" onClick={handleReset} disabled={loading}>
             Đặt lại
           </Button>

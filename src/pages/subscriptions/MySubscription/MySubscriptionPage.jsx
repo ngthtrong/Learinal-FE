@@ -132,10 +132,14 @@ function MySubscriptionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-600">Đang tải...</p>
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="flex items-center justify-center py-16">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Đang tải thông tin gói đăng ký...</p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -143,9 +147,11 @@ function MySubscriptionPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-error-50 border border-error-200 text-error-800 px-6 py-4 rounded-lg max-w-md">
-          {error}
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg max-w-2xl mx-auto mt-8">
+            <p className="font-medium">{error}</p>
+          </div>
         </div>
       </div>
     );
@@ -153,14 +159,24 @@ function MySubscriptionPage() {
 
   if (!subscription) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center space-y-6 p-8">
-          <div className="text-8xl">📦</div>
-          <h2 className="text-2xl font-bold text-gray-900">Chưa có gói đăng ký</h2>
-          <p className="text-gray-600 max-w-md">
-            Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
-          </p>
-          <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+        {/* Header */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+            <h1 className="text-4xl font-bold text-gray-900">💳 Gói đăng ký của tôi</h1>
+          </div>
+        </div>
+
+        {/* Empty State */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-xl shadow-sm border border-gray-200">
+            <div className="text-6xl mb-4">📦</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Chưa có gói đăng ký</h2>
+            <p className="text-gray-600 text-center mb-6 max-w-md">
+              Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
+            </p>
+            <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
+          </div>
         </div>
       </div>
     );
@@ -169,26 +185,35 @@ function MySubscriptionPage() {
   // Chỉ hiển thị subscription khi status là Active
   if (subscription.status !== "Active") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center space-y-6 p-8 max-w-md">
-          <div className="text-8xl">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-900">Gói đăng ký không hoạt động</h2>
-          <p className="text-gray-700">
-            Gói đăng ký của bạn hiện đang ở trạng thái:{" "}
-            <strong>{getStatusText(subscription.status)}</strong>
-          </p>
-          {subscription.status === "PendingPayment" && (
-            <p className="text-gray-600">Vui lòng hoàn tất thanh toán để kích hoạt gói.</p>
-          )}
-          {subscription.status === "Expired" && (
-            <p className="text-gray-600">
-              Gói đăng ký của bạn đã hết hạn. Vui lòng gia hạn hoặc chọn gói mới.
-            </p>
-          )}
-          {subscription.status === "Cancelled" && (
-            <p className="text-gray-600">Gói đăng ký của bạn đã bị hủy.</p>
-          )}
-          <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+        {/* Header */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+            <h1 className="text-4xl font-bold text-gray-900">💳 Gói đăng ký của tôi</h1>
+          </div>
+        </div>
+
+        {/* Inactive State */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-xl shadow-sm border border-gray-200">
+            <div className="text-6xl mb-4">⚠️</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Gói đăng ký không hoạt động</h2>
+            <div className="mb-4">{getStatusBadge(subscription.status)}</div>
+            {subscription.status === "PendingPayment" && (
+              <p className="text-gray-600 text-center mb-6">
+                Vui lòng hoàn tất thanh toán để kích hoạt gói.
+              </p>
+            )}
+            {subscription.status === "Expired" && (
+              <p className="text-gray-600 text-center mb-6">
+                Gói đăng ký của bạn đã hết hạn. Vui lòng gia hạn hoặc chọn gói mới.
+              </p>
+            )}
+            {subscription.status === "Cancelled" && (
+              <p className="text-gray-600 text-center mb-6">Gói đăng ký của bạn đã bị hủy.</p>
+            )}
+            <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
+          </div>
         </div>
       </div>
     );
@@ -198,78 +223,98 @@ function MySubscriptionPage() {
   const plan = subscription.plan;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Gói đăng ký của tôi</h1>
-          <Button variant="secondary" onClick={() => navigate("/subscriptions/plans")}>
-            Xem các gói khác
-          </Button>
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold text-gray-900">💳 Gói đăng ký của tôi</h1>
+              <p className="text-lg text-gray-600">Thông tin chi tiết về gói đăng ký hiện tại</p>
+            </div>
+            <Button variant="secondary" onClick={() => navigate("/subscriptions/plans")}>
+              Xem các gói khác
+            </Button>
+          </div>
         </div>
+      </div>
 
-        <div className="bg-white rounded-xl shadow-medium overflow-hidden">
-          <div className="bg-linear-to-r from-primary-500 to-secondary-500 p-8 text-white">
-            <div className="flex items-start justify-between mb-4">
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          {/* Plan Header */}
+          <div className="bg-gradient-to-r from-primary-600 to-secondary-600 p-8 text-white">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
               <div>
-                <h2 className="text-2xl font-bold mb-2">{plan?.planName || "Gói đăng ký"}</h2>
+                <h2 className="text-3xl font-bold mb-3">{plan?.planName || "Gói đăng ký"}</h2>
                 {getStatusBadge(subscription.status)}
               </div>
-              <div className="text-right">
-                <div className="text-4xl font-bold">{formatPrice(plan?.price || 0)}</div>
-                <div className="text-white/80">
+              <div className="text-left sm:text-right">
+                <div className="text-5xl font-bold mb-1">{formatPrice(plan?.price || 0)}</div>
+                <div className="text-white/90 text-lg">
                   /{plan?.billingCycle === "Monthly" ? "tháng" : "năm"}
                 </div>
               </div>
             </div>
-
-            {plan?.description && <p className="text-white/90">{plan.description}</p>}
+            {plan?.description && (
+              <p className="text-white/90 text-lg max-w-2xl">{plan.description}</p>
+            )}
           </div>
 
-          <div className="p-8 space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex justify-between py-3 border-b border-gray-100">
-                <span className="text-gray-600">Tên gói:</span>
-                <span className="font-medium text-gray-900">{plan?.planName || "N/A"}</span>
+          {/* Subscription Details */}
+          <div className="p-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">📋 Thông tin gói</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <span className="text-gray-600 text-sm block mb-1">Tên gói</span>
+                <span className="font-semibold text-gray-900 text-lg">
+                  {plan?.planName || "N/A"}
+                </span>
               </div>
-              <div className="flex justify-between py-3 border-b border-gray-100">
-                <span className="text-gray-600">Ngày bắt đầu:</span>
-                <span className="font-medium text-gray-900">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <span className="text-gray-600 text-sm block mb-1">Chu kỳ thanh toán</span>
+                <span className="font-semibold text-gray-900 text-lg">
+                  {plan?.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
+                </span>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <span className="text-gray-600 text-sm block mb-1">Ngày bắt đầu</span>
+                <span className="font-semibold text-gray-900 text-lg">
                   {formatDate(subscription.startDate)}
                 </span>
               </div>
-              <div className="flex justify-between py-3 border-b border-gray-100">
-                <span className="text-gray-600">Ngày hết hạn:</span>
-                <span className="font-medium text-gray-900">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <span className="text-gray-600 text-sm block mb-1">Ngày hết hạn</span>
+                <span className="font-semibold text-gray-900 text-lg">
                   {formatDate(subscription.endDate)}
                 </span>
               </div>
               {subscription.renewalDate && (
-                <div className="flex justify-between py-3 border-b border-gray-100">
-                  <span className="text-gray-600">Ngày gia hạn:</span>
-                  <span className="font-medium text-gray-900">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <span className="text-gray-600 text-sm block mb-1">Ngày gia hạn</span>
+                  <span className="font-semibold text-gray-900 text-lg">
                     {formatDate(subscription.renewalDate)}
                   </span>
                 </div>
               )}
-              <div className="flex justify-between py-3 border-b border-gray-100">
-                <span className="text-gray-600">Chu kỳ thanh toán:</span>
-                <span className="font-medium text-gray-900">
-                  {plan?.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
-                </span>
-              </div>
             </div>
 
             {/* Entitlements */}
             {subscription.entitlementsSnapshot && (
-              <div className="border-t border-gray-200 pt-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Quyền lợi của gói</h3>
+              <div className="border-t border-gray-200 pt-8 mb-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">✨ Quyền lợi của gói</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {Object.entries(subscription.entitlementsSnapshot).map(([key, value]) => (
-                    <div key={key} className="flex items-start gap-2 bg-gray-50 rounded-lg p-3">
-                      <span className="text-success-600 font-bold">✓</span>
+                    <div
+                      key={key}
+                      className="flex items-start gap-3 bg-gradient-to-br from-primary-50 to-secondary-50 rounded-lg p-4 border border-primary-100"
+                    >
+                      <span className="text-primary-600 font-bold text-xl">✓</span>
                       <div className="flex-1">
-                        <span className="text-gray-700 font-medium">{key}:</span>
-                        <span className="text-gray-600 ml-1">{formatEntitlementValue(value)}</span>
+                        <span className="text-gray-900 font-semibold block">{key}</span>
+                        <span className="text-gray-600 text-sm">
+                          {formatEntitlementValue(value)}
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -277,7 +322,7 @@ function MySubscriptionPage() {
               </div>
             )}
 
-            {/* Actions - Chỉ hiển thị nút hủy vì status = Active */}
+            {/* Actions */}
             <div className="border-t border-gray-200 pt-6 flex justify-end">
               <Button variant="danger" onClick={handleCancelSubscription} loading={cancelling}>
                 Hủy gói đăng ký
@@ -286,6 +331,13 @@ function MySubscriptionPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

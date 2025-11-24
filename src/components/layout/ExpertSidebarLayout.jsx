@@ -20,6 +20,7 @@ const ExpertSidebarLayout = ({ children }) => {
       return false;
     }
   });
+  const [isHovered, setIsHovered] = useState(false);
   const sideNavRef = useRef(null);
 
   useEffect(() => {
@@ -42,8 +43,18 @@ const ExpertSidebarLayout = ({ children }) => {
 
   const items = [
     { key: "expert_dashboard", label: "Tổng quan", to: "/expert", icon: DashboardIcon },
-    { key: "expert_commission", label: "Hoa hồng", to: "/expert/commission-records", icon: CoinsIcon },
-    { key: "expert_validations", label: "Kiểm duyệt", to: "/expert/validation-requests", icon: ShieldCheckIcon },
+    {
+      key: "expert_commission",
+      label: "Hoa hồng",
+      to: "/expert/commission-records",
+      icon: CoinsIcon,
+    },
+    {
+      key: "expert_validations",
+      label: "Kiểm duyệt",
+      to: "/expert/validation-requests",
+      icon: ShieldCheckIcon,
+    },
   ];
 
   if (role !== "Expert") {
@@ -54,6 +65,8 @@ const ExpertSidebarLayout = ({ children }) => {
     <div className="flex min-h-screen">
       <aside
         ref={sideNavRef}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-20" : "w-64"
         }`}
@@ -86,9 +99,11 @@ const ExpertSidebarLayout = ({ children }) => {
       </aside>
 
       <button
-        className={`fixed top-24 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-all z-50 ${
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`fixed top-24 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-all z-40 ${
           collapsed ? "left-16" : "left-60"
-        }`}
+        } ${isHovered ? "opacity-100" : "opacity-0"}`}
         onClick={(e) => {
           e.stopPropagation();
           const next = !collapsed;

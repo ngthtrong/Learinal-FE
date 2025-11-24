@@ -10,7 +10,7 @@ import { CardGrid, CategoryCard } from "@/components/common";
 import QuizIcon from "@/components/icons/QuizIcon";
 import HomeIcon from "@/components/icons/HomeIcon";
 import BookIcon from "@/components/icons/BookIcon";
-import UploadIcon from "@/components/icons/UploadIcon";
+import DocumentIcon from "@/components/icons/DocumentIcon";
 import GlobeIcon from "@/components/icons/GlobeIcon";
 import PenIcon from "@/components/icons/PenIcon";
 const LearnerHomePage = () => {
@@ -72,8 +72,8 @@ const LearnerHomePage = () => {
           for (let i = 0; i < 50; i++) {
             const resp = await documentsService
               .getDocumentsBySubject(subjectId, { page, pageSize })
-              .catch(() => ({ items: [], meta: { totalPages: page } }));
-            const items = resp?.items || resp?.data?.items || [];
+              .catch(() => ({ data: [], meta: { totalPages: page } }));
+            const items = resp?.data || resp?.items || [];
             agg.push(...items);
             const totalPages = resp?.meta?.totalPages || 1;
             if (page >= totalPages) break;
@@ -83,7 +83,7 @@ const LearnerHomePage = () => {
         };
 
         const docsArrays = await Promise.all(
-          (mySubsAll || []).map((s) => fetchDocsBySubjectAll(s.id || s._id))
+          (mySubsAll || []).map((s) => fetchDocsBySubjectAll(s.id || s._id).catch(() => []))
         );
         const myDocsAgg = docsArrays.flat();
 
@@ -388,7 +388,7 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/public");
               }}
             >
-              🌐 Đề Thi (Công Khai)
+              🌍 Đề Thi (Chung)
             </h2>
             <button
               onClick={() => navigate("/public")}
@@ -445,14 +445,14 @@ const LearnerHomePage = () => {
                   key={it._id || it.id}
                   title={it.originalFileName || it.fileName || it.name || it.filename || it.title}
                   cta=""
-                  Icon={UploadIcon}
+                  Icon={DocumentIcon}
                   onClick={() => navigate(`/documents/${it._id || it.id}`)}
                 />
               ))}
             </CardGrid>
           ) : (
             <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-              <UploadIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
+              <DocumentIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
               <p className="text-gray-500">Chưa có tài liệu nào</p>
               <button
                 onClick={() => navigate("/documents/upload")}
@@ -556,7 +556,7 @@ const LearnerHomePage = () => {
                 {/* Tài liệu */}
                 <div className="space-y-3">
                   <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <UploadIcon className="w-5 h-5 text-success-600" />
+                    <DocumentIcon className="w-5 h-5 text-success-600" />
                     Tài liệu
                   </h4>
                   <ul className="space-y-2">

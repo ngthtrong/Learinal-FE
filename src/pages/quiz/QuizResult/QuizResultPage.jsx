@@ -27,33 +27,47 @@ function QuizResultPage() {
         setLoading(true);
         setError("");
 
+        console.log("🔍 Loading attempt result for attemptId:", attemptId);
         const attemptData = await quizAttemptsService.getAttemptById(attemptId);
+        console.log("📊 Attempt data received:", attemptData);
         setAttempt(attemptData);
 
         // Determine question set information
         let resolvedQuestionSet = null;
 
         if (attemptData?.questionSet?.questions?.length) {
+          console.log("✅ Question set with questions found in attempt data");
           resolvedQuestionSet = attemptData.questionSet;
         } else {
           const questionSetId =
             attemptData?.questionSetId ||
             attemptData?.questionSet?._id ||
-            attemptData?.questionSet?.id;
+            attemptData?.questionSet?.id ||
+            attemptData?.setId;
+
+          console.log("🔍 Question set ID:", questionSetId);
 
           if (questionSetId) {
             try {
+              console.log("📥 Fetching question set separately...");
               resolvedQuestionSet = await questionSetsService.getSetById(questionSetId);
+              console.log("✅ Question set fetched:", resolvedQuestionSet);
             } catch (fetchErr) {
-              console.warn("Không thể tải thông tin bộ câu hỏi:", fetchErr);
+              console.warn("⚠️ Không thể tải thông tin bộ câu hỏi:", fetchErr);
             }
           }
         }
 
         if (resolvedQuestionSet) {
+          console.log("✅ Setting question set:", resolvedQuestionSet);
           setQuestionSet(resolvedQuestionSet);
+        } else {
+          console.warn("⚠️ No question set resolved");
         }
+
+        console.log("📊 Final state - Attempt:", attemptData, "QuestionSet:", resolvedQuestionSet);
       } catch (err) {
+        console.error("❌ Error loading result:", err);
         setError(getErrorMessage(err));
       } finally {
         setLoading(false);
@@ -67,11 +81,22 @@ function QuizResultPage() {
 
   const rawAnswers = useMemo(() => {
     if (!attempt) return [];
-    if (Array.isArray(attempt.answers) && attempt.answers.length > 0) return attempt.answers;
-    if (Array.isArray(attempt.userAnswers) && attempt.userAnswers.length > 0)
+    console.log("🔍 Raw attempt data:", attempt);
+
+    if (Array.isArray(attempt.answers) && attempt.answers.length > 0) {
+      console.log("✅ Using attempt.answers:", attempt.answers);
+      return attempt.answers;
+    }
+    if (Array.isArray(attempt.userAnswers) && attempt.userAnswers.length > 0) {
+      console.log("✅ Using attempt.userAnswers:", attempt.userAnswers);
       return attempt.userAnswers;
-    if (Array.isArray(attempt.result?.answers) && attempt.result.answers.length > 0)
+    }
+    if (Array.isArray(attempt.result?.answers) && attempt.result.answers.length > 0) {
+      console.log("✅ Using attempt.result.answers:", attempt.result.answers);
       return attempt.result.answers;
+    }
+
+    console.warn("⚠️ No answers found in attempt data");
     return [];
   }, [attempt]);
 
@@ -93,7 +118,12 @@ function QuizResultPage() {
   }, [rawAnswers]);
 
   const enrichedAnswers = useMemo(() => {
+    console.log("🔍 Building enriched answers...");
+    console.log("Question set:", questionSet);
+    console.log("Answers map:", answersMap);
+
     if (questionSet?.questions?.length) {
+      console.log("✅ Using question set questions:", questionSet.questions.length, "questions");
       return questionSet.questions.map((question, index) => {
         const questionKey = String(
           question?.id || question?._id || question?.questionId || `q-${index}`
@@ -119,6 +149,14 @@ function QuizResultPage() {
               correctAnswerIndex !== null
             ? selectedOptionIndex === correctAnswerIndex
             : null;
+
+        console.log(`Question ${index + 1}:`, {
+          questionKey,
+          selectedOptionIndex,
+          correctAnswerIndex,
+          isCorrect,
+          hasBaseAnswer: !!Object.keys(baseAnswer).length,
+        });
 
         return {
           ...baseAnswer,
@@ -302,7 +340,7 @@ function QuizResultPage() {
   const scoreColorClass = getScoreColor(scorePercentage);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -719,6 +757,13 @@ function QuizResultPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }
