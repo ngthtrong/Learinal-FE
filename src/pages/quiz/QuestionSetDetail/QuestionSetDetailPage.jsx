@@ -38,8 +38,11 @@ function QuestionSetDetailPage() {
       const data = await validationRequestsService.list({ page: 1, pageSize: 20, setId: id });
       const items = data?.items || data?.data || [];
       if (!items.length) return;
-      const active = items.find((r) => r.status !== "Completed");
-      const completed = items
+      // IMPORTANT: Double-check setId matches to handle backend filter issues
+      const matchingItems = items.filter(r => String(r.setId) === String(id));
+      if (!matchingItems.length) return;
+      const active = matchingItems.find((r) => r.status !== "Completed");
+      const completed = matchingItems
         .filter((r) => r.status === "Completed")
         .sort(
           (a, b) =>
