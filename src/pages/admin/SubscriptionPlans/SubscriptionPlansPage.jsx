@@ -9,7 +9,7 @@ const DEFAULT_ENTITLEMENTS = {
   maxMonthlyTestGenerations: 50,
   maxValidationRequests: 30,
   priorityProcessing: false,
-  shareLimits: { canShare: false, maxSharedUsers: 0 },
+  canShare: false,
   maxSubjects: 10,
 };
 
@@ -39,7 +39,7 @@ function AdminSubscriptionPlansPage() {
       maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
       maxValidationRequests: "Số yêu cầu kiểm duyệt",
       priorityProcessing: "Xử lý ưu tiên",
-      shareLimits: "Giới hạn chia sẻ",
+      canShare: "Cho phép chia sẻ",
     };
     return labels[key] || key;
   };
@@ -394,52 +394,27 @@ function AdminSubscriptionPlansPage() {
                   </label>
                 </div>
 
-                {/* shareLimits */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {formatEntitlementLabel("shareLimits")}
-                  </label>
-                  <div className="pl-4 space-y-2">
-                    <div>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={form.entitlements.shareLimits?.canShare || false}
-                          onChange={(e) =>
-                            setForm({
-                              ...form,
-                              entitlements: {
-                                ...form.entitlements,
-                                shareLimits: {
-                                  ...form.entitlements.shareLimits,
-                                  canShare: e.target.checked,
-                                },
-                              },
-                            })
-                          }
-                          className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
-                        />
-                        <span className="text-sm text-gray-700">Cho phép chia sẻ</span>
-                      </label>
-                    </div>
-                    <Input
-                      label="Số người được chia sẻ tối đa"
-                      type="number"
-                      value={form.entitlements.shareLimits?.maxSharedUsers || 0}
+                {/* canShare */}
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.entitlements.canShare || false}
                       onChange={(e) =>
                         setForm({
                           ...form,
                           entitlements: {
                             ...form.entitlements,
-                            shareLimits: {
-                              ...form.entitlements.shareLimits,
-                              maxSharedUsers: Number(e.target.value),
-                            },
+                            canShare: e.target.checked,
                           },
                         })
                       }
+                      className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
                     />
-                  </div>
+                    <span className="text-sm font-medium text-gray-700">
+                      {formatEntitlementLabel("canShare")}
+                    </span>
+                  </label>
                 </div>
               </div>
             </div>

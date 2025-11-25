@@ -108,7 +108,7 @@ function SubscriptionPlansPage() {
       maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
       maxValidationRequests: "Số yêu cầu kiểm duyệt",
       priorityProcessing: "Xử lý ưu tiên",
-      shareLimits: "Giới hạn chia sẻ",
+      canShare: "Cho phép chia sẻ",
     };
     return labels[key] || key;
   };
@@ -118,9 +118,9 @@ function SubscriptionPlansPage() {
       return value ? "Có" : "Không";
     }
     if (typeof value === "object" && value !== null) {
-      // Format object như {canShare: true, maxSharedUsers: 3}
-      if (value.canShare !== undefined && value.maxSharedUsers !== undefined) {
-        return `${value.canShare ? "Có" : "Không"} (tối đa ${value.maxSharedUsers} người)`;
+      // Format boolean
+      if (typeof value === "boolean") {
+        return value ? "Có" : "Không";
       }
       return JSON.stringify(value);
     }
@@ -171,7 +171,7 @@ function SubscriptionPlansPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
           <div className="text-center space-y-2">
-            <h1 className="text-4xl font-bold text-gray-900">🎯 Các gói đăng ký</h1>
+            <h1 className="text-4xl font-bold text-gray-900">Các gói đăng ký</h1>
             <p className="text-lg text-gray-600">
               Chọn gói phù hợp với bạn để trải nghiệm đầy đủ tính năng
             </p>

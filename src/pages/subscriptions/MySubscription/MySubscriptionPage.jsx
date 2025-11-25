@@ -89,9 +89,9 @@ function MySubscriptionPage() {
       return value ? "Có" : "Không";
     }
     if (typeof value === "object" && value !== null) {
-      // Format object như {canShare: true, maxSharedUsers: 3}
-      if (value.canShare !== undefined && value.maxSharedUsers !== undefined) {
-        return `${value.canShare ? "Có" : "Không"} (tối đa ${value.maxSharedUsers} người)`;
+      // Format boolean
+      if (typeof value === "boolean") {
+        return value ? "Có" : "Không";
       }
       return JSON.stringify(value);
     }

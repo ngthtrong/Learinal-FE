@@ -56,7 +56,7 @@ function ViewSubscriptionPage() {
       maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
       maxValidationRequests: "Số yêu cầu kiểm duyệt",
       priorityProcessing: "Xử lý ưu tiên",
-      shareLimits: "Giới hạn chia sẻ",
+      canShare: "Cho phép chia sẻ",
     };
     return labels[key] || key;
   };
@@ -66,8 +66,8 @@ function ViewSubscriptionPage() {
       return value ? "Có" : "Không";
     }
     if (typeof value === "object" && value !== null) {
-      if (value.canShare !== undefined && value.maxSharedUsers !== undefined) {
-        return `${value.canShare ? "Có" : "Không"} (tối đa ${value.maxSharedUsers} người)`;
+      if (typeof value === "boolean") {
+        return value ? "Có" : "Không";
       }
       return JSON.stringify(value);
     }

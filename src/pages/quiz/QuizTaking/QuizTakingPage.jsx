@@ -91,11 +91,23 @@ function QuizTakingPage() {
   const loadQuestionSet = async () => {
     try {
       setLoading(true);
-      // Get attempt to find question set ID
+      // Get attempt to find question set ID and restore answers
       const attempt = await quizAttemptsService.getAttemptById(attemptId);
-      const qSet = await questionSetsService.getSetById(attempt.questionSetId);
+      const qSet = await questionSetsService.getSetById(attempt.setId);
       setQuestionSet(qSet);
       loadQuestions(qSet);
+      
+      // Restore saved answers if continuing an incomplete attempt
+      if (attempt.userAnswers && Array.isArray(attempt.userAnswers)) {
+        const restoredAnswers = {};
+        attempt.userAnswers.forEach((answer) => {
+          if (answer.questionId !== undefined && answer.selectedOptionIndex !== undefined) {
+            restoredAnswers[answer.questionId] = answer.selectedOptionIndex;
+          }
+        });
+        console.log('Restored answers:', restoredAnswers);
+        setUserAnswers(restoredAnswers);
+      }
     } catch (err) {
       const message = getErrorMessage(err);
       toast.showError(message);
@@ -136,7 +148,7 @@ function QuizTakingPage() {
       // Only include answered questions (not -1)
       const answers = questions
         .map((q, index) => {
-          const questionKey = q.id || `q-${index}`;
+          const questionKey = q.questionId || `q-${index}`;
           const answerIndex = userAnswers[questionKey];
 
           // Skip unanswered questions
@@ -145,7 +157,7 @@ function QuizTakingPage() {
           }
 
           return {
-            questionId: String(q.id), // Ensure it's a string
+            questionId: String(q.questionId), // Use q.questionId to match backend
             selectedOptionIndex: answerIndex,
           };
         })
@@ -187,7 +199,7 @@ function QuizTakingPage() {
       // Only include answered questions (not -1)
       const answers = questions
         .map((q, index) => {
-          const questionKey = q.id || `q${index}`;
+          const questionKey = q.questionId || `q${index}`;
           const answerIndex = userAnswers[questionKey];
 
           // Skip unanswered questions
@@ -196,7 +208,7 @@ function QuizTakingPage() {
           }
 
           return {
-            questionId: String(q.id), // Ensure it's a string
+            questionId: String(q.questionId), // Use q.questionId to match backend
             selectedOptionIndex: answerIndex,
           };
         })
@@ -313,7 +325,7 @@ function QuizTakingPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             {questions.map((question, qIndex) => {
-              const questionKey = question.id || `q-${qIndex}`;
+              const questionKey = question.questionId || `q-${qIndex}`;
               console.log(`Question ${qIndex}:`, {
                 id: question.id,
                 questionKey: questionKey,
@@ -388,7 +400,7 @@ function QuizTakingPage() {
               <h3 className="text-lg font-bold text-gray-900 mb-4">Danh sách câu hỏi</h3>
               <div className="grid grid-cols-5 gap-2 mb-6">
                 {questions.map((q, index) => {
-                  const questionKey = q.id || `q-${index}`;
+                  const questionKey = q.questionId || `q-${index}`;
                   const isAnswered = userAnswers[questionKey] !== undefined;
                   return (
                     <button

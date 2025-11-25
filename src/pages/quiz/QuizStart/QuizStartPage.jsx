@@ -54,6 +54,7 @@ function QuizStartPage() {
       // Create quiz attempt
       const attempt = await quizAttemptsService.createAttempt({
         setId: id,
+        isTimed: useTimer,
       });
 
       toast.showSuccess("Bắt đầu làm bài!");
