@@ -29,9 +29,16 @@ export const formatDateTime = (date, locale = "vi-VN") => {
   });
 };
 
-/**
- * Format time duration (seconds to minutes:seconds)
- */
+export const formatTime = (date, locale = "vi-VN") => {
+  if (!date) return "";
+  return new Date(date).toLocaleTimeString(locale, {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+};
+
 export const formatDuration = (seconds) => {
   if (!seconds) return "0:00";
   const mins = Math.floor(seconds / 60);
@@ -111,6 +118,7 @@ export const formatRelativeTime = (date, locale = "vi-VN") => {
 export default {
   formatDate,
   formatDateTime,
+  formatTime,
   formatDuration,
   formatNumber,
   formatCurrency,

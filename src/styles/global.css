@@ -134,7 +134,27 @@
   background-color: #6b7280;
 }
 
+/* Dark mode variables */
+.dark {
+  --shadow-soft: 0 2px 15px -3px rgba(0, 0, 0, 0.3), 0 10px 20px -2px rgba(0, 0, 0, 0.2);
+  --shadow-medium: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  --shadow-large: 0 10px 40px -5px rgba(0, 0, 0, 0.5), 0 15px 35px -7px rgba(0, 0, 0, 0.4);
+}
+
+/* Scrollbar styling for dark mode */
+.dark .scrollbar-thin::-webkit-scrollbar-track {
+  background-color: #1f2937;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: #6b7280;
+}
+
 /* Base styles */
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  @apply bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased;
 }

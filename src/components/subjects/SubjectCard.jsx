@@ -16,7 +16,8 @@ const SubjectCard = ({ subject, onClick }) => {
   const description = subject.description || subject.summary || "Không có mô tả";
   const tocLen = Array.isArray(subject.tableOfContents) ? subject.tableOfContents.length : 0;
   const hasSummary = !!subject.summary;
-  const documentCount = subject.documentCount || subject.documentsCount || subject.numDocuments || 0;
+  const documentCount =
+    subject.documentCount || subject.documentsCount || subject.numDocuments || 0;
   const questionSetCount = subject.questionSetCount || subject.numQuestionSets || 0;
   const navigate = useNavigate();
 
@@ -37,38 +38,45 @@ const SubjectCard = ({ subject, onClick }) => {
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") handleCardClick();
       }}
-      className="group relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br from-white via-primary-50/40 to-secondary-50/60 border border-gray-100 hover:border-primary-300 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
+      className="group relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
     >
       {/* Decorative blurred blob */}
-      <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-200/40 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
-      {/* Icon */}
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-primary-100 text-primary-700 shadow-inner group-hover:scale-110 transition-transform">
-          <BookIcon size={26} strokeWidth={1.6} />
+      <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
+
+      {/* Icon - Top Left */}
+      <div className="mb-4">
+        <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-primary-500/20 text-primary-600 dark:text-primary-400 shadow-inner group-hover:scale-110 transition-transform">
+          <BookIcon size={28} strokeWidth={1.6} />
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-primary-700 transition-colors" title={name}>
-          {name}
-        </h3>
       </div>
+
+      {/* Title */}
+      <h3
+        className="text-xl font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+        title={name}
+      >
+        {name}
+      </h3>
+
       {/* Description */}
-      <p className="mt-3 text-sm text-gray-600 line-clamp-3 group-hover:text-gray-700" title={description}>
+      <p className="text-sm text-gray-700 dark:text-gray-400 line-clamp-2 mb-4" title={description}>
         {description}
       </p>
       {/* Badges + stats */}
-      <div className="mt-4 flex flex-wrap gap-2 items-center">
+      <div className="flex flex-wrap gap-2 items-center">
+        {(documentCount > 0 || questionSetCount > 0) && (
+          <span className="px-3 py-1.5 text-xs font-medium rounded-lg bg-primary-500/20 text-primary-700 dark:text-primary-300 border border-primary-500/30">
+            {documentCount} mục
+          </span>
+        )}
         {tocLen > 0 && (
-          <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-primary-600/10 text-primary-700 border border-primary-200">
-            {tocLen} mục
+          <span className="px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30">
+            {tocLen} chương
           </span>
         )}
         {hasSummary && (
-          <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-secondary-600/10 text-secondary-700 border border-secondary-200">
-            Tóm tắt AI
-          </span>
-        )}
-        {(documentCount > 0 || questionSetCount > 0) && (
-          <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-gray-800/5 text-gray-700 border border-gray-200">
-            📄 {documentCount} • ❓ {questionSetCount}
+          <span className="px-3 py-1.5 text-xs font-medium rounded-lg bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/30">
+            AI Summary
           </span>
         )}
       </div>

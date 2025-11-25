@@ -49,7 +49,7 @@ export const subscriptionsService = {
    * @param {string} subscriptionId - Subscription ID
    */
   cancelSubscription: async (subscriptionId) => {
-    const response = await axiosInstance.post(`/user-subscriptions/${subscriptionId}/cancel`);
+    const response = await axiosInstance.delete(`/user-subscriptions/${subscriptionId}`);
     return response.data;
   },
 
