@@ -103,7 +103,7 @@ const SidebarLayout = ({ children }) => {
         ref={sideNavRef}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40 overflow-y-auto ${
+        className={`fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-20" : "w-64"
         }`}
       >
@@ -111,12 +111,14 @@ const SidebarLayout = ({ children }) => {
         <div
           className={`flex items-center ${
             collapsed ? "justify-center" : "px-6"
-          } h-16 border-b border-gray-200`}
+          } h-16 border-b border-gray-200 dark:border-gray-700`}
         >
           {collapsed ? (
-            <span className="text-2xl font-bold text-primary-600">L</span>
+            <span className="text-2xl font-bold text-primary-600 dark:text-primary-400">L</span>
           ) : (
-            <span className="text-xl font-bold text-primary-600">📚 Learinal</span>
+            <span className="text-xl font-bold text-primary-600 dark:text-primary-400">
+              📚 Learinal
+            </span>
           )}
         </div>
 
@@ -131,8 +133,8 @@ const SidebarLayout = ({ children }) => {
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                     isActive
-                      ? "bg-primary-50 text-primary-700 font-semibold shadow-sm"
-                      : "text-gray-700 hover:bg-gray-50 hover:text-primary-600"
+                      ? "bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-semibold shadow-sm"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-400"
                   } ${collapsed ? "justify-center" : ""}`
                 }
               >
@@ -149,7 +151,7 @@ const SidebarLayout = ({ children }) => {
         <button
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          className={`fixed top-24 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-all z-40 ${
+          className={`fixed top-24 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-all z-40 text-gray-700 dark:text-gray-300 ${
             collapsed ? "left-16" : "left-60"
           } ${isHovered ? "opacity-100" : "opacity-0"}`}
           onClick={(e) => {
@@ -170,7 +172,11 @@ const SidebarLayout = ({ children }) => {
       )}
 
       {/* Main content */}
-      <main className={`flex-1 transition-all duration-300 ${collapsed ? "ml-20" : "ml-64"} pt-16`}>
+      <main
+        className={`flex-1 transition-all duration-300 bg-gray-50 dark:bg-gray-950 ${
+          collapsed ? "ml-20" : "ml-64"
+        }`}
+      >
         {children}
       </main>
     </div>

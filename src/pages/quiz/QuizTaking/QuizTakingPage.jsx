@@ -91,11 +91,23 @@ function QuizTakingPage() {
   const loadQuestionSet = async () => {
     try {
       setLoading(true);
-      // Get attempt to find question set ID
+      // Get attempt to find question set ID and restore answers
       const attempt = await quizAttemptsService.getAttemptById(attemptId);
-      const qSet = await questionSetsService.getSetById(attempt.questionSetId);
+      const qSet = await questionSetsService.getSetById(attempt.setId);
       setQuestionSet(qSet);
       loadQuestions(qSet);
+
+      // Restore saved answers if continuing an incomplete attempt
+      if (attempt.userAnswers && Array.isArray(attempt.userAnswers)) {
+        const restoredAnswers = {};
+        attempt.userAnswers.forEach((answer) => {
+          if (answer.questionId !== undefined && answer.selectedOptionIndex !== undefined) {
+            restoredAnswers[answer.questionId] = answer.selectedOptionIndex;
+          }
+        });
+        console.log("Restored answers:", restoredAnswers);
+        setUserAnswers(restoredAnswers);
+      }
     } catch (err) {
       const message = getErrorMessage(err);
       toast.showError(message);
@@ -136,7 +148,7 @@ function QuizTakingPage() {
       // Only include answered questions (not -1)
       const answers = questions
         .map((q, index) => {
-          const questionKey = q.id || `q-${index}`;
+          const questionKey = q.questionId || `q-${index}`;
           const answerIndex = userAnswers[questionKey];
 
           // Skip unanswered questions
@@ -145,7 +157,7 @@ function QuizTakingPage() {
           }
 
           return {
-            questionId: String(q.id), // Ensure it's a string
+            questionId: String(q.questionId), // Use q.questionId to match backend
             selectedOptionIndex: answerIndex,
           };
         })
@@ -187,7 +199,7 @@ function QuizTakingPage() {
       // Only include answered questions (not -1)
       const answers = questions
         .map((q, index) => {
-          const questionKey = q.id || `q${index}`;
+          const questionKey = q.questionId || `q${index}`;
           const answerIndex = userAnswers[questionKey];
 
           // Skip unanswered questions
@@ -196,7 +208,7 @@ function QuizTakingPage() {
           }
 
           return {
-            questionId: String(q.id), // Ensure it's a string
+            questionId: String(q.questionId), // Use q.questionId to match backend
             selectedOptionIndex: answerIndex,
           };
         })
@@ -236,10 +248,10 @@ function QuizTakingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-          <p className="text-gray-600">Đang tải bài thi...</p>
+          <div className="inline-block w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
+          <p className="text-gray-600 dark:text-gray-400">Đang tải bài thi...</p>
         </div>
       </div>
     );
@@ -247,9 +259,9 @@ function QuizTakingPage() {
 
   if (!questionSet || questions.length === 0) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold text-gray-900">Không có câu hỏi</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Không có câu hỏi</h2>
           <Button onClick={() => navigate("/question-sets")}>← Quay lại</Button>
         </div>
       </div>
@@ -261,14 +273,16 @@ function QuizTakingPage() {
   const isWarningTime = useTimer && timeRemaining !== null && timeRemaining <= 60;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 pb-24">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-24">
       {/* Header - Fixed */}
-      <div className="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-200">
+      <div className="sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">{questionSet.title}</h1>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                {questionSet.title}
+              </h1>
+              <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                 <span className="flex items-center gap-1">
                   <span className="font-medium">Tổng số câu:</span> {questions.length}
                 </span>
@@ -285,8 +299,8 @@ function QuizTakingPage() {
               <div
                 className={`flex items-center gap-3 px-6 py-3 rounded-lg font-bold text-lg ${
                   isWarningTime
-                    ? "bg-error-50 text-error-700 border-2 border-error-300 animate-pulse"
-                    : "bg-primary-50 text-primary-700 border-2 border-primary-200"
+                    ? "bg-error-50 dark:bg-red-900/30 text-error-700 dark:text-red-300 border-2 border-error-300 dark:border-red-700 animate-pulse"
+                    : "bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 border-2 border-primary-200 dark:border-primary-700"
                 }`}
               >
                 <span className="text-2xl">⏱️</span>
@@ -297,13 +311,13 @@ function QuizTakingPage() {
         </div>
 
         {/* Progress Bar */}
-        <div className="relative h-2 bg-gray-200">
+        <div className="relative h-2 bg-gray-200 dark:bg-gray-700">
           <div
             className="absolute top-0 left-0 h-full bg-linear-to-r from-primary-500 to-secondary-500 transition-all duration-300"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs font-medium text-gray-600 bg-white px-2 py-0.5 rounded shadow-sm">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-0.5 rounded shadow-sm">
           {answeredCount}/{questions.length} câu ({Math.round(progress)}%)
         </div>
       </div>
@@ -313,7 +327,7 @@ function QuizTakingPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             {questions.map((question, qIndex) => {
-              const questionKey = question.id || `q-${qIndex}`;
+              const questionKey = question.questionId || `q-${qIndex}`;
               console.log(`Question ${qIndex}:`, {
                 id: question.id,
                 questionKey: questionKey,
@@ -323,18 +337,20 @@ function QuizTakingPage() {
               return (
                 <div
                   key={`question-${questionKey}`}
-                  className="bg-white rounded-xl shadow-medium p-6 scroll-mt-32"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-6 scroll-mt-32"
                   id={`question-${qIndex}`}
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-lg font-bold text-primary-600">Câu hỏi {qIndex + 1}</span>
+                    <span className="text-lg font-bold text-primary-600 dark:text-primary-400">
+                      Câu hỏi {qIndex + 1}
+                    </span>
                     {userAnswers[questionKey] !== undefined && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-success-100 text-success-700 rounded-full text-sm font-medium">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 rounded-full text-sm font-medium">
                         ✓ Đã trả lời
                       </span>
                     )}
                   </div>
-                  <div className="text-gray-900 text-lg font-medium mb-6 leading-relaxed">
+                  <div className="text-gray-900 dark:text-gray-100 text-lg font-medium mb-6 leading-relaxed">
                     {question.questionText}
                   </div>
 
@@ -346,8 +362,8 @@ function QuizTakingPage() {
                           key={`${questionKey}-option-${optIndex}`}
                           className={`flex items-start gap-4 p-4 rounded-lg border-2 transition-all cursor-pointer hover:shadow-sm ${
                             isSelected
-                              ? "border-primary-500 bg-primary-50"
-                              : "border-gray-200 hover:border-primary-300 bg-white"
+                              ? "border-primary-500 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20"
+                              : "border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-500 bg-white dark:bg-gray-800"
                           }`}
                           onClick={() => handleAnswerSelect(questionKey, optIndex)}
                         >
@@ -362,12 +378,12 @@ function QuizTakingPage() {
                             />
                           </div>
                           <div className="flex-1 flex items-start gap-2">
-                            <span className="font-bold text-gray-700 min-w-6">
+                            <span className="font-bold text-gray-700 dark:text-gray-300 min-w-6">
                               {String.fromCharCode(65 + optIndex)}.
                             </span>
                             <span
                               className={`flex-1 ${
-                                isSelected ? "text-primary-900 font-medium" : "text-gray-700"
+                                isSelected ? "text-primary-900 dark:text-primary-200 font-medium" : "text-gray-700 dark:text-gray-300"
                               }`}
                             >
                               {option}
@@ -384,11 +400,13 @@ function QuizTakingPage() {
 
           {/* Question Navigator Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-36 bg-white rounded-xl shadow-medium p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Danh sách câu hỏi</h3>
+            <div className="sticky top-36 bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+                Danh sách câu hỏi
+              </h3>
               <div className="grid grid-cols-5 gap-2 mb-6">
                 {questions.map((q, index) => {
-                  const questionKey = q.id || `q-${index}`;
+                  const questionKey = q.questionId || `q-${index}`;
                   const isAnswered = userAnswers[questionKey] !== undefined;
                   return (
                     <button
@@ -402,8 +420,8 @@ function QuizTakingPage() {
                       }}
                       className={`w-full aspect-square flex items-center justify-center rounded-lg font-bold text-sm transition-all ${
                         isAnswered
-                          ? "bg-success-500 text-white hover:bg-success-600 shadow-sm"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300"
+                          ? "bg-success-500 dark:bg-green-600 text-white hover:bg-success-600 dark:hover:bg-green-700 shadow-sm"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600"
                       }`}
                     >
                       {index + 1}
@@ -412,14 +430,14 @@ function QuizTakingPage() {
                 })}
               </div>
 
-              <div className="space-y-3 pt-4 border-t border-gray-200">
+              <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Đã làm:</span>
-                  <span className="text-lg font-bold text-success-600">{answeredCount}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Đã làm:</span>
+                  <span className="text-lg font-bold text-success-600 dark:text-green-400">{answeredCount}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Chưa làm:</span>
-                  <span className="text-lg font-bold text-gray-500">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Chưa làm:</span>
+                  <span className="text-lg font-bold text-gray-500 dark:text-gray-400">
                     {questions.length - answeredCount}
                   </span>
                 </div>
@@ -430,7 +448,7 @@ function QuizTakingPage() {
       </div>
 
       {/* Submit Button - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Button
             variant="primary"
@@ -452,14 +470,14 @@ function QuizTakingPage() {
       >
         <div className="space-y-6">
           <div className="text-center">
-            <p className="text-gray-700 text-lg">
-              Bạn đã trả lời <strong className="text-primary-600">{answeredCount}</strong> /{" "}
-              <strong>{questions.length}</strong> câu hỏi.
+            <p className="text-gray-700 dark:text-gray-300 text-lg">
+              Bạn đã trả lời <strong className="text-primary-600 dark:text-primary-400">{answeredCount}</strong> /{" "}
+              <strong className="dark:text-gray-100">{questions.length}</strong> câu hỏi.
             </p>
           </div>
           {answeredCount < questions.length && (
-            <div className="bg-warning-50 border border-warning-200 rounded-lg p-4">
-              <p className="text-warning-800 flex items-start gap-2">
+            <div className="bg-warning-50 dark:bg-yellow-900/20 border border-warning-200 dark:border-yellow-800 rounded-lg p-4">
+              <p className="text-warning-800 dark:text-yellow-300 flex items-start gap-2">
                 <span className="text-xl">⚠️</span>
                 <span>
                   Còn <strong>{questions.length - answeredCount}</strong> câu chưa trả lời. Bạn có
@@ -487,9 +505,11 @@ function QuizTakingPage() {
       </Modal>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-gray-200 bg-white">
+      <footer className="py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
+            © 2025 Learinal. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

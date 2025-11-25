@@ -122,14 +122,16 @@ function AllDocumentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-gray-900">📄 Tài liệu của tôi</h1>
-              <p className="text-lg text-gray-600">
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                📄 Tài liệu của tôi
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-400">
                 Quản lý tất cả tài liệu học tập ({documents.length} tài liệu)
               </p>
             </div>
@@ -165,73 +167,75 @@ function AllDocumentsPage() {
               const subjectName = doc.subject?.name || doc.subject?.subjectName || "";
 
               const statusColors = {
-                Uploading: "bg-blue-100 text-blue-700 border-blue-200",
-                Processing: "bg-yellow-100 text-yellow-700 border-yellow-200",
-                Completed: "bg-green-100 text-green-700 border-green-200",
-                Error: "bg-red-100 text-red-700 border-red-200",
+                Uploading: "bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/30",
+                Processing:
+                  "bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border-yellow-500/30",
+                Completed: "bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30",
+                Error: "bg-red-500/20 text-red-700 dark:text-red-300 border-red-500/30",
+              };
+
+              const statusText = {
+                Uploading: "🔄 Đang tải lên",
+                Processing: "⚙️ Đang xử lý",
+                Completed: "✅ Hoàn tất",
+                Error: "❌ Lỗi",
               };
 
               return (
                 <div
                   key={docId}
-                  className="group relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br from-white via-primary-50/40 to-secondary-50/60 border border-gray-100 hover:border-primary-300 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  className="group relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col"
                   onClick={() => navigate(`/documents/${docId}`)}
                 >
                   {/* Decorative blob */}
-                  <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-200/40 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
+                  <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
 
-                  {/* Icon & Title */}
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-primary-100 text-primary-700 shadow-inner group-hover:scale-110 transition-transform flex-shrink-0">
-                      <DocumentIcon size={24} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3
-                        className="text-lg font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-primary-700 transition-colors"
-                        title={fileName}
-                      >
-                        {fileName}
-                      </h3>
-                      {createdAt && (
-                        <p className="text-xs text-gray-500 mt-1">{formatDate(createdAt)}</p>
-                      )}
+                  {/* Icon - Top */}
+                  <div className="mb-4">
+                    <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-primary-500/20 text-primary-600 dark:text-primary-400 shadow-inner group-hover:scale-110 transition-transform">
+                      <DocumentIcon size={28} />
                     </div>
                   </div>
 
+                  {/* Title */}
+                  <h3
+                    className="text-xl font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-2 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                    title={fileName}
+                  >
+                    {fileName}
+                  </h3>
+                  {createdAt && (
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                      📅 {formatDate(createdAt)}
+                    </p>
+                  )}
+
                   {/* Subject info */}
                   {subjectName && (
-                    <div className="text-sm text-gray-600 mb-3">
-                      <span className="font-medium">Môn học:</span> {subjectName}
+                    <div className="text-sm text-gray-700 dark:text-gray-400 mb-3">
+                      <span className="font-medium">📚 Môn học:</span> {subjectName}
                     </div>
                   )}
 
                   {/* Status Badge */}
-                  <div className="mt-4 flex flex-wrap gap-2 items-center">
+                  <div className="flex-grow flex flex-wrap gap-2 items-start mb-4">
                     <span
                       className={`px-2.5 py-1 text-xs font-medium rounded-full border ${
-                        statusColors[status] || "bg-gray-100 text-gray-700 border-gray-200"
+                        statusColors[status] || statusColors.Completed
                       }`}
                     >
-                      {status === "Uploading"
-                        ? "Đang tải lên"
-                        : status === "Processing"
-                        ? "Đang xử lý"
-                        : status === "Completed"
-                        ? "Hoàn tất"
-                        : status === "Error"
-                        ? "Lỗi"
-                        : status}
+                      {statusText[status] || status}
                     </span>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="mt-4 flex gap-2">
+                  {/* Action Buttons - Always at bottom */}
+                  <div className="mt-auto flex gap-2">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         navigate(`/documents/${docId}`);
                       }}
-                      className="flex-1 px-3 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
+                      className="flex-1 px-3 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-500 transition-all shadow-sm"
                     >
                       👁️ Xem chi tiết
                     </button>
@@ -240,11 +244,14 @@ function AllDocumentsPage() {
                         e.stopPropagation();
                         handleDeleteDocument(docId);
                       }}
-                      className="px-3 py-2 text-sm font-medium text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                      className="w-10 h-10 flex items-center justify-center shrink-0 text-lg bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-500/30 border border-red-300 dark:border-red-500/30 hover:border-red-500 dark:hover:border-red-500 transition-all shadow-sm"
                     >
                       🗑️
                     </button>
                   </div>
+
+                  {/* Hover underline accent */}
+                  <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary-500 group-hover:w-full transition-all" />
                 </div>
               );
             })}
@@ -253,9 +260,11 @@ function AllDocumentsPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
+            © 2025 Learinal. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

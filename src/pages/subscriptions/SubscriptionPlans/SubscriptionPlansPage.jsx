@@ -108,7 +108,7 @@ function SubscriptionPlansPage() {
       maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
       maxValidationRequests: "Số yêu cầu kiểm duyệt",
       priorityProcessing: "Xử lý ưu tiên",
-      shareLimits: "Giới hạn chia sẻ",
+      canShare: "Cho phép chia sẻ",
     };
     return labels[key] || key;
   };
@@ -118,9 +118,9 @@ function SubscriptionPlansPage() {
       return value ? "Có" : "Không";
     }
     if (typeof value === "object" && value !== null) {
-      // Format object như {canShare: true, maxSharedUsers: 3}
-      if (value.canShare !== undefined && value.maxSharedUsers !== undefined) {
-        return `${value.canShare ? "Có" : "Không"} (tối đa ${value.maxSharedUsers} người)`;
+      // Format boolean
+      if (typeof value === "boolean") {
+        return value ? "Có" : "Không";
       }
       return JSON.stringify(value);
     }
@@ -140,12 +140,12 @@ function SubscriptionPlansPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Đang tải danh sách gói đăng ký...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Đang tải danh sách gói đăng ký...</p>
             </div>
           </div>
         </div>
@@ -155,9 +155,9 @@ function SubscriptionPlansPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg max-w-2xl mx-auto mt-8">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-6 py-4 rounded-lg max-w-2xl mx-auto mt-8">
             <p className="font-medium">{error}</p>
           </div>
         </div>
@@ -166,13 +166,13 @@ function SubscriptionPlansPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
           <div className="text-center space-y-2">
-            <h1 className="text-4xl font-bold text-gray-900">🎯 Các gói đăng ký</h1>
-            <p className="text-lg text-gray-600">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Các gói đăng ký</h1>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
               Chọn gói phù hợp với bạn để trải nghiệm đầy đủ tính năng
             </p>
           </div>
@@ -182,10 +182,10 @@ function SubscriptionPlansPage() {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {plans.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="text-6xl mb-4">📦</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Chưa có gói đăng ký nào</h2>
-            <p className="text-gray-600">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký nào</h2>
+            <p className="text-gray-600 dark:text-gray-400">
               Hiện tại chưa có gói đăng ký nào được kích hoạt. Vui lòng quay lại sau.
             </p>
           </div>
@@ -196,8 +196,8 @@ function SubscriptionPlansPage() {
               return (
                 <div
                   key={plan.id || plan._id}
-                  className={`group relative overflow-hidden rounded-2xl bg-white border-2 shadow-sm hover:shadow-lg transition-all duration-300 ${
-                    isPro ? "border-primary-400" : "border-gray-200 hover:border-primary-200"
+                  className={`group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 border-2 shadow-sm hover:shadow-lg transition-all duration-300 ${
+                    isPro ? "border-primary-400 dark:border-primary-500" : "border-gray-200 dark:border-gray-700 hover:border-primary-200 dark:hover:border-primary-600"
                   }`}
                 >
                   {isPro && (
@@ -214,33 +214,33 @@ function SubscriptionPlansPage() {
                   <div className="relative p-8">
                     <div className="text-center mb-6">
                       <div className="text-6xl mb-4">{getPlanIcon(plan.planName)}</div>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-3">{plan.planName}</h3>
+                      <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">{plan.planName}</h3>
                       <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-4xl font-bold text-primary-600">
+                        <span className="text-4xl font-bold text-primary-600 dark:text-primary-400">
                           {formatPrice(plan.price)}
                         </span>
-                        <span className="text-gray-600 text-lg">
+                        <span className="text-gray-600 dark:text-gray-400 text-lg">
                           /{plan.billingCycle === "Monthly" ? "tháng" : "năm"}
                         </span>
                       </div>
                     </div>{" "}
                     {plan.description && (
-                      <p className="text-gray-600 text-center mb-6 min-h-[3rem]">
+                      <p className="text-gray-600 dark:text-gray-400 text-center mb-6 min-h-[3rem]">
                         {plan.description}
                       </p>
                     )}
                     {plan.entitlements && (
                       <div className="mb-6 space-y-3">
-                        <h4 className="font-semibold text-gray-900 text-center mb-4">
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-center mb-4">
                           ✨ Quyền lợi:
                         </h4>
                         <ul className="space-y-2.5">
                           {Object.entries(plan.entitlements).map(([key, value]) => (
                             <li key={key} className="flex items-start gap-2.5">
-                              <span className="text-primary-600 font-bold text-lg flex-shrink-0">
+                              <span className="text-primary-600 dark:text-primary-400 font-bold text-lg flex-shrink-0">
                                 ✓
                               </span>
-                              <span className="text-gray-700 text-sm leading-relaxed">
+                              <span className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
                                 <span className="font-medium">{formatEntitlementLabel(key)}:</span>{" "}
                                 {formatEntitlementValue(value)}
                               </span>
@@ -265,9 +265,11 @@ function SubscriptionPlansPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
+            © 2025 Learinal. All rights reserved.
+          </p>
         </div>
       </footer>
 
@@ -278,44 +280,46 @@ function SubscriptionPlansPage() {
           onClick={() => setShowPaymentModal(false)}
         >
           <div
-            className="bg-white rounded-xl shadow-2xl max-w-md w-full"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-sm w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">Xác nhận đăng ký</h2>
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Xác nhận đăng ký</h2>
               <button
-                className="text-gray-400 hover:text-gray-600 text-3xl leading-none"
+                className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
                 onClick={() => setShowPaymentModal(false)}
               >
                 ×
               </button>
             </div>
 
-            <div className="p-6 space-y-4">
-              <div className="flex justify-between py-3 border-b border-gray-100">
-                <span className="text-gray-600">Gói:</span>
-                <strong className="text-gray-900">{selectedPlan.planName}</strong>
+            <div className="p-4 space-y-3">
+              <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Gói:</span>
+                <strong className="text-sm text-gray-900 dark:text-gray-100">{selectedPlan.planName}</strong>
               </div>
-              <div className="flex justify-between py-3 border-b border-gray-100">
-                <span className="text-gray-600">Giá:</span>
-                <strong className="text-primary-600">{formatPrice(selectedPlan.price)}</strong>
+              <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Giá:</span>
+                <strong className="text-sm text-primary-600 dark:text-primary-400">
+                  {formatPrice(selectedPlan.price)}
+                </strong>
               </div>
-              <div className="flex justify-between py-3 border-b border-gray-100">
-                <span className="text-gray-600">Chu kỳ:</span>
-                <strong className="text-gray-900">
+              <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                <span className="text-sm text-gray-600 dark:text-gray-400">Chu kỳ:</span>
+                <strong className="text-sm text-gray-900 dark:text-gray-100">
                   {selectedPlan.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
                 </strong>
               </div>
             </div>
 
-            <div className="px-6 pb-6 space-y-2 text-gray-700">
+            <div className="px-4 pb-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <p>
                 Bạn có chắc chắn muốn đăng ký gói <strong>{selectedPlan.planName}</strong> không?
               </p>
               <p>Sau khi xác nhận, bạn sẽ nhận được mã QR để thanh toán.</p>
             </div>
 
-            <div className="flex gap-3 p-6 border-t border-gray-200">
+            <div className="flex gap-2 p-4 border-t border-gray-200 dark:border-gray-700">
               <Button
                 type="button"
                 variant="secondary"
@@ -340,61 +344,57 @@ function SubscriptionPlansPage() {
           onClick={() => setShowQRModal(false)}
         >
           <div
-            className="bg-white rounded-xl shadow-2xl max-w-lg w-full"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">Quét mã QR để thanh toán</h2>
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Quét mã QR để thanh toán</h2>
               <button
-                className="text-gray-400 hover:text-gray-600 text-3xl leading-none"
+                className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
                 onClick={() => setShowQRModal(false)}
               >
                 ×
               </button>
             </div>
 
-            <div className="p-6 space-y-6">
-              <div className="flex justify-center bg-gray-50 p-6 rounded-lg">
+            <div className="p-4 space-y-4">
+              <div className="flex justify-center bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
                 {qrData.qrUrl ? (
-                  <img src={qrData.qrUrl} alt="QR Code" className="w-64 h-64 object-contain" />
+                  <img src={qrData.qrUrl} alt="QR Code" className="w-48 h-48 object-contain" />
                 ) : qrData.qrDataUrl ? (
-                  <img src={qrData.qrDataUrl} alt="QR Code" className="w-64 h-64 object-contain" />
+                  <img src={qrData.qrDataUrl} alt="QR Code" className="w-48 h-48 object-contain" />
                 ) : (
-                  <div className="text-error-600 text-center py-12">Không thể tải mã QR</div>
+                  <div className="text-error-600 dark:text-red-400 text-center py-12">Không thể tải mã QR</div>
                 )}
               </div>
 
-              <div className="space-y-3">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Thông tin thanh toán</h3>
-                <div className="flex justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Gói:</span>
-                  <span className="font-medium text-gray-900">{qrData.plan?.name}</span>
+              <div className="space-y-2">
+                <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">Thông tin thanh toán</h3>
+                <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Gói:</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{qrData.plan?.name}</span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Số tiền:</span>
-                  <span className="font-bold text-primary-600">{formatPrice(qrData.amount)}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Chu kỳ:</span>
-                  <span className="font-medium text-gray-900">
-                    {qrData.plan?.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
+                <div className="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Số tiền:</span>
+                  <span className="text-sm font-bold text-primary-600 dark:text-primary-400">
+                    {formatPrice(qrData.amount)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-gray-600">Mã tham chiếu:</span>
-                  <span className="font-mono text-sm font-medium text-gray-900">
-                    {qrData.reference}
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Chu kỳ:</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    {qrData.plan?.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
                   </span>
                 </div>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2 text-sm text-blue-800">
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 space-y-1 text-xs text-blue-800 dark:text-blue-300">
                 <p>📱 Vui lòng quét mã QR bằng ứng dụng ngân hàng</p>
                 <p>💡 Sau khi thanh toán thành công, hệ thống sẽ tự động kích hoạt gói của bạn</p>
               </div>
             </div>
 
-            <div className="flex gap-3 p-6 border-t border-gray-200">
+            <div className="flex gap-2 p-4 border-t border-gray-200 dark:border-gray-700">
               <Button
                 variant="secondary"
                 onClick={() => {

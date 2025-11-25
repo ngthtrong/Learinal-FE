@@ -75,7 +75,10 @@ const SubjectForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <label htmlFor="subjectName" className="block text-sm font-semibold text-gray-900">
+        <label
+          htmlFor="subjectName"
+          className="block text-sm font-semibold text-gray-900 dark:text-gray-100"
+        >
           Tên môn học <span className="text-red-500">*</span>
         </label>
         <input
@@ -88,16 +91,19 @@ const SubjectForm = ({
           maxLength={200}
           autoFocus
           className={`w-full px-4 py-3 border ${
-            errors.subjectName ? "border-red-300" : "border-gray-300"
-          } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400`}
+            errors.subjectName ? "border-red-300" : "border-gray-300 dark:border-gray-600"
+          } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-gray-900 dark:text-gray-100 dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500`}
         />
         {errors.subjectName && <p className="text-sm text-red-600 mt-1">{errors.subjectName}</p>}
-        <p className="text-xs text-gray-500">Mô tả ngắn gọn về môn học này...</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">Mô tả ngắn gọn về môn học này...</p>
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="description" className="block text-sm font-semibold text-gray-900">
-          Mô tả <span className="text-gray-500 font-normal">(tùy chọn)</span>
+        <label
+          htmlFor="description"
+          className="block text-sm font-semibold text-gray-900 dark:text-gray-100"
+        >
+          Mô tả <span className="text-gray-500 dark:text-gray-400 font-normal">(tùy chọn)</span>
         </label>
         <textarea
           id="description"
@@ -108,17 +114,17 @@ const SubjectForm = ({
           rows={4}
           maxLength={1000}
           className={`w-full px-4 py-3 border ${
-            errors.description ? "border-red-300" : "border-gray-300"
-          } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none text-gray-900 placeholder-gray-400`}
+            errors.description ? "border-red-300" : "border-gray-300 dark:border-gray-600"
+          } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none text-gray-900 dark:text-gray-100 dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500`}
         />
         {errors.description && <p className="text-sm text-red-600 mt-1">{errors.description}</p>}
-        <div className="flex justify-between items-center text-xs text-gray-500">
+        <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
           <span>Thêm mô tả chi tiết về nội dung, mục tiêu của môn học</span>
           <span className="font-medium">{formData.description.length} / 1000 ký tự</span>
         </div>
       </div>
 
-      <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
+      <div className="flex items-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
             Hủy

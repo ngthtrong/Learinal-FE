@@ -5,6 +5,7 @@
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import {
   TopbarLayout,
@@ -57,420 +58,422 @@ import {
 // Styles
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
-          <Route path="/oauth/google/callback" element={<OAuthCallbackPage />} />
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
+            <Route path="/oauth/google/callback" element={<OAuthCallbackPage />} />
 
-          {/* Protected routes */}
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <LearnerHomePage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/documents/list"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <DocumentListPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/documents/:id"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <DocumentDetailPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/quiz"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <QuizListPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/public"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <PublicSetsPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/documents"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <AllDocumentsPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/mysubscription"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <MySubscriptionPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <RoleBasedSidebarLayout>
-                    <ProfileViewPage />
-                  </RoleBasedSidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile/edit"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <RoleBasedSidebarLayout>
-                    <ProfileEditPage />
-                  </RoleBasedSidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/subjects"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <SubjectListPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/subjects/create"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <SubjectCreatePage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/subjects/:id"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <SubjectDetailPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
+            {/* Protected routes */}
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <LearnerHomePage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/documents/list"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <DocumentListPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/documents/:id"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <DocumentDetailPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/quiz"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <QuizListPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/public"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <PublicSetsPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/documents"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <AllDocumentsPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mysubscription"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <MySubscriptionPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <RoleBasedSidebarLayout>
+                      <ProfileViewPage />
+                    </RoleBasedSidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/edit"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <RoleBasedSidebarLayout>
+                      <ProfileEditPage />
+                    </RoleBasedSidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/subjects"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <SubjectListPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/subjects/create"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <SubjectCreatePage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/subjects/:id"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <SubjectDetailPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Quiz routes */}
-          <Route
-            path="/quiz/:id"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <QuestionSetDetailPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/question-sets/:id"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <QuestionSetDetailPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/quiz/start/:id"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <QuizStartPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/quiz/take/:attemptId"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <QuizTakingPage />
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/quiz/result/:attemptId"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <QuizResultPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
+            {/* Quiz routes */}
+            <Route
+              path="/quiz/:id"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <QuestionSetDetailPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/question-sets/:id"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <QuestionSetDetailPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/quiz/start/:id"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <QuizStartPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/quiz/take/:attemptId"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <QuizTakingPage />
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/quiz/result/:attemptId"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <QuizResultPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/subscriptions/plans"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <SubscriptionPlansPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/subscriptions/view"
-            element={
-              <AdminRoute>
-                <TopbarLayout>
-                  <AdminSidebarLayout>
-                    <ViewSubscriptionPage />
-                  </AdminSidebarLayout>
-                </TopbarLayout>
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/subscriptions/me"
-            element={
-              <ProtectedRoute>
-                <TopbarLayout>
-                  <SidebarLayout>
-                    <MySubscriptionPage />
-                  </SidebarLayout>
-                </TopbarLayout>
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Admin routes */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
+            <Route
+              path="/subscriptions/plans"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <SubscriptionPlansPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/subscriptions/view"
+              element={
                 <AdminRoute>
                   <TopbarLayout>
                     <AdminSidebarLayout>
-                      <AdminDashboardPage />
+                      <ViewSubscriptionPage />
                     </AdminSidebarLayout>
                   </TopbarLayout>
                 </AdminRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <ProtectedRoute>
-                <AdminRoute>
+              }
+            />
+            <Route
+              path="/subscriptions/me"
+              element={
+                <ProtectedRoute>
                   <TopbarLayout>
-                    <AdminSidebarLayout>
-                      <UserManagementPage />
-                    </AdminSidebarLayout>
+                    <SidebarLayout>
+                      <MySubscriptionPage />
+                    </SidebarLayout>
                   </TopbarLayout>
-                </AdminRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/subscription-plans"
-            element={
-              <ProtectedRoute>
-                <AdminRoute>
-                  <TopbarLayout>
-                    <AdminSidebarLayout>
-                      <AdminSubscriptionPlansPage />
-                    </AdminSidebarLayout>
-                  </TopbarLayout>
-                </AdminRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/subscription-purchases"
-            element={
-              <ProtectedRoute>
-                <AdminRoute>
-                  <TopbarLayout>
-                    <AdminSidebarLayout>
-                      <SubscriptionPurchasesPage />
-                    </AdminSidebarLayout>
-                  </TopbarLayout>
-                </AdminRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/commission-records"
-            element={
-              <ProtectedRoute>
-                <AdminRoute>
-                  <TopbarLayout>
-                    <AdminSidebarLayout>
-                      <CommissionRecordsPage />
-                    </AdminSidebarLayout>
-                  </TopbarLayout>
-                </AdminRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/financials"
-            element={
-              <ProtectedRoute>
-                <AdminRoute>
-                  <TopbarLayout>
-                    <AdminSidebarLayout>
-                      <AdminFinancialsPage />
-                    </AdminSidebarLayout>
-                  </TopbarLayout>
-                </AdminRoute>
-              </ProtectedRoute>
-            }
-          />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Expert routes */}
-          <Route
-            path="/expert"
-            element={
-              <ProtectedRoute>
-                <ExpertRoute>
-                  <TopbarLayout>
-                    <ExpertSidebarLayout>
-                      <ExpertDashboardPage />
-                    </ExpertSidebarLayout>
-                  </TopbarLayout>
-                </ExpertRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/expert/commission-records"
-            element={
-              <ProtectedRoute>
-                <ExpertRoute>
-                  <TopbarLayout>
-                    <ExpertSidebarLayout>
-                      <ExpertCommissionRecordsPage />
-                    </ExpertSidebarLayout>
-                  </TopbarLayout>
-                </ExpertRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/expert/validation-requests"
-            element={
-              <ProtectedRoute>
-                <ExpertRoute>
-                  <TopbarLayout>
-                    <ExpertSidebarLayout>
-                      <ExpertValidationRequestsPage />
-                    </ExpertSidebarLayout>
-                  </TopbarLayout>
-                </ExpertRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/expert/validation-requests/:id"
-            element={
-              <ProtectedRoute>
-                <ExpertRoute>
-                  <TopbarLayout>
-                    <ExpertSidebarLayout>
-                      <ExpertValidationRequestDetailPage />
-                    </ExpertSidebarLayout>
-                  </TopbarLayout>
-                </ExpertRoute>
-              </ProtectedRoute>
-            }
-          />
+            {/* Admin routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminDashboardPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <UserManagementPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/subscription-plans"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminSubscriptionPlansPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/subscription-purchases"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <SubscriptionPurchasesPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/commission-records"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <CommissionRecordsPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/financials"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminFinancialsPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+            {/* Expert routes */}
+            <Route
+              path="/expert"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertDashboardPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/commission-records"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertCommissionRecordsPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/validation-requests"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertValidationRequestsPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/validation-requests/:id"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertValidationRequestDetailPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
 
-          {/* 404 - Not found */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+
+            {/* 404 - Not found */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

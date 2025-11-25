@@ -8,18 +8,22 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     />
     <script>
+      // Initialize theme before page renders to prevent flash
       (function () {
         try {
-          var KEY = "learinal_theme";
-          var t = localStorage.getItem(KEY);
-          if (!t || t === "auto") {
-            var prefersDark =
-              window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-            t = prefersDark ? "dark" : "light";
+          var savedTheme = localStorage.getItem("theme");
+          if (savedTheme === "dark" || savedTheme === "light") {
+            document.documentElement.classList.add(savedTheme);
+          } else if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.add("light");
           }
-          document.documentElement.setAttribute("data-theme", t);
         } catch (e) {
-          document.documentElement.setAttribute("data-theme", "light");
+          document.documentElement.classList.add("light");
         }
       })();
     </script>

@@ -44,7 +44,7 @@ const SubjectCreatePage = () => {
     <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
           <button
             className="inline-flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 mb-4 transition-colors"
             onClick={handleCancel}
@@ -53,8 +53,8 @@ const SubjectCreatePage = () => {
             ← Quay lại danh sách môn học
           </button>
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold text-gray-900">📚 Tạo môn học mới</h1>
-            <p className="text-lg text-gray-600">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">📚 Tạo môn học mới</h1>
+            <p className="text-lg text-gray-600 dark:text-gray-100">
               Tạo một môn học để bắt đầu thêm tài liệu và câu hỏi học tập
             </p>
           </div>
@@ -63,7 +63,7 @@ const SubjectCreatePage = () => {
 
       {/* Form Container */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
           <SubjectForm
             onSubmit={handleSubmit}
             onCancel={handleCancel}
@@ -74,9 +74,11 @@ const SubjectCreatePage = () => {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
+            © 2025 Learinal. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

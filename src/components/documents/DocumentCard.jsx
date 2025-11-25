@@ -24,12 +24,10 @@ const STATUS_CONFIG = {
 function DocumentCard({ document, onView, onDelete, onGenerateSummary }) {
   const statusConfig = STATUS_CONFIG[document.status] || STATUS_CONFIG.Completed;
 
-  const formatFileSize = (bytes) => {
-    if (!bytes) return "N/A";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+  const formatFileSize = (sizeMB) => {
+    if (!sizeMB && sizeMB !== 0) return "N/A";
+    // Backend already returns size in MB
+    return `${sizeMB} MB`;
   };
 
   const getFileIcon = (fileName) => {
@@ -63,68 +61,73 @@ function DocumentCard({ document, onView, onDelete, onGenerateSummary }) {
 
   return (
     <div
-      className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-medium transition-all cursor-pointer"
+      className="group relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
       onClick={handleCardClick}
     >
-      <div className="flex items-start gap-4">
-        <div className="text-4xl">{getFileIcon(document.originalFileName)}</div>
+      {/* Decorative blurred blob */}
+      <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
 
-        <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-gray-900 truncate mb-1">
-            {document.title || document.originalFileName}
-          </h3>
-          <p className="text-sm text-gray-500 mb-2">
-            {formatFileSize(document.fileSize)} •{" "}
-            {formatDate(document.uploadedAt || document.createdAt)}
-          </p>
-
-          {document.summary && (
-            <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-              {document.summary.substring(0, 100)}...
-            </p>
-          )}
-
-          <div className="mb-3">
-            <span
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${
-                statusColorMap[document.status] || statusColorMap.Completed
-              }`}
-            >
-              {statusConfig.icon} {statusConfig.label}
-            </span>
-          </div>
-
-          {document.status === DOCUMENT_STATUS.COMPLETED && (
-            <div className="flex items-center gap-2">
-              {!document.summary && onGenerateSummary && (
-                <Button
-                  variant="outline"
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onGenerateSummary();
-                  }}
-                >
-                  🤖 Tạo tóm tắt
-                </Button>
-              )}
-
-              {onDelete && (
-                <button
-                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete();
-                  }}
-                  aria-label="Xóa tài liệu"
-                >
-                  🗑️
-                </button>
-              )}
-            </div>
-          )}
+      {/* Icon - Top Left */}
+      <div className="mb-4">
+        <div className="text-5xl transform group-hover:scale-110 transition-transform">
+          {getFileIcon(document.originalFileName)}
         </div>
       </div>
+
+      <div className="flex-1 min-w-0">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+          {document.title || document.originalFileName}
+        </h3>
+        <p className="text-xs text-gray-600 dark:text-gray-500 mb-3">
+          {formatFileSize(document.fileSize)} •{" "}
+          {formatDate(document.uploadedAt || document.createdAt)}
+        </p>
+
+        {document.summary && (
+          <p className="text-sm text-gray-700 dark:text-gray-400 line-clamp-2 mb-4">
+            {document.summary.substring(0, 100)}...
+          </p>
+        )}
+
+        <div className="mb-3">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-500/20 text-green-700 dark:text-green-300 border border-green-500/30">
+            {statusConfig.icon} {statusConfig.label}
+          </span>
+        </div>
+
+        {document.status === DOCUMENT_STATUS.COMPLETED && (
+          <div className="flex items-center gap-2">
+            {!document.summary && onGenerateSummary && (
+              <Button
+                variant="outline"
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onGenerateSummary();
+                }}
+              >
+                🤖 Tạo tóm tắt
+              </Button>
+            )}
+
+            {onDelete && (
+              <button
+                className="p-2 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
+                aria-label="Xóa tài liệu"
+              >
+                🗑️
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Hover underline accent */}
+      <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary-500 group-hover:w-full transition-all" />
     </div>
   );
 }

@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { documentsService, subjectsService, questionSetsService } from "@/services/api";
 import { CardGrid, CategoryCard } from "@/components/common";
 import QuizIcon from "@/components/icons/QuizIcon";
@@ -15,6 +15,7 @@ import GlobeIcon from "@/components/icons/GlobeIcon";
 import PenIcon from "@/components/icons/PenIcon";
 const LearnerHomePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,6 +30,16 @@ const LearnerHomePage = () => {
     publicSubjects: [],
     myDocuments: [],
   });
+
+  // Read query parameter and auto-trigger search
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const searchQuery = params.get("q");
+    if (searchQuery && searchQuery.trim()) {
+      setQ(searchQuery);
+      performSearch(searchQuery);
+    }
+  }, [location.search]);
 
   // Fetch initial lists (best-effort; backend params may vary)
   useEffect(() => {
@@ -234,10 +245,10 @@ const LearnerHomePage = () => {
   }, [lists.myDocuments]);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header with Search */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
           <form
             className="flex items-center gap-2 max-w-2xl mx-auto"
             onSubmit={(e) => {
@@ -251,7 +262,7 @@ const LearnerHomePage = () => {
                 placeholder="Tìm môn học, bộ đề, tài liệu..."
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 pl-12 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
               />
               <svg
                 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -285,7 +296,7 @@ const LearnerHomePage = () => {
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <h2
-              className="text-2xl font-bold text-gray-900 cursor-pointer hover:text-primary-600 transition-colors"
+              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/subjects")}
@@ -297,7 +308,7 @@ const LearnerHomePage = () => {
             </h2>
             <button
               onClick={() => navigate("/subjects")}
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
             >
               Xem tất cả →
             </button>
@@ -316,12 +327,12 @@ const LearnerHomePage = () => {
               ))}
             </CardGrid>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-              <BookIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-              <p className="text-gray-500">Chưa có môn học nào</p>
+            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <BookIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
+              <p className="text-gray-500 dark:text-gray-400">Chưa có môn học nào</p>
               <button
                 onClick={() => navigate("/subjects/create")}
-                className="mt-4 text-primary-600 hover:text-primary-700 font-medium"
+                className="mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Tạo môn học đầu tiên
               </button>
@@ -333,7 +344,7 @@ const LearnerHomePage = () => {
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <h2
-              className="text-2xl font-bold text-gray-900 cursor-pointer hover:text-primary-600 transition-colors"
+              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/quiz")}
@@ -345,7 +356,7 @@ const LearnerHomePage = () => {
             </h2>
             <button
               onClick={() => navigate("/quiz")}
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
             >
               Xem tất cả →
             </button>
@@ -363,12 +374,12 @@ const LearnerHomePage = () => {
               ))}
             </CardGrid>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-              <PenIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-              <p className="text-gray-500">Chưa có bộ đề nào</p>
+            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <PenIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
+              <p className="text-gray-500 dark:text-gray-400">Chưa có bộ đề nào</p>
               <button
                 onClick={() => navigate("/quiz/create")}
-                className="mt-4 text-primary-600 hover:text-primary-700 font-medium"
+                className="mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Tạo bộ đề đầu tiên
               </button>
@@ -380,7 +391,7 @@ const LearnerHomePage = () => {
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <h2
-              className="text-2xl font-bold text-gray-900 cursor-pointer hover:text-primary-600 transition-colors"
+              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/public")}
@@ -392,7 +403,7 @@ const LearnerHomePage = () => {
             </h2>
             <button
               onClick={() => navigate("/public")}
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
             >
               Xem tất cả →
             </button>
@@ -410,9 +421,9 @@ const LearnerHomePage = () => {
               ))}
             </CardGrid>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-              <GlobeIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-              <p className="text-gray-500">Chưa có bộ đề công khai</p>
+            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <GlobeIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
+              <p className="text-gray-500 dark:text-gray-400">Chưa có bộ đề công khai</p>
             </div>
           )}
         </section>
@@ -421,7 +432,7 @@ const LearnerHomePage = () => {
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <h2
-              className="text-2xl font-bold text-gray-900 cursor-pointer hover:text-primary-600 transition-colors"
+              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/documents")}
@@ -433,7 +444,7 @@ const LearnerHomePage = () => {
             </h2>
             <button
               onClick={() => navigate("/documents")}
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
             >
               Xem tất cả →
             </button>
@@ -451,12 +462,12 @@ const LearnerHomePage = () => {
               ))}
             </CardGrid>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-              <DocumentIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-              <p className="text-gray-500">Chưa có tài liệu nào</p>
+            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <DocumentIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
+              <p className="text-gray-500 dark:text-gray-400">Chưa có tài liệu nào</p>
               <button
                 onClick={() => navigate("/documents/upload")}
-                className="mt-4 text-primary-600 hover:text-primary-700 font-medium"
+                className="mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Tải lên tài liệu đầu tiên
               </button>
@@ -466,9 +477,11 @@ const LearnerHomePage = () => {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
+            © 2025 Learinal. All rights reserved.
+          </p>
         </div>
       </footer>
 
@@ -480,19 +493,22 @@ const LearnerHomePage = () => {
           onClick={() => setModalOpen(false)}
         >
           <div
-            className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-labelledby="search-modal-title"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-linear-to-r from-primary-50 to-secondary-50">
-              <h3 id="search-modal-title" className="text-xl font-bold text-gray-900">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
+              <h3
+                id="search-modal-title"
+                className="text-xl font-bold text-gray-900 dark:text-gray-100"
+              >
                 Kết quả tìm kiếm{submittedQ ? `: "${submittedQ}"` : ""}
               </h3>
               <button
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors text-gray-600 hover:text-gray-900"
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                 onClick={() => setModalOpen(false)}
                 aria-label="Đóng"
               >
@@ -505,15 +521,15 @@ const LearnerHomePage = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Môn học */}
                 <div className="space-y-3">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <BookIcon className="w-5 h-5 text-primary-600" />
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <BookIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
                     Môn học
                   </h4>
                   <ul className="space-y-2">
                     {results.subjects.map((s) => (
                       <li
                         key={s._id || s.id}
-                        className="px-3 py-2 bg-gray-50 rounded-lg hover:bg-primary-50 hover:text-primary-700 transition-colors cursor-pointer border border-transparent hover:border-primary-200"
+                        className="px-3 py-2 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-700 dark:hover:text-primary-300 transition-colors cursor-pointer border border-transparent hover:border-primary-200 dark:hover:border-primary-700 text-gray-900 dark:text-gray-200"
                         onClick={() => {
                           navigate(`/subjects/${s._id || s.id}`);
                           setModalOpen(false);
@@ -523,22 +539,24 @@ const LearnerHomePage = () => {
                       </li>
                     ))}
                     {results.subjects.length === 0 && (
-                      <li className="px-3 py-2 text-gray-400 text-sm italic">Không có kết quả</li>
+                      <li className="px-3 py-2 text-gray-400 dark:text-gray-500 text-sm italic">
+                        Không có kết quả
+                      </li>
                     )}
                   </ul>
                 </div>
 
                 {/* Bộ đề */}
                 <div className="space-y-3">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <PenIcon className="w-5 h-5 text-secondary-600" />
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <PenIcon className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
                     Bộ đề
                   </h4>
                   <ul className="space-y-2">
                     {results.sets.map((s) => (
                       <li
                         key={s._id || s.id}
-                        className="px-3 py-2 bg-gray-50 rounded-lg hover:bg-secondary-50 hover:text-secondary-700 transition-colors cursor-pointer border border-transparent hover:border-secondary-200"
+                        className="px-3 py-2 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-secondary-50 dark:hover:bg-secondary-900/30 hover:text-secondary-700 dark:hover:text-secondary-300 transition-colors cursor-pointer border border-transparent hover:border-secondary-200 dark:hover:border-secondary-700 text-gray-900 dark:text-gray-200"
                         onClick={() => {
                           navigate(`/quiz/${s._id || s.id}`);
                           setModalOpen(false);
@@ -548,22 +566,24 @@ const LearnerHomePage = () => {
                       </li>
                     ))}
                     {results.sets.length === 0 && (
-                      <li className="px-3 py-2 text-gray-400 text-sm italic">Không có kết quả</li>
+                      <li className="px-3 py-2 text-gray-400 dark:text-gray-500 text-sm italic">
+                        Không có kết quả
+                      </li>
                     )}
                   </ul>
                 </div>
 
                 {/* Tài liệu */}
                 <div className="space-y-3">
-                  <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <DocumentIcon className="w-5 h-5 text-success-600" />
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <DocumentIcon className="w-5 h-5 text-success-600 dark:text-success-400" />
                     Tài liệu
                   </h4>
                   <ul className="space-y-2">
                     {results.documents.map((d) => (
                       <li
                         key={d._id || d.id}
-                        className="px-3 py-2 bg-gray-50 rounded-lg hover:bg-success-50 hover:text-success-700 transition-colors cursor-pointer border border-transparent hover:border-success-200"
+                        className="px-3 py-2 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-success-50 dark:hover:bg-success-900/30 hover:text-success-700 dark:hover:text-success-300 transition-colors cursor-pointer border border-transparent hover:border-success-200 dark:hover:border-success-700 text-gray-900 dark:text-gray-200"
                         onClick={() => {
                           navigate(`/documents/${d._id || d.id}`);
                           setModalOpen(false);
@@ -573,7 +593,9 @@ const LearnerHomePage = () => {
                       </li>
                     ))}
                     {results.documents.length === 0 && (
-                      <li className="px-3 py-2 text-gray-400 text-sm italic">Không có kết quả</li>
+                      <li className="px-3 py-2 text-gray-400 dark:text-gray-500 text-sm italic">
+                        Không có kết quả
+                      </li>
                     )}
                   </ul>
                 </div>

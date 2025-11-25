@@ -128,14 +128,18 @@ function QuizListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-gray-900">📝 Bộ đề thi của tôi</h1>
-              <p className="text-lg text-gray-600">Quản lý tất cả bộ đề thi và câu hỏi của bạn</p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                📝 Bộ đề thi của tôi
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-400">
+                Quản lý tất cả bộ đề thi và câu hỏi của bạn
+              </p>
             </div>
             <Button onClick={() => setIsCreateModalOpen(true)}>+ Tạo bộ đề mới</Button>
           </div>
@@ -145,14 +149,14 @@ function QuizListPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {/* Sort & Filter Controls */}
         {questionSets.length > 0 && !loading && (
-          <div className="flex items-center justify-between mb-6 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-between mb-6 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Sắp xếp:</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Sắp xếp:</span>
               <button
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   sortBy === "updatedAt"
-                    ? "bg-primary-100 text-primary-700"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
                 onClick={() => handleSortChange("updatedAt")}
               >
@@ -161,8 +165,8 @@ function QuizListPage() {
               <button
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   sortBy === "title"
-                    ? "bg-primary-100 text-primary-700"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
                 onClick={() => handleSortChange("title")}
               >
@@ -171,15 +175,17 @@ function QuizListPage() {
               <button
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   sortBy === "createdAt"
-                    ? "bg-primary-100 text-primary-700"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
                 onClick={() => handleSortChange("createdAt")}
               >
                 Mới tạo {sortBy === "createdAt" && (order === "asc" ? "↑" : "↓")}
               </button>
             </div>
-            <div className="text-sm text-gray-600 font-medium">{questionSets.length} bộ đề</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+              {questionSets.length} bộ đề
+            </div>
           </div>
         )}
 
@@ -187,13 +193,16 @@ function QuizListPage() {
         {loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((n) => (
-              <div key={n} className="bg-white rounded-xl p-6 shadow-sm animate-pulse">
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+              <div
+                key={n}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm animate-pulse"
+              >
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
                 <div className="space-y-2 mb-4">
-                  <div className="h-4 bg-gray-200 rounded w-full"></div>
-                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
                 </div>
-                <div className="h-10 bg-gray-200 rounded"></div>
+                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
               </div>
             ))}
           </div>
@@ -201,10 +210,12 @@ function QuizListPage() {
 
         {/* Empty State */}
         {!loading && questionSets.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="text-6xl mb-4">📝</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Chưa có bộ đề thi nào</h2>
-            <p className="text-gray-600 text-center mb-6 max-w-md">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              Chưa có bộ đề thi nào
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
               Bắt đầu bằng cách tạo bộ đề thi đầu tiên từ môn học của bạn
             </p>
             <Button onClick={() => setIsCreateModalOpen(true)}>+ Tạo bộ đề đầu tiên</Button>
@@ -232,7 +243,7 @@ function QuizListPage() {
                 <Button variant="secondary" disabled={page === 1} onClick={() => setPage(page - 1)}>
                   ← Trang trước
                 </Button>
-                <div className="flex items-center gap-2 text-gray-700">
+                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                   <span className="font-medium">Trang {page}</span>
                   <span>/</span>
                   <span>{totalPages}</span>
@@ -259,9 +270,11 @@ function QuizListPage() {
       />
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
+            © 2025 Learinal. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

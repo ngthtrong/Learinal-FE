@@ -14,3 +14,4 @@ export { ToastProvider, useToast } from "./ToastContainer";
 export { default as ErrorBoundary } from "./ErrorBoundary";
 export { default as AdminRoute } from "./AdminRoute";
 export { default as ExpertRoute } from "./ExpertRoute";
+export { default as ThemeToggle } from "./ThemeToggle";

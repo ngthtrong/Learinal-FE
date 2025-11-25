@@ -23,6 +23,8 @@ function MySubscriptionPage() {
       setLoading(true);
       setError(null);
       const response = await subscriptionsService.getMySubscription();
+      console.log("Subscription data:", response.data?.subscription);
+      console.log("Status:", response.data?.subscription?.status);
       setSubscription(response.data?.subscription || null);
     } catch (err) {
       if (err.response?.status === 404) {
@@ -56,12 +58,15 @@ function MySubscriptionPage() {
 
     try {
       setCancelling(true);
-      await subscriptionsService.cancelSubscription(subscriptionId);
+      const cancelResponse = await subscriptionsService.cancelSubscription(subscriptionId);
+      console.log("Cancel response:", cancelResponse);
       alert("Hủy gói đăng ký thành công!");
       // Sau khi hủy, subscription status sẽ không còn Active nữa
       // Reload để hiển thị thông báo phù hợp
-      fetchSubscription();
+      await fetchSubscription();
     } catch (err) {
+      console.error("Cancel error:", err);
+      console.error("Error response:", err.response?.data);
       alert(err.response?.data?.message || "Không thể hủy gói đăng ký");
     } finally {
       setCancelling(false);
@@ -89,9 +94,9 @@ function MySubscriptionPage() {
       return value ? "Có" : "Không";
     }
     if (typeof value === "object" && value !== null) {
-      // Format object như {canShare: true, maxSharedUsers: 3}
-      if (value.canShare !== undefined && value.maxSharedUsers !== undefined) {
-        return `${value.canShare ? "Có" : "Không"} (tối đa ${value.maxSharedUsers} người)`;
+      // Format boolean
+      if (typeof value === "boolean") {
+        return value ? "Có" : "Không";
       }
       return JSON.stringify(value);
     }
@@ -103,15 +108,15 @@ function MySubscriptionPage() {
 
   const getStatusBadge = (status) => {
     const statusMap = {
-      Active: { text: "Đang hoạt động", className: "bg-success-100 text-success-800" },
-      Expired: { text: "Đã hết hạn", className: "bg-gray-100 text-gray-800" },
-      Cancelled: { text: "Đã hủy", className: "bg-error-100 text-error-800" },
-      PendingPayment: { text: "Chờ thanh toán", className: "bg-warning-100 text-warning-800" },
+      Active: { text: "Đang hoạt động", className: "bg-success-100 dark:bg-green-900/30 text-success-800 dark:text-green-300" },
+      Expired: { text: "Đã hết hạn", className: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300" },
+      Canceled: { text: "Đã hủy", className: "bg-error-100 dark:bg-red-900/30 text-error-800 dark:text-red-300" },
+      PendingPayment: { text: "Chờ thanh toán", className: "bg-warning-100 dark:bg-yellow-900/30 text-warning-800 dark:text-yellow-300" },
     };
 
     const statusInfo = statusMap[status] || {
       text: status,
-      className: "bg-gray-100 text-gray-800",
+      className: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300",
     };
     return (
       <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusInfo.className}`}>
@@ -124,7 +129,7 @@ function MySubscriptionPage() {
     const statusMap = {
       Active: "Đang hoạt động",
       Expired: "Đã hết hạn",
-      Cancelled: "Đã hủy",
+      Canceled: "Đã hủy",
       PendingPayment: "Chờ thanh toán",
     };
     return statusMap[status] || status;
@@ -132,12 +137,12 @@ function MySubscriptionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Đang tải thông tin gói đăng ký...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Đang tải thông tin gói đăng ký...</p>
             </div>
           </div>
         </div>
@@ -147,9 +152,9 @@ function MySubscriptionPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg max-w-2xl mx-auto mt-8">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-6 py-4 rounded-lg max-w-2xl mx-auto mt-8">
             <p className="font-medium">{error}</p>
           </div>
         </div>
@@ -159,20 +164,20 @@ function MySubscriptionPage() {
 
   if (!subscription) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
-            <h1 className="text-4xl font-bold text-gray-900">💳 Gói đăng ký của tôi</h1>
+          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">💳 Gói đăng ký của tôi</h1>
           </div>
         </div>
 
         {/* Empty State */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="text-6xl mb-4">📦</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Chưa có gói đăng ký</h2>
-            <p className="text-gray-600 text-center mb-6 max-w-md">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
+            <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
               Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
             </p>
             <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
@@ -182,36 +187,78 @@ function MySubscriptionPage() {
     );
   }
 
-  // Chỉ hiển thị subscription khi status là Active
-  if (subscription.status !== "Active") {
+  // Nếu gói đã hủy hoặc hết hạn, hiển thị như chưa có gói
+  if (subscription.status === "Canceled" || subscription.status === "Expired") {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
-            <h1 className="text-4xl font-bold text-gray-900">💳 Gói đăng ký của tôi</h1>
+          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">💳 Gói đăng ký của tôi</h1>
           </div>
         </div>
 
-        {/* Inactive State */}
+        {/* Empty State */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-xl shadow-sm border border-gray-200">
-            <div className="text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Gói đăng ký không hoạt động</h2>
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="text-6xl mb-4">📦</div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
+            <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
+              Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
+            </p>
+            <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Hiển thị thông báo cho PendingPayment
+  if (subscription.status === "PendingPayment") {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        {/* Header */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">💳 Gói đăng ký của tôi</h1>
+          </div>
+        </div>
+
+        {/* Pending Payment State */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="text-6xl mb-4">⏳</div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chờ thanh toán</h2>
             <div className="mb-4">{getStatusBadge(subscription.status)}</div>
-            {subscription.status === "PendingPayment" && (
-              <p className="text-gray-600 text-center mb-6">
-                Vui lòng hoàn tất thanh toán để kích hoạt gói.
-              </p>
-            )}
-            {subscription.status === "Expired" && (
-              <p className="text-gray-600 text-center mb-6">
-                Gói đăng ký của bạn đã hết hạn. Vui lòng gia hạn hoặc chọn gói mới.
-              </p>
-            )}
-            {subscription.status === "Cancelled" && (
-              <p className="text-gray-600 text-center mb-6">Gói đăng ký của bạn đã bị hủy.</p>
-            )}
+            <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
+              Vui lòng hoàn tất thanh toán để kích hoạt gói.
+            </p>
+            <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Nếu status không phải Active, hiển thị như chưa có gói
+  if (subscription.status !== "Active") {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        {/* Header */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">💳 Gói đăng ký của tôi</h1>
+          </div>
+        </div>
+
+        {/* Empty State */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="text-6xl mb-4">📦</div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
+            <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
+              Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
+            </p>
             <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
           </div>
         </div>
@@ -223,14 +270,14 @@ function MySubscriptionPage() {
   const plan = subscription.plan;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-gray-900">💳 Gói đăng ký của tôi</h1>
-              <p className="text-lg text-gray-600">Thông tin chi tiết về gói đăng ký hiện tại</p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">💳 Gói đăng ký của tôi</h1>
+              <p className="text-lg text-gray-600 dark:text-gray-400">Thông tin chi tiết về gói đăng ký hiện tại</p>
             </div>
             <Button variant="secondary" onClick={() => navigate("/subscriptions/plans")}>
               Xem các gói khác
@@ -241,7 +288,7 @@ function MySubscriptionPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           {/* Plan Header */}
           <div className="bg-gradient-to-r from-primary-600 to-secondary-600 p-8 text-white">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
@@ -263,36 +310,36 @@ function MySubscriptionPage() {
 
           {/* Subscription Details */}
           <div className="p-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">📋 Thông tin gói</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">📋 Thông tin gói</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-              <div className="bg-gray-50 rounded-lg p-4">
-                <span className="text-gray-600 text-sm block mb-1">Tên gói</span>
-                <span className="font-semibold text-gray-900 text-lg">
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Tên gói</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
                   {plan?.planName || "N/A"}
                 </span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <span className="text-gray-600 text-sm block mb-1">Chu kỳ thanh toán</span>
-                <span className="font-semibold text-gray-900 text-lg">
+              <div className="bg-gray-50 rounded-lg p-4 dark:bg-gray-700/50">
+                <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Chu kỳ thanh toán</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
                   {plan?.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
                 </span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <span className="text-gray-600 text-sm block mb-1">Ngày bắt đầu</span>
-                <span className="font-semibold text-gray-900 text-lg">
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Ngày bắt đầu</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
                   {formatDate(subscription.startDate)}
                 </span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <span className="text-gray-600 text-sm block mb-1">Ngày hết hạn</span>
-                <span className="font-semibold text-gray-900 text-lg">
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Ngày hết hạn</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
                   {formatDate(subscription.endDate)}
                 </span>
               </div>
               {subscription.renewalDate && (
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <span className="text-gray-600 text-sm block mb-1">Ngày gia hạn</span>
-                  <span className="font-semibold text-gray-900 text-lg">
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                  <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Ngày gia hạn</span>
+                  <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
                     {formatDate(subscription.renewalDate)}
                   </span>
                 </div>
@@ -301,18 +348,18 @@ function MySubscriptionPage() {
 
             {/* Entitlements */}
             {subscription.entitlementsSnapshot && (
-              <div className="border-t border-gray-200 pt-8 mb-8">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">✨ Quyền lợi của gói</h3>
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-8 mb-8">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">✨ Quyền lợi của gói</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {Object.entries(subscription.entitlementsSnapshot).map(([key, value]) => (
                     <div
                       key={key}
-                      className="flex items-start gap-3 bg-gradient-to-br from-primary-50 to-secondary-50 rounded-lg p-4 border border-primary-100"
+                      className="flex items-start gap-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4 border border-primary-200 dark:border-primary-800 hover:border-primary-500 dark:hover:border-primary-400 transition-colors"
                     >
-                      <span className="text-primary-600 font-bold text-xl">✓</span>
+                      <span className="text-primary-600 dark:text-primary-400 font-bold text-xl">✓</span>
                       <div className="flex-1">
-                        <span className="text-gray-900 font-semibold block">{key}</span>
-                        <span className="text-gray-600 text-sm">
+                        <span className="text-gray-900 dark:text-gray-100 font-semibold block">{key}</span>
+                        <span className="text-gray-700 dark:text-gray-300 text-sm">
                           {formatEntitlementValue(value)}
                         </span>
                       </div>
@@ -323,7 +370,7 @@ function MySubscriptionPage() {
             )}
 
             {/* Actions */}
-            <div className="border-t border-gray-200 pt-6 flex justify-end">
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-6 flex justify-end">
               <Button variant="danger" onClick={handleCancelSubscription} loading={cancelling}>
                 Hủy gói đăng ký
               </Button>
@@ -333,9 +380,11 @@ function MySubscriptionPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
+            © 2025 Learinal. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

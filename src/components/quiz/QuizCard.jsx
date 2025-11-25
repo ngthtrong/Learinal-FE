@@ -68,55 +68,46 @@ const QuizCard = ({ questionSet, onClick, onDelete, onShare, disabled }) => {
         if (disabled) return;
         if (e.key === "Enter" || e.key === " ") handleCardClick(e);
       }}
-      className={`group relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br from-white via-primary-50/40 to-secondary-50/60 border border-gray-100 hover:border-primary-300 shadow-sm hover:shadow-lg transition-all duration-300 ${
+      className={`group relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 shadow-lg hover:shadow-xl transition-all duration-300 ${
         disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
       }`}
     >
       {/* Decorative blurred blob */}
-      <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-200/40 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
+      <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
 
-      {/* Icon & Title */}
-      <div className="flex items-start gap-3 mb-3">
-        <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-primary-100 text-primary-700 shadow-inner group-hover:scale-110 transition-transform flex-shrink-0">
-          <QuizIcon size={26} strokeWidth={1.6} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <h3
-            className="text-lg font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-primary-700 transition-colors"
-            title={title}
-          >
-            {title}
-          </h3>
-          {createdAt && <p className="text-xs text-gray-500 mt-1">{createdAt}</p>}
+      {/* Icon - Top Left */}
+      <div className="mb-4">
+        <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-primary-500/20 text-primary-600 dark:text-primary-400 shadow-inner group-hover:scale-110 transition-transform">
+          <QuizIcon size={28} strokeWidth={1.6} />
         </div>
       </div>
 
+      {/* Title */}
+      <h3
+        className="text-xl font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-2 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+        title={title}
+      >
+        {title}
+      </h3>
+
+      {/* Created Date */}
+      {createdAt && <p className="text-xs text-gray-600 dark:text-gray-500 mb-4">{createdAt}</p>}
+
       {/* Badges */}
-      <div className="mt-4 flex flex-wrap gap-2 items-center">
-        <span
-          className={`px-2.5 py-1 text-xs font-medium rounded-full border ${
-            statusColors[status] || statusColors.Draft
-          }`}
-        >
-          {status === "Draft" ? "Nháp" : status === "Published" ? "Công khai" : "Lưu trữ"}
-        </span>
-        {difficulty && (
-          <span
-            className={`px-2.5 py-1 text-xs font-medium rounded-full border ${
-              difficultyColors[difficulty] || difficultyColors.Medium
-            }`}
-          >
-            {difficulty === "Easy" ? "Dễ" : difficulty === "Hard" ? "Khó" : "Trung bình"}
-          </span>
-        )}
+      <div className="flex flex-wrap gap-2 items-center mb-4">
         {questionCount > 0 && (
-          <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-gray-800/5 text-gray-700 border border-gray-200">
+          <span className="px-3 py-1.5 text-xs font-medium rounded-lg bg-primary-500/20 text-primary-700 dark:text-primary-300 border border-primary-500/30">
             {questionCount} câu hỏi
           </span>
         )}
+        {difficulty && (
+          <span className="px-3 py-1.5 text-xs font-medium rounded-lg bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border border-yellow-500/30">
+            {difficulty === "Easy" ? "Dễ" : difficulty === "Hard" ? "Khó" : "Trung Bình"}
+          </span>
+        )}
         {isShared && (
-          <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700 border border-purple-200">
-            🌐 Chia sẻ
+          <span className="px-3 py-1.5 text-xs font-medium rounded-lg bg-green-500/20 text-green-700 dark:text-green-300 border border-green-500/30">
+            🌐 Đang chia sẽ
           </span>
         )}
       </div>
@@ -130,8 +121,8 @@ const QuizCard = ({ questionSet, onClick, onDelete, onShare, disabled }) => {
               disabled={disabled}
               className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                 isShared
-                  ? "text-orange-700 bg-orange-50 hover:bg-orange-100"
-                  : "text-purple-700 bg-purple-50 hover:bg-purple-100"
+                  ? "text-orange-700 dark:text-orange-300 bg-orange-100 dark:bg-orange-500/20 hover:bg-orange-200 dark:hover:bg-orange-500/30"
+                  : "text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-500/20 hover:bg-purple-200 dark:hover:bg-purple-500/30"
               }`}
               title={isShared ? "Ngừng chia sẻ" : "Chia sẻ bộ đề"}
             >
@@ -142,7 +133,7 @@ const QuizCard = ({ questionSet, onClick, onDelete, onShare, disabled }) => {
             <button
               onClick={handleDelete}
               disabled={disabled}
-              className="flex-1 px-3 py-2 text-sm font-medium text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-3 py-2 text-sm font-medium text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-500/20 rounded-lg hover:bg-red-200 dark:hover:bg-red-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               🗑️ Xóa
             </button>

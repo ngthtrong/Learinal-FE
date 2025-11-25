@@ -67,17 +67,17 @@ const Modal = ({
       <div
         className={`
         relative w-full ${sizeStyles[size] || sizeStyles.medium}
-        bg-white rounded-2xl shadow-large
+        bg-white dark:bg-gray-800 rounded-2xl shadow-large
         animate-slide-up
         max-h-[90vh] flex flex-col
       `}
       >
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-            <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
             {showCloseButton && (
               <button
-                className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={onClose}
                 aria-label="Close"
               >
@@ -97,7 +97,7 @@ const Modal = ({
         <div className="px-6 py-4 overflow-y-auto flex-1">{children}</div>
 
         {onConfirm && (
-          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 rounded-b-2xl">
             <Button variant="secondary" onClick={onClose} disabled={loading}>
               {cancelText}
             </Button>

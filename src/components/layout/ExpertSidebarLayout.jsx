@@ -67,7 +67,7 @@ const ExpertSidebarLayout = ({ children }) => {
         ref={sideNavRef}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40 overflow-y-auto ${
+        className={`fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-20" : "w-64"
         }`}
       >
@@ -81,8 +81,8 @@ const ExpertSidebarLayout = ({ children }) => {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                   isActive
-                    ? "bg-primary-50 text-primary-700 font-medium"
-                    : "text-gray-700 hover:bg-gray-100"
+                    ? "bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                 } ${collapsed ? "justify-center" : ""}`
               }
             >
@@ -101,7 +101,7 @@ const ExpertSidebarLayout = ({ children }) => {
       <button
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`fixed top-24 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-all z-40 ${
+        className={`fixed top-24 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-all z-40 text-gray-700 dark:text-gray-300 ${
           collapsed ? "left-16" : "left-60"
         } ${isHovered ? "opacity-100" : "opacity-0"}`}
         onClick={(e) => {
@@ -120,7 +120,11 @@ const ExpertSidebarLayout = ({ children }) => {
         {collapsed ? "⟩" : "⟨"}
       </button>
 
-      <main className={`flex-1 transition-all duration-300 ${collapsed ? "ml-20" : "ml-64"} pt-16`}>
+      <main
+        className={`flex-1 transition-all duration-300 bg-gray-50 dark:bg-gray-950 ${
+          collapsed ? "ml-20" : "ml-64"
+        } pt-16`}
+      >
         {children}
       </main>
     </div>

@@ -24,13 +24,15 @@ const Button = ({
   const variantStyles = {
     primary:
       "bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-sm hover:shadow-md",
-    secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500",
+    secondary:
+      "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 focus:ring-gray-500",
     success: "bg-success-600 text-white hover:bg-success-700 focus:ring-success-500 shadow-sm",
     danger: "bg-error-600 text-white hover:bg-error-700 focus:ring-error-500 shadow-sm",
     warning: "bg-warning-600 text-white hover:bg-warning-700 focus:ring-warning-500 shadow-sm",
     outline:
-      "border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500",
-    ghost: "text-primary-600 hover:bg-primary-50 focus:ring-primary-500",
+      "border-2 border-primary-600 dark:border-primary-400 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 focus:ring-primary-500",
+    ghost:
+      "text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 focus:ring-primary-500",
   };
 
   // Size styles
