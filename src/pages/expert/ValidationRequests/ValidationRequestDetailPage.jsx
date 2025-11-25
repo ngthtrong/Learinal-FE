@@ -6,7 +6,7 @@ import { Button, Input, useToast } from '@/components/common';
 function ValidationRequestDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { pushToast } = useToast();
+  const { showSuccess, showError } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [completedMessage, setCompletedMessage] = useState('');
@@ -52,26 +52,35 @@ function ValidationRequestDetailPage() {
     try {
       const payload = { decision, feedback: feedback || undefined };
       if (decision === 'Approved') payload.correctedQuestions = editedQuestions;
+      console.log('Submitting payload:', JSON.stringify(payload, null, 2));
       await validationRequestsService.complete(id, payload);
-      await fetchDetail();
-      const msg = decision === 'Approved' ? '✅ Phê duyệt thành công' : '❌ Đã từ chối bộ đề';
-      setCompletedMessage(msg);
-      pushToast({ type: decision === 'Approved' ? 'success' : 'error', message: msg });
+      const msg = decision === 'Approved' ? 'Phê duyệt thành công' : 'Đã từ chối bộ đề';
+      if (decision === 'Approved') {
+        showSuccess(msg);
+      } else {
+        showError(msg);
+      }
     } catch (e) {
-      console.error(e);
-      const msg = e?.response?.data?.message || 'Hoàn thành thất bại';
+      console.error('Error completing validation:', e);
+      console.error('Error response:', e?.response?.data);
+      console.error('Error details:', JSON.stringify(e?.response?.data?.details, null, 2));
+      const details = e?.response?.data?.details;
+      const msg = details ? `Validation failed: ${JSON.stringify(details)}` : (e?.response?.data?.message || 'Hoàn thành thất bại');
       setError(msg);
-      pushToast({ type: 'error', message: msg });
-    } finally {
+      showError(msg);
       setSaving(false);
+      return;
     }
+    // Navigate after success (outside try-catch)
+    setSaving(false);
+    navigate('/expert/validation-requests');
   };
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold">Chi tiết kiểm duyệt</h1>
-        <Button variant="secondary" onClick={() => navigate(-1)}>Quay lại</Button>
+        <Button variant="secondary" onClick={() => navigate('/expert/validation-requests')}>Quay lại</Button>
       </div>
       {loading && <div className="text-gray-600">Đang tải...</div>}
       {error && !loading && <div className="mb-4 text-sm text-red-600">{error}</div>}
@@ -115,21 +124,44 @@ function ValidationRequestDetailPage() {
                       <p className="text-sm font-medium leading-relaxed">{q.questionText}</p>
                     )}
                     <div className="mt-3 space-y-2">
-                      <div className="text-xs font-medium text-gray-600">Phương án trả lời</div>
+                      <div className="text-xs font-medium text-gray-600 mb-2">
+                        Phương án trả lời {viewMode === 'edit' && <span className="text-indigo-600">(Click vào radio để chọn đáp án đúng)</span>}
+                      </div>
                       {q.options?.map((opt, ai) => (
-                        <div key={ai} className="flex items-start gap-2">
-                          <div className={`text-xs px-2 py-0.5 rounded ${q.correctAnswerIndex === ai ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>{String.fromCharCode(65 + ai)}</div>
+                        <div key={ai} className="flex items-center gap-2">
                           {viewMode === 'edit' ? (
-                            <Input value={opt} onChange={(e) => {
-                              const val = e.target.value;
-                              setEditedQuestions(prev => prev.map((qq, qi) => {
-                                if (qi !== idx) return qq;
-                                const options = qq.options.map((o, oi) => oi === ai ? val : o);
-                                return { ...qq, options };
-                              }));
-                            }} />
+                            <>
+                              <input
+                                type="radio"
+                                name={`correct-answer-${idx}`}
+                                checked={q.correctAnswerIndex === ai}
+                                onChange={() => handleQuestionChange(idx, 'correctAnswerIndex', ai)}
+                                className="w-4 h-4 text-green-600 focus:ring-green-500 cursor-pointer"
+                              />
+                              <div className={`text-xs px-2 py-0.5 rounded font-medium ${q.correctAnswerIndex === ai ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                                {String.fromCharCode(65 + ai)}
+                              </div>
+                              <Input 
+                                value={opt} 
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  setEditedQuestions(prev => prev.map((qq, qi) => {
+                                    if (qi !== idx) return qq;
+                                    const options = qq.options.map((o, oi) => oi === ai ? val : o);
+                                    return { ...qq, options };
+                                  }));
+                                }} 
+                                className="flex-1"
+                              />
+                            </>
                           ) : (
-                            <p className="text-sm">{opt}</p>
+                            <>
+                              <div className={`text-xs px-2 py-0.5 rounded font-medium ${q.correctAnswerIndex === ai ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                                {String.fromCharCode(65 + ai)}
+                                {q.correctAnswerIndex === ai && ' ✓'}
+                              </div>
+                              <p className="text-sm flex-1">{opt}</p>
+                            </>
                           )}
                         </div>
                       ))}

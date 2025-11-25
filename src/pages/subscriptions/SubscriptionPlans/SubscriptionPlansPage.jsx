@@ -180,7 +180,7 @@ function SubscriptionPlansPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 pb-6">
         {plans.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="text-6xl mb-4">📦</div>
@@ -190,7 +190,7 @@ function SubscriptionPlansPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {plans.map((plan) => {
               const isPro = plan.planName.toLowerCase().includes("pro");
               return (
@@ -201,15 +201,15 @@ function SubscriptionPlansPage() {
                   }`}
                 >
                   {isPro && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                      <span className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-md">
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-10">
+                      <span className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
                         ⭐ Phổ biến nhất
                       </span>
                     </div>
                   )}
 
                   {/* Decorative blob */}
-                  <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-200/30 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
+                  <div className="pointer-events-none absolute -top-6 -right-6 w-24 h-24 bg-primary-200/30 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
 
                   <div className="relative p-8">
                     <div className="text-center mb-6">
@@ -223,7 +223,7 @@ function SubscriptionPlansPage() {
                           /{plan.billingCycle === "Monthly" ? "tháng" : "năm"}
                         </span>
                       </div>
-                    </div>{" "}
+                    </div>
                     {plan.description && (
                       <p className="text-gray-600 dark:text-gray-400 text-center mb-6 min-h-[3rem]">
                         {plan.description}
@@ -234,7 +234,7 @@ function SubscriptionPlansPage() {
                         <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-center mb-4">
                           ✨ Quyền lợi:
                         </h4>
-                        <ul className="space-y-2.5">
+                        <ul className="space-y-2">
                           {Object.entries(plan.entitlements).map(([key, value]) => (
                             <li key={key} className="flex items-start gap-2.5">
                               <span className="text-primary-600 dark:text-primary-400 font-bold text-lg flex-shrink-0">
@@ -276,7 +276,7 @@ function SubscriptionPlansPage() {
       {/* Payment Modal */}
       {showPaymentModal && selectedPlan && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4"
           onClick={() => setShowPaymentModal(false)}
         >
           <div
@@ -316,7 +316,7 @@ function SubscriptionPlansPage() {
               <p>
                 Bạn có chắc chắn muốn đăng ký gói <strong>{selectedPlan.planName}</strong> không?
               </p>
-              <p>Sau khi xác nhận, bạn sẽ nhận được mã QR để thanh toán.</p>
+              <p className="text-xs sm:text-sm">Sau khi xác nhận, bạn sẽ nhận được mã QR để thanh toán.</p>
             </div>
 
             <div className="flex gap-2 p-4 border-t border-gray-200 dark:border-gray-700">
@@ -340,7 +340,7 @@ function SubscriptionPlansPage() {
       {/* QR Code Modal */}
       {showQRModal && qrData && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3 sm:p-4 overflow-y-auto"
           onClick={() => setShowQRModal(false)}
         >
           <div

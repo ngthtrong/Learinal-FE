@@ -9,9 +9,9 @@ const { VALIDATION_REQUESTS } = API_CONFIG.ENDPOINTS;
 
 export const validationRequestsService = {
   list: async (params = {}) => {
-    const { page = 1, pageSize = 20, status } = params;
+    const { page = 1, pageSize = 20, status, setId } = params;
     const response = await axiosInstance.get(VALIDATION_REQUESTS.LIST, {
-      params: { page, pageSize, status: status || undefined },
+      params: { page, pageSize, status: status || undefined, setId: setId || undefined },
     });
     return response.data;
   },
