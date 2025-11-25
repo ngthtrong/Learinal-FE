@@ -196,8 +196,8 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Subject Selection */}
         <div className="form-group">
-          <label htmlFor="subject-select" className="block text-sm font-medium text-gray-700 mb-2">
-            Chọn môn học <span className="text-red-500">*</span>
+          <label htmlFor="subject-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Chọn môn học <span className="text-red-500 dark:text-red-400">*</span>
           </label>
           <select
             id="subject-select"
@@ -206,7 +206,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
               const subject = subjects.find((s) => s.id === e.target.value);
               setSelectedSubject(subject || null);
             }}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             required
           >
             <option value="">-- Chọn môn học --</option>
@@ -220,17 +220,17 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
 
         {/* Show document info if subject selected */}
         {selectedSubject && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
             <div className="flex items-start gap-3">
-              <div className="text-blue-600 text-xl">ℹ️</div>
+              <div className="text-blue-600 dark:text-blue-400 text-xl">ℹ️</div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-blue-900 mb-1">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">
                   Môn học: {selectedSubject.subjectName}
                 </p>
                 {loadingDocuments ? (
-                  <p className="text-sm text-blue-700">Đang tải tài liệu...</p>
+                  <p className="text-sm text-blue-700 dark:text-blue-400">Đang tải tài liệu...</p>
                 ) : (
-                  <p className="text-sm text-blue-700">
+                  <p className="text-sm text-blue-700 dark:text-blue-400">
                     📄 {documents.length} tài liệu • 📚 {allTopics.length} chương
                   </p>
                 )}
@@ -244,8 +244,8 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
           <>
             {/* Title Input */}
             <div className="form-group">
-              <label htmlFor="quiz-title" className="block text-sm font-medium text-gray-700 mb-2">
-                Tên bộ đề <span className="text-red-500">*</span>
+              <label htmlFor="quiz-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Tên bộ đề <span className="text-red-500 dark:text-red-400">*</span>
               </label>
               <input
                 id="quiz-title"
@@ -253,7 +253,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ví dụ: Đề thi cuối kỳ"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 required
                 maxLength={100}
               />
@@ -263,9 +263,9 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
             <div className="form-group">
               <label
                 htmlFor="num-questions"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Số lượng câu hỏi: <strong className="text-primary-600">{numQuestions}</strong>
+                Số lượng câu hỏi: <strong className="text-primary-600 dark:text-primary-400">{numQuestions}</strong>
               </label>
               <input
                 id="num-questions"
@@ -274,9 +274,9 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                 max="20"
                 value={numQuestions}
                 onChange={(e) => setNumQuestions(parseInt(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
               />
-              <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                 <span>1 câu</span>
                 <span>20 câu</span>
               </div>
@@ -285,10 +285,10 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
             {/* Topic Selection and Distribution */}
             {allTopics.length > 0 && (
               <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Chọn chương và tỉ lệ câu hỏi ({selectedTopics.length}/{allTopics.length} đã chọn)
                 </label>
-                <div className="border border-gray-300 rounded-lg p-3 space-y-3">
+                <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 space-y-3">
                   {allTopics.map((topic) => {
                     const isSelected = selectedTopics.includes(topic.topicId);
                     const percentage = topicDistribution[topic.topicId] || 0;
@@ -298,8 +298,8 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                         key={topic.topicId}
                         className={`p-3 rounded-lg border ${
                           isSelected
-                            ? "border-primary-300 bg-primary-50"
-                            : "border-gray-200 bg-gray-50"
+                            ? "border-primary-300 dark:border-primary-600 bg-primary-50 dark:bg-primary-900/20"
+                            : "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50"
                         }`}
                       >
                         <label className="flex items-center gap-3 cursor-pointer mb-2">
@@ -311,14 +311,14 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                           />
                           <span
                             className={`text-sm font-medium flex-1 ${
-                              isSelected ? "text-gray-900" : "text-gray-500"
+                              isSelected ? "text-gray-900 dark:text-gray-100" : "text-gray-500 dark:text-gray-400"
                             }`}
                           >
                             {topic.topicName}
                           </span>
                           <span
                             className={`text-sm font-bold ${
-                              isSelected ? "text-primary-600" : "text-gray-400"
+                              isSelected ? "text-primary-600 dark:text-primary-400" : "text-gray-400 dark:text-gray-500"
                             }`}
                           >
                             {Math.round(percentage)}%
@@ -333,22 +333,22 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                           onChange={(e) => handleDistributionChange(topic.topicId, e.target.value)}
                           disabled={!isSelected}
                           className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${
-                            isSelected ? "bg-gray-200" : "bg-gray-100 opacity-50 cursor-not-allowed"
+                            isSelected ? "bg-gray-200 dark:bg-gray-700" : "bg-gray-100 dark:bg-gray-800 opacity-50 cursor-not-allowed"
                           }`}
                         />
                       </div>
                     );
                   })}
                 </div>
-                <div className="mt-2 text-sm text-gray-600">
+                <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                   Tổng:{" "}
                   <strong
                     className={`${
                       Math.round(
                         Object.values(topicDistribution).reduce((sum, val) => sum + val, 0)
                       ) === 100
-                        ? "text-green-600"
-                        : "text-red-600"
+                        ? "text-green-600 dark:text-green-400"
+                        : "text-red-600 dark:text-red-400"
                     }`}
                   >
                     {Math.round(
@@ -363,7 +363,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
         )}
 
         {/* Form Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
           <Button type="button" variant="secondary" onClick={handleReset} disabled={loading}>
             Đặt lại
           </Button>

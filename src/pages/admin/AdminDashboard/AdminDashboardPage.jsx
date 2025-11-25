@@ -12,6 +12,20 @@ import SubscriptionsIcon from "@/components/icons/SubscriptionsIcon";
 import ManagePackagesIcon from "@/components/icons/ManagePackagesIcon";
 import { adminService, commissionRecordsService } from "@/services/api";
 import subscriptionsService from "@/services/api/subscriptions.service";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar, Doughnut } from "react-chartjs-2";
+
+// Register Chart.js components
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
 function AdminDashboardPage() {
   const [stats, setStats] = useState(null);
@@ -242,6 +256,96 @@ function AdminDashboardPage() {
             ))}
           </ul>
         </div>
+
+        {/* Charts */}
+        {!loading && stats && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* User Distribution Chart */}
+            <div className="bg-white rounded-xl shadow-medium p-6">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Phân bố người dùng</h2>
+              <div className="flex justify-center">
+                <div style={{ maxWidth: "300px", width: "100%" }}>
+                  <Doughnut
+                    data={{
+                      labels: ["Hoạt động", "Không hoạt động"],
+                      datasets: [
+                        {
+                          data: [
+                            stats.users?.active || 0,
+                            (stats.users?.total || 0) - (stats.users?.active || 0),
+                          ],
+                          backgroundColor: ["rgba(16, 185, 129, 0.8)", "rgba(209, 213, 219, 0.8)"],
+                          borderColor: ["rgba(16, 185, 129, 1)", "rgba(209, 213, 219, 1)"],
+                          borderWidth: 1,
+                        },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: true,
+                      plugins: {
+                        legend: {
+                          position: "bottom",
+                        },
+                      },
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Content Statistics Chart */}
+            <div className="bg-white rounded-xl shadow-medium p-6">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Thống kê nội dung</h2>
+              <Bar
+                data={{
+                  labels: ["Môn học", "Tài liệu", "Bộ câu hỏi", "Lượt thi"],
+                  datasets: [
+                    {
+                      label: "Số lượng",
+                      data: [
+                        stats.content?.subjects || 0,
+                        stats.content?.documents || 0,
+                        stats.content?.questionSets || 0,
+                        stats.content?.quizAttempts || 0,
+                      ],
+                      backgroundColor: [
+                        "rgba(99, 102, 241, 0.8)",
+                        "rgba(59, 130, 246, 0.8)",
+                        "rgba(168, 85, 247, 0.8)",
+                        "rgba(245, 158, 11, 0.8)",
+                      ],
+                      borderColor: [
+                        "rgba(99, 102, 241, 1)",
+                        "rgba(59, 130, 246, 1)",
+                        "rgba(168, 85, 247, 1)",
+                        "rgba(245, 158, 11, 1)",
+                      ],
+                      borderWidth: 1,
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: true,
+                  plugins: {
+                    legend: {
+                      display: false,
+                    },
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        precision: 0,
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Quick actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

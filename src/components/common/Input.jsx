@@ -26,10 +26,10 @@ const Input = ({
       {label && (
         <label
           htmlFor={name}
-          className={`block text-sm font-medium text-gray-700 mb-1.5 ${labelClassName}`}
+          className={`block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 ${labelClassName}`}
         >
           {label}
-          {required && <span className="text-error-500 ml-1">*</span>}
+          {required && <span className="text-error-500 dark:text-error-400 ml-1">*</span>}
         </label>
       )}
       <input
@@ -44,20 +44,21 @@ const Input = ({
         className={`
           w-full px-4 py-2.5
           border rounded-lg
-          text-gray-900 placeholder-gray-400
+          bg-white dark:bg-gray-800
+          text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
           transition-all duration-200
           focus:outline-none focus:ring-2 focus:ring-offset-0
-          disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60
+          disabled:bg-gray-100 dark:disabled:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60
           ${
             error
               ? "border-error-500 focus:border-error-500 focus:ring-error-500/20"
-              : "border-gray-300 focus:border-primary-500 focus:ring-primary-500/20"
+              : "border-gray-300 dark:border-gray-600 focus:border-primary-500 focus:ring-primary-500/20"
           } ${inputClassName}
         `}
         {...props}
       />
       {error && (
-        <p className="mt-1.5 text-sm text-error-600 flex items-center gap-1">
+        <p className="mt-1.5 text-sm text-error-600 dark:text-error-400 flex items-center gap-1">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path
               fillRule="evenodd"

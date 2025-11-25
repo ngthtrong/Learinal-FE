@@ -192,10 +192,10 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
       <div
         className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
           dragActive
-            ? "border-primary-500 bg-primary-50"
+            ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20 dark:border-primary-400"
             : error
-            ? "border-red-300 bg-red-50"
-            : "border-gray-300 hover:border-primary-400 bg-gray-50"
+            ? "border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-400"
+            : "border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500 bg-gray-50 dark:bg-gray-800/50"
         } ${uploading ? "pointer-events-none opacity-60" : ""}`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -205,10 +205,10 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
       >
         <div className="flex flex-col items-center">
           <div className="text-6xl mb-4">📁</div>
-          <p className="text-lg font-medium text-gray-700 mb-2">
+          <p className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
             {dragActive ? "Thả file vào đây" : "Kéo thả file vào đây hoặc click để chọn"}
           </p>
-          <p className="text-sm text-gray-500">Hỗ trợ: PDF, DOCX, DOC, TXT | Tối đa: 20MB</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Hỗ trợ: PDF, DOCX, DOC, TXT | Tối đa: 20MB</p>
         </div>
         <input
           ref={fileInputRef}
@@ -222,7 +222,7 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600 flex items-center gap-2">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
           <span className="text-lg">⚠️</span>
           {error}
         </div>
@@ -230,16 +230,20 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
 
       {/* Selected File Preview */}
       {selectedFile && (
-        <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-3">
           <div className="flex items-center gap-3">
             <span className="text-3xl">{getFileIcon(selectedFile)}</span>
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-gray-900 truncate">{selectedFile.name}</p>
-              <p className="text-sm text-gray-500">{formatFileSize(selectedFile.size)}</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
+                {selectedFile.name}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {formatFileSize(selectedFile.size)}
+              </p>
             </div>
             {!uploading && (
               <button
-                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                 onClick={handleRemoveFile}
                 aria-label="Xóa file"
               >
@@ -251,13 +255,13 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
           {/* Upload Progress */}
           {uploading && (
             <div className="space-y-2">
-              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-primary-600 transition-all duration-300"
+                  className="h-full bg-primary-600 dark:bg-primary-500 transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 ></div>
               </div>
-              <span className="text-sm font-medium text-gray-700">{uploadProgress}%</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{uploadProgress}%</span>
             </div>
           )}
         </div>

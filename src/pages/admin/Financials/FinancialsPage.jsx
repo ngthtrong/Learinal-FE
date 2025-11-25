@@ -5,6 +5,30 @@
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/common";
 import { adminService } from "@/services/api";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar, Line } from "react-chartjs-2";
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 function FinancialsPage() {
   const currentYear = new Date().getFullYear();
@@ -164,13 +188,126 @@ function FinancialsPage() {
           )}
         </div>
 
-        {/* Placeholder for future charts */}
-        <div className="bg-white rounded-xl shadow-medium p-8">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Biểu đồ (sắp có)</h2>
-          <div className="text-center py-10 text-gray-500 text-sm">
-            Sẽ hiển thị biểu đồ cột / đường để trực quan hóa doanh thu.
+        {/* Charts */}
+        {!loading && months.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Bar Chart - Revenue vs Commission */}
+            <div className="bg-white rounded-xl shadow-medium p-6">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Doanh thu & Hoa hồng</h2>
+              <Bar
+                data={{
+                  labels: months.map((m) => m.month),
+                  datasets: [
+                    {
+                      label: "Doanh thu gói",
+                      data: months.map((m) => m.subscriptionRevenue / 1000000), // Convert to millions
+                      backgroundColor: "rgba(59, 130, 246, 0.8)",
+                      borderColor: "rgba(59, 130, 246, 1)",
+                      borderWidth: 1,
+                    },
+                    {
+                      label: "Chi hoa hồng",
+                      data: months.map((m) => m.commissionsPaid / 1000000),
+                      backgroundColor: "rgba(245, 158, 11, 0.8)",
+                      borderColor: "rgba(245, 158, 11, 1)",
+                      borderWidth: 1,
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: true,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (context) {
+                          let label = context.dataset.label || "";
+                          if (label) {
+                            label += ": ";
+                          }
+                          label += (context.parsed.y * 1000000).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          });
+                          return label;
+                        },
+                      },
+                    },
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        callback: function (value) {
+                          return value.toLocaleString("vi-VN") + " triệu";
+                        },
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
+
+            {/* Line Chart - Net Profit Trend */}
+            <div className="bg-white rounded-xl shadow-medium p-6">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Xu hướng lợi nhuận ròng</h2>
+              <Line
+                data={{
+                  labels: months.map((m) => m.month),
+                  datasets: [
+                    {
+                      label: "Lợi nhuận ròng",
+                      data: months.map((m) => m.net / 1000000),
+                      borderColor: "rgba(16, 185, 129, 1)",
+                      backgroundColor: "rgba(16, 185, 129, 0.1)",
+                      tension: 0.3,
+                      fill: true,
+                      pointRadius: 4,
+                      pointHoverRadius: 6,
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: true,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (context) {
+                          let label = context.dataset.label || "";
+                          if (label) {
+                            label += ": ";
+                          }
+                          label += (context.parsed.y * 1000000).toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          });
+                          return label;
+                        },
+                      },
+                    },
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        callback: function (value) {
+                          return value.toLocaleString("vi-VN") + " triệu";
+                        },
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

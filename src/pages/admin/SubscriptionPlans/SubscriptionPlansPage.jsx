@@ -158,12 +158,12 @@ function AdminSubscriptionPlansPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Quản lý gói nâng cấp</h1>
-            <p className="text-gray-500 mt-1 text-sm">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý gói nâng cấp</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
               Tạo, chỉnh sửa, kích hoạt/vô hiệu hóa các gói nâng cấp.
             </p>
           </div>
@@ -176,12 +176,12 @@ function AdminSubscriptionPlansPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl shadow-medium p-4 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 mb-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Trạng thái</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
@@ -193,62 +193,62 @@ function AdminSubscriptionPlansPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-medium overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 overflow-hidden">
           {loading ? (
-            <div className="py-16 text-center text-gray-600">Đang tải...</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
           ) : error ? (
             <div className="py-16 text-center">
               <div className="text-5xl mb-3">⚠️</div>
-              <div className="text-error-600 font-medium">{error}</div>
+              <div className="text-error-600 dark:text-red-400 font-medium">{error}</div>
             </div>
           ) : plans.length === 0 ? (
-            <div className="py-16 text-center text-gray-600">Chưa có gói nào</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Chưa có gói nào</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Tên gói
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Chu kỳ
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Giá
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Trạng thái
                     </th>
                     <th className="px-6 py-3" />
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {plans.map((p) => (
-                    <tr key={p.id || p._id} className="hover:bg-gray-50">
+                    <tr key={p.id || p._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-900">{p.planName}</div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100">{p.planName}</div>
                         {p.description && (
-                          <div className="text-sm text-gray-500 line-clamp-1">{p.description}</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{p.description}</div>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {p.billingCycle === "Monthly" ? "Tháng" : "Năm"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {formatPrice(p.price)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {p.status === "Active" ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 text-success-700">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
                             Đang hoạt động
                           </span>
                         ) : p.status === "Inactive" ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                             Tạm dừng
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-100 text-warning-700">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-100 dark:bg-yellow-900/30 text-warning-700 dark:text-yellow-300">
                             {p.status}
                           </span>
                         )}
@@ -291,9 +291,9 @@ function AdminSubscriptionPlansPage() {
               placeholder="Mô tả ngắn về gói"
             />
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Chu kỳ</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Chu kỳ</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={form.billingCycle}
                 onChange={(e) => setForm({ ...form, billingCycle: e.target.value })}
               >
@@ -308,9 +308,9 @@ function AdminSubscriptionPlansPage() {
               onChange={(e) => setForm({ ...form, price: e.target.value })}
             />
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Trạng thái</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value })}
               >
@@ -319,10 +319,10 @@ function AdminSubscriptionPlansPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-4">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                 Quyền lợi gói đăng ký
               </label>
-              <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+              <div className="space-y-4 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
                 {/* maxMonthlyTestGenerations */}
                 <Input
                   label={formatEntitlementLabel("maxMonthlyTestGenerations")}
@@ -388,7 +388,7 @@ function AdminSubscriptionPlansPage() {
                       }
                       className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
                     />
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {formatEntitlementLabel("priorityProcessing")}
                     </span>
                   </label>
@@ -411,7 +411,7 @@ function AdminSubscriptionPlansPage() {
                       }
                       className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
                     />
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {formatEntitlementLabel("canShare")}
                     </span>
                   </label>
@@ -436,7 +436,7 @@ function AdminSubscriptionPlansPage() {
           title="Xóa/Lưu trữ gói?"
         >
           <div className="space-y-4">
-            <p>Bạn có chắc muốn xóa/lưu trữ gói "{confirmDelete?.planName}"?</p>
+            <p className="dark:text-gray-300">Bạn có chắc muốn xóa/lưu trữ gói "{confirmDelete?.planName}"?</p>
             <div className="flex justify-end gap-2">
               <Button variant="secondary" onClick={() => setConfirmDelete(null)} disabled={saving}>
                 Hủy

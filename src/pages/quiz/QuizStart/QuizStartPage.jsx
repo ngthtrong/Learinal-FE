@@ -78,10 +78,10 @@ function QuizStartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center space-y-4">
-          <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-          <p className="text-gray-600">Đang tải thông tin...</p>
+          <div className="inline-block w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
+          <p className="text-gray-600 dark:text-gray-400">Đang tải thông tin...</p>
         </div>
       </div>
     );
@@ -92,7 +92,7 @@ function QuizStartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="max-w-3xl mx-auto px-6">
         {/* Header */}
         <div className="mb-6">
@@ -102,18 +102,20 @@ function QuizStartPage() {
         </div>
 
         {/* Quiz Info */}
-        <div className="bg-white rounded-xl shadow-medium p-8 text-center mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-8 text-center mb-6">
           <div className="text-6xl mb-4">🎯</div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">{questionSet.title}</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+            {questionSet.title}
+          </h1>
           {questionSet.description && (
-            <p className="text-gray-600 mb-6">{questionSet.description}</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">{questionSet.description}</p>
           )}
 
           <div className="flex items-center justify-center gap-8 mt-6">
             <div className="flex items-center gap-2">
               <span className="text-2xl">📊</span>
-              <span className="text-gray-700">
-                <strong className="text-gray-900">
+              <span className="text-gray-700 dark:text-gray-300">
+                <strong className="text-gray-900 dark:text-gray-100">
                   {questionSet.questionCount || questionSet.questions?.length || 0}
                 </strong>{" "}
                 câu hỏi
@@ -122,8 +124,8 @@ function QuizStartPage() {
             {useTimer && (
               <div className="flex items-center gap-2">
                 <span className="text-2xl">⏱️</span>
-                <span className="text-gray-700">
-                  <strong className="text-gray-900">{timerMinutes}</strong> phút
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong className="text-gray-900 dark:text-gray-100">{timerMinutes}</strong> phút
                 </span>
               </div>
             )}
@@ -131,20 +133,22 @@ function QuizStartPage() {
         </div>
 
         {/* Settings */}
-        <div className="bg-white rounded-xl shadow-medium p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">⚙️ Cài đặt bài thi</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+            ⚙️ Cài đặt bài thi
+          </h2>
 
           {/* Timer Setting */}
-          <div className="border-b border-gray-200 pb-6 mb-6">
+          <div className="border-b border-gray-200 dark:border-gray-700 pb-6 mb-6">
             <label className="flex items-start gap-3 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={useTimer}
                 onChange={(e) => setUseTimer(e.target.checked)}
-                className="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 mt-0.5"
+                className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 mt-0.5"
               />
               <div className="flex-1">
-                <span className="text-lg font-medium text-gray-900 group-hover:text-primary-600 transition-colors">
+                <span className="text-lg font-medium text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                   ⏱️ Sử dụng bộ đếm thời gian
                 </span>
               </div>
@@ -153,14 +157,17 @@ function QuizStartPage() {
             {useTimer && (
               <div className="mt-4 ml-8 space-y-4">
                 <div className="flex items-center gap-4">
-                  <label htmlFor="timer-minutes" className="text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="timer-minutes"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
                     Thời gian (phút):
                   </label>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => setTimerMinutes(Math.max(10, timerMinutes - 10))}
-                      className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-gray-700 transition-colors"
+                      className="w-10 h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-bold text-gray-700 dark:text-gray-300 transition-colors"
                     >
                       −
                     </button>
@@ -173,20 +180,20 @@ function QuizStartPage() {
                       onChange={(e) =>
                         setTimerMinutes(Math.max(10, parseInt(e.target.value) || 10))
                       }
-                      className="w-20 px-3 py-2 text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent font-bold text-lg"
+                      className="w-20 px-3 py-2 text-center border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent font-bold text-lg"
                     />
                     <button
                       type="button"
                       onClick={() => setTimerMinutes(Math.min(180, timerMinutes + 10))}
-                      className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-gray-700 transition-colors"
+                      className="w-10 h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-bold text-gray-700 dark:text-gray-300 transition-colors"
                     >
                       +
                     </button>
                   </div>
                 </div>
-                <div className="flex items-start gap-2 bg-warning-50 border border-warning-200 rounded-lg p-3">
-                  <span className="text-warning-600 text-lg">⚠️</span>
-                  <p className="text-sm text-warning-800">
+                <div className="flex items-start gap-2 bg-warning-50 dark:bg-yellow-900/20 border border-warning-200 dark:border-yellow-800 rounded-lg p-3">
+                  <span className="text-warning-600 dark:text-yellow-400 text-lg">⚠️</span>
+                  <p className="text-sm text-warning-800 dark:text-yellow-300">
                     Hết thời gian sẽ tự động nộp bài. Đảm bảo bạn có đủ thời gian để hoàn thành.
                   </p>
                 </div>
@@ -201,13 +208,13 @@ function QuizStartPage() {
                 type="checkbox"
                 checked={shuffleQuestions}
                 onChange={(e) => setShuffleQuestions(e.target.checked)}
-                className="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 mt-0.5"
+                className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 mt-0.5"
               />
               <div className="flex-1">
-                <div className="text-lg font-medium text-gray-900 group-hover:text-primary-600 transition-colors mb-1">
+                <div className="text-lg font-medium text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-1">
                   🔀 Xáo trộn câu hỏi
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Các câu hỏi sẽ xuất hiện theo thứ tự ngẫu nhiên
                 </p>
               </div>
@@ -216,31 +223,31 @@ function QuizStartPage() {
         </div>
 
         {/* Instructions */}
-        <div className="bg-primary-50 border border-primary-200 rounded-xl p-6 mb-6">
-          <h3 className="text-lg font-bold text-primary-900 mb-4">📋 Hướng dẫn</h3>
+        <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-6 mb-6">
+          <h3 className="text-lg font-bold text-primary-900 dark:text-primary-300 mb-4">📋 Hướng dẫn</h3>
           <ul className="space-y-3">
-            <li className="flex items-start gap-3 text-gray-700">
-              <span className="text-primary-600 font-bold">•</span>
+            <li className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+              <span className="text-primary-600 dark:text-primary-400 font-bold">•</span>
               <span>Đọc kỹ từng câu hỏi trước khi chọn đáp án</span>
             </li>
-            <li className="flex items-start gap-3 text-gray-700">
-              <span className="text-primary-600 font-bold">•</span>
+            <li className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+              <span className="text-primary-600 dark:text-primary-400 font-bold">•</span>
               <span>Chỉ có thể chọn một đáp án cho mỗi câu hỏi</span>
             </li>
-            <li className="flex items-start gap-3 text-gray-700">
-              <span className="text-primary-600 font-bold">•</span>
+            <li className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+              <span className="text-primary-600 dark:text-primary-400 font-bold">•</span>
               <span>Có thể xem lại và thay đổi câu trả lời trước khi nộp bài</span>
             </li>
             {useTimer && (
-              <li className="flex items-start gap-3 text-gray-700">
-                <span className="text-warning-600 font-bold">•</span>
-                <strong className="text-warning-800">
-                  Khi hết thời gian, bài thi sẽ tự động được nộp
+              <li className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+                <span className="text-warning-600 dark:text-yellow-500 font-bold">•</span>
+                <strong className="text-warning-800 dark:text-yellow-300">
+                  Khi hết thời gian, bài thi sẽ tỷ động được nộp
                 </strong>
               </li>
             )}
-            <li className="flex items-start gap-3 text-gray-700">
-              <span className="text-primary-600 font-bold">•</span>
+            <li className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+              <span className="text-primary-600 dark:text-primary-400 font-bold">•</span>
               <span>Sau khi nộp bài, bạn sẽ xem được kết quả và đáp án chi tiết</span>
             </li>
           </ul>
@@ -261,9 +268,11 @@ function QuizStartPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
+            © 2025 Learinal. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
