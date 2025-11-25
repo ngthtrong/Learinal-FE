@@ -70,7 +70,7 @@ function DocumentDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
         <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
       </div>
     );
@@ -78,7 +78,7 @@ function DocumentDetailPage() {
 
   if (error || !document) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="text-6xl">⚠️</div>
           <p className="text-error-600 text-lg font-medium">{error || "Không tìm thấy tài liệu"}</p>
@@ -89,13 +89,17 @@ function DocumentDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
           <Button variant="secondary" onClick={() => navigate(-1)}>
             ← Quay lại
           </Button>
         </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="bg-white rounded-xl shadow-medium p-8 mb-6">
           <div className="flex items-start gap-6">
             <div className="text-6xl shrink-0">{getFileIcon(document.fileType)}</div>
@@ -265,6 +269,13 @@ function DocumentDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -1,160 +1,149 @@
 /**
  * Expert Dashboard Page
- * Overview for expert users
+ * Tổng quan dành cho Expert: hoa hồng & yêu cầu kiểm duyệt.
  */
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import ShieldCheckIcon from "@/components/icons/ShieldCheckIcon";
 import CoinsIcon from "@/components/icons/CoinsIcon";
-import { validationRequestsService } from "@/services/api";
+import ShieldCheckIcon from "@/components/icons/ShieldCheckIcon";
+import DashboardIcon from "@/components/icons/DashboardIcon";
+import { commissionRecordsService, validationRequestsService } from "@/services/api";
 
 function ExpertDashboardPage() {
-  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [summary, setSummary] = useState(null);
+  const [pendingValidations, setPendingValidations] = useState(0);
   const [error, setError] = useState("");
-  const [recentRequests, setRecentRequests] = useState([]);
-
-  useEffect(() => {
-    loadData();
-  }, []);
+  const [refreshing, setRefreshing] = useState(false);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      // Fetch stats (mock or real if endpoint exists)
-      // For now, we'll derive some stats or fetch from separate endpoints
-      const [requestsRes] = await Promise.all([
-        validationRequestsService.list({ page: 1, pageSize: 5, status: "Pending" }),
-        // commissionRecordsService.list({ page: 1, pageSize: 1 }), // Just to get total? Or maybe a stats endpoint is better
-      ]);
-
-      const pendingCount = requestsRes.meta?.total || 0;
-
-      // Mocking some stats for now until backend has dedicated stats endpoint for expert
-      setStats({
-        pendingRequests: pendingCount,
-        completedReviews: 0, // Need endpoint
-        totalCommission: 0, // Need endpoint
-      });
-
-      setRecentRequests(requestsRes.items || []);
-    } catch (err) {
-      console.error("Failed to load expert dashboard", err);
-      setError("Không thể tải dữ liệu dashboard");
+      setError("");
+      // Commission summary
+      try {
+        const s = await commissionRecordsService.summary();
+        setSummary(s);
+      } catch (e) {
+        console.warn("Commission summary error", e);
+      }
+      // Validation requests (Assigned/InProgress/Pending count for expert)
+      try {
+        const res = await validationRequestsService.list({ page: 1, pageSize: 1, status: "Pending" });
+        const totalPending = res?.meta?.total || 0;
+        setPendingValidations(totalPending);
+      } catch (e) {
+        console.warn("Validation pending error", e);
+      }
+    } catch (e) {
+      console.error(e);
+      setError(e?.response?.data?.message || "Không thể tải dữ liệu");
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const formatCurrency = (v) => {
+    if (typeof v !== "number") return "0₫";
+    return v.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
   };
 
   const cards = [
     {
-      key: "pending",
-      label: "Yêu cầu chờ duyệt",
-      value: stats?.pendingRequests ?? 0,
-      icon: ShieldCheckIcon,
-      color: "from-blue-500 to-blue-600",
-      to: "/expert/requests",
+      key: "earn_total",
+      label: "Đã nhận",
+      value: summary?.totalEarned || 0,
+      icon: CoinsIcon,
+      color: "from-emerald-500 to-emerald-600",
     },
     {
-      key: "commission",
-      label: "Tổng thu nhập",
-      value: (stats?.totalCommission ?? 0).toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }),
+      key: "earn_pending",
+      label: "Đang chờ",
+      value: summary?.totalPending || 0,
       icon: CoinsIcon,
       color: "from-amber-500 to-amber-600",
-      to: "/expert/commissions",
     },
     {
-      key: "history",
-      label: "Đã kiểm duyệt",
-      value: stats?.completedReviews ?? 0,
+      key: "validations",
+      label: "Yêu cầu chờ",
+      value: pendingValidations,
       icon: ShieldCheckIcon,
-      color: "from-green-500 to-green-600",
-      to: "/expert/history",
+      color: "from-indigo-500 to-indigo-600",
+    },
+    {
+      key: "avg_validation",
+      label: "TB / lượt",
+      value: summary?.averagePerValidation || 0,
+      icon: DashboardIcon,
+      color: "from-purple-500 to-violet-600",
     },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard Chuyên gia</h1>
-          <p className="text-gray-500 mt-1">Chào mừng trở lại, hãy kiểm tra các yêu cầu mới.</p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Bảng điều khiển chuyên gia</h1>
+            <p className="text-gray-500 mt-1 text-sm">Theo dõi hoa hồng và yêu cầu kiểm duyệt.</p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setRefreshing(true);
+                loadData();
+              }}
+              className="px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium shadow hover:bg-primary-700 transition disabled:opacity-50"
+              disabled={refreshing}
+            >
+              {refreshing ? "Đang làm mới..." : "Làm mới"}
+            </button>
+          </div>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-700 border border-red-200">
+          <div className="mb-4 p-3 rounded-lg border border-error-200 bg-error-50 text-error-700 text-sm">
             {error}
           </div>
         )}
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {cards.map((card) => (
-            <Link
-              key={card.key}
-              to={card.to}
-              className="block bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 border border-gray-100"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {cards.map((c) => (
+            <div
+              key={c.key}
+              className="bg-white rounded-xl shadow-medium p-5 border border-gray-100 hover:shadow-large transition group"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div
-                  className={`w-12 h-12 rounded-lg bg-gradient-to-br ${card.color} flex items-center justify-center text-white`}
-                >
-                  <card.icon size={24} />
-                </div>
-                <span className="text-2xl font-bold text-gray-900">
-                  {loading ? "..." : card.value}
-                </span>
+              <div
+                className={`w-12 h-12 rounded-lg bg-gradient-to-br ${c.color} flex items-center justify-center text-xl text-white mb-4 shadow`}
+              >
+                {(() => {
+                  const Icon = c.icon;
+                  return <Icon size={20} stroke={2} className="text-white" />;
+                })()}
               </div>
-              <div className="text-gray-600 font-medium">{card.label}</div>
-            </Link>
+              <div className="text-2xl font-bold text-gray-900 leading-tight">
+                {loading ? "—" :
+                  c.key.startsWith("earn") || c.key === "avg_validation"
+                    ? formatCurrency(c.value || 0)
+                    : c.value}
+              </div>
+              <div className="text-sm text-gray-500 mt-1">{c.label}</div>
+            </div>
           ))}
         </div>
 
-        {/* Recent Requests */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-lg font-bold text-gray-900">Yêu cầu mới nhất</h2>
-            <Link
-              to="/expert/requests"
-              className="text-primary-600 hover:text-primary-700 text-sm font-medium"
-            >
-              Xem tất cả
-            </Link>
-          </div>
-
-          {loading ? (
-            <div className="p-8 text-center text-gray-500">Đang tải...</div>
-          ) : recentRequests.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">Không có yêu cầu nào đang chờ.</div>
-          ) : (
-            <div className="divide-y divide-gray-200">
-              {recentRequests.map((req) => (
-                <div
-                  key={req.id}
-                  className="p-6 hover:bg-gray-50 transition flex items-center justify-between"
-                >
-                  <div>
-                    <h3 className="font-medium text-gray-900">
-                      {req.questionSetTitle || "Bộ câu hỏi không tên"}
-                    </h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Gửi bởi: {req.requesterName} •{" "}
-                      {new Date(req.createdAt).toLocaleDateString("vi-VN")}
-                    </p>
-                  </div>
-                  <Link
-                    to={`/expert/requests/${req.id}`}
-                    className="px-4 py-2 rounded-lg bg-primary-50 text-primary-700 font-medium text-sm hover:bg-primary-100 transition"
-                  >
-                    Kiểm duyệt
-                  </Link>
-                </div>
-              ))}
-            </div>
-          )}
+        <div className="bg-white rounded-xl shadow-medium p-8 mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Hướng dẫn nhanh</h2>
+          <ul className="space-y-3 text-sm text-gray-600 list-disc pl-5">
+            <li>Vào mục Hoa hồng để xem chi tiết các bản ghi thu nhập.</li>
+            <li>Vào mục Kiểm duyệt để xử lý yêu cầu được gán cho bạn.</li>
+            <li>Sau khi hoàn thành kiểm duyệt nhớ gửi quyết định và phản hồi chất lượng.</li>
+          </ul>
         </div>
       </div>
     </div>

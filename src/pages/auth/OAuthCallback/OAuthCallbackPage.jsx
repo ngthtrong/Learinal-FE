@@ -131,6 +131,7 @@ const OAuthCallbackPage = () => {
         let next = "/dashboard";
         if (role === "Learner") next = "/home";
         else if (role === "Admin") next = "/admin";
+        else if (role === "Expert") next = "/expert";
         navigate(next, { replace: true });
       }, 1500);
     } catch (err) {

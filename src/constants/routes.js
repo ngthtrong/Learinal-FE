@@ -57,6 +57,12 @@ export const ROUTES = {
   ADMIN_VALIDATION: "/admin/validation",
   ADMIN_SETTINGS: "/admin/settings",
 
+  // Expert
+  EXPERT: "/expert",
+  EXPERT_COMMISSIONS: "/expert/commission-records",
+    EXPERT_VALIDATIONS: "/expert/validation-requests",
+    EXPERT_VALIDATION_DETAIL: (id) => `/expert/validation-requests/${id}`,
+
   // Error pages
   NOT_FOUND: "/404",
   UNAUTHORIZED: "/401",

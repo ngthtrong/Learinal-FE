@@ -282,58 +282,59 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
               </div>
             </div>
 
-            {/* Topic Selection */}
+            {/* Topic Selection and Distribution */}
             {allTopics.length > 0 && (
               <div className="form-group">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Chọn chương ({selectedTopics.length}/{allTopics.length} đã chọn)
+                  Chọn chương và tỉ lệ câu hỏi ({selectedTopics.length}/{allTopics.length} đã chọn)
                 </label>
-                <div className="max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3 space-y-2">
-                  {allTopics.map((topic) => (
-                    <label
-                      key={topic.topicId}
-                      className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedTopics.includes(topic.topicId)}
-                        onChange={() => handleTopicToggle(topic.topicId)}
-                        className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
-                      />
-                      <span className="text-sm text-gray-700">{topic.topicName}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Topic Distribution */}
-            {selectedTopics.length > 0 && (
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Tỉ lệ câu hỏi theo chương
-                </label>
-                <div className="space-y-3 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-3">
-                  {selectedTopics.map((topicId) => {
-                    const topic = allTopics.find((t) => t.topicId === topicId);
-                    const percentage = topicDistribution[topicId] || 0;
+                <div className="border border-gray-300 rounded-lg p-3 space-y-3">
+                  {allTopics.map((topic) => {
+                    const isSelected = selectedTopics.includes(topic.topicId);
+                    const percentage = topicDistribution[topic.topicId] || 0;
 
                     return (
-                      <div key={topicId} className="space-y-1">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-700">{topic?.topicName}</span>
-                          <span className="text-sm font-medium text-primary-600">
+                      <div
+                        key={topic.topicId}
+                        className={`p-3 rounded-lg border ${
+                          isSelected
+                            ? "border-primary-300 bg-primary-50"
+                            : "border-gray-200 bg-gray-50"
+                        }`}
+                      >
+                        <label className="flex items-center gap-3 cursor-pointer mb-2">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleTopicToggle(topic.topicId)}
+                            className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                          />
+                          <span
+                            className={`text-sm font-medium flex-1 ${
+                              isSelected ? "text-gray-900" : "text-gray-500"
+                            }`}
+                          >
+                            {topic.topicName}
+                          </span>
+                          <span
+                            className={`text-sm font-bold ${
+                              isSelected ? "text-primary-600" : "text-gray-400"
+                            }`}
+                          >
                             {Math.round(percentage)}%
                           </span>
-                        </div>
+                        </label>
                         <input
                           type="range"
                           min="0"
                           max="100"
                           step="1"
                           value={percentage}
-                          onChange={(e) => handleDistributionChange(topicId, e.target.value)}
-                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                          onChange={(e) => handleDistributionChange(topic.topicId, e.target.value)}
+                          disabled={!isSelected}
+                          className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${
+                            isSelected ? "bg-gray-200" : "bg-gray-100 opacity-50 cursor-not-allowed"
+                          }`}
                         />
                       </div>
                     );

@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { NavLink, Navigate } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import DashboardIcon from "@/components/icons/DashboardIcon";
-import ShieldCheckIcon from "@/components/icons/ShieldCheckIcon";
 import CoinsIcon from "@/components/icons/CoinsIcon";
+import ShieldCheckIcon from "@/components/icons/ShieldCheckIcon";
 
 /**
  * ExpertSidebarLayout
- * Sidebar for Expert area.
+ * Sidebar dành cho chuyên gia (Expert): Dashboard, Hoa hồng, Yêu cầu kiểm duyệt
  */
 const ExpertSidebarLayout = ({ children }) => {
   const { user } = useAuth();
@@ -20,6 +20,7 @@ const ExpertSidebarLayout = ({ children }) => {
       return false;
     }
   });
+  const [isHovered, setIsHovered] = useState(false);
   const sideNavRef = useRef(null);
 
   useEffect(() => {
@@ -33,8 +34,7 @@ const ExpertSidebarLayout = ({ children }) => {
       if (isInSidebar) {
         e.preventDefault();
         const maxScroll = side.scrollHeight - side.clientHeight;
-        const next = Math.min(Math.max(0, side.scrollTop + dy), maxScroll);
-        side.scrollTop = next;
+        side.scrollTop = Math.min(Math.max(0, side.scrollTop + dy), maxScroll);
       }
     };
     window.addEventListener("wheel", onWheelGlobal, { passive: false, capture: true });
@@ -44,22 +44,16 @@ const ExpertSidebarLayout = ({ children }) => {
   const items = [
     { key: "expert_dashboard", label: "Tổng quan", to: "/expert", icon: DashboardIcon },
     {
-      key: "expert_requests",
-      label: "Yêu cầu kiểm duyệt",
-      to: "/expert/requests",
-      icon: ShieldCheckIcon,
-    },
-    {
-      key: "expert_history",
-      label: "Lịch sử",
-      to: "/expert/history",
-      icon: ShieldCheckIcon, // Fallback if HistoryIcon doesn't exist
-    },
-    {
       key: "expert_commission",
-      label: "Thu nhập",
-      to: "/expert/commissions",
+      label: "Hoa hồng",
+      to: "/expert/commission-records",
       icon: CoinsIcon,
+    },
+    {
+      key: "expert_validations",
+      label: "Kiểm duyệt",
+      to: "/expert/validation-requests",
+      icon: ShieldCheckIcon,
     },
   ];
 
@@ -71,6 +65,8 @@ const ExpertSidebarLayout = ({ children }) => {
     <div className="flex min-h-screen">
       <aside
         ref={sideNavRef}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-20" : "w-64"
         }`}
@@ -103,9 +99,11 @@ const ExpertSidebarLayout = ({ children }) => {
       </aside>
 
       <button
-        className={`fixed top-24 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-all z-50 ${
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`fixed top-24 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-all z-40 ${
           collapsed ? "left-16" : "left-60"
-        }`}
+        } ${isHovered ? "opacity-100" : "opacity-0"}`}
         onClick={(e) => {
           e.stopPropagation();
           const next = !collapsed;

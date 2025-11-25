@@ -237,7 +237,7 @@ function SubjectDetailPage() {
   // Loading Skeleton
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
         <div className="bg-white shadow-sm border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
@@ -260,7 +260,7 @@ function SubjectDetailPage() {
   // Subject Not Found
   if (!subject) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-xl shadow-sm border border-gray-200">
             <div className="text-6xl mb-4">📚</div>
@@ -276,7 +276,7 @@ function SubjectDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
@@ -597,6 +597,13 @@ function SubjectDetailPage() {
         onGenerate={handleGenerateQuiz}
         loading={generating}
       />
+
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

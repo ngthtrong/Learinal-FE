@@ -11,6 +11,8 @@ import Button from "@/components/common/Button";
 import { useToast } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { formatDate } from "@/utils/formatters";
+import { useAuth } from "@/contexts/AuthContext";
+import { validationRequestsService } from "@/services/api";
 function QuestionSetDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -19,12 +21,42 @@ function QuestionSetDetailPage() {
   const [attempts, setAttempts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingAttempts, setLoadingAttempts] = useState(false);
+  const { user } = useAuth();
+  const [requestingReview, setRequestingReview] = useState(false);
+  const [reviewRequested, setReviewRequested] = useState(false);
+  const [currentReview, setCurrentReview] = useState(null); // active or last review
+  const [completedReview, setCompletedReview] = useState(null); // latest completed review
 
   useEffect(() => {
     fetchQuestionSet();
     fetchAttempts();
+    fetchValidationRequest();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+  const fetchValidationRequest = async () => {
+    try {
+      const data = await validationRequestsService.list({ page: 1, pageSize: 20, setId: id });
+      const items = data?.items || data?.data || [];
+      if (!items.length) return;
+      const active = items.find((r) => r.status !== "Completed");
+      const completed = items
+        .filter((r) => r.status === "Completed")
+        .sort(
+          (a, b) =>
+            new Date(b.completionTime || b.updatedAt || b.createdAt) -
+            new Date(a.completionTime || a.updatedAt || a.createdAt)
+        )[0];
+      if (active) {
+        setCurrentReview(active);
+        setReviewRequested(true);
+      }
+      if (completed) {
+        setCompletedReview(completed);
+      }
+    } catch (e) {
+      /* ignore */
+    }
+  };
 
   const fetchQuestionSet = async () => {
     try {
@@ -62,9 +94,35 @@ function QuestionSetDetailPage() {
     navigate(`/quiz/result/${attemptId}`);
   };
 
+  const canRequestReview = () => {
+    if (!questionSet || !user) return false;
+    const isOwner = String(questionSet.userId || questionSet.user?.id) === String(user.id);
+    const blockedStatuses = ["Validated", "Public"];
+    return isOwner && !reviewRequested && !blockedStatuses.includes(questionSet.status);
+  };
+
+  const handleRequestReview = async () => {
+    if (!canRequestReview()) return;
+    setRequestingReview(true);
+    try {
+      const res = await questionSetsService.requestReview(id);
+      toast.showSuccess(res?.message || "Đã gửi yêu cầu kiểm duyệt");
+      // refresh validation request list to capture real status (PendingAssignment)
+      await fetchValidationRequest();
+    } catch (err) {
+      const msg = getErrorMessage(err);
+      toast.showError(msg);
+      if (err?.response?.status === 409) {
+        await fetchValidationRequest();
+      }
+    } finally {
+      setRequestingReview(false);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
           <p className="text-gray-600">Đang tải thông tin...</p>
@@ -75,7 +133,7 @@ function QuestionSetDetailPage() {
 
   if (!questionSet) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
         <div className="text-center space-y-4 max-w-md">
           <div className="text-6xl mb-4">📋</div>
           <h2 className="text-2xl font-bold text-gray-900">Không tìm thấy bộ câu hỏi</h2>
@@ -95,23 +153,27 @@ function QuestionSetDetailPage() {
     completedAttempts.length > 0 ? Math.max(...completedAttempts.map((a) => a.score || 0)) : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <Button variant="secondary" onClick={() => navigate(-1)}>
-            ← Quay lại
-          </Button>
-          <Button onClick={handleStartQuiz} variant="primary" size="large">
-            🎯 Bắt đầu làm bài
-          </Button>
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+          <div className="flex items-center justify-between">
+            <Button variant="secondary" onClick={() => navigate(-1)}>
+              ← Quay lại
+            </Button>
+            <Button onClick={handleStartQuiz} variant="primary" size="large">
+              🎯 Bắt đầu làm bài
+            </Button>
+          </div>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {/* Question Set Info */}
-        <div className="bg-white rounded-xl shadow-medium p-8 mb-8">
-          <div className="flex items-start justify-between mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-8">
+          <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
             <h1 className="text-3xl font-bold text-gray-900 flex-1">{questionSet.title}</h1>
-            <div className="flex items-center gap-2 ml-4">
+            <div className="flex items-center gap-2 ml-4 flex-wrap">
               <span
                 className={`px-3 py-1 rounded-full text-sm font-medium ${
                   questionSet.status === "Draft"
@@ -140,6 +202,40 @@ function QuestionSetDetailPage() {
                   🔗 Đã chia sẻ
                 </span>
               )}
+              {canRequestReview() && (
+                <Button
+                  variant="outline"
+                  size="small"
+                  disabled={requestingReview}
+                  onClick={handleRequestReview}
+                >
+                  {requestingReview ? "Đang gửi..." : "Gửi yêu cầu chuyên gia duyệt"}
+                </Button>
+              )}
+              {reviewRequested && currentReview && (
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    currentReview.status === "PendingAssignment"
+                      ? "bg-indigo-100 text-indigo-700"
+                      : currentReview.status === "Assigned"
+                      ? "bg-primary-100 text-primary-700"
+                      : currentReview.status === "Completed"
+                      ? "bg-success-100 text-success-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {currentReview.status === "PendingAssignment" && "⏳ Chờ gán chuyên gia"}
+                  {currentReview.status === "Assigned" && "👨‍🏫 Đã gán chuyên gia"}
+                  {currentReview.status === "Completed" && "✅ Đã hoàn tất"}
+                  {!["PendingAssignment", "Assigned", "Completed"].includes(currentReview.status) &&
+                    currentReview.status}
+                </span>
+              )}
+              {!reviewRequested && completedReview && (
+                <span className="px-3 py-1 rounded-full text-sm font-medium bg-success-100 text-success-700">
+                  ✅ Đã kiểm duyệt
+                </span>
+              )}
             </div>
           </div>
 
@@ -148,7 +244,7 @@ function QuestionSetDetailPage() {
               <div className="text-3xl">📊</div>
               <div>
                 <div className="text-2xl font-bold text-gray-900">
-                  {questionSet.questionCount || 0}
+                  {questionSet.questionCount || questionSet.questions?.length || 0}
                 </div>
                 <div className="text-sm text-gray-600">Câu hỏi</div>
               </div>
@@ -183,7 +279,7 @@ function QuestionSetDetailPage() {
             </div>
           )}
 
-          <div className="flex items-center gap-4 text-sm text-gray-600 border-t border-gray-200 pt-4">
+          <div className="flex flex-col gap-2 text-sm text-gray-600 border-t border-gray-200 pt-4">
             <span className="flex items-center gap-2">
               <span>📅</span>
               Tạo: {formatDate(questionSet.createdAt)}
@@ -193,6 +289,31 @@ function QuestionSetDetailPage() {
                 <span>🔄</span>
                 Cập nhật: {formatDate(questionSet.updatedAt)}
               </span>
+            )}
+            {completedReview && (
+              <div className="mt-2 bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="font-semibold text-green-700 flex items-center gap-2">
+                    <span>👨‍🏫</span> Chuyên gia:{" "}
+                    {completedReview.expertName || completedReview.expertId || "—"}
+                  </div>
+                  <div className="text-xs text-green-700">
+                    Hoàn thành:{" "}
+                    {formatDate(completedReview.completionTime || completedReview.updatedAt)}
+                  </div>
+                </div>
+                <div className="text-sm mb-2">
+                  <span className="font-medium">Kết quả: </span>
+                  {completedReview.decision === "Approved" && "✅ Phê duyệt"}
+                  {completedReview.decision === "Rejected" && "❌ Từ chối"}
+                  {!completedReview.decision && "—"}
+                </div>
+                {completedReview.feedback && (
+                  <div className="text-sm whitespace-pre-line">
+                    <span className="font-medium">Nhận xét:</span> {completedReview.feedback}
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -321,6 +442,13 @@ function QuestionSetDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

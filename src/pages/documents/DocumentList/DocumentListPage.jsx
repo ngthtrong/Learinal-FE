@@ -76,7 +76,7 @@ function DocumentListPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
           <p className="text-gray-600">Đang tải...</p>
@@ -87,7 +87,7 @@ function DocumentListPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="text-6xl mb-4">⚠️</div>
           <p className="text-error-600 text-lg font-medium">{error}</p>
@@ -98,26 +98,32 @@ function DocumentListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-8">
-          <div className="flex items-start gap-4">
-            <Button variant="secondary" onClick={() => navigate("/subjects")}>
-              ← Quay lại
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                📚 Tài liệu: {subject?.subjectName}
-              </h1>
-              {subject?.description && <p className="text-gray-600">{subject.description}</p>}
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button variant="secondary" onClick={() => navigate("/subjects")}>
+                ← Quay lại
+              </Button>
+              <div className="space-y-2">
+                <h1 className="text-4xl font-bold text-gray-900">📚 {subject?.subjectName}</h1>
+                {subject?.description && (
+                  <p className="text-lg text-gray-600">{subject.description}</p>
+                )}
+              </div>
             </div>
+            <Button onClick={handleUploadDocument}>+ Tải lên tài liệu</Button>
           </div>
-          <Button onClick={handleUploadDocument}>+ Tải lên tài liệu</Button>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        {/* Content */}
 
         {documents.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-medium p-12 text-center">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
             <div className="text-6xl mb-4">📚</div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">Chưa có tài liệu nào</h3>
             <p className="text-gray-600 mb-6">Tải lên tài liệu đầu tiên để bắt đầu học tập</p>
@@ -130,7 +136,7 @@ function DocumentListPage() {
               return (
                 <div
                   key={doc.id}
-                  className="bg-white rounded-xl shadow-medium hover:shadow-large transition-shadow p-6"
+                  className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-200"
                 >
                   <div className="flex items-start gap-4">
                     <div className="text-4xl">{getFileIcon(doc.fileType)}</div>
@@ -176,6 +182,13 @@ function DocumentListPage() {
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

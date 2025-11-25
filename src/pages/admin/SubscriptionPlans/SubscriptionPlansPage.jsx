@@ -5,8 +5,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Button, Input, Modal, useToast } from "@/components/common";
 import subscriptionsService from "@/services/api/subscriptions.service";
 
-const DEFAULT_ENTITLEMENTS_JSON =
-  '{\n  "maxMonthlyTestGenerations": 50,\n  "maxValidationRequests": 30,\n  "priorityProcessing": false,\n  "shareLimits": { "canShare": false, "maxSharedUsers": 0 },\n  "maxSubjects": 10\n}';
+const DEFAULT_ENTITLEMENTS = {
+  maxMonthlyTestGenerations: 50,
+  maxValidationRequests: 30,
+  priorityProcessing: false,
+  shareLimits: { canShare: false, maxSharedUsers: 0 },
+  maxSubjects: 10,
+};
 
 function AdminSubscriptionPlansPage() {
   const toast = useToast();
@@ -23,10 +28,21 @@ function AdminSubscriptionPlansPage() {
     billingCycle: "Monthly",
     price: 0,
     status: "Active",
-    entitlementsText: DEFAULT_ENTITLEMENTS_JSON,
+    entitlements: DEFAULT_ENTITLEMENTS,
   });
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
+
+  const formatEntitlementLabel = (key) => {
+    const labels = {
+      maxSubjects: "Số môn học",
+      maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
+      maxValidationRequests: "Số yêu cầu kiểm duyệt",
+      priorityProcessing: "Xử lý ưu tiên",
+      shareLimits: "Giới hạn chia sẻ",
+    };
+    return labels[key] || key;
+  };
 
   const fetchPlans = async () => {
     try {
@@ -57,8 +73,7 @@ function AdminSubscriptionPlansPage() {
       billingCycle: "Monthly",
       price: 0,
       status: "Active",
-      entitlementsText:
-        '{\n  "maxMonthlyTestGenerations": 50,\n  "maxValidationRequests": 30,\n  "priorityProcessing": false,\n  "shareLimits": { "canShare": false, "maxSharedUsers": 0 },\n  "maxSubjects": 10\n}',
+      entitlements: { ...DEFAULT_ENTITLEMENTS },
     });
     setModalOpen(true);
   };
@@ -71,10 +86,10 @@ function AdminSubscriptionPlansPage() {
       billingCycle: p.billingCycle || "Monthly",
       price: p.price || 0,
       status: p.status || "Active",
-      entitlementsText:
+      entitlements:
         p && p.entitlements && Object.keys(p.entitlements || {}).length > 0
-          ? JSON.stringify(p.entitlements, null, 2)
-          : DEFAULT_ENTITLEMENTS_JSON,
+          ? { ...p.entitlements }
+          : { ...DEFAULT_ENTITLEMENTS },
     });
     setModalOpen(true);
   };
@@ -82,29 +97,6 @@ function AdminSubscriptionPlansPage() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      // parse entitlementsText
-      let entitlements;
-      try {
-        entitlements = JSON.parse(form.entitlementsText || "{}");
-      } catch {
-        toast.showError("Entitlements phải là JSON hợp lệ");
-        return;
-      }
-
-      // lightweight client-side validation to avoid server rejection
-      const required = [
-        "maxMonthlyTestGenerations",
-        "maxValidationRequests",
-        "priorityProcessing",
-        "shareLimits",
-        "maxSubjects",
-      ];
-      for (const key of required) {
-        if (!(key in entitlements)) {
-          toast.showError(`Thiếu trường bắt buộc trong entitlements: ${key}`);
-          return;
-        }
-      }
 
       const payload = {
         planName: form.planName?.trim(),
@@ -112,7 +104,7 @@ function AdminSubscriptionPlansPage() {
         billingCycle: form.billingCycle,
         price: Number(form.price) || 0,
         status: form.status,
-        entitlements,
+        entitlements: form.entitlements,
       };
       if (!payload.planName) {
         toast.showError("Tên gói không được để trống");
@@ -327,18 +319,128 @@ function AdminSubscriptionPlansPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Entitlements (JSON)
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                Quyền lợi gói đăng ký
               </label>
-              <textarea
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg font-mono text-sm"
-                rows={8}
-                value={form.entitlementsText}
-                onChange={(e) => setForm({ ...form, entitlementsText: e.target.value })}
-              />
-              <div className="text-xs text-gray-500 mt-1">
-                Cần bao gồm: maxMonthlyTestGenerations, maxValidationRequests, priorityProcessing,
-                shareLimits, maxSubjects
+              <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+                {/* maxMonthlyTestGenerations */}
+                <Input
+                  label={formatEntitlementLabel("maxMonthlyTestGenerations")}
+                  type="number"
+                  value={form.entitlements.maxMonthlyTestGenerations}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      entitlements: {
+                        ...form.entitlements,
+                        maxMonthlyTestGenerations: Number(e.target.value),
+                      },
+                    })
+                  }
+                />
+
+                {/* maxValidationRequests */}
+                <Input
+                  label={formatEntitlementLabel("maxValidationRequests")}
+                  type="number"
+                  value={form.entitlements.maxValidationRequests}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      entitlements: {
+                        ...form.entitlements,
+                        maxValidationRequests: Number(e.target.value),
+                      },
+                    })
+                  }
+                />
+
+                {/* maxSubjects */}
+                <Input
+                  label={formatEntitlementLabel("maxSubjects")}
+                  type="number"
+                  value={form.entitlements.maxSubjects}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      entitlements: {
+                        ...form.entitlements,
+                        maxSubjects: Number(e.target.value),
+                      },
+                    })
+                  }
+                />
+
+                {/* priorityProcessing */}
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.entitlements.priorityProcessing}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          entitlements: {
+                            ...form.entitlements,
+                            priorityProcessing: e.target.checked,
+                          },
+                        })
+                      }
+                      className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      {formatEntitlementLabel("priorityProcessing")}
+                    </span>
+                  </label>
+                </div>
+
+                {/* shareLimits */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    {formatEntitlementLabel("shareLimits")}
+                  </label>
+                  <div className="pl-4 space-y-2">
+                    <div>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={form.entitlements.shareLimits?.canShare || false}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              entitlements: {
+                                ...form.entitlements,
+                                shareLimits: {
+                                  ...form.entitlements.shareLimits,
+                                  canShare: e.target.checked,
+                                },
+                              },
+                            })
+                          }
+                          className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                        />
+                        <span className="text-sm text-gray-700">Cho phép chia sẻ</span>
+                      </label>
+                    </div>
+                    <Input
+                      label="Số người được chia sẻ tối đa"
+                      type="number"
+                      value={form.entitlements.shareLimits?.maxSharedUsers || 0}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          entitlements: {
+                            ...form.entitlements,
+                            shareLimits: {
+                              ...form.entitlements.shareLimits,
+                              maxSharedUsers: Number(e.target.value),
+                            },
+                          },
+                        })
+                      }
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <div className="flex justify-end gap-2 pt-2">

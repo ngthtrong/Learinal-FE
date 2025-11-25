@@ -236,10 +236,10 @@ function QuizTakingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-          <p className="text-gray-600">Đang tải câu hỏi...</p>
+          <p className="text-gray-600">Đang tải bài thi...</p>
         </div>
       </div>
     );
@@ -247,7 +247,7 @@ function QuizTakingPage() {
 
   if (!questionSet || questions.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <h2 className="text-2xl font-bold text-gray-900">Không có câu hỏi</h2>
           <Button onClick={() => navigate("/question-sets")}>← Quay lại</Button>
@@ -261,7 +261,7 @@ function QuizTakingPage() {
   const isWarningTime = useTimer && timeRemaining !== null && timeRemaining <= 60;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 pb-24">
       {/* Header - Fixed */}
       <div className="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -485,6 +485,13 @@ function QuizTakingPage() {
           </div>
         </div>
       </Modal>
+
+      {/* Footer */}
+      <footer className="py-8 border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

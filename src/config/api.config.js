@@ -94,13 +94,14 @@ export const API_CONFIG = {
       APPROVE_CONTENT: (id) => `/admin/validation-requests/${id}/approve`,
       REJECT_CONTENT: (id) => `/admin/validation-requests/${id}/reject`,
     },
-    // Validation Requests (Expert)
+    // Validation requests (shared for Learner/Expert/Admin scope based on role)
     VALIDATION_REQUESTS: {
       LIST: "/validation-requests",
       GET_BY_ID: (id) => `/validation-requests/${id}`,
-      APPROVE: (id) => `/validation-requests/${id}/approve`,
-      REJECT: (id) => `/validation-requests/${id}/reject`,
-      HISTORY: "/validation-requests/history",
+      GET_DETAIL: (id) => `/validation-requests/${id}/detail`,
+      UPDATE: (id) => `/validation-requests/${id}`,
+      COMPLETE: (id) => `/validation-requests/${id}/complete`,
+      CLAIM: (id) => `/validation-requests/${id}/claim`,
     },
     // Commission records (Expert + Admin)
     COMMISSIONS: {

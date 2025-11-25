@@ -32,8 +32,8 @@ const Topbar = ({ theme = "light" }) => {
     {
       key: "upgrade",
       label: "Nâng cấp",
-      to: "/mysubscription",
-      roles: ["Learner", "Expert", "Admin"],
+      to: role === "Admin" ? "/subscriptions/view" : "/mysubscription",
+      roles: ["Learner", "Admin"],
     },
   ];
 
@@ -135,8 +135,18 @@ const Topbar = ({ theme = "light" }) => {
         {/* Left: Logo & Brand */}
         <div
           className="flex items-center gap-3 cursor-pointer select-none"
-          onClick={() => navigate(role === "Admin" ? "/admin" : "/home")}
-          title={role === "Admin" ? "Về trang quản trị" : "Về trang chính"}
+          onClick={() => {
+            if (role === "Admin") navigate("/admin");
+            else if (role === "Expert") navigate("/expert");
+            else navigate("/home");
+          }}
+          title={
+            role === "Admin"
+              ? "Về trang quản trị"
+              : role === "Expert"
+              ? "Về trang chuyên gia"
+              : "Về trang chính"
+          }
           aria-label="Đi tới trang chính"
           role="link"
         >
@@ -276,34 +286,38 @@ const Topbar = ({ theme = "light" }) => {
             </button>
             {menuOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-large border border-gray-200 py-2 z-50">
-                <button
-                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
-                  role="menuitem"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    navigate("/profile");
-                  }}
-                >
-                  Trang cá nhân
-                </button>
-                <button
-                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
-                  role="menuitem"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    navigate("/profile/edit");
-                  }}
-                >
-                  Cài đặt
-                </button>
-                <a
-                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
-                  role="menuitem"
-                  href="mailto:contact@learinalapp.page.gd"
-                >
-                  Liên hệ hỗ trợ
-                </a>
-                <div className="border-t border-gray-200 my-2" />
+                {role !== "Admin" && (
+                  <>
+                    <button
+                      className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                      role="menuitem"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        navigate("/profile");
+                      }}
+                    >
+                      Trang cá nhân
+                    </button>
+                    <button
+                      className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                      role="menuitem"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        navigate("/profile/edit");
+                      }}
+                    >
+                      Cài đặt
+                    </button>
+                    <a
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                      role="menuitem"
+                      href="mailto:contact@learinalapp.page.gd"
+                    >
+                      Liên hệ hỗ trợ
+                    </a>
+                    <div className="border-t border-gray-200 my-2" />
+                  </>
+                )}
                 <button
                   className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
                   role="menuitem"

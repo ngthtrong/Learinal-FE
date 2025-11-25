@@ -12,6 +12,7 @@ import {
   AdminSidebarLayout,
   ExpertSidebarLayout,
 } from "@/components/layout";
+import RoleBasedSidebarLayout from "./components/layout/RoleBasedSidebarLayout";
 import { AdminRoute, ExpertRoute } from "./components/common";
 
 // Pages
@@ -26,6 +27,7 @@ import {
   LearnerHomePage,
   DocumentListPage,
   DocumentDetailPage,
+  AllDocumentsPage,
   QuizListPage,
   PublicSetsPage,
   ProfileViewPage,
@@ -35,6 +37,7 @@ import {
   SubjectCreatePage,
   SubscriptionPlansPage,
   MySubscriptionPage,
+  ViewSubscriptionPage,
   QuestionSetDetailPage,
   QuizStartPage,
   QuizTakingPage,
@@ -46,8 +49,9 @@ import {
   AdminFinancialsPage,
   SubscriptionPurchasesPage,
   ExpertDashboardPage,
-  ValidationRequestListPage,
-  ValidationRequestDetailPage,
+  ExpertCommissionRecordsPage,
+  ExpertValidationRequestsPage,
+  ExpertValidationRequestDetailPage,
 } from "./pages";
 
 // Styles
@@ -126,7 +130,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <PublicSetsPage />
+                  <SidebarLayout>
+                    <PublicSetsPage />
+                  </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -136,7 +142,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <DocumentListPage />
+                  <SidebarLayout>
+                    <AllDocumentsPage />
+                  </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -158,9 +166,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <SidebarLayout>
+                  <RoleBasedSidebarLayout>
                     <ProfileViewPage />
-                  </SidebarLayout>
+                  </RoleBasedSidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -170,7 +178,9 @@ function App() {
             element={
               <ProtectedRoute>
                 <TopbarLayout>
-                  <ProfileEditPage />
+                  <RoleBasedSidebarLayout>
+                    <ProfileEditPage />
+                  </RoleBasedSidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
             }
@@ -282,6 +292,18 @@ function App() {
                   </SidebarLayout>
                 </TopbarLayout>
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/subscriptions/view"
+            element={
+              <AdminRoute>
+                <TopbarLayout>
+                  <AdminSidebarLayout>
+                    <ViewSubscriptionPage />
+                  </AdminSidebarLayout>
+                </TopbarLayout>
+              </AdminRoute>
             }
           />
           <Route
@@ -399,13 +421,13 @@ function App() {
             }
           />
           <Route
-            path="/expert/requests"
+            path="/expert/commission-records"
             element={
               <ProtectedRoute>
                 <ExpertRoute>
                   <TopbarLayout>
                     <ExpertSidebarLayout>
-                      <ValidationRequestListPage />
+                      <ExpertCommissionRecordsPage />
                     </ExpertSidebarLayout>
                   </TopbarLayout>
                 </ExpertRoute>
@@ -413,13 +435,13 @@ function App() {
             }
           />
           <Route
-            path="/expert/requests/:id"
+            path="/expert/validation-requests"
             element={
               <ProtectedRoute>
                 <ExpertRoute>
                   <TopbarLayout>
                     <ExpertSidebarLayout>
-                      <ValidationRequestDetailPage />
+                      <ExpertValidationRequestsPage />
                     </ExpertSidebarLayout>
                   </TopbarLayout>
                 </ExpertRoute>
@@ -427,35 +449,13 @@ function App() {
             }
           />
           <Route
-            path="/expert/history"
+            path="/expert/validation-requests/:id"
             element={
               <ProtectedRoute>
                 <ExpertRoute>
                   <TopbarLayout>
                     <ExpertSidebarLayout>
-                      {/* Reuse list page with Completed filter or create new page if needed */}
-                      <ValidationRequestListPage />
-                    </ExpertSidebarLayout>
-                  </TopbarLayout>
-                </ExpertRoute>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/expert/commissions"
-            element={
-              <ProtectedRoute>
-                <ExpertRoute>
-                  <TopbarLayout>
-                    <ExpertSidebarLayout>
-                      {/* Reuse commission page or create new one. For now placeholder or reuse admin one if applicable?
-                          Actually Expert likely needs their own view.
-                          I'll point to a placeholder or reuse CommissionRecordsPage if it supports 'me' context.
-                          Let's assume we need to create it later or reuse.
-                          For now, I will point to ExpertDashboardPage as placeholder or just omit if not ready.
-                          But I added it to sidebar. Let's point to Dashboard for now or create a simple placeholder.
-                      */}
-                      <div className="p-8 text-center">Tính năng đang phát triển</div>
+                      <ExpertValidationRequestDetailPage />
                     </ExpertSidebarLayout>
                   </TopbarLayout>
                 </ExpertRoute>

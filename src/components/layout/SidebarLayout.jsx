@@ -5,6 +5,7 @@ import HomeIcon from "@/components/icons/HomeIcon";
 import QuizIcon from "@/components/icons/QuizIcon";
 import GlobeIcon from "@/components/icons/GlobeIcon";
 import SubjectsIcon from "@/components/icons/SubjectsIcon";
+import DocumentIcon from "@/components/icons/DocumentIcon";
 
 const SidebarLayout = ({ children }) => {
   const { user } = useAuth();
@@ -16,6 +17,7 @@ const SidebarLayout = ({ children }) => {
       return false;
     }
   });
+  const [isHovered, setIsHovered] = useState(false);
   const sideNavRef = useRef(null);
   // Global wheel routing using hit-test under pointer to avoid scroll latching issues
   useEffect(() => {
@@ -69,6 +71,13 @@ const SidebarLayout = ({ children }) => {
       roles: ["Learner", "Expert", "Admin"],
     },
     {
+      key: "documents",
+      label: "Tài liệu",
+      to: "/documents",
+      icon: DocumentIcon,
+      roles: ["Learner", "Expert", "Admin"],
+    },
+    {
       key: "quiz",
       label: "Bộ đề thi",
       to: "/quiz",
@@ -77,7 +86,7 @@ const SidebarLayout = ({ children }) => {
     },
     {
       key: "public",
-      label: "Công khai",
+      label: "Bộ Đề Chung",
       to: "/public",
       icon: GlobeIcon,
       roles: ["Learner", "Expert", "Admin"],
@@ -92,6 +101,8 @@ const SidebarLayout = ({ children }) => {
       {/* Sidebar */}
       <aside
         ref={sideNavRef}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-20" : "w-64"
         }`}
@@ -133,26 +144,30 @@ const SidebarLayout = ({ children }) => {
         </nav>
       </aside>
 
-      {/* Floating collapse button */}
-      <button
-        className={`fixed top-24 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-all z-50 ${
-          collapsed ? "left-16" : "left-60"
-        }`}
-        onClick={(e) => {
-          e.stopPropagation();
-          const next = !collapsed;
-          setCollapsed(next);
-          try {
-            localStorage.setItem("sidebar_collapsed", next ? "1" : "0");
-          } catch {
-            /* noop */
-          }
-        }}
-        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        title={collapsed ? "Mở rộng" : "Thu gọn"}
-      >
-        {collapsed ? "⟩" : "⟨"}
-      </button>
+      {/* Floating collapse button - only show when user is logged in */}
+      {user && (
+        <button
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className={`fixed top-24 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-all z-40 ${
+            collapsed ? "left-16" : "left-60"
+          } ${isHovered ? "opacity-100" : "opacity-0"}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            const next = !collapsed;
+            setCollapsed(next);
+            try {
+              localStorage.setItem("sidebar_collapsed", next ? "1" : "0");
+            } catch {
+              /* noop */
+            }
+          }}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Mở rộng" : "Thu gọn"}
+        >
+          {collapsed ? "⟩" : "⟨"}
+        </button>
+      )}
 
       {/* Main content */}
       <main className={`flex-1 transition-all duration-300 ${collapsed ? "ml-20" : "ml-64"} pt-16`}>

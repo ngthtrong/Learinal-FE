@@ -26,6 +26,7 @@ const AdminSidebarLayout = ({ children }) => {
       return false;
     }
   });
+  const [isHovered, setIsHovered] = useState(false);
   const sideNavRef = useRef(null);
 
   useEffect(() => {
@@ -48,29 +49,29 @@ const AdminSidebarLayout = ({ children }) => {
   }, []);
 
   const items = [
-    { key: "admin_dashboard", label: "Tổng quan", to: "/admin", icon: DashboardIcon },
-    { key: "admin_users", label: "Người dùng", to: "/admin/users", icon: UsersIcon },
+    { key: "admin_dashboard", label: "Tổng Quan", to: "/admin", icon: DashboardIcon },
+    { key: "admin_users", label: "Người Dùng", to: "/admin/users", icon: UsersIcon },
     {
       key: "admin_subscription_purchases",
-      label: "Quản lý gói",
+      label: "Quản Lý Gói Người Dùng",
       to: "/admin/subscription-purchases",
       icon: ManagePackagesIcon,
     },
     {
       key: "admin_plans",
-      label: "Gói nâng cấp",
+      label: "Gói Nâng Cấp",
       to: "/admin/subscription-plans",
       icon: SubscriptionsIcon,
     },
     {
       key: "admin_commission",
-      label: "Hoa hồng",
+      label: "Hoa Hồng",
       to: "/admin/commission-records",
       icon: CoinsIcon,
     },
     {
       key: "admin_financials",
-      label: "Thống kê",
+      label: "Thống Kê",
       to: "/admin/financials",
       icon: ChartIcon,
     },
@@ -85,6 +86,8 @@ const AdminSidebarLayout = ({ children }) => {
     <div className="flex min-h-screen">
       <aside
         ref={sideNavRef}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-20" : "w-64"
         }`}
@@ -117,9 +120,11 @@ const AdminSidebarLayout = ({ children }) => {
       </aside>
 
       <button
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={`fixed top-24 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-100 transition-all z-50 ${
           collapsed ? "left-16" : "left-60"
-        }`}
+        } ${isHovered ? "opacity-100" : "opacity-0"}`}
         onClick={(e) => {
           e.stopPropagation();
           const next = !collapsed;
