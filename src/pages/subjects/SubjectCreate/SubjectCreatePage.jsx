@@ -9,6 +9,7 @@ import { SubjectForm } from "@components/subjects";
 import { useToast } from "@components/common";
 import { subjectsService } from "@services/api";
 import { getErrorMessage } from "@utils";
+import SubjectsIcon from "@/components/icons/SubjectsIcon";
 
 const SubjectCreatePage = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const SubjectCreatePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
@@ -53,7 +54,12 @@ const SubjectCreatePage = () => {
             ← Quay lại danh sách môn học
           </button>
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">📚 Tạo môn học mới</h1>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <SubjectsIcon size={24} stroke={2} className="text-primary-600 dark:text-primary-400" />
+              </div>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Tạo môn học mới</h1>
+            </div>
             <p className="text-lg text-gray-600 dark:text-gray-100">
               Tạo một môn học để bắt đầu thêm tài liệu và câu hỏi học tập
             </p>

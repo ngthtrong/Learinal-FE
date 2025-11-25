@@ -1,5 +1,5 @@
 import React from "react";
-import BookIcon from "@/components/icons/BookIcon";
+import SubjectsIcon from "@/components/icons/SubjectsIcon";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -46,7 +46,7 @@ const SubjectCard = ({ subject, onClick }) => {
       {/* Icon - Top Left */}
       <div className="mb-4">
         <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-primary-500/20 text-primary-600 dark:text-primary-400 shadow-inner group-hover:scale-110 transition-transform">
-          <BookIcon size={28} strokeWidth={1.6} />
+          <SubjectsIcon size={28} stroke={1.6} />
         </div>
       </div>
 

@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { documentsService, subjectsService, questionSetsService } from "@/services/api";
 import { CardGrid, CategoryCard } from "@/components/common";
 import QuizIcon from "@/components/icons/QuizIcon";
+import SubjectsIcon from "@/components/icons/SubjectsIcon";
 import HomeIcon from "@/components/icons/HomeIcon";
 import BookIcon from "@/components/icons/BookIcon";
 import DocumentIcon from "@/components/icons/DocumentIcon";
@@ -296,7 +297,7 @@ const LearnerHomePage = () => {
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <h2
-              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/subjects")}
@@ -304,7 +305,10 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/subjects");
               }}
             >
-              📚 Môn Học
+              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <BookIcon size={24} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+              </div>
+              Môn Học
             </h2>
             <button
               onClick={() => navigate("/subjects")}
@@ -321,7 +325,7 @@ const LearnerHomePage = () => {
                   title={it.subjectName || it.name || it.title}
                   subtitle=""
                   cta=""
-                  Icon={BookIcon}
+                  Icon={SubjectsIcon}
                   onClick={() => navigate(`/subjects/${it._id || it.id}`)}
                 />
               ))}
@@ -344,7 +348,7 @@ const LearnerHomePage = () => {
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <h2
-              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/quiz")}
@@ -352,7 +356,10 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/quiz");
               }}
             >
-              📝 Đề Thi (Cá Nhân)
+              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
+              </div>
+              Đề Thi (Cá Nhân)
             </h2>
             <button
               onClick={() => navigate("/quiz")}
@@ -391,7 +398,7 @@ const LearnerHomePage = () => {
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <h2
-              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/public")}
@@ -399,7 +406,10 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/public");
               }}
             >
-              🌍 Đề Thi (Chung)
+              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><path d="M12 2c1.5 0 2.92.69 3.82 1.97l1.38 2.16c.5.78 1.3 1.3 2.21 1.46l1.96.31c.95.15 1.73.86 2 1.8l.5 1.81c.22.8.77 1.48 1.5 1.85l1.3.66c.74.37 1.25 1.08 1.37 1.88l.25 1.65c.08.51.33.97.7 1.28l.96.82c.6.5.95 1.23.95 2 0 .77-.35 1.5-.95 2l-.96.82c-.37.31-.62.77-.7 1.28l-.25 1.65c-.12.8-.63 1.51-1.37 1.88l-1.3.66c-.73.37-1.28 1.05-1.5 1.85l-.5 1.81c-.27.94-1.05 1.65-2 1.8l-1.96.31c-.91.16-1.71.68-2.21 1.46l-1.38 2.16c-.9 1.28-2.32 1.97-3.82 1.97s-2.92-.69-3.82-1.97l-1.38-2.16c-.5-.78-1.3-1.3-2.21-1.46l-1.96-.31c-.95-.15-1.73-.86-2-1.8l-.5-1.81c-.22-.8-.77-1.48-1.5-1.85l-1.3-.66c-.74-.37-1.25-1.08-1.37-1.88l-.25-1.65c-.08-.51-.33-.97-.7-1.28l-.96-.82c-.6-.5-.95-1.23-.95-2 0-.77.35-1.5.95-2l.96-.82c.37-.31.62-.77.7-1.28l.25-1.65c.12-.8.63-1.51 1.37-1.88l1.3-.66c.73-.37 1.28-1.05 1.5-1.85l.5-1.81c.27-.94 1.05-1.65 2-1.8l1.96-.31c.91-.16 1.71-.68 2.21-1.46l1.38-2.16C9.08 2.69 10.5 2 12 2z"></path><path d="M2.5 12h19"></path></svg>
+              </div>
+              Đề Thi (Chung)
             </h2>
             <button
               onClick={() => navigate("/public")}
@@ -432,7 +442,7 @@ const LearnerHomePage = () => {
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <h2
-              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/documents")}
@@ -440,7 +450,10 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/documents");
               }}
             >
-              📄 Tài Liệu{myDocumentsDedup?.length ? ` (${myDocumentsDedup.length})` : ""}
+              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              </div>
+              Tài Liệu{myDocumentsDedup?.length ? ` (${myDocumentsDedup.length})` : ""}
             </h2>
             <button
               onClick={() => navigate("/documents")}

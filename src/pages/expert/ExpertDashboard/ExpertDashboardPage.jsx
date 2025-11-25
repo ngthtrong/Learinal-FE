@@ -85,12 +85,12 @@ function ExpertDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Bảng điều khiển chuyên gia</h1>
-            <p className="text-gray-500 mt-1 text-sm">Theo dõi hoa hồng và yêu cầu kiểm duyệt.</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Bảng điều khiển chuyên gia</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Theo dõi hoa hồng và yêu cầu kiểm duyệt.</p>
           </div>
           <div className="flex gap-2">
             <button
@@ -98,7 +98,7 @@ function ExpertDashboardPage() {
                 setRefreshing(true);
                 loadData();
               }}
-              className="px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium shadow hover:bg-primary-700 transition disabled:opacity-50"
+              className="px-4 py-2 rounded-lg bg-primary-600 dark:bg-primary-500 text-white text-sm font-medium shadow hover:bg-primary-700 dark:hover:bg-primary-600 transition disabled:opacity-50"
               disabled={refreshing}
             >
               {refreshing ? "Đang làm mới..." : "Làm mới"}
@@ -107,7 +107,7 @@ function ExpertDashboardPage() {
         </div>
 
         {error && (
-          <div className="mb-4 p-3 rounded-lg border border-error-200 bg-error-50 text-error-700 text-sm">
+          <div className="mb-4 p-3 rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-error-700 dark:text-error-400 text-sm">
             {error}
           </div>
         )}
@@ -116,7 +116,7 @@ function ExpertDashboardPage() {
           {cards.map((c) => (
             <div
               key={c.key}
-              className="bg-white rounded-xl shadow-medium p-5 border border-gray-100 hover:shadow-large transition group"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-gray-700 hover:shadow-large transition group"
             >
               <div
                 className={`w-12 h-12 rounded-lg bg-gradient-to-br ${c.color} flex items-center justify-center text-xl text-white mb-4 shadow`}
@@ -126,20 +126,20 @@ function ExpertDashboardPage() {
                   return <Icon size={20} stroke={2} className="text-white" />;
                 })()}
               </div>
-              <div className="text-2xl font-bold text-gray-900 leading-tight">
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
                 {loading ? "—" :
                   c.key.startsWith("earn") || c.key === "avg_validation"
                     ? formatCurrency(c.value || 0)
                     : c.value}
               </div>
-              <div className="text-sm text-gray-500 mt-1">{c.label}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">{c.label}</div>
             </div>
           ))}
         </div>
 
-        <div className="bg-white rounded-xl shadow-medium p-8 mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Hướng dẫn nhanh</h2>
-          <ul className="space-y-3 text-sm text-gray-600 list-disc pl-5">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-8 mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Hướng dẫn nhanh</h2>
+          <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400 list-disc pl-5">
             <li>Vào mục Hoa hồng để xem chi tiết các bản ghi thu nhập.</li>
             <li>Vào mục Kiểm duyệt để xử lý yêu cầu được gán cho bạn.</li>
             <li>Sau khi hoàn thành kiểm duyệt nhớ gửi quyết định và phản hồi chất lượng.</li>

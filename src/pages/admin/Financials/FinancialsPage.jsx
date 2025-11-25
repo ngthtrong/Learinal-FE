@@ -73,18 +73,18 @@ function FinancialsPage() {
   }, [currentYear]);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Thống kê</h1>
-            <p className="text-gray-500 mt-1 text-sm">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Thống kê</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
               Doanh thu theo gói, chi hoa hồng chuyên gia và lợi nhuận ròng.
             </p>
           </div>
           <div className="flex gap-2">
             <select
-              className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
               value={year}
               onChange={(e) => setYear(parseInt(e.target.value, 10))}
             >
@@ -107,76 +107,76 @@ function FinancialsPage() {
         </div>
 
         {error && (
-          <div className="mb-4 p-3 rounded-lg border border-error-200 bg-error-50 text-error-700 text-sm">
+          <div className="mb-4 p-3 rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-error-700 dark:text-error-400 text-sm">
             {error}
           </div>
         )}
 
         {/* Summary cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-medium p-5 border border-gray-100">
-            <div className="text-sm text-gray-500 mb-1">Doanh thu gói</div>
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-gray-700">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Doanh thu gói</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {loading ? "—" : formatCurrency(totals.subscriptionRevenue)}
             </div>
           </div>
-          <div className="bg-white rounded-xl shadow-medium p-5 border border-gray-100">
-            <div className="text-sm text-gray-500 mb-1">Chi hoa hồng</div>
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-gray-700">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Chi hoa hồng</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {loading ? "—" : formatCurrency(totals.commissionsPaid)}
             </div>
           </div>
-          <div className="bg-white rounded-xl shadow-medium p-5 border border-gray-100">
-            <div className="text-sm text-gray-500 mb-1">Lợi nhuận ròng</div>
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-gray-700">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Lợi nhuận ròng</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {loading ? "—" : formatCurrency(totals.net)}
             </div>
           </div>
         </div>
 
         {/* Monthly breakdown */}
-        <div className="bg-white rounded-xl shadow-medium overflow-hidden mb-8">
-          <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-800">Chi tiết theo tháng {year}</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden mb-8">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Chi tiết theo tháng {year}</h2>
           </div>
           {loading ? (
-            <div className="py-16 text-center text-gray-600">Đang tải...</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
           ) : months.length === 0 ? (
-            <div className="py-16 text-center text-gray-600">Không có dữ liệu</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Không có dữ liệu</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Tháng
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Doanh thu gói
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Chi hoa hồng
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Lợi nhuận ròng
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {months.map((m) => {
                     const hasTx = (m.subscriptionRevenue || 0) > 0 || (m.commissionsPaid || 0) > 0;
                     return (
-                      <tr key={m.month} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                      <tr key={m.month} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-gray-100">
                           {m.month}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                           {hasTx ? formatCurrency(m.subscriptionRevenue) : "—"}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                           {hasTx ? formatCurrency(m.commissionsPaid) : "—"}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap font-semibold text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap font-semibold text-gray-900 dark:text-gray-100">
                           {hasTx ? formatCurrency(m.net) : "—"}
                         </td>
                       </tr>
@@ -192,8 +192,8 @@ function FinancialsPage() {
         {!loading && months.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Bar Chart - Revenue vs Commission */}
-            <div className="bg-white rounded-xl shadow-medium p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Doanh thu & Hoa hồng</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Doanh thu & Hoa hồng</h2>
               <Bar
                 data={{
                   labels: months.map((m) => m.month),
@@ -252,8 +252,8 @@ function FinancialsPage() {
             </div>
 
             {/* Line Chart - Net Profit Trend */}
-            <div className="bg-white rounded-xl shadow-medium p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Xu hướng lợi nhuận ròng</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Xu hướng lợi nhuận ròng</h2>
               <Line
                 data={{
                   labels: months.map((m) => m.month),

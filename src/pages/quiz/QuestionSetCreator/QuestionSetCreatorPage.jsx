@@ -164,7 +164,12 @@ function QuestionSetCreatorPage() {
   return (
     <div className="question-set-creator-page">
       <div className="page-header">
-        <h1>🎯 Tạo bộ câu hỏi - {subject.name}</h1>
+        <h1 className="flex items-center gap-3">
+          <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary-100 dark:bg-primary-900/30">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M9 11H3v2h6m-6 7h6v-2H3m15 2h3v-2h-3M21 3v12h-6V3m-2 0h2v2h-2m2 10h2v-2h-2M9 3h2v2H9m0 4h2v2H9z"></path></svg>
+          </div>
+          Tạo bộ câu hỏi - {subject.name}
+        </h1>
         <p className="subtitle">Sử dụng AI để tự động sinh câu hỏi từ tài liệu</p>
       </div>
 
@@ -256,7 +261,10 @@ function QuestionSetCreatorPage() {
         </section>
 
         {/* Quota Info */}
-        <div className="quota-info">💡 Quota: Còn 3/5 đề tháng này (miễn phí)</div>
+        <div className="quota-info flex items-center gap-2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line><circle cx="12" cy="12" r="5"></circle></svg>
+          Quota: Còn 3/5 đề tháng này (miễn phí)
+        </div>
 
         {/* Action Buttons */}
         <div className="form-actions">
@@ -264,7 +272,17 @@ function QuestionSetCreatorPage() {
             Hủy
           </Button>
           <Button onClick={handleGenerate} disabled={generating} loading={generating}>
-            {generating ? "⏳ Đang tạo..." : "🎲 Tạo đề"}
+            {generating ? (
+              <span className="inline-flex items-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+                Đang tạo...
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="10" width="20" height="12" rx="2" ry="2"></rect><path d="M22 12V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v6"></path></svg>
+                Tạo đề
+              </span>
+            )}
           </Button>
         </div>
       </div>
@@ -277,10 +295,22 @@ function QuestionSetCreatorPage() {
               <div className="spinner large"></div>
             </div>
             <ul className="generation-steps">
-              <li className="completed">✓ Phân tích nội dung</li>
-              <li className="completed">✓ Tạo câu hỏi mức Biết</li>
-              <li className="active">🔄 Tạo câu hỏi mức Hiểu</li>
-              <li>Tạo câu hỏi mức Vận dụng</li>
+              <li className="completed flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Phân tích nội dung
+              </li>
+              <li className="completed flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Tạo câu hỏi mức Biết
+              </li>
+              <li className="active flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+                Tạo câu hỏi mức Hiểu
+              </li>
+              <li className="flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+                Tạo câu hỏi mức Vận dụng
+              </li>
             </ul>
             <p className="estimate-time">Ước tính còn: 15 giây</p>
           </div>
@@ -289,7 +319,7 @@ function QuestionSetCreatorPage() {
 
       {/* Success Modal */}
       {showSuccessModal && (
-        <Modal isOpen={true} onClose={() => setShowSuccessModal(false)} title="✅ Tạo thành công!">
+        <Modal isOpen={true} onClose={() => setShowSuccessModal(false)} title="Tạo thành công!">
           <div className="success-modal">
             <p>Bộ câu hỏi đã được tạo thành công với {numQuestions} câu.</p>
             <div className="modal-actions">

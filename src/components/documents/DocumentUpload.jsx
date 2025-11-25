@@ -6,6 +6,8 @@
 import { useState, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 import Button from "@/components/common/Button";
+import DocumentIcon from "@/components/icons/DocumentIcon";
+import UploadIcon from "@/components/icons/UploadIcon";
 
 const UPLOAD_CONSTRAINTS = {
   maxFileSize: 20 * 1024 * 1024, // 20MB
@@ -169,21 +171,9 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
   };
 
-  // Get file icon based on type
-  const getFileIcon = (file) => {
-    if (!file) return "📄";
-    const extension = file.name.split(".").pop().toLowerCase();
-    switch (extension) {
-      case "pdf":
-        return "📕";
-      case "docx":
-      case "doc":
-        return "📘";
-      case "txt":
-        return "📝";
-      default:
-        return "📄";
-    }
+  // Get file icon - now returns DocumentIcon component
+  const getFileIcon = () => {
+    return <DocumentIcon size={32} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />;
   };
 
   return (
@@ -204,7 +194,9 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
         onClick={() => !uploading && fileInputRef.current?.click()}
       >
         <div className="flex flex-col items-center">
-          <div className="text-6xl mb-4">📁</div>
+          <div className="w-20 h-20 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mb-4">
+            <UploadIcon size={40} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+          </div>
           <p className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
             {dragActive ? "Thả file vào đây" : "Kéo thả file vào đây hoặc click để chọn"}
           </p>
@@ -223,7 +215,7 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
       {/* Error Message */}
       {error && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
-          <span className="text-lg">⚠️</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
           {error}
         </div>
       )}
@@ -247,7 +239,7 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
                 onClick={handleRemoveFile}
                 aria-label="Xóa file"
               >
-                ✕
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             )}
           </div>

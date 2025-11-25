@@ -107,44 +107,44 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-large p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large border border-gray-200 dark:border-gray-700 p-8">
           {/* Brand Header */}
           <header className="flex flex-col items-center mb-8">
             <img src={isDark ? logoDark : logoLight} alt="Learinal" className="h-16 w-auto mb-3" />
             <div className="text-2xl font-bold">
-              <span className="text-primary-600">Lear</span>
-              <span className="text-gray-800">inal</span>
+              <span className="text-primary-600 dark:text-primary-400">Lear</span>
+              <span className="text-gray-800 dark:text-gray-100">inal</span>
             </div>
           </header>
 
           {/* Page Header */}
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Quên mật khẩu</h1>
-            <p className="text-gray-600">Nhập email để nhận liên kết đặt lại mật khẩu</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Quên mật khẩu</h1>
+            <p className="text-gray-600 dark:text-gray-400">Nhập email để nhận liên kết đặt lại mật khẩu</p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 text-sm text-red-600 dark:text-red-400">
                 {error}
               </div>
             )}
             {success && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-600">
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 text-sm text-green-600 dark:text-green-400">
                 Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư của bạn.
               </div>
             )}
 
             {rateLimitInfo && rateLimitInfo.limit && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-2">
-                <div className="text-sm text-amber-800">
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 space-y-2">
+                <div className="text-sm text-amber-800 dark:text-amber-300">
                   Giới hạn: {rateLimitInfo.limit} yêu cầu / 15 phút
                 </div>
                 {rateLimitInfo.remaining !== null && (
-                  <div className="text-sm text-amber-700">
+                  <div className="text-sm text-amber-700 dark:text-amber-400">
                     Còn lại: <strong>{rateLimitInfo.remaining}</strong> yêu cầu
                   </div>
                 )}
@@ -171,9 +171,9 @@ const ForgotPasswordPage = () => {
               Gửi liên kết đặt lại
             </Button>
 
-            <p className="text-center text-sm text-gray-600 mt-4">
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
               Quay lại{" "}
-              <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+              <Link to="/login" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
                 Đăng nhập
               </Link>
             </p>

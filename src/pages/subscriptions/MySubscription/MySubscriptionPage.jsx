@@ -137,7 +137,7 @@ function MySubscriptionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
@@ -152,7 +152,7 @@ function MySubscriptionPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-6 py-4 rounded-lg max-w-2xl mx-auto mt-8">
             <p className="font-medium">{error}</p>
@@ -164,7 +164,7 @@ function MySubscriptionPage() {
 
   if (!subscription) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
@@ -190,18 +190,32 @@ function MySubscriptionPage() {
   // Nếu gói đã hủy hoặc hết hạn, hiển thị như chưa có gói
   if (subscription.status === "Canceled" || subscription.status === "Expired") {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">💳 Gói đăng ký của tôi</h1>
+            <div className="flex items-center gap-3">
+              <div className="relative w-10 h-10">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl"></div>
+                <div className="absolute inset-0.5 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                </div>
+              </div>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+            </div>
           </div>
         </div>
 
         {/* Empty State */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="text-6xl mb-4">📦</div>
+            <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mb-6">
+              <svg className="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+            </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
               Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
@@ -216,18 +230,29 @@ function MySubscriptionPage() {
   // Hiển thị thông báo cho PendingPayment
   if (subscription.status === "PendingPayment") {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">💳 Gói đăng ký của tôi</h1>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+              </div>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+            </div>
           </div>
         </div>
 
         {/* Pending Payment State */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="text-6xl mb-4">⏳</div>
+            <div className="w-24 h-24 bg-yellow-100 dark:bg-yellow-900/30 rounded-3xl flex items-center justify-center mb-6">
+              <svg className="w-12 h-12 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chờ thanh toán</h2>
             <div className="mb-4">{getStatusBadge(subscription.status)}</div>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
@@ -243,18 +268,29 @@ function MySubscriptionPage() {
   // Nếu status không phải Active, hiển thị như chưa có gói
   if (subscription.status !== "Active") {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">💳 Gói đăng ký của tôi</h1>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+              </div>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+            </div>
           </div>
         </div>
 
         {/* Empty State */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="text-6xl mb-4">📦</div>
+            <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mb-6">
+              <svg className="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+            </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
               Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
@@ -270,13 +306,20 @@ function MySubscriptionPage() {
   const plan = subscription.plan;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">💳 Gói đăng ký của tôi</h1>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                  <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                </div>
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+              </div>
               <p className="text-lg text-gray-600 dark:text-gray-400">Thông tin chi tiết về gói đăng ký hiện tại</p>
             </div>
             <Button variant="secondary" onClick={() => navigate("/subscriptions/plans")}>
@@ -310,7 +353,12 @@ function MySubscriptionPage() {
 
           {/* Subscription Details */}
           <div className="p-8">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">📋 Thông tin gói</h3>
+            <div className="flex items-center gap-2 mb-4">
+              <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Thông tin gói</h3>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                 <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Tên gói</span>
@@ -349,7 +397,12 @@ function MySubscriptionPage() {
             {/* Entitlements */}
             {subscription.entitlementsSnapshot && (
               <div className="border-t border-gray-200 dark:border-gray-700 pt-8 mb-8">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">✨ Quyền lợi của gói</h3>
+                <div className="flex items-center gap-2 mb-4">
+                  <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Quyền lợi của gói</h3>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {Object.entries(subscription.entitlementsSnapshot).map(([key, value]) => (
                     <div

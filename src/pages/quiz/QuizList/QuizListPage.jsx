@@ -11,6 +11,7 @@ import { QuizCard } from "@/components/quiz";
 import { useToast } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { CreateQuizModal } from "@/components/questionSets";
+import QuizIcon from "@/components/icons/QuizIcon";
 
 function QuizListPage() {
   const navigate = useNavigate();
@@ -134,9 +135,14 @@ function QuizListPage() {
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
-                📝 Bộ đề thi của tôi
-              </h1>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
+                </div>
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                  Bộ đề thi của tôi
+                </h1>
+              </div>
               <p className="text-lg text-gray-600 dark:text-gray-400">
                 Quản lý tất cả bộ đề thi và câu hỏi của bạn
               </p>
@@ -211,7 +217,9 @@ function QuizListPage() {
         {/* Empty State */}
         {!loading && questionSets.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="text-6xl mb-4">📝</div>
+            <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-3xl flex items-center justify-center mb-6">
+              <QuizIcon size={48} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+            </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
               Chưa có bộ đề thi nào
             </h2>

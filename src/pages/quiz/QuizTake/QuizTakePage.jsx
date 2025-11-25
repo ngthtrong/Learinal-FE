@@ -208,7 +208,10 @@ function QuizTakePage() {
   if (error || !questionSet) {
     return (
       <div className="quiz-take-page error">
-        <h2>❌ Lỗi</h2>
+        <h2 className="flex items-center gap-2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          Lỗi
+        </h2>
         <p>{error || "Không tìm thấy bài thi"}</p>
         <Button onClick={() => navigate(-1)}>Quay lại</Button>
       </div>
@@ -231,7 +234,8 @@ function QuizTakePage() {
         <div className="quiz-controls">
           {timeRemaining !== null && (
             <div className={`timer ${timeRemaining < 300 ? "warning" : ""}`}>
-              ⏱️ {formatTime(timeRemaining)}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              {" "}{formatTime(timeRemaining)}
             </div>
           )}
           <Button onClick={() => setShowSubmitConfirm(true)} disabled={submitting}>
@@ -258,7 +262,8 @@ function QuizTakePage() {
               className={`mark-review-btn ${isMarked ? "marked" : ""}`}
               onClick={toggleMarkForReview}
             >
-              {isMarked ? "🚩 Đã đánh dấu" : "🚩 Đánh dấu để xem lại"}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+              {" "}{isMarked ? "Đã đánh dấu" : "Đánh dấu để xem lại"}
             </button>
           </div>
 
@@ -328,15 +333,21 @@ function QuizTakePage() {
 
           <div className="overview-stats">
             <div className="stat-item">
-              <span className="stat-icon answered">✓</span>
+              <span className="stat-icon answered">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
               <span>Đã làm: {answeredCount}</span>
             </div>
             <div className="stat-item">
-              <span className="stat-icon unanswered">○</span>
+              <span className="stat-icon unanswered">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+              </span>
               <span>Chưa làm: {totalQuestions - answeredCount}</span>
             </div>
             <div className="stat-item">
-              <span className="stat-icon marked">🚩</span>
+              <span className="stat-icon marked">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+              </span>
               <span>Đánh dấu: {markedForReview.size}</span>
             </div>
           </div>

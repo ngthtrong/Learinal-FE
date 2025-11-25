@@ -77,18 +77,18 @@ function ValidationRequestDetailPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold">Chi tiết kiểm duyệt</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Chi tiết kiểm duyệt</h1>
         <Button variant="secondary" onClick={() => navigate('/expert/validation-requests')}>Quay lại</Button>
       </div>
-      {loading && <div className="text-gray-600">Đang tải...</div>}
-      {error && !loading && <div className="mb-4 text-sm text-red-600">{error}</div>}
+      {loading && <div className="text-gray-600 dark:text-gray-400">Đang tải...</div>}
+      {error && !loading && <div className="mb-4 text-sm text-red-600 dark:text-red-400">{error}</div>}
       {!loading && data && (
         <div className="space-y-6">
-          <div className="bg-white shadow rounded p-4">
-            <h2 className="font-medium text-lg">Thông tin yêu cầu</h2>
-            <div className="mt-2 text-sm space-y-1">
+          <div className="bg-white dark:bg-gray-800 shadow rounded p-4">
+            <h2 className="font-medium text-lg text-gray-900 dark:text-gray-100">Thông tin yêu cầu</h2>
+            <div className="mt-2 text-sm space-y-1 text-gray-700 dark:text-gray-300">
               <div><span className="font-medium">ID:</span> {data.request.id}</div>
               <div><span className="font-medium">Trạng thái:</span> {data.request.status}</div>
               <div><span className="font-medium">Quyết định:</span> {data.request.decision || '—'}</div>
@@ -101,9 +101,9 @@ function ValidationRequestDetailPage() {
               )}
             </div>
           </div>
-          <div className="bg-white shadow rounded p-4">
+          <div className="bg-white dark:bg-gray-800 shadow rounded p-4">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="font-medium text-lg">Câu hỏi trong bộ đề</h2>
+              <h2 className="font-medium text-lg text-gray-900 dark:text-gray-100">Câu hỏi trong bộ đề</h2>
               {canComplete && (
                 <Button variant="secondary" size="small" onClick={() => setViewMode(m => m === 'view' ? 'edit' : 'view')}>
                   {viewMode === 'view' ? 'Chỉnh sửa' : 'Xem'}
@@ -113,19 +113,19 @@ function ValidationRequestDetailPage() {
             {data.questionSet?.questions?.length ? (
               <div className="space-y-4">
                 {editedQuestions.map((q, idx) => (
-                  <div key={q.questionId || idx} className="border rounded p-3">
+                  <div key={q.questionId || idx} className="border border-gray-200 dark:border-gray-700 rounded p-3 bg-gray-50 dark:bg-gray-900">
                     <div className="flex justify-between mb-2">
-                      <div className="text-xs text-gray-500">Câu #{idx + 1}</div>
-                      {q.difficultyLevel && <span className="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-600">{q.difficultyLevel}</span>}
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Câu #{idx + 1}</div>
+                      {q.difficultyLevel && <span className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">{q.difficultyLevel}</span>}
                     </div>
                     {viewMode === 'edit' ? (
                       <Input label="Nội dung" value={q.questionText || ''} onChange={(e) => handleQuestionChange(idx, 'questionText', e.target.value)} />
                     ) : (
-                      <p className="text-sm font-medium leading-relaxed">{q.questionText}</p>
+                      <p className="text-sm font-medium leading-relaxed text-gray-900 dark:text-gray-100">{q.questionText}</p>
                     )}
                     <div className="mt-3 space-y-2">
-                      <div className="text-xs font-medium text-gray-600 mb-2">
-                        Phương án trả lời {viewMode === 'edit' && <span className="text-indigo-600">(Click vào radio để chọn đáp án đúng)</span>}
+                      <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
+                        Phương án trả lời {viewMode === 'edit' && <span className="text-indigo-600 dark:text-indigo-400">(Click vào radio để chọn đáp án đúng)</span>}
                       </div>
                       {q.options?.map((opt, ai) => (
                         <div key={ai} className="flex items-center gap-2">
@@ -138,7 +138,7 @@ function ValidationRequestDetailPage() {
                                 onChange={() => handleQuestionChange(idx, 'correctAnswerIndex', ai)}
                                 className="w-4 h-4 text-green-600 focus:ring-green-500 cursor-pointer"
                               />
-                              <div className={`text-xs px-2 py-0.5 rounded font-medium ${q.correctAnswerIndex === ai ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                              <div className={`text-xs px-2 py-0.5 rounded font-medium ${q.correctAnswerIndex === ai ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>
                                 {String.fromCharCode(65 + ai)}
                               </div>
                               <Input 
@@ -156,11 +156,11 @@ function ValidationRequestDetailPage() {
                             </>
                           ) : (
                             <>
-                              <div className={`text-xs px-2 py-0.5 rounded font-medium ${q.correctAnswerIndex === ai ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                              <div className={`text-xs px-2 py-0.5 rounded font-medium ${q.correctAnswerIndex === ai ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>
                                 {String.fromCharCode(65 + ai)}
                                 {q.correctAnswerIndex === ai && ' ✓'}
                               </div>
-                              <p className="text-sm flex-1">{opt}</p>
+                              <p className="text-sm flex-1 text-gray-900 dark:text-gray-100">{opt}</p>
                             </>
                           )}
                         </div>
@@ -168,18 +168,18 @@ function ValidationRequestDetailPage() {
                     </div>
                     {q.explanation && (
                       <div className="mt-3">
-                        <div className="text-xs font-medium text-gray-600 mb-1">Giải thích</div>
+                        <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Giải thích</div>
                         {viewMode === 'edit' ? (
-                          <textarea className="w-full px-3 py-2 border border-gray-300 rounded text-sm" value={q.explanation} onChange={(e) => handleQuestionChange(idx, 'explanation', e.target.value)} />
+                          <textarea className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" value={q.explanation} onChange={(e) => handleQuestionChange(idx, 'explanation', e.target.value)} />
                         ) : (
-                          <p className="text-sm text-gray-700 whitespace-pre-line">{q.explanation}</p>
+                          <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">{q.explanation}</p>
                         )}
                       </div>
                     )}
                     {q.topicTags?.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-2">
                         {q.topicTags.map(tag => (
-                          <span key={tag} className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded">{tag}</span>
+                          <span key={tag} className="text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded">{tag}</span>
                         ))}
                       </div>
                     )}
@@ -187,31 +187,31 @@ function ValidationRequestDetailPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-sm text-gray-500">Không có câu hỏi để hiển thị.</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">Không có câu hỏi để hiển thị.</div>
             )}
           </div>
-          <div className="bg-white shadow rounded p-4 relative">
+          <div className="bg-white dark:bg-gray-800 shadow rounded p-4 relative">
             {saving && (
-              <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex flex-col items-center justify-center z-10">
-                <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-2" />
-                <div className="text-sm text-indigo-700">Đang xử lý...</div>
+              <div className="absolute inset-0 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm flex flex-col items-center justify-center z-10">
+                <div className="w-10 h-10 border-4 border-indigo-200 dark:border-indigo-800 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin mb-2" />
+                <div className="text-sm text-indigo-700 dark:text-indigo-400">Đang xử lý...</div>
               </div>
             )}
-            <h2 className="font-medium text-lg mb-2">Phản hồi</h2>
-            <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder="Nhận xét của bạn..." className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[120px] text-sm" />
+            <h2 className="font-medium text-lg mb-2 text-gray-900 dark:text-gray-100">Phản hồi</h2>
+            <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder="Nhận xét của bạn..." className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[120px] text-sm" />
             {canComplete ? (
               <div className="flex gap-3 mt-4">
                 <Button disabled={saving} onClick={() => submitCompletion('Approved')}>Phê duyệt</Button>
                 <Button variant="secondary" disabled={saving} onClick={() => submitCompletion('Rejected')}>Từ chối</Button>
               </div>
             ) : (
-              <div className="text-xs text-gray-500 mt-2">
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                 {data.request.status === 'Completed' && 'Yêu cầu đã hoàn thành.'}
                 {data.request.status === 'Rejected' && 'Yêu cầu đã bị từ chối.'}
                 {!['Completed','Rejected','Assigned'].includes(data.request.status) && 'Không thể hoàn thành vì trạng thái hiện tại không phải Assigned.'}
               </div>
             )}
-            {completedMessage && <div className="mt-4 text-sm font-medium text-indigo-700">{completedMessage}</div>}
+            {completedMessage && <div className="mt-4 text-sm font-medium text-indigo-700 dark:text-indigo-400">{completedMessage}</div>}
           </div>
         </div>
       )}

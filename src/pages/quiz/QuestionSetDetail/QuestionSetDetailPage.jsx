@@ -142,7 +142,9 @@ function QuestionSetDetailPage() {
     return (
       <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center space-y-4 max-w-md">
-          <div className="text-6xl mb-4">📋</div>
+          <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 dark:text-gray-500"><path d="M9 5H2v7l6.29 6.29c.94.94 2.48.94 3.42 0l3.58-3.58c.94-.94.94-2.48 0-3.42L9 5Z"></path><path d="M6 9.01V9"></path><path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19"></path></svg>
+          </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Không tìm thấy bộ câu hỏi</h2>
           <p className="text-gray-600 dark:text-gray-400">Bộ câu hỏi này có thể đã bị xóa hoặc không tồn tại</p>
           <Button onClick={() => navigate(-1)}>← Quay lại</Button>
@@ -160,7 +162,7 @@ function QuestionSetDetailPage() {
     completedAttempts.length > 0 ? Math.max(...completedAttempts.map((a) => a.score || 0)) : 0;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
@@ -169,7 +171,10 @@ function QuestionSetDetailPage() {
               ← Quay lại
             </Button>
             <Button onClick={handleStartQuiz} variant="primary" size="large">
-              🎯 Bắt đầu làm bài
+              <span className="inline-flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                Bắt đầu làm bài
+              </span>
             </Button>
           </div>
         </div>
@@ -186,29 +191,48 @@ function QuestionSetDetailPage() {
               <span
                 className={`px-3 py-1 rounded-full text-sm font-medium ${
                   questionSet.status === "Draft"
-                    ? "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                    ? "bg-slate-100 dark:bg-slate-900/30 text-slate-700 dark:text-slate-300"
                     : questionSet.status === "Processing"
-                    ? "bg-warning-100 dark:bg-yellow-900/30 text-warning-700 dark:text-yellow-300"
+                    ? "bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300"
+                    : questionSet.status === "Validated"
+                    ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"
                     : questionSet.status === "Published"
-                    ? "bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300"
+                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
                     : questionSet.status === "Public"
-                    ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
-                    : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                    ? "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300"
+                    : "bg-slate-100 dark:bg-slate-900/30 text-slate-700 dark:text-slate-300"
                 }`}
               >
-                {questionSet.status === "Draft"
-                  ? "📝 Nháp"
-                  : questionSet.status === "Processing"
-                  ? "⚙️ Đang xử lý"
-                  : questionSet.status === "Published"
-                  ? "✅ Đã xuất bản"
-                  : questionSet.status === "Public"
-                  ? "🌐 Công khai"
-                  : questionSet.status}
+                <span className="inline-flex items-center gap-1.5">
+                  {questionSet.status === "Draft" && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  )}
+                  {questionSet.status === "Processing" && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+                  )}
+                  {questionSet.status === "Published" && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  )}
+                  {questionSet.status === "Public" && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  )}
+                  {questionSet.status === "Draft"
+                    ? "Bản nháp"
+                    : questionSet.status === "Processing"
+                    ? "Đang xử lý"
+                    : questionSet.status === "Validated"
+                    ? "Đã xác thực"
+                    : questionSet.status === "Published"
+                    ? "Đã xuất bản"
+                    : questionSet.status === "Public"
+                    ? "Công khai"
+                    : questionSet.status}
+                </span>
               </span>
               {questionSet.isShared && (
-                <span className="px-3 py-1 rounded-full text-sm font-medium bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300">
-                  🔗 Đã chia sẻ
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                  Đã chia sẻ
                 </span>
               )}
               {canRequestReview() && (
@@ -218,7 +242,7 @@ function QuestionSetDetailPage() {
                   disabled={requestingReview}
                   onClick={handleRequestReview}
                 >
-                  {requestingReview ? "Đang gửi..." : "Gửi yêu cầu chuyên gia duyệt"}
+                  {requestingReview ? "Đang gửi..." : "Yêu cầu kiểm duyệt"}
                 </Button>
               )}
               {reviewRequested && currentReview && (
@@ -233,16 +257,32 @@ function QuestionSetDetailPage() {
                       : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
                   }`}
                 >
-                  {currentReview.status === "PendingAssignment" && "⏳ Chờ gán chuyên gia"}
-                  {currentReview.status === "Assigned" && "👨‍🏫 Đã gán chuyên gia"}
-                  {currentReview.status === "Completed" && "✅ Đã hoàn tất"}
+                  {currentReview.status === "PendingAssignment" && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                      Chờ gán chuyên gia
+                    </span>
+                  )}
+                  {currentReview.status === "Assigned" && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                      Đã gán chuyên gia
+                    </span>
+                  )}
+                  {currentReview.status === "Completed" && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      Đã hoàn tất
+                    </span>
+                  )}
                   {!["PendingAssignment", "Assigned", "Completed"].includes(currentReview.status) &&
                     currentReview.status}
                 </span>
               )}
               {!reviewRequested && completedReview && (
-                <span className="px-3 py-1 rounded-full text-sm font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
-                  ✅ Đã kiểm duyệt
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Đã kiểm duyệt
                 </span>
               )}
             </div>
@@ -250,7 +290,9 @@ function QuestionSetDetailPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             <div className="flex items-center gap-4 bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4">
-              <div className="text-3xl">📊</div>
+              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-800/50">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+              </div>
               <div>
                 <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {questionSet.questionCount || questionSet.questions?.length || 0}
@@ -259,7 +301,9 @@ function QuestionSetDetailPage() {
               </div>
             </div>
             <div className="flex items-center gap-4 bg-secondary-50 dark:bg-secondary-900/30 rounded-lg p-4">
-              <div className="text-3xl">🎯</div>
+              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-secondary-100 dark:bg-secondary-800/50">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary-600 dark:text-secondary-400"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+              </div>
               <div>
                 <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {attempts.length}
@@ -268,7 +312,9 @@ function QuestionSetDetailPage() {
               </div>
             </div>
             <div className="flex items-center gap-4 bg-success-50 dark:bg-success-900/30 rounded-lg p-4">
-              <div className="text-3xl">⭐</div>
+              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-success-100 dark:bg-success-800/50">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-success-600 dark:text-success-400"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
               <div>
                 <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {bestScore.toFixed(1)}
@@ -277,7 +323,9 @@ function QuestionSetDetailPage() {
               </div>
             </div>
             <div className="flex items-center gap-4 bg-warning-50 dark:bg-warning-900/30 rounded-lg p-4">
-              <div className="text-3xl">📈</div>
+              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-warning-100 dark:bg-warning-800/50">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-warning-600 dark:text-warning-400"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              </div>
               <div>
                 <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {avgScore.toFixed(1)}
@@ -289,8 +337,9 @@ function QuestionSetDetailPage() {
 
           {questionSet.description && (
             <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                📝 Mô tả
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                Mô tả
               </h3>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                 {questionSet.description}
@@ -300,8 +349,9 @@ function QuestionSetDetailPage() {
 
           {questionSet.isShared && (
             <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                🔗 Link chia sẻ
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                Link chia sẻ
               </h3>
               <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <input
@@ -320,23 +370,27 @@ function QuestionSetDetailPage() {
                     toast.showSuccess("Đã sao chép link!");
                   }}
                 >
-                  📋 Sao chép
+                  <span className="inline-flex items-center gap-1.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    Sao chép
+                  </span>
                 </Button>
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
-                💡 Chia sẻ link này để người khác có thể xem và làm bài tập
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                Chia sẻ link này để người khác có thể xem và làm bài tập
               </p>
             </div>
           )}
 
           <div className="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-4">
             <span className="flex items-center gap-2">
-              <span>📅</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               Tạo: {formatDate(questionSet.createdAt)}
             </span>
             {questionSet.updatedAt !== questionSet.createdAt && (
               <span className="flex items-center gap-2">
-                <span>🔄</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
                 Cập nhật: {formatDate(questionSet.updatedAt)}
               </span>
             )}
@@ -344,7 +398,8 @@ function QuestionSetDetailPage() {
               <div className="mt-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="font-semibold text-green-700 dark:text-green-300 flex items-center gap-2">
-                    <span>👨‍🏫</span> Chuyên gia:{" "}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Chuyên gia:{" "}
                     {completedReview.expertName || completedReview.expertId || "—"}
                   </div>
                   <div className="text-xs text-green-700 dark:text-green-400">
@@ -354,8 +409,18 @@ function QuestionSetDetailPage() {
                 </div>
                 <div className="text-sm mb-2 text-gray-700 dark:text-gray-300">
                   <span className="font-medium">Kết quả: </span>
-                  {completedReview.decision === "Approved" && "✅ Phê duyệt"}
-                  {completedReview.decision === "Rejected" && "❌ Từ chối"}
+                  {completedReview.decision === "Approved" && (
+                    <span className="inline-flex items-center gap-1">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      Phê duyệt
+                    </span>
+                  )}
+                  {completedReview.decision === "Rejected" && (
+                    <span className="inline-flex items-center gap-1">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                      Từ chối
+                    </span>
+                  )}
                   {!completedReview.decision && "—"}
                 </div>
                 {completedReview.feedback && (
@@ -371,8 +436,9 @@ function QuestionSetDetailPage() {
         {/* Quiz Attempts History */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="flex items-center justify-between px-8 py-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              📚 Lịch sử làm bài
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
+              Lịch sử làm bài
             </h2>
             <span className="text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
               {completedAttempts.length}/{attempts.length} hoàn thành
@@ -437,7 +503,17 @@ function QuestionSetDetailPage() {
                                 : "bg-warning-100 dark:bg-yellow-900/30 text-warning-800 dark:text-yellow-300"
                             }`}
                           >
-                            {attempt.isCompleted ? "✅ Hoàn thành" : "⏳ Đang làm"}
+                            {attempt.isCompleted ? (
+                              <span className="inline-flex items-center gap-1">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Hoàn thành
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                Đang làm
+                              </span>
+                            )}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -528,11 +604,18 @@ function QuestionSetDetailPage() {
             </div>
           ) : (
             <div className="p-12 text-center">
-              <div className="text-6xl mb-4">📭</div>
+              <div className="w-24 h-24 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 dark:text-gray-500"><path d="M21.5 12H16c-.7 2-2 3-4 3s-3.3-1-4-3H2.5"></path><path d="M5.5 5.1L2 12v6c0 1.1.9 2 2 2h16a2 2 0 002-2v-6l-3.4-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.8 1.1z"></path></svg>
+              </div>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Chưa có lượt làm bài nào. Hãy bắt đầu làm bài đầu tiên!
               </p>
-              <Button onClick={handleStartQuiz}>🎯 Bắt đầu làm bài</Button>
+              <Button onClick={handleStartQuiz}>
+                <span className="inline-flex items-center gap-2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                  Bắt đầu làm bài
+                </span>
+              </Button>
             </div>
           )}
         </div>

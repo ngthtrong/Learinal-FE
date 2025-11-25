@@ -15,11 +15,18 @@ import { DocumentUpload } from "@/components/documents";
 import { GenerateQuizModal } from "@/components/questionSets";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { formatDate } from "@/utils/formatters";
+import { useNotifications } from "@/contexts/NotificationContext";
+import DocumentIcon from "@/components/icons/DocumentIcon";
+import QuizIcon from "@/components/icons/QuizIcon";
+import UploadIcon from "@/components/icons/UploadIcon";
+import PenIcon from "@/components/icons/PenIcon";
+import SubjectsIcon from "@/components/icons/SubjectsIcon";
 
 function SubjectDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
+  const { fetchNotifications } = useNotifications();
   const [subject, setSubject] = useState(null);
   const [documents, setDocuments] = useState([]);
   const [questionSets, setQuestionSets] = useState([]);
@@ -33,6 +40,7 @@ function SubjectDetailPage() {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [pollingInterval, setPollingInterval] = useState(null);
 
   useEffect(() => {
     console.log("=== SUBJECT DETAIL PAGE MOUNTED ===");
@@ -40,6 +48,14 @@ function SubjectDetailPage() {
     fetchSubject();
     fetchDocuments();
     fetchQuestionSets();
+    
+    // Cleanup polling interval on unmount
+    return () => {
+      if (pollingInterval) {
+        console.log("[SubjectDetailPage] Cleaning up polling interval");
+        clearInterval(pollingInterval);
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
@@ -167,6 +183,43 @@ function SubjectDetailPage() {
 
       // Refresh question sets list to show the new quiz
       fetchQuestionSets();
+      
+      // Clear any existing polling interval
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        setPollingInterval(null);
+      }
+      
+      // Poll for notifications and question sets periodically
+      // Quiz generation can take 30-60 seconds, so we poll every 10 seconds for up to 2 minutes
+      let pollCount = 0;
+      const maxPolls = 12; // 12 * 10s = 2 minutes
+      
+      const interval = setInterval(() => {
+        pollCount++;
+        console.log(`[SubjectDetailPage] Polling notifications and question sets (${pollCount}/${maxPolls})`);
+        
+        // Fetch both notifications and question sets
+        fetchNotifications();
+        fetchQuestionSets();
+        
+        // Stop polling after max attempts
+        if (pollCount >= maxPolls) {
+          console.log("[SubjectDetailPage] Stopped polling - max attempts reached");
+          clearInterval(interval);
+          setPollingInterval(null);
+        }
+      }, 10000); // Poll every 10 seconds
+      
+      // Save interval to state for cleanup
+      setPollingInterval(interval);
+      
+      // Also do an immediate check after 3 seconds
+      setTimeout(() => {
+        console.log("[SubjectDetailPage] Initial check for notifications");
+        fetchNotifications();
+        fetchQuestionSets();
+      }, 3000);
     } catch (err) {
       const message = getErrorMessage(err);
       toast.showError(message);
@@ -277,7 +330,7 @@ function SubjectDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
@@ -286,13 +339,21 @@ function SubjectDetailPage() {
               ← Quay lại
             </Button>
             <div className="flex items-center gap-2">
-              <Button onClick={() => setIsUploadModalOpen(true)}>📤 Tải tài liệu</Button>
-              <Button onClick={() => setIsGenerateQuizModalOpen(true)}>🎯 Tạo đề thi</Button>
+              <Button onClick={() => setIsUploadModalOpen(true)}>
+                <UploadIcon size={18} strokeWidth={2} className="inline-block mr-1" />
+                Tải tài liệu
+              </Button>
+              <Button onClick={() => setIsGenerateQuizModalOpen(true)}>
+                <QuizIcon size={18} strokeWidth={2} className="inline-block mr-1" />
+                Tạo đề thi
+              </Button>
               <Button variant="secondary" onClick={() => setIsEditModalOpen(true)}>
-                ✏️ Chỉnh sửa
+                <PenIcon size={18} strokeWidth={2} className="inline-block mr-1" />
+                Chỉnh sửa
               </Button>
               <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
-                🗑️ Xóa
+                <svg className="inline-block mr-1" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                Xóa
               </Button>
             </div>
           </div>
@@ -308,18 +369,21 @@ function SubjectDetailPage() {
             </h1>
             <div className="flex items-center gap-4">
               <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg text-sm font-medium">
-                📄 {documents.length} tài liệu
+                <DocumentIcon size={18} strokeWidth={2} />
+                {documents.length} tài liệu
               </span>
               <span className="inline-flex items-center gap-2 px-4 py-2 bg-secondary-50 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300 rounded-lg text-sm font-medium">
-                ❓ {questionSets.length} bộ câu hỏi
+                <QuizIcon size={18} strokeWidth={2} />
+                {questionSets.length} bộ câu hỏi
               </span>
             </div>
           </div>
 
           {subject.description && (
             <div className="mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                📝 Mô tả
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <PenIcon size={20} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+                Mô tả
               </h3>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                 {subject.description}
@@ -329,8 +393,9 @@ function SubjectDetailPage() {
 
           {subject.summary && (
             <div className="mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                📊 Tóm tắt
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <SubjectsIcon size={20} stroke={2} className="text-primary-600 dark:text-primary-400" />
+                Tóm tắt
               </h3>
               <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
                 {subject.summary}
@@ -340,8 +405,9 @@ function SubjectDetailPage() {
 
           {subject.tableOfContents && subject.tableOfContents.length > 0 && (
             <div className="mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                📚 Nội dung ({subject.tableOfContents.length} chủ đề)
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <SubjectsIcon size={20} stroke={2} className="text-primary-600 dark:text-primary-400" />
+                Nội dung ({subject.tableOfContents.length} chủ đề)
               </h3>
               <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
                 {renderTopicTree(subject.tableOfContents)}
@@ -353,8 +419,9 @@ function SubjectDetailPage() {
         {/* Documents Section */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              📄 Tài liệu ({documents.length})
+            <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <DocumentIcon size={24} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+              Tài liệu ({documents.length})
             </h3>
             <Button size="small" onClick={() => setIsUploadModalOpen(true)}>
               + Thêm tài liệu
@@ -378,8 +445,8 @@ function SubjectDetailPage() {
                   <div onClick={() => navigate(`/documents/${doc.id}`)}>
                     {/* Icon - Top */}
                     <div className="mb-3">
-                      <div className="text-4xl transform group-hover:scale-110 transition-transform">
-                        {doc.fileType === ".pdf" ? "📄" : doc.fileType === ".docx" ? "📝" : "📃"}
+                      <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                        <DocumentIcon size={28} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
                       </div>
                     </div>
 
@@ -389,26 +456,26 @@ function SubjectDetailPage() {
                       </h4>
                       <div className="flex items-center gap-2 mt-1 text-xs">
                         <span
-                          className={`px-1 py-1 rounded-full ${
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${
                             doc.status === "Uploading"
-                              ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/60 dark:text-yellow-400"
+                              ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
                               : doc.status === "Processing"
-                              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-400"
+                              ? "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400"
                               : doc.status === "Completed"
-                              ? "bg-green-100 text-green-700 dark:bg-green-900/60 dark:text-green-400"
+                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
                               : doc.status === "Error"
-                              ? "bg-red-100 dark:bg-red-900/60 text-red-700 dark:text-red-400"
-                              : "bg-gray-100 text-gray-700 dark:bg-gray-800/60 dark:text-gray-400"
+                              ? "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400"
+                              : "bg-slate-100 text-slate-700 dark:bg-slate-800/60 dark:text-slate-400"
                           }`}
                         >
                           {doc.status === "Uploading"
-                            ? "⏳ Đang tải"
+                            ? "Đang tải lên"
                             : doc.status === "Processing"
-                            ? "⚙️ Đang xử lý"
+                            ? "Đang xử lý"
                             : doc.status === "Completed"
-                            ? "✅ Hoàn tất"
+                            ? "Hoàn tất"
                             : doc.status === "Error"
-                            ? "❌ Lỗi"
+                            ? "Lỗi"
                             : doc.status}
                         </span>
                         {doc.fileSize > 0 && (
@@ -418,7 +485,7 @@ function SubjectDetailPage() {
                         )}
                       </div>
                       <p className="text-xs text-gray-600 dark:text-gray-500 mt-1">
-                        📅 {formatDate(doc.uploadedAt)}
+                        {formatDate(doc.uploadedAt)}
                       </p>
                     </div>
                   </div>
@@ -430,7 +497,7 @@ function SubjectDetailPage() {
                     }}
                     title="Xóa tài liệu"
                   >
-                    🗑️
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                   </button>
 
                   {/* Hover underline accent */}
@@ -439,13 +506,16 @@ function SubjectDetailPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-              <div className="text-5xl mb-3">📭</div>
-              <p className="text-gray-600 mb-4">
+            <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                <DocumentIcon size={40} strokeWidth={2} className="text-gray-400 dark:text-gray-500" />
+              </div>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
                 Chưa có tài liệu nào. Hãy tải lên tài liệu đầu tiên!
               </p>
               <Button onClick={() => setIsUploadModalOpen(true)}>
-                📤 Tải lên tài liệu đầu tiên
+                <UploadIcon size={18} strokeWidth={2} className="inline-block mr-1" />
+                Tải lên tài liệu đầu tiên
               </Button>
             </div>
           )}
@@ -454,8 +524,9 @@ function SubjectDetailPage() {
         {/* Question Sets Section */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              ❓ Bộ câu hỏi ({questionSets.length})
+            <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <QuizIcon size={24} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+              Bộ câu hỏi ({questionSets.length})
             </h3>
             <Button onClick={() => setIsGenerateQuizModalOpen(true)}>+ Tạo đề thi</Button>
           </div>
@@ -481,35 +552,39 @@ function SubjectDetailPage() {
                       </h4>
                       <div className="flex items-center gap-2 mb-2">
                         <span
-                          className={`inline-flex items-center py-1 rounded-full text-xs font-medium ${
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             set.status === "Draft"
-                              ? "bg-gray-100 text-gray-700 dark:bg-gray-800/60 dark:text-gray-400"
+                              ? "bg-slate-100 text-slate-700 dark:bg-slate-800/60 dark:text-slate-400"
                               : set.status === "Processing"
-                              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-400"
+                              ? "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400"
+                              : set.status === "Validated"
+                              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
                               : set.status === "Published"
-                              ? "bg-green-100 text-green-700 dark:bg-green-900/60 dark:text-green-400"
+                              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
                               : set.status === "Public"
-                              ? "bg-purple-100 text-purple-700 dark:bg-purple-900/60 dark:text-purple-400"
-                              : "bg-gray-100 text-gray-700 dark:bg-gray-800/60 dark:text-gray-400"
+                              ? "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400"
+                              : "bg-slate-100 text-slate-700 dark:bg-slate-800/60 dark:text-slate-400"
                           }`}
                         >
                           {set.status === "Draft"
-                            ? "📝 Nháp"
+                            ? "Bản nháp"
                             : set.status === "Processing"
-                            ? "⚙️ Đang xử lý"
+                            ? "Đang xử lý"
+                            : set.status === "Validated"
+                            ? "Đã xác thực"
                             : set.status === "Published"
-                            ? "✅ Đã xuất bản"
+                            ? "Đã xuất bản"
                             : set.status === "Public"
-                            ? "🌐 Công khai"
+                            ? "Công khai"
                             : set.status}
                         </span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 text-xs text-gray-700 dark:text-gray-400">
-                      <span>📊 {set.questionCount || 0} câu hỏi</span>
-                      {set.isShared && <span>🔗 Đã chia sẻ</span>}
+                      <span>{set.questionCount || 0} câu hỏi</span>
+                      {set.isShared && <span>• Đã chia sẻ</span>}
                       <span className="text-xs text-gray-600 dark:text-gray-400">
-                        📅 {formatDate(set.createdAt)}
+                        {formatDate(set.createdAt)}
                       </span>
                     </div>
                   </div>
@@ -521,7 +596,7 @@ function SubjectDetailPage() {
                     }}
                     title="Xóa đề thi"
                   >
-                    🗑️
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                   </button>
 
                   {/* Hover underline accent */}
@@ -531,20 +606,25 @@ function SubjectDetailPage() {
             </div>
           ) : (
             <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <div className="text-5xl mb-3">📭</div>
+              <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                <QuizIcon size={40} strokeWidth={2} className="text-gray-400" />
+              </div>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
                 Chưa có bộ câu hỏi nào. Hãy tạo đề thi đầu tiên!
               </p>
-              <Button onClick={() => setIsGenerateQuizModalOpen(true)}>🎯 Tạo đề thi</Button>
+              <Button onClick={() => setIsGenerateQuizModalOpen(true)}>
+                <QuizIcon size={18} strokeWidth={2} className="inline-block mr-1" />
+                Tạo đề thi
+              </Button>
             </div>
           )}
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-            <span>📅 Tạo: {formatDate(subject.createdAt)}</span>
+            <span>Tạo: {formatDate(subject.createdAt)}</span>
             {subject.updatedAt !== subject.createdAt && (
-              <span>🔄 Cập nhật: {formatDate(subject.updatedAt)}</span>
+              <span>• Cập nhật: {formatDate(subject.updatedAt)}</span>
             )}
           </div>
         </div>

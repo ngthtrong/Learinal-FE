@@ -54,8 +54,20 @@ function DocumentDetailPage() {
   };
 
   const getFileIcon = (fileType) => {
-    const icons = { ".pdf": "📄", ".docx": "📝", ".txt": "📃" };
-    return icons[fileType] || "📎";
+    const icons = {
+      ".pdf": (
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-600 dark:text-red-400"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M10 12h4"></path><path d="M10 16h4"></path></svg>
+      ),
+      ".docx": (
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600 dark:text-blue-400"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+      ),
+      ".txt": (
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600 dark:text-gray-400"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="10" y1="13" x2="14" y2="13"></line><line x1="10" y1="17" x2="14" y2="17"></line></svg>
+      ),
+    };
+    return icons[fileType] || (
+      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600 dark:text-gray-400"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+    );
   };
 
   const formatDate = (dateString) => {
@@ -80,7 +92,9 @@ function DocumentDetailPage() {
     return (
       <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="text-6xl">⚠️</div>
+          <div className="w-24 h-24 bg-error-100 dark:bg-error-900/30 rounded-3xl flex items-center justify-center mx-auto">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-error-600 dark:text-error-400"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
           <p className="text-error-600 dark:text-red-400 text-lg font-medium">{error || "Không tìm thấy tài liệu"}</p>
           <Button onClick={() => navigate(-1)}>Quay lại</Button>
         </div>
@@ -89,7 +103,7 @@ function DocumentDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="mmin-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
@@ -102,7 +116,7 @@ function DocumentDetailPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-8 mb-6">
           <div className="flex items-start gap-6">
-            <div className="text-6xl shrink-0">{getFileIcon(document.fileType)}</div>
+            <div className="shrink-0">{getFileIcon(document.fileType)}</div>
             <div className="flex-1">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{document.originalFileName}</h1>
@@ -148,7 +162,7 @@ function DocumentDetailPage() {
         {document.status === "Error" && (
           <div className="bg-error-50 dark:bg-red-900/20 border border-error-200 dark:border-red-800 rounded-xl p-6 mb-6">
             <div className="flex items-center gap-3">
-              <span className="text-2xl">❌</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-error-600 dark:text-red-400 flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
               <div>
                 <p className="text-error-800 dark:text-red-300 font-medium">Đã xảy ra lỗi khi xử lý tài liệu</p>
                 {document.errorMessage && (
@@ -162,34 +176,37 @@ function DocumentDetailPage() {
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="flex border-b border-gray-200 dark:border-gray-700">
               <button
-                className={`flex-1 px-6 py-4 font-medium text-sm sm:text-base transition-colors ${
+                className={`flex-1 px-6 py-4 font-medium text-sm sm:text-base transition-colors inline-flex items-center justify-center gap-2 ${
                   activeTab === "info"
                     ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20"
                     : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
                 onClick={() => setActiveTab("info")}
               >
-                📋 Thông tin
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                Thông tin
               </button>
               <button
-                className={`flex-1 px-6 py-4 font-medium text-sm sm:text-base transition-colors ${
+                className={`flex-1 px-6 py-4 font-medium text-sm sm:text-base transition-colors inline-flex items-center justify-center gap-2 ${
                   activeTab === "summary"
                     ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20"
                     : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
                 onClick={() => setActiveTab("summary")}
               >
-                📝 Tóm tắt
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                Tóm tắt
               </button>
               <button
-                className={`flex-1 px-6 py-4 font-medium text-sm sm:text-base transition-colors ${
+                className={`flex-1 px-6 py-4 font-medium text-sm sm:text-base transition-colors inline-flex items-center justify-center gap-2 ${
                   activeTab === "text"
                     ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20"
                     : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
                 onClick={() => setActiveTab("text")}
               >
-                📄 Nội dung
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                Nội dung
               </button>
             </div>
             <div className="p-8">
@@ -239,7 +256,9 @@ function DocumentDetailPage() {
                       </div>
                     ) : (
                       <div className="text-center py-12">
-                        <div className="text-6xl mb-4">📝</div>
+                        <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 dark:text-gray-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                        </div>
                         <p className="text-gray-500 dark:text-gray-400">Chưa có tóm tắt cho tài liệu này</p>
                       </div>
                     )}
@@ -258,7 +277,9 @@ function DocumentDetailPage() {
                       </div>
                     ) : (
                       <div className="text-center py-12">
-                        <div className="text-6xl mb-4">📄</div>
+                        <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 dark:text-gray-500"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        </div>
                         <p className="text-gray-500 dark:text-gray-400">Không có nội dung văn bản được trích xuất</p>
                       </div>
                     )}

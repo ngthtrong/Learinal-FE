@@ -55,20 +55,20 @@ function SubscriptionPurchasesPage() {
   };
 
   const statusMeta = {
-    Active: { label: "Hoạt động", className: "bg-green-50 text-green-700" },
-    Expired: { label: "Hết hạn", className: "bg-gray-100 text-gray-600" },
-    Cancelled: { label: "Đã hủy", className: "bg-red-50 text-red-600" },
-    PendingPayment: { label: "Chờ thanh toán", className: "bg-yellow-50 text-yellow-700" },
+    Active: { label: "Hoạt động", className: "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" },
+    Expired: { label: "Hết hạn", className: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400" },
+    Cancelled: { label: "Đã hủy", className: "bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400" },
+    PendingPayment: { label: "Chờ thanh toán", className: "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" },
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Quản lý gói</h1>
-            <p className="text-gray-500 mt-1 text-sm">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý gói</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
               Theo dõi các gói người dùng đang sở hữu hoặc đã hết hạn.
             </p>
           </div>
@@ -86,7 +86,7 @@ function SubscriptionPurchasesPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl shadow-medium p-4 flex flex-col sm:flex-row gap-4 sm:items-end mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 flex flex-col sm:flex-row gap-4 sm:items-end mb-6">
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="sm:col-span-2">
               <Input
@@ -101,11 +101,11 @@ function SubscriptionPurchasesPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Số dòng / trang
               </label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={pageSize}
                 onChange={(e) => {
                   setPageSize(Number(e.target.value));
@@ -143,68 +143,68 @@ function SubscriptionPurchasesPage() {
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-xl shadow-medium overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
           {loading ? (
-            <div className="py-16 text-center text-gray-600">Đang tải...</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
           ) : error ? (
             <div className="py-16 text-center">
               <div className="text-5xl mb-3">⚠️</div>
-              <div className="text-error-600 font-medium">{error}</div>
+              <div className="text-error-600 dark:text-error-400 font-medium">{error}</div>
             </div>
           ) : items.length === 0 ? (
-            <div className="py-16 text-center text-gray-600">Chưa có dữ liệu gói</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Chưa có dữ liệu gói</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Người dùng
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Gói
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Chu kỳ
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Giá
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Trạng thái
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Bắt đầu
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Kết thúc
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {items.map((r) => (
-                    <tr key={r.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-gray-100">
                         {r.userName || "(N/A)"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {r.planName || "—"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {r.billingCycle === "Monthly"
                           ? "Tháng"
                           : r.billingCycle === "Yearly"
                           ? "Năm"
                           : "—"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {formatCurrency(r.price || 0)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {(() => {
                           const meta = statusMeta[r.status] || {
                             label: r.status || "—",
-                            className: "bg-gray-100 text-gray-600",
+                            className: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
                           };
                           return (
                             <span
@@ -215,7 +215,7 @@ function SubscriptionPurchasesPage() {
                           );
                         })()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {(() => {
                           try {
                             return r.startDate
@@ -226,7 +226,7 @@ function SubscriptionPurchasesPage() {
                           }
                         })()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {(() => {
                           try {
                             return r.endDate
@@ -247,7 +247,7 @@ function SubscriptionPurchasesPage() {
 
         {/* Pagination */}
         <div className="flex items-center justify-between mt-4">
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             Hiển thị {items.length} / {total} bản ghi
           </div>
           <div className="flex items-center gap-2">
@@ -259,7 +259,7 @@ function SubscriptionPurchasesPage() {
             >
               Trước
             </Button>
-            <div className="text-sm text-gray-700">
+            <div className="text-sm text-gray-700 dark:text-gray-300">
               Trang {page} / {totalPages}
             </div>
             <Button

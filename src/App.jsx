@@ -6,6 +6,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import { ToastProvider } from "./components/common";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import {
   TopbarLayout,
@@ -33,6 +35,7 @@ import {
   PublicSetsPage,
   ProfileViewPage,
   ProfileEditPage,
+  NotificationListPage,
   SubjectListPage,
   SubjectDetailPage,
   SubjectCreatePage,
@@ -59,8 +62,10 @@ import {
 function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <Router>
+      <ToastProvider>
+        <AuthProvider>
+          <NotificationProvider>
+            <Router>
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
@@ -182,6 +187,18 @@ function App() {
                   <TopbarLayout>
                     <RoleBasedSidebarLayout>
                       <ProfileEditPage />
+                    </RoleBasedSidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <RoleBasedSidebarLayout>
+                      <NotificationListPage />
                     </RoleBasedSidebarLayout>
                   </TopbarLayout>
                 </ProtectedRoute>
@@ -471,8 +488,10 @@ function App() {
             {/* 404 - Not found */}
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
-        </Router>
-      </AuthProvider>
+            </Router>
+          </NotificationProvider>
+        </AuthProvider>
+      </ToastProvider>
     </ThemeProvider>
   );
 }

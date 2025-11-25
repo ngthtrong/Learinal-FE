@@ -119,50 +119,50 @@ const VerifyEmailPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-large p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large p-8 border border-transparent dark:border-gray-700">
           <header className="flex flex-col items-center mb-8">
             <img src={isDark ? logoDark : logoLight} alt="Learinal" className="h-16 w-auto mb-3" />
             <div className="text-2xl font-bold">
-              <span className="text-primary-600">Lear</span>
-              <span className="text-gray-800">inal</span>
+              <span className="text-primary-600 dark:text-primary-400">Lear</span>
+              <span className="text-gray-800 dark:text-gray-100">inal</span>
             </div>
           </header>
 
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Xác thực email</h1>
-            <p className="text-gray-600">Vui lòng chờ trong giây lát...</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Xác thực email</h1>
+            <p className="text-gray-600 dark:text-gray-400">Vui lòng chờ trong giây lát...</p>
           </div>
 
           <div className="space-y-4">
             {loading && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center text-blue-700">
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-center text-blue-700 dark:text-blue-400">
                 Đang xử lý xác thực...
               </div>
             )}
 
             {!loading && status === "success" && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center text-green-700">
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 text-center text-green-700 dark:text-green-400">
                 {message}
               </div>
             )}
 
             {!loading && status === "error" && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center text-red-600">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-center text-red-600 dark:text-red-400">
                 {message}
               </div>
             )}
 
             {!loading && status === "info" && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center text-blue-700">
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-center text-blue-700 dark:text-blue-400">
                 {message}
               </div>
             )}
 
             {!loading && status === "error" && email && (
               <div className="text-center space-y-3 pt-4">
-                <p className="text-gray-600">Không nhận được email?</p>
+                <p className="text-gray-600 dark:text-gray-400">Không nhận được email?</p>
                 <Button
                   onClick={handleResendEmail}
                   variant="outline"

@@ -75,7 +75,7 @@ const Toast = ({ message, type = "info", duration = 5000, onClose }) => {
       </div>
       <div className={`flex-1 ${style.text} text-sm font-medium`}>{message}</div>
       <button
-        className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded hover:bg-white/50"
+        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-1 rounded hover:bg-white/50 dark:hover:bg-gray-700/50"
         onClick={onClose}
         aria-label="Close notification"
       >
