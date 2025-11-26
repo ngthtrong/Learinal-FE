@@ -1,0 +1,344 @@
+/**
+ * Addon Packages Page for Learners
+ * Hiển thị các gói mua thêm để learner chọn và mua
+ */
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, Modal, useToast } from "@/components/common";
+import addonPackagesService from "@/services/api/addonPackages.service";
+
+function AddonPackagesPage() {
+  const navigate = useNavigate();
+  const toast = useToast();
+  const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [myQuota, setMyQuota] = useState({ totalTestGenerations: 0, totalValidationRequests: 0 });
+  
+  // QR Modal state
+  const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [qrData, setQrData] = useState(null);
+  const [generatingQr, setGeneratingQr] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Fetch available packages và quota đồng thời
+      const [packagesRes, quotaRes] = await Promise.all([
+        addonPackagesService.getActivePackages(),
+        addonPackagesService.getMyQuota().catch(() => ({ totalTestGenerations: 0, totalValidationRequests: 0 }))
+      ]);
+      
+      setPackages(packagesRes?.packages || []);
+      // API trả về trực tiếp { totalTestGenerations, totalValidationRequests }
+      setMyQuota(quotaRes || { totalTestGenerations: 0, totalValidationRequests: 0 });
+    } catch (err) {
+      console.error("Error fetching addon packages:", err);
+      setError(err?.response?.data?.message || "Không thể tải danh sách gói mua thêm");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBuyPackage = async (pkg) => {
+    setSelectedPackage(pkg);
+    setGeneratingQr(true);
+    setQrModalOpen(true);
+    
+    try {
+      const res = await addonPackagesService.generatePaymentQR(pkg._id || pkg.id);
+      setQrData(res);
+    } catch (err) {
+      console.error("Error generating QR:", err);
+      toast.showError(err?.response?.data?.message || "Không thể tạo mã QR thanh toán");
+      setQrModalOpen(false);
+    } finally {
+      setGeneratingQr(false);
+    }
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="flex items-center justify-center py-16">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Đang tải danh sách gói...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-6 py-4 rounded-lg max-w-2xl mx-auto mt-8">
+            <p className="font-medium">{error}</p>
+            <Button variant="secondary" className="mt-4" onClick={fetchData}>
+              Thử lại
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
+          <button 
+            onClick={() => navigate(-1)}
+            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm mb-4 flex items-center gap-1"
+          >
+            ← Quay lại danh sách gói
+          </button>
+          
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Mua thêm lượt</h1>
+          </div>
+          <p className="text-gray-600 dark:text-gray-400">
+            Mua thêm lượt tạo đề hoặc lượt kiểm duyệt để cộng dồn vào gói hiện tại của bạn
+          </p>
+        </div>
+      </div>
+
+      {/* Current Quota Summary */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            Lượt mua thêm hiện có
+          </h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 text-center">
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                {myQuota.totalTestGenerations}
+              </div>
+              <div className="text-sm text-blue-700 dark:text-blue-300">Lượt tạo đề</div>
+            </div>
+            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 text-center">
+              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                {myQuota.totalValidationRequests}
+              </div>
+              <div className="text-sm text-purple-700 dark:text-purple-300">Lượt kiểm duyệt</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Packages Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        {packages.length === 0 ? (
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+            <div className="text-5xl mb-4">📦</div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Chưa có gói mua thêm
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400">
+              Hiện tại chưa có gói mua thêm nào. Vui lòng quay lại sau.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {packages.map((pkg) => (
+              <div
+                key={pkg._id || pkg.id}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                {/* Package Header */}
+                <div className="bg-gradient-to-r from-primary-500 to-secondary-500 p-4 text-white">
+                  <h3 className="text-lg font-bold">{pkg.packageName}</h3>
+                  {pkg.description && (
+                    <p className="text-white/80 text-sm mt-1">{pkg.description}</p>
+                  )}
+                </div>
+
+                {/* Package Content */}
+                <div className="p-5">
+                  {/* Price */}
+                  <div className="text-center mb-4">
+                    <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                      {formatPrice(pkg.price)}
+                    </span>
+                  </div>
+
+                  {/* Benefits */}
+                  <div className="space-y-3 mb-5">
+                    {pkg.additionalTestGenerations > 0 && (
+                      <div className="flex items-center gap-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
+                        <div className="w-8 h-8 bg-blue-200 dark:bg-blue-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <svg className="w-4 h-4 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-blue-700 dark:text-blue-300">
+                            +{pkg.additionalTestGenerations}
+                          </span>
+                          <span className="text-blue-600 dark:text-blue-400 text-sm ml-1">
+                            lượt tạo đề
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    {pkg.additionalValidationRequests > 0 && (
+                      <div className="flex items-center gap-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3">
+                        <div className="w-8 h-8 bg-purple-200 dark:bg-purple-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <svg className="w-4 h-4 text-purple-600 dark:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-purple-700 dark:text-purple-300">
+                            +{pkg.additionalValidationRequests}
+                          </span>
+                          <span className="text-purple-600 dark:text-purple-400 text-sm ml-1">
+                            lượt kiểm duyệt
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Note */}
+                  <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-4">
+                    Lượt mua thêm có hiệu lực theo chu kỳ gói hiện tại của bạn
+                  </p>
+
+                  {/* Buy Button */}
+                  <Button className="w-full" onClick={() => handleBuyPackage(pkg)}>
+                    Mua ngay
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* QR Payment Modal */}
+      <Modal
+        isOpen={qrModalOpen}
+        onClose={() => {
+          setQrModalOpen(false);
+          setSelectedPackage(null);
+          setQrData(null);
+        }}
+        title="Quét mã QR để thanh toán"
+        size="small"
+      >
+        <div className="text-center">
+          {generatingQr ? (
+            <div className="py-6">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600 mx-auto mb-3"></div>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">Đang tạo mã QR...</p>
+            </div>
+          ) : qrData ? (
+            <>
+              {/* QR Code Image */}
+              <div className="bg-white p-3 rounded-xl inline-block mb-4">
+                <img
+                  src={qrData.qrCodeUrl || qrData.qrUrl || qrData.qrDataUrl}
+                  alt="QR Code thanh toán"
+                  className="w-44 h-44 mx-auto"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='176' height='176' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E";
+                  }}
+                />
+              </div>
+
+              {/* Payment Info */}
+              <div className="text-left mb-4">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Thông tin thanh toán</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500 dark:text-gray-400">Gói:</span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">{selectedPackage?.packageName}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500 dark:text-gray-400">Số tiền:</span>
+                    <span className="font-bold text-primary-600 dark:text-primary-400">
+                      {formatPrice(qrData.amount || selectedPackage?.price)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Instructions */}
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-left mb-4">
+                <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                  <li>• Vui lòng quét mã QR bằng ứng dụng ngân hàng</li>
+                  <li>• Sau khi thanh toán thành công, hệ thống sẽ tự động kích hoạt gói của bạn</li>
+                </ul>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <Button 
+                  variant="secondary" 
+                  className="flex-1"
+                  onClick={() => {
+                    setQrModalOpen(false);
+                    toast.showSuccess("Vui lòng chờ hệ thống xác nhận thanh toán");
+                  }}
+                >
+                  Đã thanh toán
+                </Button>
+                <Button 
+                  className="flex-1"
+                  onClick={() => {
+                    setQrModalOpen(false);
+                    setSelectedPackage(null);
+                    setQrData(null);
+                  }}
+                >
+                  Đóng
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="py-6">
+              <p className="text-red-600 dark:text-red-400 text-sm">Không thể tạo mã QR. Vui lòng thử lại.</p>
+            </div>
+          )}
+        </div>
+      </Modal>
+
+      {/* Footer */}
+      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
+            © 2025 Learinal. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default AddonPackagesPage;

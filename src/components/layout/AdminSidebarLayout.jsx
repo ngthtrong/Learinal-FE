@@ -64,6 +64,12 @@ const AdminSidebarLayout = ({ children }) => {
       icon: SubscriptionsIcon,
     },
     {
+      key: "admin_addon_packages",
+      label: "Gói Mua Thêm",
+      to: "/admin/addon-packages",
+      icon: SubscriptionsIcon,
+    },
+    {
       key: "admin_commission",
       label: "Hoa Hồng",
       to: "/admin/commission-records",

@@ -42,6 +42,7 @@ import {
   SubscriptionPlansPage,
   MySubscriptionPage,
   ViewSubscriptionPage,
+  AddonPackagesPage,
   QuestionSetDetailPage,
   QuizStartPage,
   QuizTakingPage,
@@ -50,6 +51,7 @@ import {
   UserManagementPage,
   CommissionRecordsPage,
   AdminSubscriptionPlansPage,
+  AdminAddonPackagesPage,
   AdminFinancialsPage,
   SubscriptionPurchasesPage,
   ExpertDashboardPage,
@@ -163,6 +165,18 @@ function App() {
                   <TopbarLayout>
                     <SidebarLayout>
                       <MySubscriptionPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/addon-packages"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <AddonPackagesPage />
                     </SidebarLayout>
                   </TopbarLayout>
                 </ProtectedRoute>
@@ -375,6 +389,20 @@ function App() {
                     <TopbarLayout>
                       <AdminSidebarLayout>
                         <AdminSubscriptionPlansPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/addon-packages"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminAddonPackagesPage />
                       </AdminSidebarLayout>
                     </TopbarLayout>
                   </AdminRoute>
