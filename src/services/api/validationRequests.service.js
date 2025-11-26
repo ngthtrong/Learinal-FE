@@ -35,6 +35,10 @@ export const validationRequestsService = {
     const response = await axiosInstance.patch(VALIDATION_REQUESTS.CLAIM(id));
     return response.data;
   },
+  requestRevision: async (id, payload) => {
+    const response = await axiosInstance.patch(VALIDATION_REQUESTS.REQUEST_REVISION(id), payload);
+    return response.data;
+  },
 };
 
 export default validationRequestsService;

@@ -13,6 +13,7 @@ function ValidationRequestsPage() {
   const [items, setItems] = useState([]);
   const available = useMemo(() => items.filter(r => r.status === 'PendingAssignment'), [items]);
   const mineActive = useMemo(() => items.filter(r => r.status === 'Assigned'), [items]);
+  const revisionRequested = useMemo(() => items.filter(r => r.status === 'RevisionRequested'), [items]);
   const mineHistory = useMemo(() => items.filter(r => r.status === 'Completed'), [items]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -140,6 +141,7 @@ function ValidationRequestsPage() {
                 <option value="">Tất cả</option>
                 <option value="PendingAssignment">Chờ gán</option>
                 <option value="Assigned">Đã gán</option>
+                <option value="RevisionRequested">Yêu cầu xem lại</option>
                 <option value="Completed">Hoàn thành</option>
                 {/* Removed Rejected status: decision stored separately */}
               </select>
@@ -264,6 +266,55 @@ function ValidationRequestsPage() {
                             <Button size="small" variant="secondary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)}>Chi tiết</Button>
                             <Button size="small" onClick={() => openComplete(r)}>Hoàn thành</Button>
                           </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+          {/* Revision Requested */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Yêu cầu xem lại</h2>
+              <span className="text-sm text-gray-500 dark:text-gray-400">{revisionRequested.length} yêu cầu</span>
+            </div>
+            {loading ? (
+              <div className="py-10 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+            ) : revisionRequested.length === 0 ? (
+              <div className="py-10 text-center text-gray-500 dark:text-gray-400">Không có yêu cầu xem lại nào</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-900">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Bộ câu hỏi</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Người tạo</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Phản hồi</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Yêu cầu lúc</th>
+                      <th className="px-6 py-3" />
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {revisionRequested.map(r => (
+                      <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td className="px-6 py-4">
+                          <div className="font-medium text-gray-900 dark:text-gray-100">{r.questionSetTitle || '—'}</div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{r.learnerName || '—'}</td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-700 dark:text-gray-300 max-w-xs truncate" title={r.learnerResponse}>
+                            {r.learnerResponse || '—'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          {r.revisionRequestTime ? new Date(r.revisionRequestTime).toLocaleString('vi-VN') : '—'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                          <Button size="small" variant="primary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)}>
+                            Xem lại ngay
+                          </Button>
                         </td>
                       </tr>
                     ))}
