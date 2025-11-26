@@ -123,7 +123,7 @@ const ExpertSidebarLayout = ({ children }) => {
       <main
         className={`flex-1 transition-all duration-300 bg-gray-50 dark:bg-gray-950 ${
           collapsed ? "ml-20" : "ml-64"
-        } pt-16`}
+        }`}
       >
         {children}
       </main>

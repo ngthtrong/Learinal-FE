@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Modal, ThemeToggle } from "@/components/common";
+import { NotificationBell } from "@/components/notifications";
 import { APP_CONFIG } from "@/config/app.config";
 import logoLight from "@/assets/images/logo/learinal-logo-light.png";
 import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
@@ -203,6 +204,9 @@ const Topbar = ({ theme: themeProp = "light" }) => {
               </NavLink>
             ))}
           </nav>
+
+          {/* Notification Bell */}
+          <NotificationBell />
 
           {/* Theme Toggle */}
           <ThemeToggle />

@@ -55,6 +55,9 @@ const Input = ({
               : "border-gray-300 dark:border-gray-600 focus:border-primary-500 focus:ring-primary-500/20"
           } ${inputClassName}
         `}
+        style={{
+          colorScheme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+        }}
         {...props}
       />
       {error && (

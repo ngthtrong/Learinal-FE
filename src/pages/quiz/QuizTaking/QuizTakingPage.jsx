@@ -273,7 +273,7 @@ function QuizTakingPage() {
   const isWarningTime = useTimer && timeRemaining !== null && timeRemaining <= 60;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 pb-24">
       {/* Header - Fixed */}
       <div className="sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -303,7 +303,7 @@ function QuizTakingPage() {
                     : "bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 border-2 border-primary-200 dark:border-primary-700"
                 }`}
               >
-                <span className="text-2xl">⏱️</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                 <span className="text-xl font-mono">{formatTime(timeRemaining)}</span>
               </div>
             )}
@@ -346,7 +346,8 @@ function QuizTakingPage() {
                     </span>
                     {userAnswers[questionKey] !== undefined && (
                       <span className="inline-flex items-center gap-1 px-3 py-1 bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 rounded-full text-sm font-medium">
-                        ✓ Đã trả lời
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Đã trả lời
                       </span>
                     )}
                   </div>
@@ -457,7 +458,10 @@ function QuizTakingPage() {
             size="large"
             className="w-full sm:w-auto"
           >
-            📝 Nộp bài ({answeredCount}/{questions.length})
+            <span className="inline-flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Nộp bài ({answeredCount}/{questions.length})
+            </span>
           </Button>
         </div>
       </div>
@@ -478,7 +482,7 @@ function QuizTakingPage() {
           {answeredCount < questions.length && (
             <div className="bg-warning-50 dark:bg-yellow-900/20 border border-warning-200 dark:border-yellow-800 rounded-lg p-4">
               <p className="text-warning-800 dark:text-yellow-300 flex items-start gap-2">
-                <span className="text-xl">⚠️</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                 <span>
                   Còn <strong>{questions.length - answeredCount}</strong> câu chưa trả lời. Bạn có
                   chắc muốn nộp bài không?
@@ -504,14 +508,6 @@ function QuizTakingPage() {
         </div>
       </Modal>
 
-      {/* Footer */}
-      <footer className="py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

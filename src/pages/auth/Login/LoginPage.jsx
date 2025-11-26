@@ -29,16 +29,6 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  const isDark = useMemo(() => {
-    try {
-      return (
-        (document.documentElement.getAttribute("data-theme") || "light").toLowerCase() === "dark"
-      );
-    } catch {
-      return false;
-    }
-  }, []);
-
   // Load remembered email on mount
   useEffect(() => {
     const rememberedEmail = localStorage.getItem("rememberedEmail");
@@ -172,22 +162,23 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-large p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large p-8">
           {/* Brand Header */}
           <header className="flex flex-col items-center mb-8">
-            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="h-16 w-auto mb-3" />
+            <img src={logoLight} alt="Learinal" className="h-16 w-auto mb-3 dark:hidden" />
+            <img src={logoDark} alt="Learinal" className="h-16 w-auto mb-3 hidden dark:block" />
             <div className="text-2xl font-bold">
-              <span className="text-primary-600">Lear</span>
-              <span className="text-gray-800">inal</span>
+              <span className="text-primary-600 dark:text-primary-400">Lear</span>
+              <span className="text-gray-800 dark:text-gray-200">inal</span>
             </div>
           </header>
 
           {/* Page Header */}
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Đăng nhập</h1>
-            <p className="text-gray-600">Truy cập tài khoản Learinal của bạn</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Đăng nhập</h1>
+            <p className="text-gray-600 dark:text-gray-400">Truy cập tài khoản Learinal của bạn</p>
           </div>
 
           {/* Login Form */}
@@ -222,14 +213,14 @@ const LoginPage = () => {
                   name="rememberMe"
                   checked={formData.rememberMe}
                   onChange={handleChange}
-                  className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                  className="w-4 h-4 text-primary-600 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500 dark:bg-gray-700"
                 />
-                <span className="text-sm text-gray-700">Ghi nhớ đăng nhập</span>
+                <span className="text-sm text-gray-700 dark:text-gray-300">Ghi nhớ đăng nhập</span>
               </label>
 
               <Link
                 to="/forgot-password"
-                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Quên mật khẩu?
               </Link>
@@ -249,10 +240,10 @@ const LoginPage = () => {
             {/* Divider */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
+                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">hoặc</span>
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">hoặc</span>
               </div>
             </div>
 
@@ -277,9 +268,9 @@ const LoginPage = () => {
             </Button>
 
             {/* Signup Link */}
-            <p className="text-center text-sm text-gray-600 mt-6">
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
               Chưa có tài khoản?{" "}
-              <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+              <Link to="/register" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
                 Đăng ký ngay
               </Link>
             </p>

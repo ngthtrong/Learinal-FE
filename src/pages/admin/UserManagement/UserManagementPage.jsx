@@ -125,13 +125,13 @@ function UserManagementPage() {
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total, pageSize]);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Quản lý người dùng</h1>
-            <p className="text-gray-500 mt-1 text-sm">Tìm kiếm, lọc theo vai trò và trạng thái.</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý người dùng</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Tìm kiếm, lọc theo vai trò và trạng thái.</p>
           </div>
           <div className="flex gap-2">
             <Button
@@ -150,7 +150,7 @@ function UserManagementPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl shadow-medium p-4 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <Input
@@ -165,9 +165,9 @@ function UserManagementPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Vai trò</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vai trò</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={role}
                 onChange={(e) => {
                   setPage(1);
@@ -182,9 +182,9 @@ function UserManagementPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Trạng thái</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={status}
                 onChange={(e) => {
                   setPage(1);
@@ -213,58 +213,58 @@ function UserManagementPage() {
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-xl shadow-medium overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
           {loading ? (
-            <div className="py-16 text-center text-gray-600">Đang tải...</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
           ) : error ? (
             <div className="py-16 text-center">
               <div className="text-5xl mb-3">⚠️</div>
-              <div className="text-error-600 font-medium">{error}</div>
+              <div className="text-error-600 dark:text-error-400 font-medium">{error}</div>
             </div>
           ) : users.length === 0 ? (
-            <div className="py-16 text-center text-gray-600">Không có người dùng</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Không có người dùng</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Tên
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Email
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Vai trò
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Trạng thái
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Tạo lúc
                     </th>
                     <th className="px-6 py-3" />
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {users.map((u) => (
-                    <tr key={u.id || u._id} className="hover:bg-gray-50">
+                    <tr key={u.id || u._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-900">
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
                           {u.fullName || u.name || "(Không tên)"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-gray-700">{u.email}</div>
+                        <div className="text-gray-700 dark:text-gray-300">{u.email}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {(() => {
                           const role = u.role || "Learner";
                           const meta = {
-                            Learner: { label: "Learner", className: "bg-green-50 text-green-700" },
-                            Expert: { label: "Expert", className: "bg-yellow-50 text-yellow-700" },
-                            Admin: { label: "Admin", className: "bg-blue-50 text-blue-700" },
-                          }[role] || { label: role, className: "bg-gray-100 text-gray-700" };
+                            Learner: { label: "Learner", className: "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" },
+                            Expert: { label: "Expert", className: "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" },
+                            Admin: { label: "Admin", className: "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" },
+                          }[role] || { label: role, className: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300" };
                           return (
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${meta.className}`}
@@ -276,20 +276,20 @@ function UserManagementPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {u.status === "Active" ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 text-success-700">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
                             Hoạt động
                           </span>
                         ) : u.status === "Banned" ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-error-100 text-error-700">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-error-100 dark:bg-error-900/30 text-error-700 dark:text-error-400">
                             Khóa
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                             {u.status || "-"}
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {formatDate(u.createdAt)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
@@ -309,12 +309,12 @@ function UserManagementPage() {
 
         {/* Pagination */}
         <div className="flex items-center justify-between mt-4">
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             Hiển thị {users.length} / {total} người dùng
           </div>
           <div className="flex items-center gap-2">
             <select
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
               value={pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
@@ -335,7 +335,7 @@ function UserManagementPage() {
             >
               Trước
             </Button>
-            <div className="text-sm text-gray-700">
+            <div className="text-sm text-gray-700 dark:text-gray-300">
               {page}/{totalPages}
             </div>
             <Button
@@ -362,15 +362,15 @@ function UserManagementPage() {
           {selectedUser && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <div className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300">
                   {selectedUser.email}
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Vai trò</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vai trò</label>
                 <select
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   value={editRole}
                   onChange={(e) => setEditRole(e.target.value)}
                 >
@@ -383,13 +383,13 @@ function UserManagementPage() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-700">Trạng thái</div>
-                  <div className="text-xs text-gray-500">Bật để kích hoạt, tắt để khóa</div>
+                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Trạng thái</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Bật để kích hoạt, tắt để khóa</div>
                 </div>
                 <button
                   type="button"
                   className={`relative w-12 h-6 rounded-full transition-colors ${
-                    editActive ? "bg-primary-600" : "bg-gray-300"
+                    editActive ? "bg-primary-600 dark:bg-primary-500" : "bg-gray-300 dark:bg-gray-600"
                   }`}
                   onClick={() => setEditActive((v) => !v)}
                   aria-label="Toggle active"

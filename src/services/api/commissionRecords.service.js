@@ -27,11 +27,29 @@ export const commissionRecordsService = {
     return response.data;
   },
 
-  /** Expert earnings summary */
-  summary: async () => {
+  /** Expert earnings summary with optional month filter */
+  summary: async (month = null) => {
+    const params = month ? { month } : {};
     const response = await axiosInstance.get(COMMISSIONS.SUMMARY, {
+      params,
       headers: { "Cache-Control": "no-cache" },
     });
+    return response.data;
+  },
+
+  /** Expert detailed stats (Hybrid Model breakdown) */
+  stats: async (month = null) => {
+    const params = month ? { month } : {};
+    const response = await axiosInstance.get(COMMISSIONS.STATS, {
+      params,
+      headers: { "Cache-Control": "no-cache" },
+    });
+    return response.data;
+  },
+
+  /** Get commission config (Admin) */
+  getConfig: async () => {
+    const response = await axiosInstance.get(COMMISSIONS.CONFIG);
     return response.data;
   },
 

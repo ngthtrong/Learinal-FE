@@ -10,6 +10,7 @@ import Button from "@/components/common/Button";
 import { SubjectCard } from "@/components/subjects";
 import { useToast } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
+import BookIcon from "@/components/icons/BookIcon";
 
 function SubjectListPage() {
   const navigate = useNavigate();
@@ -87,9 +88,14 @@ function SubjectListPage() {
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
-                📚 Môn học của tôi
-              </h1>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                  <BookIcon size={24} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+                </div>
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                  Môn học của tôi
+                </h1>
+              </div>
               <p className="text-lg text-gray-600 dark:text-gray-400">
                 Quản lý tất cả môn học và tài liệu của bạn
               </p>
@@ -164,7 +170,9 @@ function SubjectListPage() {
         {/* Empty State */}
         {!loading && subjects.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="text-6xl mb-4">📚</div>
+            <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-3xl flex items-center justify-center mb-6">
+              <BookIcon size={48} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+            </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
               Chưa có môn học nào
             </h2>

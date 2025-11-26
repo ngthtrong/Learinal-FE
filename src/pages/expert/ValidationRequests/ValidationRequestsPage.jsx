@@ -93,12 +93,12 @@ function ValidationRequestsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Yêu cầu kiểm duyệt</h1>
-            <p className="text-gray-500 mt-1 text-sm">Xử lý các bộ câu hỏi được gán cho bạn.</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Yêu cầu kiểm duyệt</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Xử lý các bộ câu hỏi được gán cho bạn.</p>
           </div>
           <div className="flex gap-2">
             <Button
@@ -113,7 +113,7 @@ function ValidationRequestsPage() {
           </div>
         </div>
 
-        <div className="mb-6 bg-white rounded-xl shadow-medium p-4 flex flex-col sm:flex-row gap-4 sm:items-end">
+        <div className="mb-6 bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 flex flex-col sm:flex-row gap-4 sm:items-end">
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <Input
@@ -128,9 +128,9 @@ function ValidationRequestsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Trạng thái</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Trạng thái</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={status}
                 onChange={(e) => {
                   setStatus(e.target.value);
@@ -170,44 +170,44 @@ function ValidationRequestsPage() {
 
         <div className="space-y-8">
           {/* Available requests */}
-          <div className="bg-white rounded-xl shadow-medium overflow-hidden">
-            <div className="px-6 py-4 border-b flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Yêu cầu chờ nhận</h2>
-              <span className="text-sm text-gray-500">{available.length} yêu cầu</span>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Yêu cầu chờ nhận</h2>
+              <span className="text-sm text-gray-500 dark:text-gray-400">{available.length} yêu cầu</span>
             </div>
             {loading ? (
-              <div className="py-10 text-center text-gray-600">Đang tải...</div>
+              <div className="py-10 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
             ) : error ? (
               <div className="py-10 text-center">
-                <div className="text-error-600 font-medium">{error}</div>
+                <div className="text-error-600 dark:text-error-400 font-medium">{error}</div>
               </div>
             ) : available.length === 0 ? (
-              <div className="py-10 text-center text-gray-500">Không có yêu cầu chờ nhận</div>
+              <div className="py-10 text-center text-gray-500 dark:text-gray-400">Không có yêu cầu chờ nhận</div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-900">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bộ câu hỏi</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người tạo</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tạo lúc</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Bộ câu hỏi</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Người tạo</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Trạng thái</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tạo lúc</th>
                       <th className="px-6 py-3" />
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {available.map((r) => (
-                      <tr key={r.id || r._id} className="hover:bg-gray-50">
+                      <tr key={r.id || r._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="font-medium text-gray-900">{r.questionSetTitle || r.questionSetName || r.questionSetId || "—"}</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">{r.questionSetTitle || r.questionSetName || r.questionSetId || "—"}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                           {r.learnerName || r.creatorName || r.userName || r.userId || "—"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">Chờ gán</span>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Chờ gán</span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {(() => {
                           try {
                             return new Date(r.createdAt).toLocaleString("vi-VN");
@@ -227,38 +227,38 @@ function ValidationRequestsPage() {
             )}
           </div>
           {/* My claimed requests */}
-          <div className="bg-white rounded-xl shadow-medium overflow-hidden">
-            <div className="px-6 py-4 border-b flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Yêu cầu của tôi</h2>
-              <span className="text-sm text-gray-500">{mineActive.length} yêu cầu đang xử lý</span>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Yêu cầu của tôi</h2>
+              <span className="text-sm text-gray-500 dark:text-gray-400">{mineActive.length} yêu cầu đang xử lý</span>
             </div>
             {loading ? (
-              <div className="py-10 text-center text-gray-600">Đang tải...</div>
+              <div className="py-10 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
             ) : mineActive.length === 0 ? (
-              <div className="py-10 text-center text-gray-500">Chưa có yêu cầu nào được nhận</div>
+              <div className="py-10 text-center text-gray-500 dark:text-gray-400">Chưa có yêu cầu nào được nhận</div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-900">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bộ câu hỏi</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người tạo</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nhận lúc</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Bộ câu hỏi</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Người tạo</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Trạng thái</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nhận lúc</th>
                       <th className="px-6 py-3" />
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {mineActive.map(r => (
-                      <tr key={r.id} className="hover:bg-gray-50">
+                      <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="font-medium text-gray-900">{r.questionSetTitle || '—'}</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">{r.questionSetTitle || '—'}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{r.learnerName || '—'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{r.learnerName || '—'}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">Đang xử lý</span>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400">Đang xử lý</span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{r.claimedAt ? new Date(r.claimedAt).toLocaleString('vi-VN') : '—'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{r.claimedAt ? new Date(r.claimedAt).toLocaleString('vi-VN') : '—'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                           <div className="flex gap-2 justify-end">
                             <Button size="small" variant="secondary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)}>Chi tiết</Button>
@@ -273,46 +273,46 @@ function ValidationRequestsPage() {
             )}
           </div>
           {/* My history requests */}
-          <div className="bg-white rounded-xl shadow-medium overflow-hidden">
-            <div className="px-6 py-4 border-b flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Lịch sử kiểm duyệt</h2>
-              <span className="text-sm text-gray-500">{mineHistory.length} đã hoàn tất</span>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Lịch sử kiểm duyệt</h2>
+              <span className="text-sm text-gray-500 dark:text-gray-400">{mineHistory.length} đã hoàn tất</span>
             </div>
             {loading ? (
-              <div className="py-10 text-center text-gray-600">Đang tải...</div>
+              <div className="py-10 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
             ) : mineHistory.length === 0 ? (
-              <div className="py-10 text-center text-gray-500">Chưa có kiểm duyệt nào hoàn tất</div>
+              <div className="py-10 text-center text-gray-500 dark:text-gray-400">Chưa có kiểm duyệt nào hoàn tất</div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-900">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bộ câu hỏi</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người tạo</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kết quả</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hoàn thành</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Bộ câu hỏi</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Người tạo</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kết quả</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Hoàn thành</th>
                       <th className="px-6 py-3" />
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {mineHistory.map(r => (
-                      <tr key={r.id} className="hover:bg-gray-50">
+                      <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="font-medium text-gray-900">{r.questionSetTitle || '—'}</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">{r.questionSetTitle || '—'}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{r.learnerName || '—'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{r.learnerName || '—'}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {r.decision === 'Approved' && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">Phê duyệt</span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">Phê duyệt</span>
                           )}
                           {r.decision === 'Rejected' && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">Từ chối</span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">Từ chối</span>
                           )}
                           {!r.decision && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">—</span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">—</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{r.completionTime ? new Date(r.completionTime).toLocaleString('vi-VN') : '—'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{r.completionTime ? new Date(r.completionTime).toLocaleString('vi-VN') : '—'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                           <Button size="small" variant="secondary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)}>Xem lại</Button>
                         </td>
@@ -326,10 +326,10 @@ function ValidationRequestsPage() {
         </div>
 
         <div className="flex items-center justify-between mt-4">
-          <div className="text-sm text-gray-600">Hiển thị {items.length} / {total} yêu cầu (bao gồm lịch sử)</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Hiển thị {items.length} / {total} yêu cầu (bao gồm lịch sử)</div>
           <div className="flex items-center gap-2">
             <select
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
               value={pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
@@ -348,7 +348,7 @@ function ValidationRequestsPage() {
             >
               Trước
             </Button>
-            <div className="text-sm text-gray-700">{page}/{totalPages}</div>
+            <div className="text-sm text-gray-700 dark:text-gray-300">{page}/{totalPages}</div>
             <Button
               variant="secondary"
               size="small"
@@ -371,13 +371,13 @@ function ValidationRequestsPage() {
         >
           {selectedRequest && (
             <div className="space-y-4">
-              <div className="text-sm text-gray-700">
+              <div className="text-sm text-gray-700 dark:text-gray-300">
                 Hoàn thành request <span className="font-medium">#{selectedRequest.id || selectedRequest._id}</span>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Quyết định</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quyết định</label>
                 <select
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   value={decision}
                   onChange={(e) => setDecision(e.target.value)}
                 >
@@ -386,15 +386,15 @@ function ValidationRequestsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Phản hồi (tùy chọn)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Phản hồi (tùy chọn)</label>
                 <textarea
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm resize-y min-h-[100px]"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm resize-y min-h-[100px]"
                   placeholder="Nhận xét của bạn..."
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                 />
               </div>
-              <p className="text-xs text-gray-500">Sau khi xác nhận, trạng thái sẽ cập nhật và thông báo được gửi tới người tạo.</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Sau khi xác nhận, trạng thái sẽ cập nhật và thông báo được gửi tới người tạo.</p>
             </div>
           )}
         </Modal>

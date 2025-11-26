@@ -108,6 +108,8 @@ export const API_CONFIG = {
       LIST: "/commission-records",
       GET_BY_ID: (id) => `/commission-records/${id}`,
       SUMMARY: "/commission-records/summary",
+      STATS: "/commission-records/stats",
+      CONFIG: "/commission-records/config",
       MARK_PAID: (id) => `/commission-records/${id}/mark-paid`,
     },
     // Health check

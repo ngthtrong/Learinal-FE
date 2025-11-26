@@ -16,3 +16,4 @@ export { default as paymentsService } from "./payments.service";
 export { default as adminService } from "./admin.service";
 export { default as commissionRecordsService } from "./commissionRecords.service";
 export { default as validationRequestsService } from "./validationRequests.service";
+export { default as notificationsService } from "./notifications.service";
