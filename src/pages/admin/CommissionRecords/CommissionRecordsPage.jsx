@@ -1,12 +1,14 @@
 /**
  * Commission Records Page
  * Admin: xem mọi bản ghi + đánh dấu trả
- * Expert: xem bản ghi của mình + summary earnings
+ * Expert: xem bản ghi của mình + summary earnings với Hybrid Model breakdown
  */
 import { useEffect, useMemo, useState } from "react";
 import { Button, Input, Modal, useToast } from "@/components/common";
 import { commissionRecordsService } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
+import CoinsIcon from "@/components/icons/CoinsIcon";
+import DashboardIcon from "@/components/icons/DashboardIcon";
 
 const PAGE_SIZES = [10, 20, 50];
 
@@ -201,15 +203,21 @@ function CommissionRecordsPage() {
                 </div>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
-                <div className="text-xs text-gray-500 dark:text-gray-400">Số lượt xác thực</div>
-                <div className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                  {summary?.totalValidations || 0}
+                <div className="flex items-center gap-1">
+                  <CoinsIcon size={14} className="text-blue-500" />
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Fixed Rate</span>
+                </div>
+                <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                  {formatCurrency(summary?.hybridModel?.totalFixed || 0)}
                 </div>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
-                <div className="text-xs text-gray-500 dark:text-gray-400">Trung bình / lượt</div>
-                <div className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                  {formatCurrency(summary?.averagePerValidation || 0)}
+                <div className="flex items-center gap-1">
+                  <DashboardIcon size={14} className="text-amber-500" />
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Revenue Bonus</span>
+                </div>
+                <div className="text-xl font-bold text-amber-600 dark:text-amber-400">
+                  {formatCurrency(summary?.hybridModel?.totalBonus || 0)}
                 </div>
               </div>
             </div>
@@ -230,15 +238,21 @@ function CommissionRecordsPage() {
               </div>
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
-              <div className="text-xs text-gray-500 dark:text-gray-400">Số lượt xác thực</div>
-              <div className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                {summary?.totalValidations || 0}
+              <div className="flex items-center gap-1">
+                <CoinsIcon size={14} className="text-blue-500" />
+                <span className="text-xs text-gray-500 dark:text-gray-400">Fixed Rate</span>
+              </div>
+              <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                {formatCurrency(summary?.hybridModel?.totalFixed || 0)}
               </div>
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
-              <div className="text-xs text-gray-500 dark:text-gray-400">Trung bình / lượt</div>
-              <div className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                {formatCurrency(summary?.averagePerValidation || 0)}
+              <div className="flex items-center gap-1">
+                <DashboardIcon size={14} className="text-amber-500" />
+                <span className="text-xs text-gray-500 dark:text-gray-400">Revenue Bonus</span>
+              </div>
+              <div className="text-xl font-bold text-amber-600 dark:text-amber-400">
+                {formatCurrency(summary?.hybridModel?.totalBonus || 0)}
               </div>
             </div>
           </div>
@@ -264,7 +278,16 @@ function CommissionRecordsPage() {
                       Chuyên gia
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Số tiền
+                      Loại
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Fixed
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Bonus
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Tổng
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Trạng thái
@@ -284,7 +307,30 @@ function CommissionRecordsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-gray-700 dark:text-gray-300">
+                        {r.type === "Published" ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                            Published
+                          </span>
+                        ) : r.type === "Validated" ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400">
+                            Validated
+                          </span>
+                        ) : (
+                          <span className="text-gray-500">-</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-blue-600 dark:text-blue-400">
+                          {formatCurrency(r.fixedAmount || 0)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-amber-600 dark:text-amber-400">
+                          {r.bonusAmount > 0 ? formatCurrency(r.bonusAmount) : "-"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="font-medium text-gray-700 dark:text-gray-300">
                           {formatCurrency(r.commissionAmount || 0)}
                         </div>
                       </td>

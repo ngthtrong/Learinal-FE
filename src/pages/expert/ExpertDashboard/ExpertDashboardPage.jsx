@@ -1,12 +1,14 @@
 /**
  * Expert Dashboard Page
  * Tổng quan dành cho Expert: hoa hồng & yêu cầu kiểm duyệt.
+ * Supports Hybrid Model: Fixed Rate + Revenue Bonus
  */
 import { useEffect, useState } from "react";
 import CoinsIcon from "@/components/icons/CoinsIcon";
 import ShieldCheckIcon from "@/components/icons/ShieldCheckIcon";
 import DashboardIcon from "@/components/icons/DashboardIcon";
 import { commissionRecordsService, validationRequestsService } from "@/services/api";
+import CommissionInfoCard from "@/components/expert/CommissionInfoCard";
 
 function ExpertDashboardPage() {
   const [loading, setLoading] = useState(true);
@@ -52,6 +54,11 @@ function ExpertDashboardPage() {
     if (typeof v !== "number") return "0₫";
     return v.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
   };
+
+  // Hybrid Model breakdown
+  const hybridBreakdown = summary?.hybridModel || {};
+  const totalFixed = hybridBreakdown.totalFixed || 0;
+  const totalBonus = hybridBreakdown.totalBonus || 0;
 
   const cards = [
     {
@@ -137,6 +144,70 @@ function ExpertDashboardPage() {
           ))}
         </div>
 
+        {/* Hybrid Model Breakdown */}
+        {(totalFixed > 0 || totalBonus > 0) && (
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6 mb-8">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Chi tiết thu nhập</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Fixed Rate */}
+              <div className="p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                    <CoinsIcon size={16} className="text-white" />
+                  </div>
+                  <span className="font-medium text-blue-700 dark:text-blue-300">Fixed Rate</span>
+                </div>
+                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                  {formatCurrency(totalFixed)}
+                </div>
+                <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                  Thu nhập cố định từ mỗi lần làm quiz
+                </p>
+                {hybridBreakdown.byType && (
+                  <div className="mt-3 pt-3 border-t border-blue-200 dark:border-blue-700 text-sm">
+                    <div className="flex justify-between text-blue-700 dark:text-blue-300">
+                      <span>Published:</span>
+                      <span>{formatCurrency(hybridBreakdown.byType.Published?.fixed || 0)}</span>
+                    </div>
+                    <div className="flex justify-between text-blue-700 dark:text-blue-300">
+                      <span>Validated:</span>
+                      <span>{formatCurrency(hybridBreakdown.byType.Validated?.fixed || 0)}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Revenue Bonus */}
+              <div className="p-4 rounded-lg bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border border-amber-200 dark:border-amber-700">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center">
+                    <DashboardIcon size={16} className="text-white" />
+                  </div>
+                  <span className="font-medium text-amber-700 dark:text-amber-300">Revenue Bonus</span>
+                </div>
+                <div className="text-2xl font-bold text-amber-900 dark:text-amber-100">
+                  {formatCurrency(totalBonus)}
+                </div>
+                <p className="text-sm text-amber-600 dark:text-amber-400 mt-1">
+                  Thưởng khi content đạt &gt;100 lượt/tháng
+                </p>
+                {hybridBreakdown.byType && (
+                  <div className="mt-3 pt-3 border-t border-amber-200 dark:border-amber-700 text-sm">
+                    <div className="flex justify-between text-amber-700 dark:text-amber-300">
+                      <span>Published (+5%):</span>
+                      <span>{formatCurrency(hybridBreakdown.byType.Published?.bonus || 0)}</span>
+                    </div>
+                    <div className="flex justify-between text-amber-700 dark:text-amber-300">
+                      <span>Validated (+2%):</span>
+                      <span>{formatCurrency(hybridBreakdown.byType.Validated?.bonus || 0)}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-8 mb-8">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Hướng dẫn nhanh</h2>
           <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400 list-disc pl-5">
@@ -145,6 +216,9 @@ function ExpertDashboardPage() {
             <li>Sau khi hoàn thành kiểm duyệt nhớ gửi quyết định và phản hồi chất lượng.</li>
           </ul>
         </div>
+
+        {/* Commission Info Card */}
+        <CommissionInfoCard />
       </div>
     </div>
   );

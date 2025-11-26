@@ -102,12 +102,15 @@ export const API_CONFIG = {
       UPDATE: (id) => `/validation-requests/${id}`,
       COMPLETE: (id) => `/validation-requests/${id}/complete`,
       CLAIM: (id) => `/validation-requests/${id}/claim`,
+      REQUEST_REVISION: (id) => `/validation-requests/${id}/request-revision`,
     },
     // Commission records (Expert + Admin)
     COMMISSIONS: {
       LIST: "/commission-records",
       GET_BY_ID: (id) => `/commission-records/${id}`,
       SUMMARY: "/commission-records/summary",
+      STATS: "/commission-records/stats",
+      CONFIG: "/commission-records/config",
       MARK_PAID: (id) => `/commission-records/${id}/mark-paid`,
     },
     // Health check

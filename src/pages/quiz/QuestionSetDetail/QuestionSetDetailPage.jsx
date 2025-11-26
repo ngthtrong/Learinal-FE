@@ -26,6 +26,9 @@ function QuestionSetDetailPage() {
   const [reviewRequested, setReviewRequested] = useState(false);
   const [currentReview, setCurrentReview] = useState(null); // active or last review
   const [completedReview, setCompletedReview] = useState(null); // latest completed review
+  const [showRevisionModal, setShowRevisionModal] = useState(false);
+  const [revisionResponse, setRevisionResponse] = useState("");
+  const [requestingRevision, setRequestingRevision] = useState(false);
 
   useEffect(() => {
     fetchQuestionSet();
@@ -124,6 +127,44 @@ function QuestionSetDetailPage() {
       }
     } finally {
       setRequestingReview(false);
+    }
+  };
+
+  const canRequestRevision = () => {
+    if (!completedReview || !user || !questionSet) return false;
+    const isOwner = String(questionSet.userId || questionSet.user?.id) === String(user.id);
+    return isOwner && completedReview.status === "Completed" && !reviewRequested;
+  };
+
+  const handleRequestRevision = async () => {
+    if (!revisionResponse.trim()) {
+      toast.showError("Vui lòng nhập phản hồi của bạn");
+      return;
+    }
+    if (revisionResponse.trim().length < 10) {
+      toast.showError("Phản hồi phải có ít nhất 10 ký tự");
+      return;
+    }
+    if (revisionResponse.trim().length > 1000) {
+      toast.showError("Phản hồi không được vượt quá 1000 ký tự");
+      return;
+    }
+
+    setRequestingRevision(true);
+    try {
+      await validationRequestsService.requestRevision(completedReview.id, {
+        learnerResponse: revisionResponse.trim(),
+      });
+      toast.showSuccess("Đã gửi yêu cầu kiểm duyệt lại thành công");
+      setShowRevisionModal(false);
+      setRevisionResponse("");
+      await fetchValidationRequest();
+      await fetchQuestionSet();
+    } catch (err) {
+      const msg = getErrorMessage(err);
+      toast.showError(msg);
+    } finally {
+      setRequestingRevision(false);
     }
   };
 
@@ -395,19 +436,35 @@ function QuestionSetDetailPage() {
               </span>
             )}
             {completedReview && (
-              <div className="mt-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+              <div className={`mt-2 rounded-lg p-4 ${
+                completedReview.decision === "Rejected"
+                  ? "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
+                  : "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
+              }`}>
                 <div className="flex items-center justify-between mb-2">
-                  <div className="font-semibold text-green-700 dark:text-green-300 flex items-center gap-2">
+                  <div className={`font-semibold flex items-center gap-2 ${
+                    completedReview.decision === "Rejected"
+                      ? "text-red-700 dark:text-red-300"
+                      : "text-green-700 dark:text-green-300"
+                  }`}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     Chuyên gia:{" "}
                     {completedReview.expertName || completedReview.expertId || "—"}
                   </div>
-                  <div className="text-xs text-green-700 dark:text-green-400">
+                  <div className={`text-xs ${
+                    completedReview.decision === "Rejected"
+                      ? "text-red-700 dark:text-red-400"
+                      : "text-green-700 dark:text-green-400"
+                  }`}>
                     Hoàn thành:{" "}
                     {formatDate(completedReview.completionTime || completedReview.updatedAt)}
                   </div>
                 </div>
-                <div className="text-sm mb-2 text-gray-700 dark:text-gray-300">
+                <div className={`text-sm mb-2 ${
+                  completedReview.decision === "Rejected"
+                    ? "text-gray-900 dark:text-gray-100"
+                    : "text-gray-700 dark:text-gray-300"
+                }`}>
                   <span className="font-medium">Kết quả: </span>
                   {completedReview.decision === "Approved" && (
                     <span className="inline-flex items-center gap-1">
@@ -424,8 +481,27 @@ function QuestionSetDetailPage() {
                   {!completedReview.decision && "—"}
                 </div>
                 {completedReview.feedback && (
-                  <div className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">
+                  <div className={`text-sm whitespace-pre-line mb-3 ${
+                    completedReview.decision === "Rejected"
+                      ? "text-gray-900 dark:text-gray-100"
+                      : "text-gray-700 dark:text-gray-300"
+                  }`}>
                     <span className="font-medium">Nhận xét:</span> {completedReview.feedback}
+                  </div>
+                )}
+                {canRequestRevision() && (
+                  <div className="mt-3 pt-3 border-t border-green-200 dark:border-green-800">
+                    <Button
+                      variant="outline"
+                      size="small"
+                      onClick={() => setShowRevisionModal(true)}
+                      className="w-full"
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                        Yêu cầu kiểm duyệt lại
+                      </span>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -620,6 +696,93 @@ function QuestionSetDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Revision Request Modal */}
+      {showRevisionModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  Yêu cầu kiểm duyệt lại
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowRevisionModal(false);
+                    setRevisionResponse("");
+                  }}
+                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <p className="text-sm text-blue-800 dark:text-blue-300 flex items-start gap-2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span>
+                    Nếu bạn không hài lòng với kết quả kiểm duyệt, hãy cho chúng tôi biết lý do. Bộ câu hỏi của bạn sẽ được chuyên gia xem xét lại.
+                  </span>
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Phản hồi của bạn <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={revisionResponse}
+                  onChange={(e) => setRevisionResponse(e.target.value)}
+                  placeholder="Vui lòng mô tả lý do bạn muốn yêu cầu kiểm duyệt lại (10-1000 ký tự)..."
+                  rows="6"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100 resize-none"
+                />
+                <div className="mt-2 flex items-center justify-between text-sm">
+                  <span className="text-gray-500 dark:text-gray-400">
+                    Ít nhất 10 ký tự
+                  </span>
+                  <span
+                    className={`${
+                      revisionResponse.length > 1000
+                        ? "text-red-500"
+                        : "text-gray-500 dark:text-gray-400"
+                    }`}
+                  >
+                    {revisionResponse.length}/1000
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowRevisionModal(false);
+                  setRevisionResponse("");
+                }}
+                disabled={requestingRevision}
+              >
+                Hủy
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleRequestRevision}
+                disabled={requestingRevision || !revisionResponse.trim() || revisionResponse.length < 10 || revisionResponse.length > 1000}
+              >
+                {requestingRevision ? (
+                  <span className="inline-flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+                    Đang gửi...
+                  </span>
+                ) : (
+                  "Gửi yêu cầu"
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">

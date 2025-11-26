@@ -11,7 +11,7 @@ function ValidationRequestListPage() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [filter, setFilter] = useState("Pending"); // Pending, Completed
+  const [filter, setFilter] = useState("Assigned"); // Assigned, RevisionRequested, Completed
 
   useEffect(() => {
     loadRequests();
@@ -41,9 +41,9 @@ function ValidationRequestListPage() {
           <h1 className="text-2xl font-bold text-gray-900">Yêu cầu kiểm duyệt</h1>
           <div className="flex gap-2">
             <button
-              onClick={() => setFilter("Pending")}
+              onClick={() => setFilter("Assigned")}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                filter === "Pending"
+                filter === "Assigned"
                   ? "bg-primary-600 text-white shadow"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
@@ -51,10 +51,20 @@ function ValidationRequestListPage() {
               Chờ duyệt
             </button>
             <button
+              onClick={() => setFilter("RevisionRequested")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                filter === "RevisionRequested"
+                  ? "bg-warning-600 text-white shadow"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              Yêu cầu xem lại
+            </button>
+            <button
               onClick={() => setFilter("Completed")}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                 filter === "Completed"
-                  ? "bg-primary-600 text-white shadow"
+                  ? "bg-success-600 text-white shadow"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
             >
@@ -91,18 +101,22 @@ function ValidationRequestListPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          req.status === "Pending"
+                          req.status === "Assigned"
                             ? "bg-blue-100 text-blue-800"
-                            : req.status === "Approved"
+                            : req.status === "RevisionRequested"
+                            ? "bg-warning-100 text-warning-800"
+                            : req.status === "Completed"
                             ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                            : "bg-gray-100 text-gray-800"
                         }`}
                       >
-                        {req.status === "Pending"
+                        {req.status === "Assigned"
                           ? "Chờ duyệt"
-                          : req.status === "Approved"
+                          : req.status === "RevisionRequested"
+                          ? "Yêu cầu xem lại"
+                          : req.status === "Completed"
                           ? "Đã duyệt"
-                          : "Đã từ chối"}
+                          : req.status}
                       </span>
                       <span className="text-xs text-gray-500">ID: {req.id.slice(-6)}</span>
                     </div>
@@ -118,8 +132,8 @@ function ValidationRequestListPage() {
 
                   <div className="flex items-center gap-3">
                     <Link to={`/expert/requests/${req.id}`}>
-                      <Button variant={req.status === "Pending" ? "primary" : "outline"}>
-                        {req.status === "Pending" ? "Kiểm duyệt ngay" : "Xem chi tiết"}
+                      <Button variant={req.status === "Assigned" || req.status === "RevisionRequested" ? "primary" : "outline"}>
+                        {req.status === "Assigned" ? "Kiểm duyệt ngay" : req.status === "RevisionRequested" ? "Xem lại ngay" : "Xem chi tiết"}
                       </Button>
                     </Link>
                   </div>
