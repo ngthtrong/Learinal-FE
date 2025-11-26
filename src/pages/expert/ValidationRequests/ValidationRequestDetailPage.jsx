@@ -38,7 +38,7 @@ function ValidationRequestDetailPage() {
     fetchDetail();
   }, [fetchDetail]);
 
-  const canComplete = data?.request?.status === 'Assigned';
+  const canComplete = data?.request?.status === 'Assigned' || data?.request?.status === 'RevisionRequested';
 
   const handleQuestionChange = (index, field, value) => {
     setEditedQuestions(prev => prev.map((q, i) => i === index ? { ...q, [field]: value } : q));
@@ -99,7 +99,29 @@ function ValidationRequestDetailPage() {
               {data.request.completionTime && (
                 <div><span className="font-medium">Hoàn thành:</span> {new Date(data.request.completionTime).toLocaleString('vi-VN')}</div>
               )}
+              {data.request.revisionRequestTime && (
+                <div><span className="font-medium">Yêu cầu xem lại:</span> {new Date(data.request.revisionRequestTime).toLocaleString('vi-VN')}</div>
+              )}
             </div>
+            {data.request.status === 'RevisionRequested' && data.request.learnerResponse && (
+              <div className="mt-4 p-3 bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-lg">
+                <div className="flex items-start gap-2 mb-2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-warning-600 dark:text-warning-400 flex-shrink-0 mt-0.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold text-warning-800 dark:text-warning-300 mb-1">
+                      Phản hồi từ người học:
+                    </div>
+                    <p className="text-sm text-warning-700 dark:text-warning-400 whitespace-pre-line">
+                      {data.request.learnerResponse}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <div className="bg-white dark:bg-gray-800 shadow rounded p-4">
             <div className="flex items-center justify-between mb-2">

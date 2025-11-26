@@ -139,6 +139,43 @@ export const questionSetsService = {
     const res = await api.post(`/question-sets/${id}/review`);
     return res.data;
   },
+
+  /**
+   * Get my question sets (created by current user)
+   */
+  getMyQuestionSets: async () => {
+    const res = await api.get("/question-sets");
+    return res.data;
+  },
+
+  /**
+   * Create question set manually (for Expert)
+   * @param {object} data - { title, description, questions: [...] }
+   */
+  createQuestionSet: async (data) => {
+    const res = await api.post("/question-sets/create", data);
+    return res.data;
+  },
+
+  /**
+   * Generate question set from uploaded document
+   * @param {object} data - { documentId, title, description, numQuestions, difficulty, questionType }
+   */
+  generateFromDocument: async (data) => {
+    const res = await api.post("/question-sets/generate-from-document", data);
+    return res.data;
+  },
+
+  /**
+   * Toggle share status for question set (Expert only)
+   * @param {string} id - Question set ID
+   * @param {boolean} isShared - Share status
+   */
+  toggleShare: async (id, isShared) => {
+    const endpoint = isShared ? `/question-sets/${id}/share` : `/question-sets/${id}/unshare`;
+    const res = await api.post(endpoint);
+    return res.data;
+  },
 };
 
 export default questionSetsService;
