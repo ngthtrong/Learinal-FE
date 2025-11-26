@@ -9,6 +9,32 @@ import Button from "@/components/common/Button";
 import { quizAttemptsService, questionSetsService } from "@/services/api";
 import { getErrorMessage } from "@/utils/errorHandler";
 
+// Difficulty weights for scoring
+const DIFFICULTY_WEIGHTS = {
+  "Biết": 1,
+  "Hiểu": 1.25,
+  "Vận dụng": 1.5,
+  "Vận dụng cao": 2,
+  // English fallbacks
+  "Remember": 1,
+  "Understand": 1.25,
+  "Apply": 1.5,
+  "Analyze": 2,
+};
+
+// Difficulty display config
+const DIFFICULTY_CONFIG = {
+  "Biết": { label: "Biết", color: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400", dotColor: "bg-green-500" },
+  "Hiểu": { label: "Hiểu", color: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400", dotColor: "bg-blue-500" },
+  "Vận dụng": { label: "Vận dụng", color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400", dotColor: "bg-yellow-500" },
+  "Vận dụng cao": { label: "Vận dụng cao", color: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400", dotColor: "bg-red-500" },
+  // English fallbacks
+  "Remember": { label: "Biết", color: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400", dotColor: "bg-green-500" },
+  "Understand": { label: "Hiểu", color: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400", dotColor: "bg-blue-500" },
+  "Apply": { label: "Vận dụng", color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400", dotColor: "bg-yellow-500" },
+  "Analyze": { label: "Vận dụng cao", color: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400", dotColor: "bg-red-500" },
+};
+
 function QuizResultPage() {
   const { attemptId } = useParams();
   const navigate = useNavigate();
@@ -221,8 +247,30 @@ function QuizResultPage() {
     let correctCount = 0;
     let incorrectCount = 0;
     let unansweredCount = 0;
+    let weightedScore = 0;
+    let maxWeightedScore = 0;
+
+    // Count by difficulty
+    const difficultyStats = {
+      "Biết": { correct: 0, total: 0 },
+      "Hiểu": { correct: 0, total: 0 },
+      "Vận dụng": { correct: 0, total: 0 },
+      "Vận dụng cao": { correct: 0, total: 0 },
+    };
 
     enrichedAnswers.forEach((answer) => {
+      const question = answer?.question || {};
+      const difficultyLevel = question?.difficultyLevel || question?.difficulty || "Hiểu";
+      const weight = DIFFICULTY_WEIGHTS[difficultyLevel] || 1;
+      
+      // Map to Vietnamese if needed
+      const normalizedDifficulty = DIFFICULTY_CONFIG[difficultyLevel]?.label || "Hiểu";
+      if (difficultyStats[normalizedDifficulty]) {
+        difficultyStats[normalizedDifficulty].total += 1;
+      }
+      
+      maxWeightedScore += weight;
+      
       const selected = answer?.selectedOptionIndex;
       if (selected === undefined || selected === null || selected === -1) {
         unansweredCount += 1;
@@ -231,6 +279,10 @@ function QuizResultPage() {
 
       if (answer?.isCorrect === true) {
         correctCount += 1;
+        weightedScore += weight;
+        if (difficultyStats[normalizedDifficulty]) {
+          difficultyStats[normalizedDifficulty].correct += 1;
+        }
       } else if (answer?.isCorrect === false) {
         incorrectCount += 1;
       } else {
@@ -249,6 +301,9 @@ function QuizResultPage() {
       correct: correctCount,
       incorrect: incorrectCount,
       unanswered: Math.max(unansweredCount, 0),
+      weightedScore: Math.round(weightedScore * 10) / 10,
+      maxWeightedScore: Math.round(maxWeightedScore * 10) / 10,
+      difficultyStats,
     };
   }, [enrichedAnswers, questionSet, attempt]);
 
@@ -325,8 +380,11 @@ function QuizResultPage() {
   }
 
   const scorePercentage = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+  const weightedPercentage = stats.maxWeightedScore > 0 
+    ? Math.round((stats.weightedScore / stats.maxWeightedScore) * 100) 
+    : 0;
   const scoreValue =
-    attempt?.score !== undefined && attempt?.score !== null ? attempt.score : stats.correct;
+    attempt?.score !== undefined && attempt?.score !== null ? attempt.score : stats.weightedScore;
   const formattedScore =
     typeof scoreValue === "number"
       ? Number.isInteger(scoreValue)
@@ -341,7 +399,7 @@ function QuizResultPage() {
     return "text-red-500 stroke-red-500";
   };
 
-  const scoreColorClass = getScoreColor(scorePercentage);
+  const scoreColorClass = getScoreColor(weightedPercentage);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
@@ -377,7 +435,7 @@ function QuizResultPage() {
                     <circle
                       className={`${scoreColorClass} transition-all duration-1000 ease-out`}
                       strokeWidth="8"
-                      strokeDasharray={`${scorePercentage * 2.51} 251`}
+                      strokeDasharray={`${weightedPercentage * 2.51} 251`}
                       strokeLinecap="round"
                       fill="none"
                       cx="50"
@@ -389,19 +447,51 @@ function QuizResultPage() {
                     <span className={`text-4xl font-bold ${scoreColorClass.split(" ")[0]}`}>
                       {formattedScore}
                     </span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500">
+                      / {stats.maxWeightedScore}
+                    </span>
                     <span className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mt-1">
                       Điểm
                     </span>
                   </div>
                 </div>
 
-                <div className="text-center">
-                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    Độ chính xác
+                <div className="text-center space-y-2">
+                  <div>
+                    <div className="text-xs font-medium text-gray-400 dark:text-gray-500">
+                      Điểm theo trọng số
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                      {weightedPercentage}%
+                    </div>
                   </div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    {scorePercentage}%
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    (Đúng: {stats.correct}/{stats.total} câu = {scorePercentage}%)
                   </div>
+                </div>
+              </div>
+
+              {/* Difficulty breakdown */}
+              <div className="mb-6 p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
+                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Phân bổ theo độ khó</div>
+                <div className="space-y-2">
+                  {Object.entries(stats.difficultyStats).map(([level, data]) => {
+                    if (data.total === 0) return null;
+                    const config = DIFFICULTY_CONFIG[level] || {};
+                    const weight = DIFFICULTY_WEIGHTS[level] || 1;
+                    return (
+                      <div key={level} className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-1.5">
+                          <div className={`w-2 h-2 rounded-full ${config.dotColor || 'bg-gray-400'}`}></div>
+                          <span className="text-gray-600 dark:text-gray-400">{level}</span>
+                          <span className="text-gray-400 dark:text-gray-500">(×{weight})</span>
+                        </div>
+                        <span className="font-medium text-gray-700 dark:text-gray-300">
+                          {data.correct}/{data.total}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -580,6 +670,11 @@ function QuizResultPage() {
                     answer?.questionText ||
                     "Không tìm thấy nội dung câu hỏi";
                   const options = question?.options || answer?.options || [];
+                  
+                  // Get difficulty info
+                  const difficultyLevel = question?.difficultyLevel || question?.difficulty || "Hiểu";
+                  const difficultyConfig = DIFFICULTY_CONFIG[difficultyLevel] || DIFFICULTY_CONFIG["Hiểu"];
+                  const difficultyWeight = DIFFICULTY_WEIGHTS[difficultyLevel] || 1;
 
                   // Determine card styling based on status
                   let cardBorderClass = "border-gray-100 dark:border-gray-700";
@@ -605,7 +700,7 @@ function QuizResultPage() {
                         />
                       </svg>
                     );
-                    badgeText = "Đúng";
+                    badgeText = `Đúng (+${difficultyWeight} điểm)`;
                   } else if (!isUnanswered) {
                     cardBorderClass = "border-red-200 dark:border-red-800 ring-1 ring-red-50 dark:ring-red-900/30";
                     badgeClass = "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300";
@@ -633,9 +728,17 @@ function QuizResultPage() {
                       className={`bg-white dark:bg-gray-800 rounded-2xl shadow-sm border ${cardBorderClass} p-6 transition-all hover:shadow-md`}
                     >
                       <div className="flex justify-between items-start mb-4">
-                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-bold text-sm">
-                          {questionNumber}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-bold text-sm">
+                            {questionNumber}
+                          </span>
+                          {/* Difficulty Tag */}
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${difficultyConfig.color}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${difficultyConfig.dotColor}`}></span>
+                            {difficultyConfig.label}
+                            <span className="text-gray-400 dark:text-gray-500 font-normal">(×{difficultyWeight})</span>
+                          </span>
+                        </div>
                         <span
                           className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${badgeClass}`}
                         >
