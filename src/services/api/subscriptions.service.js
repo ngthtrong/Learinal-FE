@@ -32,6 +32,14 @@ export const subscriptionsService = {
   },
 
   /**
+   * Get user's usage stats for current billing cycle
+   */
+  getMyUsage: async () => {
+    const response = await axiosInstance.get("/user-subscriptions/me/usage");
+    return response.data;
+  },
+
+  /**
    * Create new subscription
    * @param {string} planId - Subscription plan ID
    * @param {string} paymentReference - Payment reference number
