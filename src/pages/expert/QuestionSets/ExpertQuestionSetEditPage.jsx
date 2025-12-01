@@ -180,11 +180,11 @@ function ExpertQuestionSetEditPage() {
           </Button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Chỉnh sửa bộ đề
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mb-8">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-6 sm:mb-8">
             Cập nhật thông tin và câu hỏi cho bộ đề của bạn
           </p>
 

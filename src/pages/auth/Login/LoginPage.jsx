@@ -167,9 +167,9 @@ const LoginPage = () => {
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large p-8">
           {/* Brand Header */}
           <header className="flex flex-col items-center mb-8">
-            <img src={logoLight} alt="Learinal" className="h-16 w-auto mb-3 dark:hidden" />
-            <img src={logoDark} alt="Learinal" className="h-16 w-auto mb-3 hidden dark:block" />
-            <div className="text-2xl font-bold">
+            <img src={logoLight} alt="Learinal" className="h-12 sm:h-16 w-auto mb-3 dark:hidden" />
+            <img src={logoDark} alt="Learinal" className="h-12 sm:h-16 w-auto mb-3 hidden dark:block" />
+            <div className="text-xl sm:text-2xl font-bold">
               <span className="text-primary-600 dark:text-primary-400">Lear</span>
               <span className="text-gray-800 dark:text-gray-200">inal</span>
             </div>
@@ -177,7 +177,7 @@ const LoginPage = () => {
 
           {/* Page Header */}
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Đăng nhập</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Đăng nhập</h1>
             <p className="text-gray-600 dark:text-gray-400">Truy cập tài khoản Learinal của bạn</p>
           </div>
 

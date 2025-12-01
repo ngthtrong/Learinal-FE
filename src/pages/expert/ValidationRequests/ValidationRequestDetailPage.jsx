@@ -77,10 +77,10 @@ function ValidationRequestDetailPage() {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Chi tiết kiểm duyệt</h1>
-        <Button variant="secondary" onClick={() => navigate('/expert/validation-requests')}>Quay lại</Button>
+    <div className="p-4 sm:p-6 min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 dark:text-gray-100">Chi tiết kiểm duyệt</h1>
+        <Button variant="secondary" onClick={() => navigate('/expert/validation-requests')} className="w-full sm:w-auto">Quay lại</Button>
       </div>
       {loading && <div className="text-gray-600 dark:text-gray-400">Đang tải...</div>}
       {error && !loading && <div className="mb-4 text-sm text-red-600 dark:text-red-400">{error}</div>}

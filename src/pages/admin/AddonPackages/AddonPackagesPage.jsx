@@ -147,14 +147,14 @@ function AdminAddonPackagesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">
               Quản lý gói mua thêm (Add-on)
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">
               Tạo, chỉnh sửa các gói cộng dồn lượt tạo đề và kiểm duyệt. Gói add-on sẽ có hiệu lực theo chu kỳ gói hiện tại của learner.
             </p>
           </div>

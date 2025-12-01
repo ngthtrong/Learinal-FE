@@ -276,13 +276,13 @@ function QuizTakingPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 pb-24">
       {/* Header - Fixed */}
       <div className="sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex-1 w-full sm:w-auto">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 {questionSet.title}
               </h1>
-              <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 <span className="flex items-center gap-1">
                   <span className="font-medium">Tổng số câu:</span> {questions.length}
                 </span>
@@ -297,7 +297,7 @@ function QuizTakingPage() {
             </div>
             {useTimer && timeRemaining !== null && (
               <div
-                className={`flex items-center gap-3 px-6 py-3 rounded-lg font-bold text-lg ${
+                className={`flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold text-base sm:text-lg ${
                   isWarningTime
                     ? "bg-error-50 dark:bg-red-900/30 text-error-700 dark:text-red-300 border-2 border-error-300 dark:border-red-700 animate-pulse"
                     : "bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 border-2 border-primary-200 dark:border-primary-700"
@@ -317,7 +317,7 @@ function QuizTakingPage() {
             style={{ width: `${progress}%` }}
           ></div>
         </div>
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-0.5 rounded shadow-sm">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-0.5 rounded shadow-sm">
           {answeredCount}/{questions.length} câu ({Math.round(progress)}%)
         </div>
       </div>
@@ -337,21 +337,21 @@ function QuizTakingPage() {
               return (
                 <div
                   key={`question-${questionKey}`}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-6 scroll-mt-32"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 sm:p-6 scroll-mt-32"
                   id={`question-${qIndex}`}
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-lg font-bold text-primary-600 dark:text-primary-400">
+                    <span className="text-base sm:text-lg font-bold text-primary-600 dark:text-primary-400">
                       Câu hỏi {qIndex + 1}
                     </span>
                     {userAnswers[questionKey] !== undefined && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 rounded-full text-sm font-medium">
+                      <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 rounded-full text-xs sm:text-sm font-medium">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         Đã trả lời
                       </span>
                     )}
                   </div>
-                  <div className="text-gray-900 dark:text-gray-100 text-lg font-medium mb-6 leading-relaxed">
+                  <div className="text-gray-900 dark:text-gray-100 text-base sm:text-lg font-medium mb-6 leading-relaxed">
                     {question.questionText}
                   </div>
 

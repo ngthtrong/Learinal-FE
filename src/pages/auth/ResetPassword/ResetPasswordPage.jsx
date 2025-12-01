@@ -107,8 +107,8 @@ const ResetPasswordPage = () => {
           </header>
 
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Đặt lại mật khẩu</h1>
-            <p className="text-gray-600 dark:text-gray-400">Nhập mật khẩu mới của bạn</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Đặt lại mật khẩu</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Nhập mật khẩu mới của bạn</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

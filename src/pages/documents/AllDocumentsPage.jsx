@@ -1,12 +1,8 @@
-/**
- * AllDocumentsPage Component
- * Display all documents of the user across all subjects
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/common/Button";
 import { documentsService, subjectsService } from "@/services/api";
+import {Footer} from "@/components/layout";
 import DocumentIcon from "@/components/icons/DocumentIcon";
 
 function AllDocumentsPage() {
@@ -125,20 +121,20 @@ function AllDocumentsPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
                 </div>
                 Tài liệu của tôi
               </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400">
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
                 Quản lý tất cả tài liệu học tập ({documents.length} tài liệu)
               </p>
             </div>
-            <Button onClick={() => navigate("/subjects")}>Chọn môn học để upload</Button>
+            <Button onClick={() => navigate("/subjects")} className="w-full sm:w-auto">Chọn môn học để upload</Button>
           </div>
         </div>
       </div>
@@ -276,13 +272,7 @@ function AllDocumentsPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

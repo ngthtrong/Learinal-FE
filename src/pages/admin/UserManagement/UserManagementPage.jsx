@@ -128,9 +128,9 @@ function UserManagementPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý người dùng</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý người dùng</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Tìm kiếm, lọc theo vai trò và trạng thái.</p>
           </div>
           <div className="flex gap-2">

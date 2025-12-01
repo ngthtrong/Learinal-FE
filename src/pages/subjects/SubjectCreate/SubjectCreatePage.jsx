@@ -1,14 +1,10 @@
-/**
- * Subject Create Page
- * Page for creating a new subject
- */
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SubjectForm } from "@components/subjects";
 import { useToast } from "@components/common";
 import { subjectsService } from "@services/api";
 import { getErrorMessage } from "@utils";
+import { Footer } from "@/components/layout";
 import SubjectsIcon from "@/components/icons/SubjectsIcon";
 
 const SubjectCreatePage = () => {
@@ -80,13 +76,7 @@ const SubjectCreatePage = () => {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -1,8 +1,3 @@
-/**
- * Subject Detail Page
- * View, edit, and delete subject with documents list
- */
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import subjectsService from "@/services/api/subjects.service";
@@ -16,6 +11,7 @@ import { GenerateQuizModal } from "@/components/questionSets";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { formatDate } from "@/utils/formatters";
 import { useNotifications } from "@/contexts/NotificationContext";
+import { Footer } from "@/components/layout";
 import DocumentIcon from "@/components/icons/DocumentIcon";
 import QuizIcon from "@/components/icons/QuizIcon";
 import UploadIcon from "@/components/icons/UploadIcon";
@@ -315,8 +311,8 @@ function SubjectDetailPage() {
       <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="text-6xl mb-4">🔍</div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+            <div className="text-4xl sm:text-6xl mb-4">🔍</div>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 text-center">
               Không tìm thấy môn học
             </h2>
             <p className="text-gray-600 text-center mb-6">
@@ -333,27 +329,31 @@ function SubjectDetailPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <Button variant="secondary" onClick={() => navigate(-1)}>
               ← Quay lại
             </Button>
-            <div className="flex items-center gap-2">
-              <Button onClick={() => setIsUploadModalOpen(true)}>
-                <UploadIcon size={18} strokeWidth={2} className="inline-block mr-1" />
-                Tải tài liệu
+            <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
+              <Button onClick={() => setIsUploadModalOpen(true)} className="text-sm sm:text-base">
+                <UploadIcon size={16} strokeWidth={2} className="inline-block sm:mr-1" />
+                <span className="hidden sm:inline">Tải tài liệu</span>
+                <span className="sm:hidden">Tải TL</span>
               </Button>
-              <Button onClick={() => setIsGenerateQuizModalOpen(true)}>
-                <QuizIcon size={18} strokeWidth={2} className="inline-block mr-1" />
-                Tạo đề thi
+              <Button onClick={() => setIsGenerateQuizModalOpen(true)} className="text-sm sm:text-base">
+                <QuizIcon size={16} strokeWidth={2} className="inline-block sm:mr-1" />
+                <span className="hidden sm:inline">Tạo đề thi</span>
+                <span className="sm:hidden">Tạo đề</span>
               </Button>
-              <Button variant="secondary" onClick={() => setIsEditModalOpen(true)}>
-                <PenIcon size={18} strokeWidth={2} className="inline-block mr-1" />
-                Chỉnh sửa
+              <Button variant="secondary" onClick={() => setIsEditModalOpen(true)} className="text-sm sm:text-base">
+                <PenIcon size={16} strokeWidth={2} className="inline-block sm:mr-1" />
+                <span className="hidden sm:inline">Chỉnh sửa</span>
+                <span className="sm:hidden">Sửa</span>
               </Button>
-              <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
-                <svg className="inline-block mr-1" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                Xóa
+              <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)} className="text-sm sm:text-base">
+                <svg className="inline-block sm:mr-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <span className="hidden sm:inline">Xóa</span>
+                <span className="sm:hidden">Xóa</span>
               </Button>
             </div>
           </div>
@@ -362,12 +362,12 @@ function SubjectDetailPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-6">
         {/* Subject Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
           <div className="mb-6">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
               {subject.subjectName}
             </h1>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg text-sm font-medium">
                 <DocumentIcon size={18} strokeWidth={2} />
                 {documents.length} tài liệu
@@ -381,8 +381,8 @@ function SubjectDetailPage() {
 
           {subject.description && (
             <div className="mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-                <PenIcon size={20} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <PenIcon size={18} strokeWidth={2} className="sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                 Mô tả
               </h3>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -393,8 +393,8 @@ function SubjectDetailPage() {
 
           {subject.summary && (
             <div className="mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-                <SubjectsIcon size={20} stroke={2} className="text-primary-600 dark:text-primary-400" />
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <SubjectsIcon size={18} stroke={2} className="sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                 Tóm tắt
               </h3>
               <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -405,8 +405,8 @@ function SubjectDetailPage() {
 
           {subject.tableOfContents && subject.tableOfContents.length > 0 && (
             <div className="mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-                <SubjectsIcon size={20} stroke={2} className="text-primary-600 dark:text-primary-400" />
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <SubjectsIcon size={18} stroke={2} className="sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                 Nội dung ({subject.tableOfContents.length} chủ đề)
               </h3>
               <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
@@ -417,13 +417,13 @@ function SubjectDetailPage() {
         </div>
 
         {/* Documents Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <DocumentIcon size={24} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-6">
+            <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <DocumentIcon size={20} strokeWidth={2} className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" />
               Tài liệu ({documents.length})
             </h3>
-            <Button size="small" onClick={() => setIsUploadModalOpen(true)}>
+            <Button size="small" onClick={() => setIsUploadModalOpen(true)} className="w-full sm:w-auto">
               + Thêm tài liệu
             </Button>
           </div>
@@ -506,11 +506,11 @@ function SubjectDetailPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                <DocumentIcon size={40} strokeWidth={2} className="text-gray-400 dark:text-gray-500" />
+            <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                <DocumentIcon size={32} strokeWidth={2} className="sm:w-10 sm:h-10 text-gray-400 dark:text-gray-500" />
               </div>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 px-4">
                 Chưa có tài liệu nào. Hãy tải lên tài liệu đầu tiên!
               </p>
               <Button onClick={() => setIsUploadModalOpen(true)}>
@@ -522,13 +522,13 @@ function SubjectDetailPage() {
         </div>
 
         {/* Question Sets Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <QuizIcon size={24} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-6">
+            <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <QuizIcon size={20} strokeWidth={2} className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" />
               Bộ câu hỏi ({questionSets.length})
             </h3>
-            <Button onClick={() => setIsGenerateQuizModalOpen(true)}>+ Tạo đề thi</Button>
+            <Button onClick={() => setIsGenerateQuizModalOpen(true)} className="w-full sm:w-auto">+ Tạo đề thi</Button>
           </div>
 
           {loadingQuestionSets ? (
@@ -605,11 +605,11 @@ function SubjectDetailPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                <QuizIcon size={40} strokeWidth={2} className="text-gray-400" />
+            <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-800/50 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                <QuizIcon size={32} strokeWidth={2} className="sm:w-10 sm:h-10 text-gray-400" />
               </div>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 px-4">
                 Chưa có bộ câu hỏi nào. Hãy tạo đề thi đầu tiên!
               </p>
               <Button onClick={() => setIsGenerateQuizModalOpen(true)}>
@@ -620,8 +620,8 @@ function SubjectDetailPage() {
           )}
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
             <span>Tạo: {formatDate(subject.createdAt)}</span>
             {subject.updatedAt !== subject.createdAt && (
               <span>• Cập nhật: {formatDate(subject.updatedAt)}</span>
@@ -712,11 +712,7 @@ function SubjectDetailPage() {
       />
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 text-sm">© 2025 Learinal. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

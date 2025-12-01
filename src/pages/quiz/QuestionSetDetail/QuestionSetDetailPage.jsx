@@ -1,8 +1,3 @@
-/**
- * Question Set Detail Page
- * View question set details and manage quiz attempts history
- */
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import questionSetsService from "@/services/api/questionSets.service";
@@ -13,6 +8,7 @@ import { getErrorMessage } from "@/utils/errorHandler";
 import { formatDate, formatTime } from "@/utils/formatters";
 import { useAuth } from "@/contexts/AuthContext";
 import { validationRequestsService } from "@/services/api";
+import { Footer } from "@/components/layout";
 function QuestionSetDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -205,27 +201,29 @@ function QuestionSetDetailPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-          <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-0">
             <Button variant="secondary" onClick={() => navigate(-1)}>
               ← Quay lại
             </Button>
-            <Button onClick={handleStartQuiz} variant="primary" size="large">
-              <span className="inline-flex items-center gap-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                Bắt đầu làm bài
-              </span>
-            </Button>
+            {questionSet.status !== "Processing" && (
+              <Button onClick={handleStartQuiz} variant="primary" size="large" className="w-full sm:w-auto">
+                <span className="inline-flex items-center gap-2 justify-center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                  Bắt đầu làm bài
+                </span>
+              </Button>
+            )}
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {/* Question Set Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 mb-8">
-          <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex-1">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
+          <div className="flex items-start justify-between mb-4 sm:mb-6 flex-wrap gap-3 sm:gap-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 flex-1 min-w-0 break-words">
               {questionSet.title}
             </h1>
             <div className="flex items-center gap-2 ml-4 flex-wrap">
@@ -329,9 +327,9 @@ function QuestionSetDetailPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            <div className="flex items-center gap-4 bg-primary-50 dark:bg-primary-900/30 rounded-lg p-4">
-              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-800/50">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
+            <div className="flex items-center gap-3 sm:gap-4 bg-primary-50 dark:bg-primary-900/30 rounded-lg p-3 sm:p-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-800/50">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
               </div>
               <div>
@@ -511,8 +509,8 @@ function QuestionSetDetailPage() {
 
         {/* Quiz Attempts History */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="flex items-center justify-between px-8 py-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 sm:py-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
               Lịch sử làm bài
             </h2>
@@ -531,7 +529,7 @@ function QuestionSetDetailPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Lần
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -679,19 +677,21 @@ function QuestionSetDetailPage() {
               </table>
             </div>
           ) : (
-            <div className="p-12 text-center">
-              <div className="w-24 h-24 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
+            <div className="p-8 sm:p-12 text-center">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 dark:text-gray-500"><path d="M21.5 12H16c-.7 2-2 3-4 3s-3.3-1-4-3H2.5"></path><path d="M5.5 5.1L2 12v6c0 1.1.9 2 2 2h16a2 2 0 002-2v-6l-3.4-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.8 1.1z"></path></svg>
               </div>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Chưa có lượt làm bài nào. Hãy bắt đầu làm bài đầu tiên!
               </p>
+              {questionSet.status !== "Processing" &&(
               <Button onClick={handleStartQuiz}>
                 <span className="inline-flex items-center gap-2">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
                   Bắt đầu làm bài
                 </span>
               </Button>
+              )}
             </div>
           )}
         </div>
@@ -785,13 +785,7 @@ function QuestionSetDetailPage() {
       )}
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

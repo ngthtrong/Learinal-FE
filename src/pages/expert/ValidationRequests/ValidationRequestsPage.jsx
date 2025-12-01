@@ -98,8 +98,8 @@ function ValidationRequestsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Yêu cầu kiểm duyệt</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Xử lý các bộ câu hỏi được gán cho bạn.</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Yêu cầu kiểm duyệt</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">Xử lý các bộ câu hỏi được gán cho bạn.</p>
           </div>
           <div className="flex gap-2">
             <Button
@@ -173,9 +173,9 @@ function ValidationRequestsPage() {
         <div className="space-y-8">
           {/* Available requests */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Yêu cầu chờ nhận</h2>
-              <span className="text-sm text-gray-500 dark:text-gray-400">{available.length} yêu cầu</span>
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Yêu cầu chờ nhận</h2>
+              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{available.length} yêu cầu</span>
             </div>
             {loading ? (
               <div className="py-10 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
@@ -230,9 +230,9 @@ function ValidationRequestsPage() {
           </div>
           {/* My claimed requests */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Yêu cầu của tôi</h2>
-              <span className="text-sm text-gray-500 dark:text-gray-400">{mineActive.length} yêu cầu đang xử lý</span>
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Yêu cầu của tôi</h2>
+              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{mineActive.length} yêu cầu đang xử lý</span>
             </div>
             {loading ? (
               <div className="py-10 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>

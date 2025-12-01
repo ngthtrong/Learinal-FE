@@ -1,15 +1,9 @@
-/**
- * Learner Home Page
- * Landing page for role "Learner", styled per aigen.html palette
- */
-
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { documentsService, subjectsService, questionSetsService } from "@/services/api";
 import { CardGrid, CategoryCard } from "@/components/common";
-import QuizIcon from "@/components/icons/QuizIcon";
+import { Footer } from "@/components/layout";
 import SubjectsIcon from "@/components/icons/SubjectsIcon";
-import HomeIcon from "@/components/icons/HomeIcon";
 import BookIcon from "@/components/icons/BookIcon";
 import DocumentIcon from "@/components/icons/DocumentIcon";
 import GlobeIcon from "@/components/icons/GlobeIcon";
@@ -248,10 +242,10 @@ const LearnerHomePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header with Search */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <form
-            className="flex items-center gap-2 max-w-2xl mx-auto"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2 max-w-2xl mx-auto"
             onSubmit={(e) => {
               e.preventDefault();
               performSearch(q);
@@ -263,10 +257,10 @@ const LearnerHomePage = () => {
                 placeholder="Tìm môn học, bộ đề, tài liệu..."
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                className="w-full px-4 py-3 pl-12 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-2.5 sm:py-3 pl-10 sm:pl-12 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-sm sm:text-base"
               />
               <svg
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -282,7 +276,7 @@ const LearnerHomePage = () => {
             </div>
             <button
               type="submit"
-              className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
+              className="px-6 py-2.5 sm:py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm sm:text-base w-full sm:w-auto"
               aria-label="Tìm kiếm"
               disabled={loading}
             >
@@ -292,12 +286,12 @@ const LearnerHomePage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-8 sm:space-y-12">
         {/* Môn học Section */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
+        <section className="space-y-4 sm:space-y-6">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <h2
-              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
+              className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/subjects")}
@@ -305,8 +299,8 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/subjects");
               }}
             >
-              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                <BookIcon size={24} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <BookIcon size={20} strokeWidth={2} className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" />
               </div>
               Môn Học
             </h2>
@@ -331,12 +325,12 @@ const LearnerHomePage = () => {
               ))}
             </CardGrid>
           ) : (
-            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <BookIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
-              <p className="text-gray-500 dark:text-gray-400">Chưa có môn học nào</p>
+            <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <BookIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">Chưa có môn học nào</p>
               <button
                 onClick={() => navigate("/subjects/create")}
-                className="mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+                className="mt-4 text-sm sm:text-base text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Tạo môn học đầu tiên
               </button>
@@ -381,12 +375,12 @@ const LearnerHomePage = () => {
               ))}
             </CardGrid>
           ) : (
-            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <PenIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
-              <p className="text-gray-500 dark:text-gray-400">Chưa có bộ đề nào</p>
+            <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <BookIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">Chưa có môn học nào</p>
               <button
-                onClick={() => navigate("/quiz/create")}
-                className="mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+                onClick={() => navigate("/subjects/create")}
+                className="mt-4 text-sm sm:text-base text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Tạo bộ đề đầu tiên
               </button>
@@ -490,13 +484,7 @@ const LearnerHomePage = () => {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Search Results Modal */}
       {isModalOpen && (

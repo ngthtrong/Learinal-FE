@@ -1,13 +1,9 @@
-/**
- * QuizResultPage Component
- * Display quiz results with detailed answers and explanations
- */
-
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router";
 import Button from "@/components/common/Button";
 import { quizAttemptsService, questionSetsService } from "@/services/api";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { Footer } from "@/components/layout";
 
 // Difficulty weights for scoring
 const DIFFICULTY_WEIGHTS = {
@@ -405,11 +401,11 @@ function QuizResultPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Kết quả bài thi
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
             {questionSet?.title ||
               attempt?.questionSet?.title ||
               attempt?.questionSet?.name ||
@@ -417,7 +413,7 @@ function QuizResultPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 py-10">
           {/* Left Column: Score Summary (Sticky on Desktop) */}
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 sticky top-8">
@@ -877,13 +873,7 @@ function QuizResultPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer className="mt-12" />
     </div>
   );
 }

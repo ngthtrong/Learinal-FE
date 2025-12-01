@@ -7,11 +7,11 @@ function ProfileEditPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <div className="text-center space-y-2">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">✏️ Chỉnh sửa hồ sơ</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">Cập nhật thông tin cá nhân của bạn</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">✏️ Chỉnh sửa hồ sơ</h1>
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">Cập nhật thông tin cá nhân của bạn</p>
           </div>
         </div>
       </div>

@@ -1,10 +1,7 @@
-/**
- * Addon Packages Page for Learners
- * Hiển thị các gói mua thêm để learner chọn và mua
- */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, useToast } from "@/components/common";
+import { Footer } from "@/components/layout";
 import addonPackagesService from "@/services/api/addonPackages.service";
 
 function AddonPackagesPage() {
@@ -330,13 +327,7 @@ function AddonPackagesPage() {
       </Modal>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

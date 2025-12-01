@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
+import { Footer } from "@/components/layout";
 import subscriptionsService from "@/services/api/subscriptions.service";
 
 function ProfileViewPage() {
@@ -99,12 +100,12 @@ function ProfileViewPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
           {/* Avatar and Basic Info */}
-          <div className="flex items-center mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
-            <div className="w-24 h-24 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white text-3xl font-bold mr-6 shadow-lg">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start mb-8 pb-8 border-b border-gray-200 dark:border-gray-700 gap-4 sm:gap-6">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white text-2xl sm:text-3xl font-bold shadow-lg">
               {user.fullName ? user.fullName.charAt(0).toUpperCase() : "U"}
             </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{user.fullName}</h2>
+            <div className="text-center sm:text-left">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-1">{user.fullName}</h2>
               <p className="text-gray-600 dark:text-gray-400 mb-3">{user.email}</p>
               <div className="flex items-center gap-2">
                 <span
@@ -124,7 +125,7 @@ function ProfileViewPage() {
 
           {/* Personal Information */}
           <div className="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2 pb-4">
+            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2 pb-4">
               {user.role === "Expert" ? (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
               ) : (
@@ -258,7 +259,7 @@ function ProfileViewPage() {
           {/* Subscription Information - Only for Learner */}
           {user.role === "Learner" && (
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2 ">
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                 Thông tin gói đăng ký
               </h3>
@@ -396,13 +397,7 @@ function ProfileViewPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

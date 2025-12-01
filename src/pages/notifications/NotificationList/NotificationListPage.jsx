@@ -1,12 +1,8 @@
-/**
- * Notification List Page
- * Display user notifications
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../../contexts/NotificationContext";
 import { formatDateTime, formatDistanceToNow } from "../../../utils/dateFormat";
+import { Footer } from "@/components/layout";
 
 function NotificationListPage() {
   const navigate = useNavigate();
@@ -69,9 +65,9 @@ function NotificationListPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6 mb-6">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Thông báo</h1>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 sm:p-6 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Thông báo</h1>
             
             <div className="flex items-center gap-4">
               {/* Filter Tabs */}
@@ -243,7 +239,13 @@ function NotificationListPage() {
           )}
         </div>
       </div>
+      {/* Footer */}
+      <div className="mt-12">
+        <Footer />
+      </div>
+
     </div>
+    
   );
 }
 

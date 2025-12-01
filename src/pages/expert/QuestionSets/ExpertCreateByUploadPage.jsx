@@ -139,16 +139,16 @@ function ExpertCreateByUploadPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
-          <Button variant="secondary" onClick={() => navigate("/expert/question-sets")}>
+          <Button variant="secondary" onClick={() => navigate("/expert/question-sets")} className="w-full sm:w-auto">
             ← Quay lại
           </Button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Tạo bộ đề từ tài liệu
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mb-8">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-6 sm:mb-8">
             Upload tài liệu và AI sẽ tạo câu hỏi, bạn có thể chỉnh sửa trước khi lưu
           </p>
 

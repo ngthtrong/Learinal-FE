@@ -1,8 +1,3 @@
-/**
- * Quiz List Page
- * Display available quizzes (question sets)
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import questionSetsService from "@/services/api/questionSets.service";
@@ -11,6 +6,7 @@ import { QuizCard } from "@/components/quiz";
 import { useToast } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { CreateQuizModal } from "@/components/questionSets";
+import { Footer } from "@/components/layout";
 import QuizIcon from "@/components/icons/QuizIcon";
 
 function QuizListPage() {
@@ -131,23 +127,23 @@ function QuizListPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-          <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
                 </div>
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">
                   Bộ đề thi của tôi
                 </h1>
               </div>
-              <p className="text-lg text-gray-600 dark:text-gray-400">
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
                 Quản lý tất cả bộ đề thi và câu hỏi của bạn
               </p>
             </div>
-            <Button onClick={() => setIsCreateModalOpen(true)}>+ Tạo bộ đề mới</Button>
+            <Button onClick={() => setIsCreateModalOpen(true)} className="w-full sm:w-auto">+ Tạo bộ đề mới</Button>
           </div>
         </div>
       </div>
@@ -278,13 +274,7 @@ function QuizListPage() {
       />
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

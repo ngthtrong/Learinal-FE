@@ -44,15 +44,15 @@ const DashboardPage = () => {
     <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-gray-900">📊 Dashboard</h1>
-              <p className="text-lg text-gray-600">Xin chào, {user?.fullName}! Chào mừng trở lại</p>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">📊 Dashboard</h1>
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600">Xin chào, {user?.fullName}! Chào mừng trở lại</p>
             </div>
             <button
               onClick={handleLogout}
-              className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium shadow-sm"
+              className="w-full sm:w-auto px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium shadow-sm"
             >
               Đăng xuất
             </button>
@@ -63,46 +63,46 @@ const DashboardPage = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="space-y-8">
           {/* Welcome Section */}
-          <div className="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl p-8 text-white shadow-sm">
-            <h2 className="text-3xl font-bold mb-2">Chào mừng trở lại! 👋</h2>
-            <p className="text-lg opacity-90">
+          <div className="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl p-6 sm:p-8 text-white shadow-sm">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">Chào mừng trở lại! 👋</h2>
+            <p className="text-sm sm:text-base lg:text-lg opacity-90">
               Đây là dashboard của bạn. Hãy bắt đầu học tập ngay hôm nay!
             </p>
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-2xl">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-blue-100 flex items-center justify-center text-xl sm:text-2xl">
                   📚
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold text-gray-900">{stats?.documents || 0}</h3>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{stats?.documents || 0}</h3>
                   <p className="text-gray-600">Tài liệu</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center text-2xl">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-amber-100 flex items-center justify-center text-xl sm:text-2xl">
                   📝
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold text-gray-900">{stats?.quizzes || 0}</h3>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{stats?.quizzes || 0}</h3>
                   <p className="text-gray-600">Bộ câu hỏi</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center text-2xl">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-green-100 flex items-center justify-center text-xl sm:text-2xl">
                   ✅
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold text-gray-900">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">
                     {stats?.completedQuizzes || 0}
                   </h3>
                   <p className="text-gray-600">Hoàn thành</p>
@@ -110,13 +110,13 @@ const DashboardPage = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-2xl">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-pink-100 flex items-center justify-center text-xl sm:text-2xl">
                   🎯
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold text-gray-900">{stats?.avgScore || 0}%</h3>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{stats?.avgScore || 0}%</h3>
                   <p className="text-gray-600">Điểm TB</p>
                 </div>
               </div>
@@ -124,8 +124,8 @@ const DashboardPage = () => {
           </div>
 
           {/* User Info Section */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Thông tin tài khoản</h3>
+          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Thông tin tài khoản</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex flex-col">
                 <span className="text-sm text-gray-500 mb-1">Email:</span>
@@ -153,8 +153,8 @@ const DashboardPage = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Hành động nhanh</h3>
+          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-200">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Hành động nhanh</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <button className="flex flex-col items-center gap-2 p-4 rounded-lg border border-gray-200 hover:border-primary-400 hover:bg-primary-50 transition-all">
                 <span className="text-3xl">📤</span>

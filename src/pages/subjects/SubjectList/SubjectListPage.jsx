@@ -1,8 +1,3 @@
-/**
- * Subject List Page
- * Display available subjects with grid layout
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import subjectsService from "@/services/api/subjects.service";
@@ -10,6 +5,7 @@ import Button from "@/components/common/Button";
 import { SubjectCard } from "@/components/subjects";
 import { useToast } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { Footer } from "@/components/layout";
 import BookIcon from "@/components/icons/BookIcon";
 
 function SubjectListPage() {
@@ -84,23 +80,23 @@ function SubjectListPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-          <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                  <BookIcon size={24} strokeWidth={2} className="text-primary-600 dark:text-primary-400" />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                  <BookIcon size={20} strokeWidth={2} className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" />
                 </div>
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">
                   Môn học của tôi
                 </h1>
               </div>
-              <p className="text-lg text-gray-600 dark:text-gray-400">
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
                 Quản lý tất cả môn học và tài liệu của bạn
               </p>
             </div>
-            <Button onClick={() => navigate("/subjects/create")}>+ Tạo môn học mới</Button>
+            <Button onClick={() => navigate("/subjects/create")} className="w-full sm:w-auto">+ Tạo môn học mới</Button>
           </div>
         </div>
       </div>
@@ -223,13 +219,7 @@ function SubjectListPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

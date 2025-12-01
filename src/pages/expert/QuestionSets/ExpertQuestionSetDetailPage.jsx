@@ -149,10 +149,10 @@ function ExpertQuestionSetDetailPage() {
         </div>
 
         {/* Question Set Info */}
-        <div className="bg-white rounded-b-xl shadow-sm border border-gray-200 p-8 mb-6">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{questionSet.title}</h1>
+        <div className="bg-white rounded-b-xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 mb-6">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
+            <div className="flex-1 w-full">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">{questionSet.title}</h1>
               {questionSet.description && (
                 <p className="text-gray-600 mb-4">{questionSet.description}</p>
               )}
@@ -172,13 +172,14 @@ function ExpertQuestionSetDetailPage() {
           </div>
 
           {/* Actions */}
-          <div className="flex gap-3 pt-4 border-t border-gray-200">
-            <Button onClick={handleStartQuiz}>
+          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
+            <Button onClick={handleStartQuiz} className="w-full sm:w-auto">
               Làm bài thử
             </Button>
             <Button
               variant="secondary"
               onClick={() => navigate(`/expert/question-sets/${id}/edit`)}
+              className="w-full sm:w-auto"
             >
               Chỉnh sửa
             </Button>
@@ -186,6 +187,7 @@ function ExpertQuestionSetDetailPage() {
               <Button
                 variant="primary"
                 onClick={handlePublish}
+                className="w-full sm:w-auto"
               >
                 Công khai (Premium)
               </Button>
@@ -194,6 +196,7 @@ function ExpertQuestionSetDetailPage() {
               <Button
                 variant="secondary"
                 onClick={handleUnpublish}
+                className="w-full sm:w-auto"
               >
                 Chuyển về Draft
               </Button>
@@ -202,8 +205,8 @@ function ExpertQuestionSetDetailPage() {
         </div>
 
         {/* Questions List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">
             Danh sách câu hỏi ({questionSet.questions?.length || 0})
           </h2>
 

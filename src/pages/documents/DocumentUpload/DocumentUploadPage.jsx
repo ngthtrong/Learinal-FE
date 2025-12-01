@@ -1,8 +1,3 @@
-/**
- * Document Upload Page
- * Upload and process new documents
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import documentsService from "@/services/api/documents.service";
@@ -118,11 +113,11 @@ function DocumentUploadPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-6 py-6 mb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold text-gray-900">📄 Tải lên tài liệu</h1>
-            <p className="text-lg text-gray-600">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">📄 Tải lên tài liệu</h1>
+            <p className="text-base sm:text-lg text-gray-600">
               Tải lên tài liệu để hệ thống tự động trích xuất nội dung và tạo tóm tắt
             </p>
           </div>

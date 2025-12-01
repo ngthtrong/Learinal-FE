@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import {Footer} from "@/components/layout";
 import documentsService from "@/services/api/documents.service";
 import Button from "@/components/common/Button";
 
@@ -105,8 +106,8 @@ function DocumentDetailPage() {
   return (
     <div className="mmin-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <Button variant="secondary" onClick={() => navigate(-1)}>
             ← Quay lại
           </Button>
@@ -114,12 +115,12 @@ function DocumentDetailPage() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-8 mb-6">
-          <div className="flex items-start gap-6">
-            <div className="shrink-0">{getFileIcon(document.fileType)}</div>
-            <div className="flex-1">
-              <div className="flex items-start justify-between gap-4 mb-4">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{document.originalFileName}</h1>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+            <div className="shrink-0 hidden sm:block">{getFileIcon(document.fileType)}</div>
+            <div className="flex-1 w-full">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 break-words">{document.originalFileName}</h1>
                 {getStatusBadge(document.status)}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -150,8 +151,8 @@ function DocumentDetailPage() {
           </div>
         </div>
         {document.status === "Processing" && (
-          <div className="bg-warning-50 dark:bg-yellow-900/20 border border-warning-200 dark:border-yellow-800 rounded-xl p-6 mb-6">
-            <div className="flex items-center gap-3">
+          <div className="bg-warning-50 dark:bg-yellow-900/20 border border-warning-200 dark:border-yellow-800 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="inline-block w-5 h-5 border-3 border-warning-600 dark:border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
               <p className="text-warning-800 dark:text-yellow-300 font-medium">
                 Tài liệu đang được xử lý. Vui lòng quay lại sau.
@@ -160,8 +161,8 @@ function DocumentDetailPage() {
           </div>
         )}
         {document.status === "Error" && (
-          <div className="bg-error-50 dark:bg-red-900/20 border border-error-200 dark:border-red-800 rounded-xl p-6 mb-6">
-            <div className="flex items-center gap-3">
+          <div className="bg-error-50 dark:bg-red-900/20 border border-error-200 dark:border-red-800 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6">
+            <div className="flex items-start gap-2 sm:gap-3">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-error-600 dark:text-red-400 flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
               <div>
                 <p className="text-error-800 dark:text-red-300 font-medium">Đã xảy ra lỗi khi xử lý tài liệu</p>
@@ -174,9 +175,9 @@ function DocumentDetailPage() {
         )}
         {document.status === "Completed" && (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="flex border-b border-gray-200 dark:border-gray-700">
+            <div className="flex border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
               <button
-                className={`flex-1 px-6 py-4 font-medium text-sm sm:text-base transition-colors inline-flex items-center justify-center gap-2 ${
+                className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm md:text-base transition-colors inline-flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
                   activeTab === "info"
                     ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20"
                     : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50"
@@ -209,11 +210,11 @@ function DocumentDetailPage() {
                 Nội dung
               </button>
             </div>
-            <div className="p-8">
+            <div className="p-4 sm:p-6 lg:p-8">
               {activeTab === "info" && (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Thông tin tài liệu</h2>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Thông tin tài liệu</h2>
                     <div className="space-y-3 text-gray-700 dark:text-gray-300">
                       <p>
                         <strong className="text-gray-900 dark:text-gray-100">Tên file gốc:</strong> {document.originalFileName}
@@ -292,13 +293,7 @@ function DocumentDetailPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

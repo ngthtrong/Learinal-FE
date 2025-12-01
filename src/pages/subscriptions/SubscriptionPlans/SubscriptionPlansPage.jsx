@@ -1,13 +1,10 @@
-/**
- * Subscription Plans Page
- * Display available subscription plans and pricing
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import subscriptionsService from "@/services/api/subscriptions.service";
 import paymentsService from "@/services/api/payments.service";
 import Button from "@/components/common/Button";
+import { Footer } from "@/components/layout";
+
 function SubscriptionPlansPage() {
   const navigate = useNavigate();
   const [plans, setPlans] = useState([]);
@@ -218,10 +215,10 @@ function SubscriptionPlansPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
           <div className="text-center space-y-2">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Các gói đăng ký</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Các gói đăng ký</h1>
+            <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
               Chọn gói phù hợp với bạn để trải nghiệm đầy đủ tính năng
             </p>
           </div>
@@ -321,13 +318,7 @@ function SubscriptionPlansPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Payment Modal */}
       {showPaymentModal && selectedPlan && (

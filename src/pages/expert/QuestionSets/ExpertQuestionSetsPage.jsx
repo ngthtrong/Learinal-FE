@@ -83,14 +83,15 @@ function ExpertQuestionSetsPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Bộ đề của tôi</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1">Tạo và quản lý bộ câu hỏi của bạn</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Bộ đề của tôi</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">Tạo và quản lý bộ câu hỏi của bạn</p>
           </div>
           <Button
             variant="primary"
             onClick={() => navigate("/expert/question-sets/create-manual")}
+            className="w-full sm:w-auto"
           >
             <span className="inline-flex items-center gap-2">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -111,14 +112,14 @@ function ExpertQuestionSetsPage() {
             </div>
           ) : questionSets.length === 0 ? (
             <div className="p-12 text-center">
-              <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
                   <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Chưa có bộ đề nào</h3>
-              <p className="text-gray-500 dark:text-gray-400 mb-6">Tạo bộ đề đầu tiên của bạn ngay!</p>
-              <Button onClick={() => navigate("/expert/question-sets/create-manual")}>
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Chưa có bộ đề nào</h3>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-6">Tạo bộ đề đầu tiên của bạn ngay!</p>
+              <Button onClick={() => navigate("/expert/question-sets/create-manual")} className="w-full sm:w-auto">
                 Tạo bộ đề mới
               </Button>
             </div>

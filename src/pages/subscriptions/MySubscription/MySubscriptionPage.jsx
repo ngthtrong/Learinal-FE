@@ -1,13 +1,10 @@
-/**
- * My Subscription Page
- * Display current user subscription status and details
- */
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import subscriptionsService from "@/services/api/subscriptions.service";
 import addonPackagesService from "@/services/api/addonPackages.service";
 import Button from "@/components/common/Button";
+import { Footer } from "@/components/layout";
+
 function MySubscriptionPage() {
   const navigate = useNavigate();
   const [subscription, setSubscription] = useState(null);
@@ -205,12 +202,12 @@ function MySubscriptionPage() {
         {/* Empty State */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mb-6">
-              <svg className="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mb-6">
+              <svg className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
               Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
             </p>
@@ -227,17 +224,17 @@ function MySubscriptionPage() {
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
+          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
             <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10">
+              <div className="relative w-8 h-8 sm:w-10 sm:h-10">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl"></div>
                 <div className="absolute inset-0.5 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center">
-                  <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
                 </div>
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
             </div>
           </div>
         </div>
@@ -587,13 +584,7 @@ function MySubscriptionPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

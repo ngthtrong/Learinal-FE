@@ -1,8 +1,3 @@
-/**
- * Quiz Start Page
- * Configure quiz settings before starting (timer, shuffle, etc.)
- */
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import questionSetsService from "@/services/api/questionSets.service";
@@ -10,6 +5,7 @@ import quizAttemptsService from "@/services/api/quizAttempts.service";
 import Button from "@/components/common/Button";
 import { useToast } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { Footer } from "@/components/layout";
 
 function QuizStartPage() {
   const { id } = useParams();
@@ -93,7 +89,7 @@ function QuizStartPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
-      <div className="max-w-3xl mx-auto px-6">
+      <div className="max-w-3xl mx-auto px-6 py-10">
         {/* Header */}
         <div className="mb-6">
           <Button variant="secondary" onClick={() => navigate(`/question-sets/${id}`)}>
@@ -102,11 +98,11 @@ function QuizStartPage() {
         </div>
 
         {/* Quiz Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-8 text-center mb-6">
-          <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-primary-100 dark:bg-primary-900/30">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-6 sm:p-8 text-center mb-6">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-primary-100 dark:bg-primary-900/30">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
             {questionSet.title}
           </h1>
           {questionSet.description && (
@@ -135,8 +131,8 @@ function QuizStartPage() {
         </div>
 
         {/* Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-6 mb-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6m5.657-13.657l-4.243 4.243m-4.243 0L4.93 4.343m12.728 0l-4.242 4.243m-4.243 0L4.93 19.657"></path></svg>
             Cài đặt bài thi
           </h2>
@@ -273,7 +269,7 @@ function QuizStartPage() {
             {starting ? (
               "Đang khởi tạo..."
             ) : (
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex items-center gap-2 ">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
                 Bắt đầu làm bài
               </span>
@@ -283,13 +279,7 @@ function QuizStartPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

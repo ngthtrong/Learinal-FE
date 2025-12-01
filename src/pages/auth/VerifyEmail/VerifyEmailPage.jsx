@@ -131,8 +131,8 @@ const VerifyEmailPage = () => {
           </header>
 
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Xác thực email</h1>
-            <p className="text-gray-600 dark:text-gray-400">Vui lòng chờ trong giây lát...</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Xác thực email</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Vui lòng chờ trong giây lát...</p>
           </div>
 
           <div className="space-y-4">
