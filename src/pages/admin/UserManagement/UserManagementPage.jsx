@@ -133,9 +133,10 @@ function UserManagementPage() {
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý người dùng</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Tìm kiếm, lọc theo vai trò và trạng thái.</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <Button
               variant="secondary"
+              className="w-full sm:w-auto"
               onClick={() => {
                 setQ("");
                 setRole("");
@@ -145,7 +146,7 @@ function UserManagementPage() {
             >
               Đặt lại
             </Button>
-            <Button onClick={fetchUsers}>Làm mới</Button>
+            <Button className="w-full sm:w-auto" onClick={fetchUsers}>Làm mới</Button>
           </div>
         </div>
 
@@ -228,36 +229,37 @@ function UserManagementPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Tên
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Email
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Vai trò
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Trạng thái
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Tạo lúc
                     </th>
-                    <th className="px-6 py-3" />
+                    <th className="px-3 sm:px-6 py-3" />
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {users.map((u) => (
                     <tr key={u.id || u._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                           {u.fullName || u.name || "(Không tên)"}
                         </div>
+                        <div className="md:hidden text-xs text-gray-500 dark:text-gray-400 mt-1">{u.email}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                         <div className="text-gray-700 dark:text-gray-300">{u.email}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         {(() => {
                           const role = u.role || "Learner";
                           const meta = {
@@ -271,10 +273,10 @@ function UserManagementPage() {
                             >
                               {meta.label}
                             </span>
-                          );
+                          );  
                         })()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         {u.status === "Active" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
                             Hoạt động
@@ -289,11 +291,11 @@ function UserManagementPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {formatDate(u.createdAt)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                        <div className="flex gap-2 justify-end">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm">
+                        <div className="flex gap-1 sm:gap-2 justify-end">
                           <Button variant="secondary" size="small" onClick={() => openEdit(u)}>
                             Sửa
                           </Button>
@@ -308,11 +310,11 @@ function UserManagementPage() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
           <div className="text-sm text-gray-600 dark:text-gray-400">
             Hiển thị {users.length} / {total} người dùng
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-end">
             <select
               className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
               value={pageSize}

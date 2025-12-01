@@ -134,9 +134,9 @@ function CommissionRecordsPage() {
 
         {/* Filters + Summary */}
         <div className="mb-6 space-y-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 flex flex-col sm:flex-row gap-4 sm:items-end">
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="md:col-span-2">
                 <Input
                   label={role === "Admin" ? "Tìm theo tên hoặc ExpertId" : "Tìm kiếm"}
                   placeholder={
@@ -166,9 +166,10 @@ function CommissionRecordsPage() {
                 </select>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 variant="secondary"
+                className="w-full sm:w-auto"
                 onClick={() => {
                   setStatus("");
                   setSearch("");
@@ -179,6 +180,7 @@ function CommissionRecordsPage() {
                 Đặt lại
               </Button>
               <Button
+                className="w-full sm:w-auto"
                 onClick={() => {
                   setPage(1);
                   fetchData();
@@ -274,39 +276,39 @@ function CommissionRecordsPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Chuyên gia
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Loại
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Fixed
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Bonus
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Tổng
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Trạng thái
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Tạo lúc
                     </th>
-                    <th className="px-6 py-3" />
+                    <th className="px-3 sm:px-6 py-3" />
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {records.map((r) => (
                     <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                           {r.expertName || r.expertId || "(Không rõ)"}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                         {r.type === "Published" ? (
                           <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
                             Published
@@ -319,22 +321,22 @@ function CommissionRecordsPage() {
                           <span className="text-gray-500">-</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-blue-600 dark:text-blue-400">
+                      <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
+                        <div className="text-blue-600 dark:text-blue-400 text-sm">
                           {formatCurrency(r.fixedAmount || 0)}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-amber-600 dark:text-amber-400">
+                      <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap">
+                        <div className="text-amber-600 dark:text-amber-400 text-sm">
                           {r.bonusAmount > 0 ? formatCurrency(r.bonusAmount) : "-"}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-700 dark:text-gray-300">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                        <div className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                           {formatCurrency(r.commissionAmount || 0)}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         {r.status === "Paid" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
                             Đã trả
@@ -349,7 +351,7 @@ function CommissionRecordsPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {(() => {
                           try {
                             return new Date(r.createdAt).toLocaleString("vi-VN");
@@ -358,11 +360,12 @@ function CommissionRecordsPage() {
                           }
                         })()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                        <div className="flex gap-2 justify-end">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm">
+                        <div className="flex gap-1 sm:gap-2 justify-end">
                           {role === "Admin" && r.status === "Pending" && (
                             <Button size="small" onClick={() => openMarkPaid(r)}>
-                              Đánh dấu trả
+                              <span className="hidden sm:inline">Đánh dấu trả</span>
+                              <span className="sm:hidden">✓</span>
                             </Button>
                           )}
                         </div>
@@ -376,11 +379,11 @@ function CommissionRecordsPage() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
           <div className="text-sm text-gray-600 dark:text-gray-400">
             Hiển thị {records.length} / {total} bản ghi
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-end">
             <select
               className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
               value={pageSize}

@@ -37,10 +37,15 @@ export const adminService = {
   },
 
   /** Monthly financial statistics */
-  getFinancials: async (year) => {
+  getFinancials: async ({ year, startDate, endDate } = {}) => {
+    const params = {};
+    if (year) params.year = year;
+    if (startDate) params.startDate = startDate;
+    if (endDate) params.endDate = endDate;
+    
     const response = await axiosInstance.get(`${ADMIN.STATS.replace("/stats", "")}/financials`, {
       // ADMIN.STATS is /admin/stats so derive /admin/financials
-      params: { year: year || undefined },
+      params,
       headers: { "Cache-Control": "no-cache" },
     });
     return response.data;

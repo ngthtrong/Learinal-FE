@@ -32,7 +32,10 @@ ChartJS.register(
 
 function FinancialsPage() {
   const currentYear = new Date().getFullYear();
+  const [filterMode, setFilterMode] = useState("year"); // "year" or "dateRange"
   const [year, setYear] = useState(currentYear);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -42,7 +45,21 @@ function FinancialsPage() {
     try {
       setLoading(true);
       setError("");
-      const res = await adminService.getFinancials(year);
+      
+      const params = {};
+      if (filterMode === "year") {
+        params.year = year;
+      } else {
+        if (!startDate || !endDate) {
+          setError("Vui lòng chọn đầy đủ ngày bắt đầu và kết thúc");
+          setLoading(false);
+          return;
+        }
+        params.startDate = startDate;
+        params.endDate = endDate;
+      }
+      
+      const res = await adminService.getFinancials(params);
       setData(res);
     } catch (e) {
       console.error(e);
@@ -56,14 +73,32 @@ function FinancialsPage() {
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [year]);
+  }, [year, filterMode]);
 
-  const months = data?.months || [];
+  const months = data?.periods || data?.months || [];
   const totals = data?.totals || { subscriptionRevenue: 0, commissionsPaid: 0, net: 0 };
+  const groupBy = data?.groupBy || 'month';
 
   const formatCurrency = (v) => {
     if (typeof v !== "number") return "0₫";
     return v.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+  };
+
+  const formatMonthLabel = (m) => {
+    if (groupBy === 'day') {
+      return `${m.day}/${m.month}`;
+    }
+    if (m.year) {
+      return `Tháng ${m.month}/${m.year}`;
+    }
+    return `Tháng ${m.month}`;
+  };
+
+  const getPeriodLabel = () => {
+    if (groupBy === 'day') {
+      return 'ngày';
+    }
+    return 'tháng';
   };
 
   const yearsOptions = useMemo(() => {
@@ -82,18 +117,72 @@ function FinancialsPage() {
               Doanh thu theo gói, chi hoa hồng chuyên gia và lợi nhuận ròng.
             </p>
           </div>
-          <div className="flex gap-2">
-            <select
-              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
-              value={year}
-              onChange={(e) => setYear(parseInt(e.target.value, 10))}
-            >
-              {yearsOptions.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            {/* Filter Mode Toggle */}
+            <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+              <button
+                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                  filterMode === "year"
+                    ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                }`}
+                onClick={() => setFilterMode("year")}
+              >
+                Theo năm
+              </button>
+              <button
+                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                  filterMode === "dateRange"
+                    ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                }`}
+                onClick={() => setFilterMode("dateRange")}
+              >
+                Theo khoảng
+              </button>
+            </div>
+
+            {/* Year Selector */}
+            {filterMode === "year" && (
+              <select
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                value={year}
+                onChange={(e) => setYear(parseInt(e.target.value, 10))}
+              >
+                {yearsOptions.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* Date Range Selectors */}
+            {filterMode === "dateRange" && (
+              <>
+                <input
+                  type="date"
+                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  placeholder="Từ ngày"
+                />
+                <input
+                  type="date"
+                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  placeholder="Đến ngày"
+                />
+                <Button
+                  onClick={() => load()}
+                  disabled={!startDate || !endDate || refreshing}
+                >
+                  Áp dụng
+                </Button>
+              </>
+            )}
+
             <Button
               onClick={() => {
                 setRefreshing(true);
@@ -137,7 +226,9 @@ function FinancialsPage() {
         {/* Monthly breakdown */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden mb-8">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Chi tiết theo tháng {year}</h2>
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+              Chi tiết theo {getPeriodLabel()} {filterMode === "year" ? year : "(khoảng đã chọn)"}
+            </h2>
           </div>
           {loading ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
@@ -149,7 +240,7 @@ function FinancialsPage() {
                 <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Tháng
+                      {groupBy === 'day' ? 'Ngày' : 'Tháng'}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Doanh thu gói
@@ -163,12 +254,12 @@ function FinancialsPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {months.map((m) => {
+                  {months.map((m, idx) => {
                     const hasTx = (m.subscriptionRevenue || 0) > 0 || (m.commissionsPaid || 0) > 0;
                     return (
-                      <tr key={m.month} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <tr key={`${m.year}-${m.month}-${m.day || 0}-${idx}`} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-gray-100">
-                          {m.month}
+                          {formatMonthLabel(m)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                           {hasTx ? formatCurrency(m.subscriptionRevenue) : "—"}
@@ -196,7 +287,7 @@ function FinancialsPage() {
               <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Doanh thu & Hoa hồng</h2>
               <Bar
                 data={{
-                  labels: months.map((m) => m.month),
+                  labels: months.map((m) => formatMonthLabel(m)),
                   datasets: [
                     {
                       label: "Doanh thu gói",
@@ -256,7 +347,7 @@ function FinancialsPage() {
               <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Xu hướng lợi nhuận ròng</h2>
               <Line
                 data={{
-                  labels: months.map((m) => m.month),
+                  labels: months.map((m) => formatMonthLabel(m)),
                   datasets: [
                     {
                       label: "Lợi nhuận ròng",

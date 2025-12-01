@@ -86,9 +86,9 @@ function SubscriptionPurchasesPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 flex flex-col sm:flex-row gap-4 sm:items-end mb-6">
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="sm:col-span-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="md:col-span-2">
               <Input
                 label="Tìm theo tên hoặc tên gói"
                 placeholder="Nhập từ khóa..."
@@ -120,9 +120,10 @@ function SubscriptionPurchasesPage() {
               </select>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button
               variant="secondary"
+              className="w-full sm:w-auto"
               onClick={() => {
                 setSearch("");
                 setPage(1);
@@ -132,6 +133,7 @@ function SubscriptionPurchasesPage() {
               Đặt lại
             </Button>
             <Button
+              className="w-full sm:w-auto"
               onClick={() => {
                 setPage(1);
                 fetchData();
@@ -158,25 +160,25 @@ function SubscriptionPurchasesPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Người dùng
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Gói
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Chu kỳ
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Giá
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Trạng thái
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Bắt đầu
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Kết thúc
                     </th>
                   </tr>
@@ -184,23 +186,30 @@ function SubscriptionPurchasesPage() {
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {items.map((r) => (
                     <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-gray-100">
-                        {r.userName || "(N/A)"}
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
+                          {r.userName || "(N/A)"}
+                        </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
-                        {r.planName || "—"}
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="text-gray-700 dark:text-gray-300 text-sm sm:text-base">
+                          {r.planName || "—"}
+                        </div>
+                        <div className="sm:hidden text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          {formatCurrency(r.price || 0)}
+                        </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
+                      <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {r.billingCycle === "Monthly"
                           ? "Tháng"
                           : r.billingCycle === "Yearly"
                           ? "Năm"
                           : "—"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
+                      <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {formatCurrency(r.price || 0)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         {(() => {
                           const meta = statusMeta[r.status] || {
                             label: r.status || "—",
@@ -215,7 +224,7 @@ function SubscriptionPurchasesPage() {
                           );
                         })()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {(() => {
                           try {
                             return r.startDate
@@ -226,7 +235,7 @@ function SubscriptionPurchasesPage() {
                           }
                         })()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {(() => {
                           try {
                             return r.endDate
@@ -246,7 +255,7 @@ function SubscriptionPurchasesPage() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
           <div className="text-sm text-gray-600 dark:text-gray-400">
             Hiển thị {items.length} / {total} bản ghi
           </div>

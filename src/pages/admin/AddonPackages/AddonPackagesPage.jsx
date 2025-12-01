@@ -158,11 +158,11 @@ function AdminAddonPackagesPage() {
               Tạo, chỉnh sửa các gói cộng dồn lượt tạo đề và kiểm duyệt. Gói add-on sẽ có hiệu lực theo chu kỳ gói hiện tại của learner.
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={fetchPackages}>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Button variant="secondary" className="w-full sm:w-auto" onClick={fetchPackages}>
               Làm mới
             </Button>
-            <Button onClick={openCreate}>Thêm gói</Button>
+            <Button className="w-full sm:w-auto" onClick={openCreate}>Thêm gói</Button>
           </div>
         </div>
 
@@ -204,50 +204,53 @@ function AdminAddonPackagesPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Tên gói
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Giá
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Lượt tạo đề
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Lượt kiểm duyệt
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Trạng thái
                     </th>
-                    <th className="px-6 py-3" />
+                    <th className="px-3 sm:px-6 py-3" />
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {packages.map((pkg) => (
                     <tr key={pkg.id || pkg._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                           {pkg.packageName}
                         </div>
                         {pkg.description && (
-                          <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+                          <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
                             {pkg.description}
                           </div>
                         )}
+                        <div className="sm:hidden text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          {formatPrice(pkg.price)}
+                        </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
+                      <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {formatPrice(pkg.price)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         {pkg.additionalTestGenerations > 0 ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
                             +{pkg.additionalTestGenerations} lượt
                           </span>
                         ) : (
-                          <span className="text-gray-400">-</span>
+                          <span className="text-gray-400 text-sm">-</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                         {pkg.additionalValidationRequests > 0 ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
                             +{pkg.additionalValidationRequests} lượt
@@ -256,7 +259,7 @@ function AdminAddonPackagesPage() {
                           <span className="text-gray-400">-</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap">
                         {pkg.status === "Active" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
                             Đang hoạt động
@@ -267,13 +270,15 @@ function AdminAddonPackagesPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                        <div className="flex gap-2 justify-end">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right">
+                        <div className="flex gap-1 sm:gap-2 justify-end">
                           <Button size="small" variant="secondary" onClick={() => openEdit(pkg)}>
-                            Sửa
+                            <span className="hidden sm:inline">Sửa</span>
+                            <span className="sm:hidden">✏️</span>
                           </Button>
                           <Button size="small" variant="danger" onClick={() => setConfirmDelete(pkg)}>
-                            Xóa
+                            <span className="hidden sm:inline">Xóa</span>
+                            <span className="sm:hidden">🗑️</span>
                           </Button>
                         </div>
                       </td>

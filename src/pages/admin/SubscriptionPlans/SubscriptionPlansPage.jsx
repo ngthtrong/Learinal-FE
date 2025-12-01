@@ -167,11 +167,11 @@ function AdminSubscriptionPlansPage() {
               Tạo, chỉnh sửa, kích hoạt/vô hiệu hóa các gói nâng cấp.
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={fetchPlans}>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Button variant="secondary" className="w-full sm:w-auto" onClick={fetchPlans}>
               Làm mới
             </Button>
-            <Button onClick={openCreate}>Thêm gói</Button>
+            <Button className="w-full sm:w-auto" onClick={openCreate}>Thêm gói</Button>
           </div>
         </div>
 
@@ -208,37 +208,40 @@ function AdminSubscriptionPlansPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Tên gói
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Chu kỳ
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Giá
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Trạng thái
                     </th>
-                    <th className="px-6 py-3" />
+                    <th className="px-3 sm:px-6 py-3" />
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {plans.map((p) => (
                     <tr key={p.id || p._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-900 dark:text-gray-100">{p.planName}</div>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">{p.planName}</div>
                         {p.description && (
-                          <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{p.description}</div>
+                          <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{p.description}</div>
                         )}
+                        <div className="sm:hidden text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          {p.billingCycle === "Monthly" ? "Tháng" : "Năm"}
+                        </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
+                      <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {p.billingCycle === "Monthly" ? "Tháng" : "Năm"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                         {formatPrice(p.price)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                         {p.status === "Active" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
                             Đang hoạt động
@@ -253,13 +256,15 @@ function AdminSubscriptionPlansPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                        <div className="flex gap-2 justify-end">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right">
+                        <div className="flex gap-1 sm:gap-2 justify-end">
                           <Button size="small" variant="secondary" onClick={() => openEdit(p)}>
-                            Sửa
+                            <span className="hidden sm:inline">Sửa</span>
+                            <span className="sm:hidden">✏️</span>
                           </Button>
                           <Button size="small" variant="danger" onClick={() => setConfirmDelete(p)}>
-                            Xóa
+                            <span className="hidden sm:inline">Xóa</span>
+                            <span className="sm:hidden">🗑️</span>
                           </Button>
                         </div>
                       </td>
