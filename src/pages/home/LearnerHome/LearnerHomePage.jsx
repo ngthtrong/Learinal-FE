@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { documentsService, subjectsService, questionSetsService } from "@/services/api";
-import { CardGrid, CategoryCard } from "@/components/common";
+import { CardGrid, CategoryCard, Modal, Button, useToast } from "@/components/common";
 import { Footer } from "@/components/layout";
+import { CreateQuizModal } from "@/components/questionSets";
 import SubjectsIcon from "@/components/icons/SubjectsIcon";
 import BookIcon from "@/components/icons/BookIcon";
 import DocumentIcon from "@/components/icons/DocumentIcon";
@@ -11,6 +12,8 @@ import PenIcon from "@/components/icons/PenIcon";
 const LearnerHomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const toast = useToast();
+  const fileInputRef = useRef(null);
 
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,6 +21,17 @@ const LearnerHomePage = () => {
   const [_hasSearched, setHasSearched] = useState(false);
   const [submittedQ, setSubmittedQ] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
+  
+  // Modal states
+  const [isCreateQuizModalOpen, setIsCreateQuizModalOpen] = useState(false);
+  const [isUploadDocModalOpen, setIsUploadDocModalOpen] = useState(false);
+  const [uploadSubjects, setUploadSubjects] = useState([]);
+  const [selectedUploadSubject, setSelectedUploadSubject] = useState(null);
+  const [uploadFile, setUploadFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [generatingQuiz, setGeneratingQuiz] = useState(false);
+  
   const [lists, setLists] = useState({
     mySets: [],
     publicSets: [],
@@ -239,6 +253,86 @@ const LearnerHomePage = () => {
     return Array.from(map.values());
   }, [lists.myDocuments]);
 
+  // Handle opening upload document modal
+  const handleOpenUploadDocModal = async () => {
+    try {
+      const response = await subjectsService.getSubjects({ pageSize: 100 });
+      setUploadSubjects(response.items || []);
+      setSelectedUploadSubject(null);
+      setUploadFile(null);
+      setIsUploadDocModalOpen(true);
+    } catch (err) {
+      console.error("Failed to fetch subjects:", err);
+      toast.showError("Không thể tải danh sách môn học");
+    }
+  };
+
+  // Handle file selection for upload
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const allowedTypes = [".pdf", ".docx", ".txt"];
+      const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+      if (!allowedTypes.includes(ext)) {
+        toast.showError("Chỉ hỗ trợ file .pdf, .docx, .txt");
+        return;
+      }
+      if (file.size > 20 * 1024 * 1024) {
+        toast.showError("File không được vượt quá 20MB");
+        return;
+      }
+      setUploadFile(file);
+    }
+  };
+
+  // Handle document upload
+  const handleUploadDocument = async () => {
+    if (!selectedUploadSubject) {
+      toast.showError("Vui lòng chọn môn học");
+      return;
+    }
+    if (!uploadFile) {
+      toast.showError("Vui lòng chọn file");
+      return;
+    }
+
+    try {
+      setUploading(true);
+      await documentsService.uploadDocument(uploadFile, selectedUploadSubject.id || selectedUploadSubject._id);
+      toast.showSuccess("Tải tài liệu thành công!");
+      setIsUploadDocModalOpen(false);
+      // Refresh documents list
+      window.location.reload();
+    } catch (err) {
+      console.error("Upload failed:", err);
+      toast.showError(err.response?.data?.message || "Tải tài liệu thất bại");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Handle quiz generation from CreateQuizModal
+  const handleGenerateQuiz = async (data) => {
+    try {
+      setGeneratingQuiz(true);
+      const response = await questionSetsService.generateQuestions(data);
+      toast.showSuccess("Tạo bộ đề thành công!");
+      setIsCreateQuizModalOpen(false);
+      // Navigate to the new quiz
+      const quizId = response?.id || response?._id || response?.data?.id;
+      if (quizId) {
+        navigate(`/quiz/${quizId}`);
+      } else {
+        navigate("/quiz");
+      }
+    } catch (err) {
+      console.error("Generate quiz failed:", err);
+      toast.showError(err.response?.data?.message || "Tạo bộ đề thất bại");
+    } finally {
+      setGeneratingQuiz(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header with Search */}
@@ -313,6 +407,18 @@ const LearnerHomePage = () => {
           </div>
           {subjectsToShow.length > 0 ? (
             <CardGrid>
+              {/* Add new subject card */}
+              <div
+                onClick={() => navigate("/subjects/create")}
+                className="group cursor-pointer bg-gray-50 dark:bg-gray-800/50 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 flex flex-col items-center justify-center min-h-[120px] sm:min-h-[140px]"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gray-200 dark:bg-gray-700 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50 flex items-center justify-center transition-colors">
+                  <span className="text-2xl sm:text-3xl font-light text-gray-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">+</span>
+                </div>
+                <span className="mt-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 font-medium transition-colors">
+                  Thêm môn học
+                </span>
+              </div>
               {subjectsToShow.map((it) => (
                 <CategoryCard
                   key={it._id || it.id}
@@ -323,6 +429,7 @@ const LearnerHomePage = () => {
                   onClick={() => navigate(`/subjects/${it._id || it.id}`)}
                 />
               ))}
+              
             </CardGrid>
           ) : (
             <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
@@ -333,6 +440,68 @@ const LearnerHomePage = () => {
                 className="mt-4 text-sm sm:text-base text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Tạo môn học đầu tiên
+              </button>
+            </div>
+          )}
+        </section>
+
+        {/* Tài liệu Section */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2
+              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate("/documents")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") navigate("/documents");
+              }}
+            >
+              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              </div>
+              Tài Liệu{myDocumentsDedup?.length ? ` (${myDocumentsDedup.length})` : ""}
+            </h2>
+            <button
+              onClick={() => navigate("/documents")}
+              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+            >
+              Xem tất cả →
+            </button>
+          </div>
+          {myDocumentsDedup.length > 0 ? (
+            <CardGrid>
+              {/* Add new document card */}
+              <div
+                onClick={handleOpenUploadDocModal}
+                className="group cursor-pointer bg-gray-50 dark:bg-gray-800/50 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 flex flex-col items-center justify-center min-h-[120px] sm:min-h-[140px]"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gray-200 dark:bg-gray-700 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50 flex items-center justify-center transition-colors">
+                  <span className="text-2xl sm:text-3xl font-light text-gray-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">+</span>
+                </div>
+                <span className="mt-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 font-medium transition-colors">
+                  Thêm tài liệu
+                </span>
+              </div>
+              {myDocumentsDedup.map((it) => (
+                <CategoryCard
+                  key={it._id || it.id}
+                  title={it.originalFileName || it.fileName || it.name || it.filename || it.title}
+                  cta=""
+                  Icon={DocumentIcon}
+                  onClick={() => navigate(`/documents/${it._id || it.id}`)}
+                />
+              ))}
+            </CardGrid>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <DocumentIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
+              <p className="text-gray-500 dark:text-gray-400">Chưa có tài liệu nào</p>
+              <button
+                onClick={handleOpenUploadDocModal}
+                className="mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+              >
+                Tải lên tài liệu đầu tiên
               </button>
             </div>
           )}
@@ -364,6 +533,18 @@ const LearnerHomePage = () => {
           </div>
           {lists.mySets.length > 0 ? (
             <CardGrid>
+              {/* Add new question set card */}
+              <div
+                onClick={() => setIsCreateQuizModalOpen(true)}
+                className="group cursor-pointer bg-gray-50 dark:bg-gray-800/50 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 flex flex-col items-center justify-center min-h-[120px] sm:min-h-[140px]"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gray-200 dark:bg-gray-700 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50 flex items-center justify-center transition-colors">
+                  <span className="text-2xl sm:text-3xl font-light text-gray-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">+</span>
+                </div>
+                <span className="mt-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 font-medium transition-colors">
+                  Tạo bộ đề
+                </span>
+              </div>
               {lists.mySets.map((it) => (
                 <CategoryCard
                   key={it._id || it.id}
@@ -377,9 +558,9 @@ const LearnerHomePage = () => {
           ) : (
             <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
               <BookIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
-              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">Chưa có môn học nào</p>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">Chưa có bộ đề nào</p>
               <button
-                onClick={() => navigate("/subjects/create")}
+                onClick={() => setIsCreateQuizModalOpen(true)}
                 className="mt-4 text-sm sm:text-base text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Tạo bộ đề đầu tiên
@@ -428,56 +609,6 @@ const LearnerHomePage = () => {
             <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
               <GlobeIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
               <p className="text-gray-500 dark:text-gray-400">Chưa có bộ đề công khai</p>
-            </div>
-          )}
-        </section>
-
-        {/* Tài liệu Section */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2
-              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
-              role="button"
-              tabIndex={0}
-              onClick={() => navigate("/documents")}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") navigate("/documents");
-              }}
-            >
-              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-              </div>
-              Tài Liệu{myDocumentsDedup?.length ? ` (${myDocumentsDedup.length})` : ""}
-            </h2>
-            <button
-              onClick={() => navigate("/documents")}
-              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
-            >
-              Xem tất cả →
-            </button>
-          </div>
-          {myDocumentsDedup.length > 0 ? (
-            <CardGrid>
-              {myDocumentsDedup.map((it) => (
-                <CategoryCard
-                  key={it._id || it.id}
-                  title={it.originalFileName || it.fileName || it.name || it.filename || it.title}
-                  cta=""
-                  Icon={DocumentIcon}
-                  onClick={() => navigate(`/documents/${it._id || it.id}`)}
-                />
-              ))}
-            </CardGrid>
-          ) : (
-            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <DocumentIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
-              <p className="text-gray-500 dark:text-gray-400">Chưa có tài liệu nào</p>
-              <button
-                onClick={() => navigate("/documents/upload")}
-                className="mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
-              >
-                Tải lên tài liệu đầu tiên
-              </button>
             </div>
           )}
         </section>
@@ -605,6 +736,185 @@ const LearnerHomePage = () => {
           </div>
         </div>
       )}
+
+      {/* Create Quiz Modal */}
+      <CreateQuizModal
+        isOpen={isCreateQuizModalOpen}
+        onClose={() => setIsCreateQuizModalOpen(false)}
+        onGenerate={handleGenerateQuiz}
+        loading={generatingQuiz}
+      />
+
+      {/* Upload Document Modal */}
+      <Modal
+        isOpen={isUploadDocModalOpen}
+        onClose={() => {
+          setIsUploadDocModalOpen(false);
+          setSelectedUploadSubject(null);
+          setUploadFile(null);
+        }}
+        title="Thêm tài liệu mới"
+        size="md"
+      >
+        <div className="space-y-6">
+          {/* Subject Selection - Dropdown like CreateQuizModal */}
+          <div className="form-group">
+            <label htmlFor="upload-subject-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Chọn môn học <span className="text-red-500 dark:text-red-400">*</span>
+            </label>
+            <select
+              id="upload-subject-select"
+              value={selectedUploadSubject?.id || selectedUploadSubject?._id || ""}
+              onChange={(e) => {
+                const subject = uploadSubjects.find((s) => (s.id || s._id) === e.target.value);
+                setSelectedUploadSubject(subject || null);
+              }}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              required
+            >
+              <option value="">-- Chọn môn học --</option>
+              {uploadSubjects.map((subject) => (
+                <option key={subject.id || subject._id} value={subject.id || subject._id}>
+                  {subject.subjectName || subject.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Show subject info if selected */}
+          {selectedUploadSubject && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="text-blue-600 dark:text-blue-400">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">
+                    Môn học: {selectedUploadSubject.subjectName || selectedUploadSubject.name}
+                  </p>
+                  <p className="text-sm text-blue-700 dark:text-blue-400">
+                    Tài liệu sẽ được thêm vào môn học này
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* File Upload - Only show when subject is selected */}
+          {selectedUploadSubject && (
+            <div className="form-group">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Chọn file <span className="text-red-500 dark:text-red-400">*</span>
+              </label>
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.add("border-primary-500", "bg-primary-50", "dark:bg-primary-900/20");
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove("border-primary-500", "bg-primary-50", "dark:bg-primary-900/20");
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove("border-primary-500", "bg-primary-50", "dark:bg-primary-900/20");
+                  const files = e.dataTransfer.files;
+                  if (files.length > 0) {
+                    const file = files[0];
+                    const validTypes = [".pdf", ".docx", ".txt"];
+                    const ext = "." + file.name.split(".").pop().toLowerCase();
+                    if (validTypes.includes(ext)) {
+                      setUploadFile(file);
+                    }
+                  }
+                }}
+                className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all ${
+                  uploadFile 
+                    ? "border-green-400 dark:border-green-500 bg-green-50 dark:bg-green-900/20" 
+                    : "border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500"
+                }`}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.docx,.txt"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                {uploadFile ? (
+                  <div className="flex items-center justify-center gap-3">
+                    <DocumentIcon className="w-10 h-10 text-green-600 dark:text-green-400" />
+                    <div className="text-left">
+                      <p className="font-medium text-gray-900 dark:text-gray-100">{uploadFile.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {(uploadFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setUploadFile(null);
+                        }}
+                        className="text-xs text-red-600 dark:text-red-400 hover:underline mt-1"
+                      >
+                        Xóa và chọn file khác
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <DocumentIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-2" />
+                    <p className="text-gray-600 dark:text-gray-400">
+                      Kéo thả file vào đây hoặc click để chọn
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
+                      Hỗ trợ: PDF, DOCX, TXT (tối đa 20MB)
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Upload Progress */}
+          {uploading && uploadProgress > 0 && (
+            <div>
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-gray-600 dark:text-gray-400">Đang tải lên...</span>
+                <span className="text-primary-600 dark:text-primary-400 font-medium">{uploadProgress}%</span>
+              </div>
+              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-primary-500 rounded-full transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setIsUploadDocModalOpen(false);
+                setSelectedUploadSubject(null);
+                setUploadFile(null);
+              }}
+              disabled={uploading}
+            >
+              Hủy
+            </Button>
+            <Button
+              onClick={handleUploadDocument}
+              disabled={!selectedUploadSubject || !uploadFile || uploading}
+              loading={uploading}
+            >
+              {uploading ? "Đang tải..." : "Tải lên"}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -270,7 +270,6 @@ function SubjectDetailPage() {
         {topics.map((topic, index) => (
           <li key={index} className="topic-item">
             <div className="topic-content">
-              <span className="topic-id">{topic.topicId}: </span>
               <span className="topic-name">{topic.topicName}</span>
             </div>
             {topic.childTopics && topic.childTopics.length > 0 && (

@@ -13,6 +13,7 @@ const DEFAULT_ADDON = {
   price: 0,
   additionalTestGenerations: 0,
   additionalValidationRequests: 0,
+  additionalDocumentUploads: 0,
   packageType: "stackable",
   maxPurchasesPerUser: 0,
   displayOrder: 0,
@@ -68,6 +69,7 @@ function AdminAddonPackagesPage() {
       price: pkg.price || 0,
       additionalTestGenerations: pkg.additionalTestGenerations || 0,
       additionalValidationRequests: pkg.additionalValidationRequests || 0,
+      additionalDocumentUploads: pkg.additionalDocumentUploads || 0,
       packageType: pkg.packageType || "stackable",
       maxPurchasesPerUser: pkg.maxPurchasesPerUser || 0,
       displayOrder: pkg.displayOrder || 0,
@@ -86,6 +88,7 @@ function AdminAddonPackagesPage() {
         price: Number(form.price) || 0,
         additionalTestGenerations: Number(form.additionalTestGenerations) || 0,
         additionalValidationRequests: Number(form.additionalValidationRequests) || 0,
+        additionalDocumentUploads: Number(form.additionalDocumentUploads) || 0,
         packageType: form.packageType,
         maxPurchasesPerUser: Number(form.maxPurchasesPerUser) || 0,
         displayOrder: Number(form.displayOrder) || 0,
@@ -97,8 +100,8 @@ function AdminAddonPackagesPage() {
         return;
       }
 
-      if (payload.additionalTestGenerations === 0 && payload.additionalValidationRequests === 0) {
-        toast.showError("Gói cần có ít nhất 1 lượt tạo đề hoặc kiểm duyệt");
+      if (payload.additionalTestGenerations === 0 && payload.additionalValidationRequests === 0 && payload.additionalDocumentUploads === 0) {
+        toast.showError("Gói cần có ít nhất 1 lượt tạo đề, kiểm duyệt hoặc tải tài liệu");
         return;
       }
 
@@ -216,6 +219,9 @@ function AdminAddonPackagesPage() {
                     <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Lượt kiểm duyệt
                     </th>
+                    <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Lượt tài liệu
+                    </th>
                     <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Trạng thái
                     </th>
@@ -254,6 +260,15 @@ function AdminAddonPackagesPage() {
                         {pkg.additionalValidationRequests > 0 ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
                             +{pkg.additionalValidationRequests} lượt
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
+                        {pkg.additionalDocumentUploads > 0 ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
+                            +{pkg.additionalDocumentUploads} lượt
                           </span>
                         ) : (
                           <span className="text-gray-400">-</span>
@@ -334,6 +349,14 @@ function AdminAddonPackagesPage() {
                 min="0"
               />
             </div>
+
+            <Input
+              label="Số lượt tải tài liệu thêm"
+              type="number"
+              value={form.additionalDocumentUploads}
+              onChange={(e) => setForm({ ...form, additionalDocumentUploads: e.target.value })}
+              min="0"
+            />
 
             <div className="grid grid-cols-2 gap-4">
               <div>

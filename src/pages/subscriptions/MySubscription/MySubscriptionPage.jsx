@@ -11,7 +11,7 @@ function MySubscriptionPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cancelling, setCancelling] = useState(false);
-  const [addonQuota, setAddonQuota] = useState({ totalTestGenerations: 0, totalValidationRequests: 0 });
+  const [addonQuota, setAddonQuota] = useState({ totalTestGenerations: 0, totalValidationRequests: 0, totalDocumentUploads: 0 });
   const [usageStats, setUsageStats] = useState({
     usedTestGenerations: 0,
     usedValidationRequests: 0,
@@ -19,8 +19,13 @@ function MySubscriptionPage() {
     maxValidationRequests: 0,
     addonTestGenerations: 0,
     addonValidationRequests: 0,
+    addonDocumentUploads: 0,
     addonPurchasedTestGenerations: 0,
-    addonPurchasedValidationRequests: 0
+    addonPurchasedValidationRequests: 0,
+    addonPurchasedDocumentUploads: 0,
+    usedTotalDocuments: 0,
+    maxTotalDocuments: 0,
+    maxDocumentsPerSubject: 0
   });
 
   useEffect(() => {
@@ -107,6 +112,38 @@ function MySubscriptionPage() {
       style: "currency",
       currency: "VND",
     }).format(price);
+  };
+
+  // Định nghĩa thứ tự hiển thị cố định cho entitlements
+  const ENTITLEMENT_ORDER = [
+    "maxMonthlyTestGenerations",
+    "maxValidationRequests",
+    "priorityProcessing",
+    "canShare",
+    "maxSubjects",
+    "maxDocumentsPerSubject",
+    "maxTotalDocuments",
+  ];
+
+  const formatEntitlementLabel = (key) => {
+    const labels = {
+      maxSubjects: "Số môn học",
+      maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
+      maxValidationRequests: "Số yêu cầu kiểm duyệt",
+      maxDocumentsPerSubject: "Số tài liệu/môn học",
+      maxTotalDocuments: "Tổng số tài liệu",
+      priorityProcessing: "Xử lý ưu tiên",
+      canShare: "Cho phép chia sẻ",
+    };
+    return labels[key] || key;
+  };
+
+  // Hàm sắp xếp entitlements theo thứ tự cố định (loại bỏ các key không muốn hiển thị)
+  const getSortedEntitlements = (entitlements, excludeKeys = []) => {
+    if (!entitlements) return [];
+    return ENTITLEMENT_ORDER
+      .filter(key => key in entitlements && !excludeKeys.includes(key))
+      .map(key => [key, entitlements[key]]);
   };
 
   const formatEntitlementValue = (value) => {
@@ -442,7 +479,7 @@ function MySubscriptionPage() {
                 </Button>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {/* Lượt tạo đề */}
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800">
                   <div className="flex items-center justify-between mb-3">
@@ -540,10 +577,59 @@ function MySubscriptionPage() {
                     </div>
                   )}
                 </div>
+
+                {/* Tài liệu còn lại */}
+                <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-5 border border-green-200 dark:border-green-800">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-green-700 dark:text-green-300 font-medium">Lượt tải tài liệu còn lại</span>
+                    <div className="w-10 h-10 bg-green-200 dark:bg-green-800 rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-2">
+                    {(() => {
+                      const maxVal = usageStats.maxTotalDocuments ?? 0;
+                      const used = usageStats.usedTotalDocuments ?? 0;
+                      const addonRemaining = usageStats.addonDocumentUploads ?? 0;
+                      const addonPurchased = usageStats.addonPurchasedDocumentUploads ?? 0;
+                      
+                      if (maxVal === -1) {
+                        return (
+                          <>
+                            <span className="text-3xl font-bold text-green-800 dark:text-green-200">∞</span>
+                            <span className="text-green-600 dark:text-green-400 text-sm mb-1">không giới hạn</span>
+                          </>
+                        );
+                      }
+                      
+                      // Số còn lại = (max từ gói - đã dùng) + addon còn lại
+                      const remainingFromSubscription = Math.max(0, maxVal - used);
+                      const totalRemaining = remainingFromSubscription + addonRemaining;
+                      // Tổng ban đầu = max từ gói + addon đã mua (không đổi)
+                      const totalLimit = maxVal + addonPurchased;
+                      
+                      return (
+                        <>
+                          <span className="text-3xl font-bold text-green-800 dark:text-green-200">{totalRemaining}</span>
+                          <span className="text-green-600 dark:text-green-400 text-sm mb-1">/ {totalLimit} lượt</span>
+                        </>
+                      );
+                    })()}
+                  </div>
+                  {usageStats.addonPurchasedDocumentUploads > 0 && (
+                    <div className="mt-2 pt-2 border-t border-green-200 dark:border-green-700">
+                      <span className="text-sm text-green-600 dark:text-green-400">
+                        Bao gồm <span className="font-semibold">{usageStats.addonPurchasedDocumentUploads}</span> lượt từ gói mua thêm
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Other Entitlements */}
-              {subscription.entitlementsSnapshot && Object.keys(subscription.entitlementsSnapshot).filter(key => !["maxMonthlyTestGenerations", "maxValidationRequests"].includes(key)).length > 0 && (
+              {subscription.entitlementsSnapshot && getSortedEntitlements(subscription.entitlementsSnapshot, ["maxMonthlyTestGenerations", "maxValidationRequests"]).length > 0 && (
                 <>
                   <div className="flex items-center gap-2 mb-4">
                     <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -552,8 +638,7 @@ function MySubscriptionPage() {
                     <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Quyền lợi khác</h3>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {Object.entries(subscription.entitlementsSnapshot)
-                      .filter(([key]) => !["maxMonthlyTestGenerations", "maxValidationRequests"].includes(key))
+                    {getSortedEntitlements(subscription.entitlementsSnapshot, ["maxMonthlyTestGenerations", "maxValidationRequests"])
                       .map(([key, value]) => (
                       <div
                         key={key}
@@ -561,7 +646,7 @@ function MySubscriptionPage() {
                       >
                         <span className="text-primary-600 dark:text-primary-400 font-bold text-xl">✓</span>
                         <div className="flex-1">
-                          <span className="text-gray-900 dark:text-gray-100 font-semibold block">{key}</span>
+                          <span className="text-gray-900 dark:text-gray-100 font-semibold block">{formatEntitlementLabel(key)}</span>
                           <span className="text-gray-700 dark:text-gray-300 text-sm">
                             {formatEntitlementValue(value)}
                           </span>

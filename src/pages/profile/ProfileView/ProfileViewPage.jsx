@@ -67,15 +67,36 @@ function ProfileViewPage() {
     }
   };
 
+  // Định nghĩa thứ tự hiển thị cố định cho entitlements
+  const ENTITLEMENT_ORDER = [
+    "maxMonthlyTestGenerations",
+    "maxValidationRequests",
+    "priorityProcessing",
+    "canShare",
+    "maxSubjects",
+    "maxDocumentsPerSubject",
+    "maxTotalDocuments",
+  ];
+
   const formatEntitlementLabel = (key) => {
     const labels = {
       maxSubjects: "Số môn học",
       maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
       maxValidationRequests: "Số yêu cầu kiểm duyệt",
+      maxDocumentsPerSubject: "Số tài liệu/môn học",
+      maxTotalDocuments: "Tổng số tài liệu",
       priorityProcessing: "Xử lý ưu tiên",
       canShare: "Cho phép chia sẻ",
     };
     return labels[key] || key;
+  };
+
+  // Hàm sắp xếp entitlements theo thứ tự cố định
+  const getSortedEntitlements = (entitlements) => {
+    if (!entitlements) return [];
+    return ENTITLEMENT_ORDER
+      .filter(key => key in entitlements)
+      .map(key => [key, entitlements[key]]);
   };
 
   const formatEntitlementValue = (value) => {
@@ -369,7 +390,7 @@ function ProfileViewPage() {
                           Quyền lợi của gói:
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {Object.entries(subscription.entitlementsSnapshot).map(([key, value]) => (
+                          {getSortedEntitlements(subscription.entitlementsSnapshot).map(([key, value]) => (
                             <div key={key} className="flex items-start gap-2">
                               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400 flex-shrink-0 mt-0.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                               <span className="text-gray-700 dark:text-gray-300 text-sm">

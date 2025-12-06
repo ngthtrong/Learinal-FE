@@ -99,6 +99,17 @@ function SubscriptionPlansPage() {
     }).format(price);
   };
 
+  // Định nghĩa thứ tự hiển thị cố định cho entitlements
+  const ENTITLEMENT_ORDER = [
+    "maxMonthlyTestGenerations",
+    "maxValidationRequests",
+    "priorityProcessing",
+    "canShare",
+    "maxSubjects",
+    "maxDocumentsPerSubject",
+    "maxTotalDocuments",
+  ];
+
   const formatEntitlementLabel = (key) => {
     const labels = {
       maxSubjects: "Số môn học",
@@ -106,8 +117,18 @@ function SubscriptionPlansPage() {
       maxValidationRequests: "Số yêu cầu kiểm duyệt",
       priorityProcessing: "Xử lý ưu tiên",
       canShare: "Cho phép chia sẻ",
+      maxDocumentsPerSubject: "Số tài liệu/môn học",
+      maxTotalDocuments: "Tổng số tài liệu",
     };
     return labels[key] || key;
+  };
+
+  // Hàm sắp xếp entitlements theo thứ tự cố định
+  const getSortedEntitlements = (entitlements) => {
+    if (!entitlements) return [];
+    return ENTITLEMENT_ORDER
+      .filter(key => key in entitlements)
+      .map(key => [key, entitlements[key]]);
   };
 
   const formatEntitlementValue = (value) => {
@@ -288,7 +309,7 @@ function SubscriptionPlansPage() {
                           Quyền lợi:
                         </h4>
                         <ul className="space-y-2">
-                          {Object.entries(plan.entitlements).map(([key, value]) => (
+                          {getSortedEntitlements(plan.entitlements).map(([key, value]) => (
                             <li key={key} className="flex items-start gap-2.5">
                               <span className="text-primary-600 dark:text-primary-400 font-bold text-lg flex-shrink-0">
                                 ✓

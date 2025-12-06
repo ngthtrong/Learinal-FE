@@ -11,6 +11,8 @@ const DEFAULT_ENTITLEMENTS = {
   priorityProcessing: false,
   canShare: false,
   maxSubjects: 10,
+  maxDocumentsPerSubject: 20,
+  maxTotalDocuments: 100,
 };
 
 function AdminSubscriptionPlansPage() {
@@ -40,6 +42,8 @@ function AdminSubscriptionPlansPage() {
       maxValidationRequests: "Số yêu cầu kiểm duyệt",
       priorityProcessing: "Xử lý ưu tiên",
       canShare: "Cho phép chia sẻ",
+      maxDocumentsPerSubject: "Số tài liệu/môn học",
+      maxTotalDocuments: "Tổng số tài liệu",
     };
     return labels[key] || key;
   };
@@ -371,6 +375,38 @@ function AdminSubscriptionPlansPage() {
                       entitlements: {
                         ...form.entitlements,
                         maxSubjects: Number(e.target.value),
+                      },
+                    })
+                  }
+                />
+
+                {/* maxDocumentsPerSubject */}
+                <Input
+                  label={formatEntitlementLabel("maxDocumentsPerSubject")}
+                  type="number"
+                  value={form.entitlements.maxDocumentsPerSubject || 20}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      entitlements: {
+                        ...form.entitlements,
+                        maxDocumentsPerSubject: Number(e.target.value),
+                      },
+                    })
+                  }
+                />
+
+                {/* maxTotalDocuments */}
+                <Input
+                  label={formatEntitlementLabel("maxTotalDocuments")}
+                  type="number"
+                  value={form.entitlements.maxTotalDocuments || 100}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      entitlements: {
+                        ...form.entitlements,
+                        maxTotalDocuments: Number(e.target.value),
                       },
                     })
                   }
