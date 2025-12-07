@@ -6,11 +6,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/common";
 import questionSetsService from "@/services/api/questionSets.service";
+import contentFlagsService from "@/services/api/contentFlags.service";
 import { useToast } from "@/components/common";
 import { formatDate } from "@/utils/formatters";
 
 function ExpertQuestionSetsPage() {
   const [questionSets, setQuestionSets] = useState([]);
+  const [flagsMap, setFlagsMap] = useState({}); // Map of setId -> flags array
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { showError, showSuccess } = useToast();
@@ -25,7 +27,27 @@ function ExpertQuestionSetsPage() {
       const response = await questionSetsService.getMyQuestionSets();
       // Backend returns { items: [...], meta: {...} }
       const items = response?.items || response?.data?.items || [];
-      setQuestionSets(Array.isArray(items) ? items : []);
+      const sets = Array.isArray(items) ? items : [];
+      setQuestionSets(sets);
+
+      // Fetch flags for all sets
+      if (sets.length > 0) {
+        const contentIds = sets.map(s => s.id || s._id);
+        try {
+          const flags = await contentFlagsService.getFlagsByContent(contentIds);
+          // Group flags by contentId
+          const map = {};
+          flags.forEach(flag => {
+            const id = flag.contentId;
+            if (!map[id]) map[id] = [];
+            map[id].push(flag);
+          });
+          setFlagsMap(map);
+        } catch (err) {
+          console.error("Failed to fetch flags:", err);
+          // Don't show error, just continue without flags
+        }
+      }
     } catch (err) {
       console.error("Failed to fetch question sets:", err);
       showError("Không thể tải danh sách bộ đề");
@@ -146,10 +168,25 @@ function ExpertQuestionSetsPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {questionSets.map((set) => (
-                    <tr key={set.id || set._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  {questionSets.map((set) => {
+                    const setId = set.id || set._id;
+                    const flags = flagsMap[setId] || [];
+                    const hasPendingFlags = flags.length > 0;
+                    
+                    return (
+                    <tr key={setId} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                       <td className="px-6 py-4">
-                        <div className="font-medium text-gray-900 dark:text-gray-100">{set.title}</div>
+                        <div className="flex items-center gap-2">
+                          <div className="font-medium text-gray-900 dark:text-gray-100">{set.title}</div>
+                          {hasPendingFlags && (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 animate-pulse">
+                              <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                              </svg>
+                              {flags.length} báo cáo
+                            </span>
+                          )}
+                        </div>
                         {set.description && (
                           <div className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-md">
                             {set.description}
@@ -167,6 +204,16 @@ function ExpertQuestionSetsPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                         <div className="flex gap-2 justify-end">
+                          {hasPendingFlags && (
+                            <Button
+                              size="small"
+                              variant="primary"
+                              onClick={() => navigate(`/expert/question-sets/${set.id || set._id}/handle-reports`)}
+                              className="bg-orange-600 hover:bg-orange-700 border-orange-600"
+                            >
+                              Xử lý báo cáo
+                            </Button>
+                          )}
                           <Button
                             size="small"
                             variant="secondary"
@@ -190,7 +237,8 @@ function ExpertQuestionSetsPage() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  );
+                  })}
                 </tbody>
               </table>
             </div>

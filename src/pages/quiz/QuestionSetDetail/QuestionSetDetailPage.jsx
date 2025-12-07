@@ -3,8 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import questionSetsService from "@/services/api/questionSets.service";
 import quizAttemptsService from "@/services/api/quizAttempts.service";
 import Button from "@/components/common/Button";
-import { useToast } from "@/components/common";
+import { useToast, ReportContentModal, PremiumRequiredModal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { contentFlagsService } from "@/services/api";
 import { formatDate, formatTime } from "@/utils/formatters";
 import { useAuth } from "@/contexts/AuthContext";
 import { validationRequestsService } from "@/services/api";
@@ -18,6 +19,8 @@ function QuestionSetDetailPage() {
   const [loading, setLoading] = useState(true);
   const [loadingAttempts, setLoadingAttempts] = useState(false);
   const { user } = useAuth();
+  
+  console.log('QuestionSetDetailPage render', { userId: user?.id, questionSetId: questionSet?.id, questionSetUserId: questionSet?.userId });
   const [requestingReview, setRequestingReview] = useState(false);
   const [reviewRequested, setReviewRequested] = useState(false);
   const [currentReview, setCurrentReview] = useState(null); // active or last review
@@ -25,11 +28,21 @@ function QuestionSetDetailPage() {
   const [showRevisionModal, setShowRevisionModal] = useState(false);
   const [revisionResponse, setRevisionResponse] = useState("");
   const [requestingRevision, setRequestingRevision] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [myReports, setMyReports] = useState([]);
+  const [loadingReports, setLoadingReports] = useState(false);
+  const [expertFlags, setExpertFlags] = useState([]); // Flags assigned to expert
+  const [expertResponse, setExpertResponse] = useState("");
+  const [respondingToFlag, setRespondingToFlag] = useState(null);
+  const [submittingResponse, setSubmittingResponse] = useState(false);
 
   useEffect(() => {
     fetchQuestionSet();
     fetchAttempts();
     fetchValidationRequest();
+    fetchMyReports();
+    fetchExpertFlags();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   const fetchValidationRequest = async () => {
@@ -64,13 +77,72 @@ function QuestionSetDetailPage() {
     try {
       setLoading(true);
       const data = await questionSetsService.getSetById(id);
+      
+      // Backend already checked premium requirement and set _premiumRequired flag
+      if (data._premiumRequired) {
+        setShowPremiumModal(true);
+        setLoading(false);
+        return;
+      }
+      
       setQuestionSet(data);
     } catch (err) {
       const message = getErrorMessage(err);
       toast.showError(message);
-      setTimeout(() => navigate("/question-sets"), 2000);
+      setTimeout(() => navigate("/public"), 2000);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMyReports = async () => {
+    try {
+      setLoadingReports(true);
+      const data = await contentFlagsService.listFlags({
+        myReports: true,
+        contentId: id,
+        contentType: 'QuestionSet',
+      });
+      setMyReports(data.flags || []);
+    } catch (err) {
+      console.error('Failed to fetch reports:', err);
+      setMyReports([]);
+    } finally {
+      setLoadingReports(false);
+    }
+  };
+
+  const fetchExpertFlags = async () => {
+    try {
+      console.log('🔍 Fetching expert flags for contentId:', id);
+      const flags = await contentFlagsService.getFlagsByContent([id]);
+      console.log('✅ Received flags:', flags);
+      setExpertFlags(flags || []);
+    } catch (err) {
+      console.error('❌ Failed to fetch expert flags:', err);
+      setExpertFlags([]);
+    }
+  };
+
+  const handleExpertRespond = async (flagId) => {
+    if (!expertResponse.trim()) {
+      toast.showError("Vui lòng nhập phản hồi");
+      return;
+    }
+
+    try {
+      setSubmittingResponse(true);
+      await contentFlagsService.expertRespond(flagId, { response: expertResponse });
+      toast.showSuccess("Đã gửi phản hồi. Admin và người báo cáo sẽ nhận được thông báo.");
+      setExpertResponse("");
+      setRespondingToFlag(null);
+      fetchExpertFlags(); // Refresh
+      fetchMyReports(); // Refresh
+    } catch (err) {
+      const message = getErrorMessage(err);
+      toast.showError(message);
+    } finally {
+      setSubmittingResponse(false);
     }
   };
 
@@ -184,7 +256,7 @@ function QuestionSetDetailPage() {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Không tìm thấy bộ câu hỏi</h2>
           <p className="text-gray-600 dark:text-gray-400">Bộ câu hỏi này có thể đã bị xóa hoặc không tồn tại</p>
-          <Button onClick={() => navigate(-1)}>← Quay lại</Button>
+          <Button onClick={() => navigate("/public")}>← Quay lại</Button>
         </div>
       </div>
     );
@@ -203,10 +275,11 @@ function QuestionSetDetailPage() {
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-0">
-            <Button variant="secondary" onClick={() => navigate(-1)}>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <Button variant="secondary" onClick={() => navigate("/public")}>
               ← Quay lại
             </Button>
+            
             {questionSet.status !== "Processing" && (
               <Button onClick={handleStartQuiz} variant="primary" size="large" className="w-full sm:w-auto">
                 <span className="inline-flex items-center gap-2 justify-center">
@@ -507,6 +580,290 @@ function QuestionSetDetailPage() {
           </div>
         </div>
 
+        {/* Expert: Pending Reports Section */}
+        {expertFlags.length > 0 && (
+          <div className="bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-300 dark:border-orange-700 rounded-lg p-6 mb-6">
+            <div className="flex items-center gap-2 mb-4">
+              <svg className="w-6 h-6 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <h2 className="text-xl font-bold text-orange-900 dark:text-orange-100">
+                Yêu cầu xử lý từ Admin ({expertFlags.length})
+              </h2>
+            </div>
+            <p className="text-sm text-orange-800 dark:text-orange-200 mb-4">
+              Admin đã gửi yêu cầu cho bạn xem xét và xử lý các báo cáo sau. Vui lòng kiểm tra, sửa lỗi (nếu cần), và gửi phản hồi.
+            </p>
+
+            {expertFlags.length === 0 ? (
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 text-center">
+                <svg className="w-12 h-12 text-green-500 dark:text-green-400 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <p className="text-gray-600 dark:text-gray-300 font-medium">Không có yêu cầu nào đang chờ xử lý</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Bạn đã hoàn thành tất cả các yêu cầu</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+              {expertFlags.map((flag) => {
+                const isResponding = respondingToFlag === flag.id;
+                const hasResponded = flag.status === 'ExpertResponded';
+
+                return (
+                  <div key={flag.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          hasResponded 
+                            ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                            : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
+                        }`}>
+                          {hasResponded ? 'Đã phản hồi - Chờ Admin xác nhận' : 'Cần xử lý'}
+                        </span>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                          Báo cáo lúc: {formatDate(flag.createdAt)}
+                        </p>
+                        {flag.reportedBy && (
+                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                            Người báo cáo: {flag.reportedBy.fullName || flag.reportedBy.email}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Report Details */}
+                    <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 mb-3 border border-red-200 dark:border-red-800">
+                      <div className="flex items-start gap-2 mb-2">
+                        <svg className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <div className="flex-1">
+                          <p className="text-sm font-bold text-red-900 dark:text-red-100 mb-1">
+                            Loại báo cáo: <span className="font-normal text-red-700 dark:text-red-300">{flag.reason}</span>
+                          </p>
+                          <div className="text-sm text-red-800 dark:text-red-200">
+                            <p className="font-semibold mb-1">Nội dung báo cáo từ learner:</p>
+                            <p className="whitespace-pre-line bg-white dark:bg-gray-800 rounded p-2 border border-red-200 dark:border-red-700">
+                              {flag.description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {flag.adminNote && (
+                      <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 mb-3">
+                        <p className="text-xs font-medium text-amber-900 dark:text-amber-300 mb-1">
+                          Ghi chú từ Admin:
+                        </p>
+                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                          {flag.adminNote}
+                        </p>
+                      </div>
+                    )}
+
+                    {flag.expertResponse && (
+                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mb-3 border border-blue-200 dark:border-blue-700">
+                        <div className="flex items-start gap-2">
+                          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div className="flex-1">
+                            <p className="text-xs font-bold text-blue-900 dark:text-blue-300 mb-2">
+                              Phản hồi của bạn:
+                            </p>
+                            <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-line">
+                              {flag.expertResponse}
+                            </p>
+                            <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+                              Gửi lúc: {formatDate(flag.expertRespondedAt)}
+                            </p>
+                            <div className="mt-3 pt-3 border-t border-blue-200 dark:border-blue-700">
+                              <p className="text-xs text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                </svg>
+                                <span>Phản hồi đã được gửi đến Admin và người báo cáo. Admin sẽ xem xét và đánh dấu hoàn thành.</span>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {!hasResponded && (
+                      <div className="mt-4">
+                        {!isResponding ? (
+                          <Button
+                            variant="primary"
+                            size="small"
+                            onClick={() => setRespondingToFlag(flag.id)}
+                          >
+                            Gửi phản hồi
+                          </Button>
+                        ) : (
+                          <div className="space-y-3">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Phản hồi của bạn *
+                              </label>
+                              <textarea
+                                value={expertResponse}
+                                onChange={(e) => setExpertResponse(e.target.value)}
+                                rows={4}
+                                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100 resize-none"
+                                placeholder="Mô tả những thay đổi bạn đã thực hiện hoặc lý do không thể sửa..."
+                                maxLength={2000}
+                              />
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                {expertResponse.length}/2000 ký tự
+                              </p>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="primary"
+                                onClick={() => handleExpertRespond(flag.id)}
+                                disabled={submittingResponse}
+                              >
+                                {submittingResponse ? "Đang gửi..." : "Gửi phản hồi"}
+                              </Button>
+                              <Button
+                                variant="secondary"
+                                onClick={() => {
+                                  setRespondingToFlag(null);
+                                  setExpertResponse("");
+                                }}
+                                disabled={submittingResponse}
+                              >
+                                Hủy
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Content Reports Section */}
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+              Báo cáo vấn đề
+            </h2>
+            <Button
+              variant="primary"
+              onClick={() => setShowReportModal(true)}
+            >
+              <span className="flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Gửi báo cáo mới
+              </span>
+            </Button>
+          </div>
+
+            {loadingReports ? (
+              <div className="text-center py-8">
+                <div className="inline-block w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+                <p className="text-gray-600 dark:text-gray-400 mt-4">Đang tải...</p>
+              </div>
+            ) : myReports.length === 0 ? (
+              <div className="text-center py-8">
+                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p className="text-gray-600 dark:text-gray-400 mt-2">
+                  Bạn chưa gửi báo cáo nào cho bộ đề này
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {myReports.map((report) => {
+                  const statusColors = {
+                    Pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
+                    SentToExpert: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+                    ExpertResponded: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
+                    Resolved: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+                    Dismissed: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+                  };
+                  
+                  const statusLabels = {
+                    Pending: 'Đang chờ xử lý',
+                    SentToExpert: 'Đã gửi cho Expert',
+                    ExpertResponded: 'Expert đã phản hồi',
+                    Resolved: 'Đã giải quyết',
+                    Dismissed: 'Đã từ chối',
+                  };
+
+                  return (
+                    <div key={report.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[report.status]}`}>
+                            {statusLabels[report.status]}
+                          </span>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            {formatDate(report.createdAt)}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="mb-2">
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Lý do: {report.reason}
+                        </p>
+                      </div>
+                      
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        {report.description}
+                      </p>
+
+                      {report.adminNote && (
+                        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 mb-2">
+                          <p className="text-xs font-medium text-amber-900 dark:text-amber-300 mb-1">
+                            Ghi chú từ Admin:
+                          </p>
+                          <p className="text-sm text-amber-800 dark:text-amber-200">
+                            {report.adminNote}
+                          </p>
+                        </div>
+                      )}
+
+                      {report.expertResponse && (
+                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mb-2">
+                          <p className="text-xs font-medium text-blue-900 dark:text-blue-300 mb-1">
+                            Phản hồi từ Expert:
+                          </p>
+                          <p className="text-sm text-blue-800 dark:text-blue-200">
+                            {report.expertResponse}
+                          </p>
+                        </div>
+                      )}
+
+                      {report.resolutionNote && (
+                        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
+                          <p className="text-xs font-medium text-green-900 dark:text-green-300 mb-1">
+                            Kết luận:
+                          </p>
+                          <p className="text-sm text-green-800 dark:text-green-200">
+                            {report.resolutionNote}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+        </div>
+
         {/* Quiz Attempts History */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 sm:py-6 border-b border-gray-200 dark:border-gray-700">
@@ -782,6 +1139,30 @@ function QuestionSetDetailPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Report Content Modal */}
+      <ReportContentModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        onSuccess={() => {
+          setShowReportModal(false);
+          fetchMyReports();
+        }}
+        contentType="QuestionSet"
+        contentId={id}
+        contentTitle={questionSet?.title}
+      />
+
+      {/* Premium Required Modal */}
+      {showPremiumModal && (
+        <PremiumRequiredModal
+          onClose={() => {
+            setShowPremiumModal(false);
+            navigate("/public");
+          }}
+          onUpgrade={() => navigate("/subscriptions/plans")}
+        />
       )}
 
       {/* Footer */}

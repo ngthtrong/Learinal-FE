@@ -6,6 +6,7 @@ export { default as ExpertCreateManualPage } from "./QuestionSets/ExpertCreateMa
 export { default as ExpertCreateByUploadPage } from "./QuestionSets/ExpertCreateByUploadPage";
 export { default as ExpertQuestionSetDetailPage } from "./QuestionSets/ExpertQuestionSetDetailPage";
 export { default as ExpertQuestionSetEditPage } from "./QuestionSets/ExpertQuestionSetEditPage";
+export { default as ExpertHandleReportsPage } from "./QuestionSets/ExpertHandleReportsPage";
 export { default as ExpertQuizStartPage } from "./Quiz/ExpertQuizStartPage";
 export { default as ExpertQuizTakingPage } from "./Quiz/ExpertQuizTakingPage";
 export { default as ExpertQuizResultPage } from "./Quiz/ExpertQuizResultPage";

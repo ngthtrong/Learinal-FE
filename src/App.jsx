@@ -63,10 +63,15 @@ import {
   ExpertCreateByUploadPage,
   ExpertQuestionSetDetailPage,
   ExpertQuestionSetEditPage,
+  ExpertHandleReportsPage,
   ExpertQuizStartPage,
   ExpertQuizTakingPage,
   ExpertQuizResultPage,
 } from "./pages";
+
+// Content Flag Pages
+import AdminContentFlagsPage from "./pages/admin/ContentFlags/AdminContentFlagsPage";
+import AdminContentFlagDetailPage from "./pages/admin/ContentFlags/AdminContentFlagDetailPage";
 
 // Styles
 function App() {
@@ -459,6 +464,34 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/admin/content-flags"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminContentFlagsPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/content-flags/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminContentFlagDetailPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
 
             {/* Expert routes */}
             <Route
@@ -581,6 +614,20 @@ function App() {
                     <TopbarLayout>
                       <ExpertSidebarLayout>
                         <ExpertQuestionSetEditPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/question-sets/:id/handle-reports"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertHandleReportsPage />
                       </ExpertSidebarLayout>
                     </TopbarLayout>
                   </ExpertRoute>
