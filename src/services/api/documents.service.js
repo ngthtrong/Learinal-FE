@@ -109,6 +109,57 @@ export const documentsService = {
   },
 
   /**
+   * Upload multiple document files
+   * Uploads files sequentially and reports progress for each
+   *
+   * @param {File[]} files - Array of document files
+   * @param {string} subjectId - Subject ID
+   * @param {Function} onFileProgress - Progress callback (fileIndex, progress, fileName)
+   * @param {Function} onFileComplete - Callback when a file completes (fileIndex, result, fileName)
+   * @param {Function} onFileError - Callback when a file fails (fileIndex, error, fileName)
+   * @returns {Promise<Object>} { successful: Document[], failed: {file, error}[] }
+   */
+  uploadMultipleDocuments: async (files, subjectId, onFileProgress, onFileComplete, onFileError) => {
+    const results = {
+      successful: [],
+      failed: [],
+    };
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("subjectId", subjectId);
+
+        const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.DOCUMENTS.CREATE, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            if (onFileProgress) {
+              onFileProgress(i, progress, file.name);
+            }
+          },
+        });
+
+        results.successful.push(response.data);
+        if (onFileComplete) {
+          onFileComplete(i, response.data, file.name);
+        }
+      } catch (error) {
+        results.failed.push({ file: file.name, error: error.response?.data?.message || error.message });
+        if (onFileError) {
+          onFileError(i, error, file.name);
+        }
+      }
+    }
+
+    return results;
+  },
+
+  /**
    * Delete document
    * @param {string} id - Document ID
    */
@@ -133,6 +184,50 @@ export const documentsService = {
   getDocumentSummary: async (id) => {
     const response = await axiosInstance.get(API_CONFIG.ENDPOINTS.DOCUMENTS.GET_SUMMARY(id));
     return response.data;
+  },
+
+  /**
+   * Check document upload limit for a subject
+   * Combines subscription limits with current document count
+   * 
+   * @param {string} subjectId - Subject ID to check
+   * @returns {Promise<Object>} { currentCount, maxAllowed, remaining, canUpload, isUnlimited }
+   */
+  checkDocumentLimit: async (subjectId) => {
+    try {
+      // Get usage info from subscription
+      const usageResponse = await axiosInstance.get("/user-subscriptions/me/usage");
+      const usage = usageResponse.data?.data || usageResponse.data || {};
+      
+      // Get current document count for this subject
+      const docsResponse = await axiosInstance.get(`/subjects/${subjectId}/documents`);
+      const docs = docsResponse.data?.items || docsResponse.data?.data || [];
+      const currentCount = Array.isArray(docs) ? docs.length : 0;
+      
+      // Get max documents per subject from usage data
+      const maxAllowed = usage.maxDocumentsPerSubject;
+      
+      // Check if unlimited
+      const isUnlimited = maxAllowed === "unlimited" || maxAllowed === -1 || !maxAllowed;
+      
+      return {
+        currentCount,
+        maxAllowed: isUnlimited ? "unlimited" : maxAllowed,
+        remaining: isUnlimited ? Infinity : Math.max(0, maxAllowed - currentCount),
+        canUpload: isUnlimited || currentCount < maxAllowed,
+        isUnlimited,
+      };
+    } catch (error) {
+      console.error("Failed to check document limit:", error);
+      // Default to allowing upload if we can't check
+      return {
+        currentCount: 0,
+        maxAllowed: "unlimited",
+        remaining: Infinity,
+        canUpload: true,
+        isUnlimited: true,
+      };
+    }
   },
 };
 

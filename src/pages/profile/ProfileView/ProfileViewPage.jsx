@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
+import { Footer } from "@/components/layout";
 import subscriptionsService from "@/services/api/subscriptions.service";
 
 function ProfileViewPage() {
@@ -66,15 +67,36 @@ function ProfileViewPage() {
     }
   };
 
+  // Định nghĩa thứ tự hiển thị cố định cho entitlements
+  const ENTITLEMENT_ORDER = [
+    "maxMonthlyTestGenerations",
+    "maxValidationRequests",
+    "priorityProcessing",
+    "canShare",
+    "maxSubjects",
+    "maxDocumentsPerSubject",
+    // "maxTotalDocuments", // Removed - now unlimited
+  ];
+
   const formatEntitlementLabel = (key) => {
     const labels = {
       maxSubjects: "Số môn học",
       maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
       maxValidationRequests: "Số yêu cầu kiểm duyệt",
+      maxDocumentsPerSubject: "Số tài liệu/môn học",
+      // maxTotalDocuments: "Tổng số tài liệu", // Removed - now unlimited
       priorityProcessing: "Xử lý ưu tiên",
       canShare: "Cho phép chia sẻ",
     };
     return labels[key] || key;
+  };
+
+  // Hàm sắp xếp entitlements theo thứ tự cố định
+  const getSortedEntitlements = (entitlements) => {
+    if (!entitlements) return [];
+    return ENTITLEMENT_ORDER
+      .filter(key => key in entitlements)
+      .map(key => [key, entitlements[key]]);
   };
 
   const formatEntitlementValue = (value) => {
@@ -96,16 +118,16 @@ function ProfileViewPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-6 sm:pb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
           {/* Avatar and Basic Info */}
-          <div className="flex items-center mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
-            <div className="w-24 h-24 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white text-3xl font-bold mr-6 shadow-lg">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-gray-200 dark:border-gray-700 gap-4 sm:gap-6">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl lg:text-3xl font-bold shadow-lg">
               {user.fullName ? user.fullName.charAt(0).toUpperCase() : "U"}
             </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{user.fullName}</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-3">{user.email}</p>
+            <div className="text-center sm:text-left">
+              <h2 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-1">{user.fullName}</h2>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">{user.email}</p>
               <div className="flex items-center gap-2">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(
@@ -123,8 +145,8 @@ function ProfileViewPage() {
           </div>
 
           {/* Personal Information */}
-          <div className="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2 pb-4">
+          <div className="mb-6 sm:mb-8 border-b border-gray-200 dark:border-gray-700 pb-6 sm:pb-8">
+            <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2 pb-3 sm:pb-4">
               {user.role === "Expert" ? (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
               ) : (
@@ -132,8 +154,8 @@ function ProfileViewPage() {
               )}{" "}
               {user.role === "Expert" ? "Thông tin chuyên gia" : "Thông tin cá nhân"}
             </h3>
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Họ và tên</label>
                   <p className="text-gray-900 dark:text-gray-100 font-medium">{user.fullName}</p>
@@ -219,30 +241,30 @@ function ProfileViewPage() {
 
               {/* Expert Statistics */}
               {user.role === "Expert" && (
-                <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                  <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
                     Thống kê:
                   </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng kiểm duyệt</p>
-                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                    <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng kiểm duyệt</p>
+                      <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                         {user.totalValidations || 0}
                       </p>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng hoa hồng</p>
-                      <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+                    <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng hoa hồng</p>
+                      <p className="text-xl sm:text-2xl font-bold text-primary-600 dark:text-primary-400">
                         {new Intl.NumberFormat("vi-VN", {
                           style: "currency",
                           currency: "VND",
                         }).format(user.totalEarned || 0)}
                       </p>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Hoa hồng chờ</p>
-                      <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+                    <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Hoa hồng chờ</p>
+                      <p className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400">
                         {new Intl.NumberFormat("vi-VN", {
                           style: "currency",
                           currency: "VND",
@@ -258,18 +280,18 @@ function ProfileViewPage() {
           {/* Subscription Information - Only for Learner */}
           {user.role === "Learner" && (
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2 ">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+              <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                 Thông tin gói đăng ký
               </h3>
               {loadingSubscription ? (
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6 text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-2"></div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">Đang tải thông tin gói đăng ký...</p>
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6 text-center">
+                  <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-2"></div>
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">Đang tải thông tin gói đăng ký...</p>
                 </div>
               ) : subscription ? (
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 ">
                         Tên gói
@@ -362,13 +384,13 @@ function ProfileViewPage() {
                   {/* Entitlements */}
                   {subscription.entitlementsSnapshot &&
                     Object.keys(subscription.entitlementsSnapshot).length > 0 && (
-                      <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                        <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg>
+                      <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg>
                           Quyền lợi của gói:
                         </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {Object.entries(subscription.entitlementsSnapshot).map(([key, value]) => (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                          {getSortedEntitlements(subscription.entitlementsSnapshot).map(([key, value]) => (
                             <div key={key} className="flex items-start gap-2">
                               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400 flex-shrink-0 mt-0.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                               <span className="text-gray-700 dark:text-gray-300 text-sm">
@@ -382,12 +404,12 @@ function ProfileViewPage() {
                     )}
                 </div>
               ) : (
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6 text-center">
-                  <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6 text-center">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-100 dark:bg-primary-900/30 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-8 sm:h-8 text-primary-600 dark:text-primary-400"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                   </div>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium mb-2">Chưa có gói đăng ký</p>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">Bạn chưa đăng ký gói nào</p>
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-medium mb-1 sm:mb-2">Chưa có gói đăng ký</p>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Bạn chưa đăng ký gói nào</p>
                 </div>
               )}
             </div>
@@ -396,13 +418,7 @@ function ProfileViewPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

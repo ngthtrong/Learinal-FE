@@ -11,6 +11,8 @@ const DEFAULT_ENTITLEMENTS = {
   priorityProcessing: false,
   canShare: false,
   maxSubjects: 10,
+  maxDocumentsPerSubject: 20,
+  // maxTotalDocuments: 100, // Removed - now unlimited
 };
 
 function AdminSubscriptionPlansPage() {
@@ -40,6 +42,8 @@ function AdminSubscriptionPlansPage() {
       maxValidationRequests: "Số yêu cầu kiểm duyệt",
       priorityProcessing: "Xử lý ưu tiên",
       canShare: "Cho phép chia sẻ",
+      maxDocumentsPerSubject: "Số tài liệu/môn học",
+      // maxTotalDocuments: "Tổng số tài liệu", // Removed - now unlimited
     };
     return labels[key] || key;
   };
@@ -158,20 +162,20 @@ function AdminSubscriptionPlansPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý gói nâng cấp</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý gói nâng cấp</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">
               Tạo, chỉnh sửa, kích hoạt/vô hiệu hóa các gói nâng cấp.
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={fetchPlans}>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Button variant="secondary" className="w-full sm:w-auto" onClick={fetchPlans}>
               Làm mới
             </Button>
-            <Button onClick={openCreate}>Thêm gói</Button>
+            <Button className="w-full sm:w-auto" onClick={openCreate}>Thêm gói</Button>
           </div>
         </div>
 
@@ -179,9 +183,9 @@ function AdminSubscriptionPlansPage() {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 mb-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Trạng thái</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Trạng thái</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
@@ -204,41 +208,82 @@ function AdminSubscriptionPlansPage() {
           ) : plans.length === 0 ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Chưa có gói nào</div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile Cards */}
+              <div className="block sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                {plans.map((p) => (
+                  <div key={p.id || p._id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{p.planName}</div>
+                        {p.description && (
+                          <div className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5">{p.description}</div>
+                        )}
+                      </div>
+                      <div className="flex gap-1 flex-shrink-0 ml-2">
+                        <Button size="small" variant="secondary" onClick={() => openEdit(p)}>✏️</Button>
+                        <Button size="small" variant="danger" onClick={() => setConfirmDelete(p)}>🗑️</Button>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {formatPrice(p.price)}
+                      </span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {p.billingCycle === "Monthly" ? "Tháng" : "Năm"}
+                      </span>
+                      {p.status === "Active" ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
+                          Đang hoạt động
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                          Tạm dừng
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Desktop Table */}
+              <div className="hidden sm:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Tên gói
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Chu kỳ
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Giá
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Trạng thái
                     </th>
-                    <th className="px-6 py-3" />
+                    <th className="px-3 sm:px-6 py-3" />
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {plans.map((p) => (
                     <tr key={p.id || p._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-900 dark:text-gray-100">{p.planName}</div>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">{p.planName}</div>
                         {p.description && (
-                          <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{p.description}</div>
+                          <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{p.description}</div>
                         )}
+                        <div className="sm:hidden text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          {p.billingCycle === "Monthly" ? "Tháng" : "Năm"}
+                        </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
+                      <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {p.billingCycle === "Monthly" ? "Tháng" : "Năm"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                         {formatPrice(p.price)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                         {p.status === "Active" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
                             Đang hoạt động
@@ -253,13 +298,15 @@ function AdminSubscriptionPlansPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                        <div className="flex gap-2 justify-end">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right">
+                        <div className="flex gap-1 sm:gap-2 justify-end">
                           <Button size="small" variant="secondary" onClick={() => openEdit(p)}>
-                            Sửa
+                            <span className="hidden sm:inline">Sửa</span>
+                            <span className="sm:hidden">✏️</span>
                           </Button>
                           <Button size="small" variant="danger" onClick={() => setConfirmDelete(p)}>
-                            Xóa
+                            <span className="hidden sm:inline">Xóa</span>
+                            <span className="sm:hidden">🗑️</span>
                           </Button>
                         </div>
                       </td>
@@ -268,6 +315,7 @@ function AdminSubscriptionPlansPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </div>
 
@@ -370,6 +418,39 @@ function AdminSubscriptionPlansPage() {
                     })
                   }
                 />
+
+                {/* maxDocumentsPerSubject */}
+                <Input
+                  label={formatEntitlementLabel("maxDocumentsPerSubject")}
+                  type="number"
+                  value={form.entitlements.maxDocumentsPerSubject || 20}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      entitlements: {
+                        ...form.entitlements,
+                        maxDocumentsPerSubject: Number(e.target.value),
+                      },
+                    })
+                  }
+                />
+
+                {/* maxTotalDocuments - REMOVED (now unlimited)
+                <Input
+                  label={formatEntitlementLabel("maxTotalDocuments")}
+                  type="number"
+                  value={form.entitlements.maxTotalDocuments || 100}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      entitlements: {
+                        ...form.entitlements,
+                        maxTotalDocuments: Number(e.target.value),
+                      },
+                    })
+                  }
+                />
+                */}
 
                 {/* priorityProcessing */}
                 <div>

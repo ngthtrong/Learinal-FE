@@ -1,13 +1,35 @@
-/**
- * QuizResultPage Component
- * Display quiz results with detailed answers and explanations
- */
-
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router";
 import Button from "@/components/common/Button";
 import { quizAttemptsService, questionSetsService } from "@/services/api";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { Footer } from "@/components/layout";
+
+// Difficulty weights for scoring
+const DIFFICULTY_WEIGHTS = {
+  "Biết": 1,
+  "Hiểu": 1.25,
+  "Vận dụng": 1.5,
+  "Vận dụng cao": 2,
+  // English fallbacks
+  "Remember": 1,
+  "Understand": 1.25,
+  "Apply": 1.5,
+  "Analyze": 2,
+};
+
+// Difficulty display config
+const DIFFICULTY_CONFIG = {
+  "Biết": { label: "Biết", color: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400", dotColor: "bg-green-500" },
+  "Hiểu": { label: "Hiểu", color: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400", dotColor: "bg-blue-500" },
+  "Vận dụng": { label: "Vận dụng", color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400", dotColor: "bg-yellow-500" },
+  "Vận dụng cao": { label: "Vận dụng cao", color: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400", dotColor: "bg-red-500" },
+  // English fallbacks
+  "Remember": { label: "Biết", color: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400", dotColor: "bg-green-500" },
+  "Understand": { label: "Hiểu", color: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400", dotColor: "bg-blue-500" },
+  "Apply": { label: "Vận dụng", color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400", dotColor: "bg-yellow-500" },
+  "Analyze": { label: "Vận dụng cao", color: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400", dotColor: "bg-red-500" },
+};
 
 function QuizResultPage() {
   const { attemptId } = useParams();
@@ -221,8 +243,30 @@ function QuizResultPage() {
     let correctCount = 0;
     let incorrectCount = 0;
     let unansweredCount = 0;
+    let weightedScore = 0;
+    let maxWeightedScore = 0;
+
+    // Count by difficulty
+    const difficultyStats = {
+      "Biết": { correct: 0, total: 0 },
+      "Hiểu": { correct: 0, total: 0 },
+      "Vận dụng": { correct: 0, total: 0 },
+      "Vận dụng cao": { correct: 0, total: 0 },
+    };
 
     enrichedAnswers.forEach((answer) => {
+      const question = answer?.question || {};
+      const difficultyLevel = question?.difficultyLevel || question?.difficulty || "Hiểu";
+      const weight = DIFFICULTY_WEIGHTS[difficultyLevel] || 1;
+      
+      // Map to Vietnamese if needed
+      const normalizedDifficulty = DIFFICULTY_CONFIG[difficultyLevel]?.label || "Hiểu";
+      if (difficultyStats[normalizedDifficulty]) {
+        difficultyStats[normalizedDifficulty].total += 1;
+      }
+      
+      maxWeightedScore += weight;
+      
       const selected = answer?.selectedOptionIndex;
       if (selected === undefined || selected === null || selected === -1) {
         unansweredCount += 1;
@@ -231,6 +275,10 @@ function QuizResultPage() {
 
       if (answer?.isCorrect === true) {
         correctCount += 1;
+        weightedScore += weight;
+        if (difficultyStats[normalizedDifficulty]) {
+          difficultyStats[normalizedDifficulty].correct += 1;
+        }
       } else if (answer?.isCorrect === false) {
         incorrectCount += 1;
       } else {
@@ -249,6 +297,9 @@ function QuizResultPage() {
       correct: correctCount,
       incorrect: incorrectCount,
       unanswered: Math.max(unansweredCount, 0),
+      weightedScore: Math.round(weightedScore * 10) / 10,
+      maxWeightedScore: Math.round(maxWeightedScore * 10) / 10,
+      difficultyStats,
     };
   }, [enrichedAnswers, questionSet, attempt]);
 
@@ -325,8 +376,11 @@ function QuizResultPage() {
   }
 
   const scorePercentage = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+  const weightedPercentage = stats.maxWeightedScore > 0 
+    ? Math.round((stats.weightedScore / stats.maxWeightedScore) * 100) 
+    : 0;
   const scoreValue =
-    attempt?.score !== undefined && attempt?.score !== null ? attempt.score : stats.correct;
+    attempt?.score !== undefined && attempt?.score !== null ? attempt.score : stats.weightedScore;
   const formattedScore =
     typeof scoreValue === "number"
       ? Number.isInteger(scoreValue)
@@ -341,17 +395,17 @@ function QuizResultPage() {
     return "text-red-500 stroke-red-500";
   };
 
-  const scoreColorClass = getScoreColor(scorePercentage);
+  const scoreColorClass = getScoreColor(weightedPercentage);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-4 sm:py-6 lg:py-8 px-3 sm:px-4 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="mb-4 sm:mb-6 lg:mb-8">
+          <h1 className="text-lg sm:text-xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-1 sm:mb-2">
             Kết quả bài thi
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
             {questionSet?.title ||
               attempt?.questionSet?.title ||
               attempt?.questionSet?.name ||
@@ -359,12 +413,12 @@ function QuizResultPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 py-4 sm:py-6 lg:py-10">
           {/* Left Column: Score Summary (Sticky on Desktop) */}
           <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 sticky top-8">
-              <div className="flex flex-col items-center mb-8">
-                <div className="relative w-48 h-48 mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 sm:p-6 sticky top-8">
+              <div className="flex flex-col items-center mb-4 sm:mb-6 lg:mb-8">
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 mb-3 sm:mb-4">
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                     <circle
                       className="text-gray-100 dark:text-gray-700 stroke-current"
@@ -377,7 +431,7 @@ function QuizResultPage() {
                     <circle
                       className={`${scoreColorClass} transition-all duration-1000 ease-out`}
                       strokeWidth="8"
-                      strokeDasharray={`${scorePercentage * 2.51} 251`}
+                      strokeDasharray={`${weightedPercentage * 2.51} 251`}
                       strokeLinecap="round"
                       fill="none"
                       cx="50"
@@ -386,34 +440,66 @@ function QuizResultPage() {
                     />
                   </svg>
                   <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center">
-                    <span className={`text-4xl font-bold ${scoreColorClass.split(" ")[0]}`}>
+                    <span className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${scoreColorClass.split(" ")[0]}`}>
                       {formattedScore}
                     </span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mt-1">
+                    <span className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500">
+                      / {stats.maxWeightedScore}
+                    </span>
+                    <span className="text-[10px] sm:text-xs lg:text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mt-0.5 sm:mt-1">
                       Điểm
                     </span>
                   </div>
                 </div>
 
-                <div className="text-center">
-                  <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    Độ chính xác
+                <div className="text-center space-y-1 sm:space-y-2">
+                  <div>
+                    <div className="text-[10px] sm:text-xs font-medium text-gray-400 dark:text-gray-500">
+                      Điểm theo trọng số
+                    </div>
+                    <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100">
+                      {weightedPercentage}%
+                    </div>
                   </div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                    {scorePercentage}%
+                  <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
+                    (Đúng: {stats.correct}/{stats.total} câu = {scorePercentage}%)
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-4 mb-8">
-                <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <span className="text-gray-600 dark:text-gray-400">Tổng số câu</span>
-                  <span className="font-bold text-gray-900 dark:text-gray-100">{stats.total}</span>
+              {/* Difficulty breakdown */}
+              <div className="mb-4 sm:mb-6 p-2 sm:p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
+                <div className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 sm:mb-2">Phân bổ theo độ khó</div>
+                <div className="space-y-1.5 sm:space-y-2">
+                  {Object.entries(stats.difficultyStats).map(([level, data]) => {
+                    if (data.total === 0) return null;
+                    const config = DIFFICULTY_CONFIG[level] || {};
+                    const weight = DIFFICULTY_WEIGHTS[level] || 1;
+                    return (
+                      <div key={level} className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-1.5">
+                          <div className={`w-2 h-2 rounded-full ${config.dotColor || 'bg-gray-400'}`}></div>
+                          <span className="text-gray-600 dark:text-gray-400">{level}</span>
+                          <span className="text-gray-400 dark:text-gray-500">(×{weight})</span>
+                        </div>
+                        <span className="font-medium text-gray-700 dark:text-gray-300">
+                          {data.correct}/{data.total}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="flex justify-between items-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800">
-                  <span className="flex items-center text-green-700 dark:text-green-400">
+              </div>
+
+              <div className="space-y-2 sm:space-y-4 mb-4 sm:mb-8">
+                <div className="flex justify-between items-center p-2 sm:p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Tổng số câu</span>
+                  <span className="font-bold text-sm sm:text-base text-gray-900 dark:text-gray-100">{stats.total}</span>
+                </div>
+                <div className="flex justify-between items-center p-2 sm:p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800">
+                  <span className="flex items-center text-xs sm:text-sm text-green-700 dark:text-green-400">
                     <svg
-                      className="w-5 h-5 mr-2"
+                      className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -427,12 +513,12 @@ function QuizResultPage() {
                     </svg>
                     Đúng
                   </span>
-                  <span className="font-bold text-green-700 dark:text-green-400">{stats.correct}</span>
+                  <span className="font-bold text-sm sm:text-base text-green-700 dark:text-green-400">{stats.correct}</span>
                 </div>
-                <div className="flex justify-between items-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-100 dark:border-red-800">
-                  <span className="flex items-center text-red-700 dark:text-red-400">
+                <div className="flex justify-between items-center p-2 sm:p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-100 dark:border-red-800">
+                  <span className="flex items-center text-xs sm:text-sm text-red-700 dark:text-red-400">
                     <svg
-                      className="w-5 h-5 mr-2"
+                      className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -446,12 +532,12 @@ function QuizResultPage() {
                     </svg>
                     Sai
                   </span>
-                  <span className="font-bold text-red-700 dark:text-red-400">{stats.incorrect}</span>
+                  <span className="font-bold text-sm sm:text-base text-red-700 dark:text-red-400">{stats.incorrect}</span>
                 </div>
-                <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
-                  <span className="flex items-center text-gray-600 dark:text-gray-400">
+                <div className="flex justify-between items-center p-2 sm:p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+                  <span className="flex items-center text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                     <svg
-                      className="w-5 h-5 mr-2"
+                      className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -465,19 +551,19 @@ function QuizResultPage() {
                     </svg>
                     Chưa làm
                   </span>
-                  <span className="font-bold text-gray-700 dark:text-gray-300">
+                  <span className="font-bold text-sm sm:text-base text-gray-700 dark:text-gray-300">
                     {stats.unanswered}
                   </span>
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <Button
                   onClick={handleRetry}
-                  className="w-full justify-center py-3 text-base shadow-md hover:shadow-lg transition-all"
+                  className="w-full justify-center py-2 sm:py-3 text-sm sm:text-base shadow-md hover:shadow-lg transition-all"
                 >
                   <svg
-                    className="w-5 h-5 mr-2"
+                    className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -494,7 +580,7 @@ function QuizResultPage() {
                 <Button
                   variant="secondary"
                   onClick={() => navigate("/home")}
-                  className="w-full justify-center py-3 text-base"
+                  className="w-full justify-center py-2 sm:py-3 text-sm sm:text-base"
                 >
                   Về trang chủ
                 </Button>
@@ -505,10 +591,10 @@ function QuizResultPage() {
           {/* Right Column: Detailed Review */}
           <div className="lg:col-span-2">
             {/* Filters */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-2 mb-6 flex overflow-x-auto scrollbar-hide">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-1.5 sm:p-2 mb-4 sm:mb-6 flex overflow-x-auto scrollbar-hide">
               <button
                 onClick={() => setFilter("all")}
-                className={`flex-1 min-w-[100px] py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                className={`flex-1 min-w-[80px] sm:min-w-[100px] py-1.5 sm:py-2 px-2 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   filter === "all"
                     ? "bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 shadow-sm"
                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
@@ -518,7 +604,7 @@ function QuizResultPage() {
               </button>
               <button
                 onClick={() => setFilter("correct")}
-                className={`flex-1 min-w-[100px] py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                className={`flex-1 min-w-[80px] sm:min-w-[100px] py-1.5 sm:py-2 px-2 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   filter === "correct"
                     ? "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 shadow-sm"
                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
@@ -528,7 +614,7 @@ function QuizResultPage() {
               </button>
               <button
                 onClick={() => setFilter("incorrect")}
-                className={`flex-1 min-w-[100px] py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                className={`flex-1 min-w-[80px] sm:min-w-[100px] py-1.5 sm:py-2 px-2 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                   filter === "incorrect"
                     ? "bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 shadow-sm"
                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
@@ -539,7 +625,7 @@ function QuizResultPage() {
             </div>
 
             {/* Questions List */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {filteredQuestions.length === 0 ? (
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-12 text-center">
                   <div className="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -580,6 +666,11 @@ function QuizResultPage() {
                     answer?.questionText ||
                     "Không tìm thấy nội dung câu hỏi";
                   const options = question?.options || answer?.options || [];
+                  
+                  // Get difficulty info
+                  const difficultyLevel = question?.difficultyLevel || question?.difficulty || "Hiểu";
+                  const difficultyConfig = DIFFICULTY_CONFIG[difficultyLevel] || DIFFICULTY_CONFIG["Hiểu"];
+                  const difficultyWeight = DIFFICULTY_WEIGHTS[difficultyLevel] || 1;
 
                   // Determine card styling based on status
                   let cardBorderClass = "border-gray-100 dark:border-gray-700";
@@ -605,7 +696,7 @@ function QuizResultPage() {
                         />
                       </svg>
                     );
-                    badgeText = "Đúng";
+                    badgeText = `Đúng (+${difficultyWeight} điểm)`;
                   } else if (!isUnanswered) {
                     cardBorderClass = "border-red-200 dark:border-red-800 ring-1 ring-red-50 dark:ring-red-900/30";
                     badgeClass = "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300";
@@ -633,9 +724,17 @@ function QuizResultPage() {
                       className={`bg-white dark:bg-gray-800 rounded-2xl shadow-sm border ${cardBorderClass} p-6 transition-all hover:shadow-md`}
                     >
                       <div className="flex justify-between items-start mb-4">
-                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-bold text-sm">
-                          {questionNumber}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-bold text-sm">
+                            {questionNumber}
+                          </span>
+                          {/* Difficulty Tag */}
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${difficultyConfig.color}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${difficultyConfig.dotColor}`}></span>
+                            {difficultyConfig.label}
+                            <span className="text-gray-400 dark:text-gray-500 font-normal">(×{difficultyWeight})</span>
+                          </span>
+                        </div>
                         <span
                           className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${badgeClass}`}
                         >
@@ -774,13 +873,7 @@ function QuizResultPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
-            © 2025 Learinal. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer className="mt-12" />
     </div>
   );
 }

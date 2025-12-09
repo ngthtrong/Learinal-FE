@@ -62,13 +62,13 @@ function SubscriptionPurchasesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý gói</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý gói</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">
               Theo dõi các gói người dùng đang sở hữu hoặc đã hết hạn.
             </p>
           </div>
@@ -86,9 +86,9 @@ function SubscriptionPurchasesPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 flex flex-col sm:flex-row gap-4 sm:items-end mb-6">
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="sm:col-span-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="md:col-span-2">
               <Input
                 label="Tìm theo tên hoặc tên gói"
                 placeholder="Nhập từ khóa..."
@@ -101,11 +101,11 @@ function SubscriptionPurchasesPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
                 Số dòng / trang
               </label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={pageSize}
                 onChange={(e) => {
                   setPageSize(Number(e.target.value));
@@ -120,9 +120,10 @@ function SubscriptionPurchasesPage() {
               </select>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button
               variant="secondary"
+              className="w-full sm:w-auto"
               onClick={() => {
                 setSearch("");
                 setPage(1);
@@ -132,6 +133,7 @@ function SubscriptionPurchasesPage() {
               Đặt lại
             </Button>
             <Button
+              className="w-full sm:w-auto"
               onClick={() => {
                 setPage(1);
                 fetchData();
@@ -154,29 +156,71 @@ function SubscriptionPurchasesPage() {
           ) : items.length === 0 ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Chưa có dữ liệu gói</div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile Cards */}
+              <div className="block md:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                {items.map((r) => (
+                  <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                          {r.userName || "(N/A)"}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                          {r.planName || "—"} • {r.billingCycle === "Monthly" ? "Tháng" : r.billingCycle === "Yearly" ? "Năm" : "—"}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                          {formatCurrency(r.price || 0)}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {(() => {
+                        const meta = statusMeta[r.status] || {
+                          label: r.status || "—",
+                          className: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
+                        };
+                        return (
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${meta.className}`}>
+                            {meta.label}
+                          </span>
+                        );
+                      })()}
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {(() => { try { return r.startDate ? new Date(r.startDate).toLocaleDateString("vi-VN") : ""; } catch { return ""; } })()}
+                        {r.startDate && r.endDate && " - "}
+                        {(() => { try { return r.endDate ? new Date(r.endDate).toLocaleDateString("vi-VN") : ""; } catch { return ""; } })()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Người dùng
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Gói
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Chu kỳ
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Giá
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Trạng thái
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Bắt đầu
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Kết thúc
                     </th>
                   </tr>
@@ -184,23 +228,30 @@ function SubscriptionPurchasesPage() {
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {items.map((r) => (
                     <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-gray-100">
-                        {r.userName || "(N/A)"}
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
+                          {r.userName || "(N/A)"}
+                        </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
-                        {r.planName || "—"}
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="text-gray-700 dark:text-gray-300 text-sm sm:text-base">
+                          {r.planName || "—"}
+                        </div>
+                        <div className="sm:hidden text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          {formatCurrency(r.price || 0)}
+                        </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
+                      <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {r.billingCycle === "Monthly"
                           ? "Tháng"
                           : r.billingCycle === "Yearly"
                           ? "Năm"
                           : "—"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
+                      <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {formatCurrency(r.price || 0)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         {(() => {
                           const meta = statusMeta[r.status] || {
                             label: r.status || "—",
@@ -215,7 +266,7 @@ function SubscriptionPurchasesPage() {
                           );
                         })()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {(() => {
                           try {
                             return r.startDate
@@ -226,7 +277,7 @@ function SubscriptionPurchasesPage() {
                           }
                         })()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {(() => {
                           try {
                             return r.endDate
@@ -242,11 +293,12 @@ function SubscriptionPurchasesPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
           <div className="text-sm text-gray-600 dark:text-gray-400">
             Hiển thị {items.length} / {total} bản ghi
           </div>

@@ -42,6 +42,7 @@ import {
   SubscriptionPlansPage,
   MySubscriptionPage,
   ViewSubscriptionPage,
+  AddonPackagesPage,
   QuestionSetDetailPage,
   QuizStartPage,
   QuizTakingPage,
@@ -50,12 +51,21 @@ import {
   UserManagementPage,
   CommissionRecordsPage,
   AdminSubscriptionPlansPage,
+  AdminAddonPackagesPage,
   AdminFinancialsPage,
   SubscriptionPurchasesPage,
   ExpertDashboardPage,
   ExpertCommissionRecordsPage,
   ExpertValidationRequestsPage,
   ExpertValidationRequestDetailPage,
+  ExpertQuestionSetsPage,
+  ExpertCreateManualPage,
+  ExpertCreateByUploadPage,
+  ExpertQuestionSetDetailPage,
+  ExpertQuestionSetEditPage,
+  ExpertQuizStartPage,
+  ExpertQuizTakingPage,
+  ExpertQuizResultPage,
 } from "./pages";
 
 // Styles
@@ -163,6 +173,18 @@ function App() {
                   <TopbarLayout>
                     <SidebarLayout>
                       <MySubscriptionPage />
+                    </SidebarLayout>
+                  </TopbarLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/addon-packages"
+              element={
+                <ProtectedRoute>
+                  <TopbarLayout>
+                    <SidebarLayout>
+                      <AddonPackagesPage />
                     </SidebarLayout>
                   </TopbarLayout>
                 </ProtectedRoute>
@@ -282,9 +304,7 @@ function App() {
               path="/quiz/take/:attemptId"
               element={
                 <ProtectedRoute>
-                  <TopbarLayout>
-                    <QuizTakingPage />
-                  </TopbarLayout>
+                  <QuizTakingPage />
                 </ProtectedRoute>
               }
             />
@@ -375,6 +395,20 @@ function App() {
                     <TopbarLayout>
                       <AdminSidebarLayout>
                         <AdminSubscriptionPlansPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/addon-packages"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminAddonPackagesPage />
                       </AdminSidebarLayout>
                     </TopbarLayout>
                   </AdminRoute>
@@ -475,6 +509,130 @@ function App() {
                     <TopbarLayout>
                       <ExpertSidebarLayout>
                         <ExpertValidationRequestDetailPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/question-sets"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertQuestionSetsPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/question-sets/create-manual"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertCreateManualPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/question-sets/create-upload"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertCreateByUploadPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/question-sets/:id"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertQuestionSetDetailPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/question-sets/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertQuestionSetEditPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/quiz/:id"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertQuestionSetDetailPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/quiz/start/:id"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertQuizStartPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/quiz/take/:attemptId"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertQuizTakingPage />
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/quiz/result/:attemptId"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertQuizResultPage />
                       </ExpertSidebarLayout>
                     </TopbarLayout>
                   </ExpertRoute>

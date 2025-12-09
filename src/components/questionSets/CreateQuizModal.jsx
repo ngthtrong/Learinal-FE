@@ -19,6 +19,13 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
   const [numQuestions, setNumQuestions] = useState(10);
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [topicDistribution, setTopicDistribution] = useState({});
+  // Difficulty distribution state (percentage-based)
+  const [difficultyDistribution, setDifficultyDistribution] = useState({
+    "Biết": 25,
+    "Hiểu": 35,
+    "Vận dụng": 25,
+    "Vận dụng cao": 15,
+  });
 
   // Fetch subjects when modal opens
   useEffect(() => {
@@ -153,6 +160,35 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
     setTopicDistribution(newDistribution);
   };
 
+  // Handle difficulty distribution change
+  const handleDifficultyChange = (level, newValue) => {
+    const value = Math.max(0, Math.min(100, parseInt(newValue) || 0));
+    setDifficultyDistribution((prev) => ({ ...prev, [level]: value }));
+  };
+
+  // Calculate total difficulty percentage
+  const totalDifficultyPercentage = Object.values(difficultyDistribution).reduce((sum, val) => sum + val, 0);
+
+  // Calculate number of questions per difficulty level
+  const getQuestionsPerDifficulty = () => {
+    const result = {};
+    let remaining = numQuestions;
+    const levels = Object.keys(difficultyDistribution);
+    
+    levels.forEach((level, index) => {
+      if (index === levels.length - 1) {
+        // Last level gets remaining to ensure total equals numQuestions
+        result[level] = Math.max(0, remaining);
+      } else {
+        const count = Math.round((difficultyDistribution[level] / 100) * numQuestions);
+        result[level] = count;
+        remaining -= count;
+      }
+    });
+    
+    return result;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -166,17 +202,28 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
       return;
     }
 
+    if (totalDifficultyPercentage !== 100) {
+      alert("Tổng phân bổ mức độ khó phải bằng 100%!");
+      return;
+    }
+
     const topics = selectedTopics.map((topicId) => ({
       topicId,
       topicName: allTopics.find((t) => t.topicId === topicId)?.topicName || "",
       percentage: Math.round(topicDistribution[topicId] || 0),
     }));
 
+    // Convert percentage-based difficulty to count-based for backend
+    const questionsPerDifficulty = getQuestionsPerDifficulty();
+
     const data = {
       subjectId: selectedSubject.id,
       title,
       numQuestions,
       topics,
+      // Send both formats for compatibility
+      difficulty: difficultyDistribution, // percentage format
+      difficultyDistribution: questionsPerDifficulty, // count format for backend
     };
 
     onGenerate(data);
@@ -189,6 +236,12 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
     setSelectedTopics([]);
     setTopicDistribution({});
     setDocuments([]);
+    setDifficultyDistribution({
+      "Biết": 25,
+      "Hiểu": 35,
+      "Vận dụng": 25,
+      "Vận dụng cao": 15,
+    });
   };
 
   return (
@@ -289,6 +342,73 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
               <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                 <span>1 câu</span>
                 <span>20 câu</span>
+              </div>
+            </div>
+
+            {/* Difficulty Distribution */}
+            <div className="form-group">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Phân bổ mức độ khó
+              </label>
+              <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 space-y-3">
+                {[
+                  { key: "Biết", label: "Biết", color: "bg-green-500", description: "Nhớ, nhận biết" },
+                  { key: "Hiểu", label: "Hiểu", color: "bg-blue-500", description: "Giải thích, so sánh" },
+                  { key: "Vận dụng", label: "Vận dụng", color: "bg-yellow-500", description: "Áp dụng kiến thức" },
+                  { key: "Vận dụng cao", label: "Vận dụng cao", color: "bg-red-500", description: "Phân tích, đánh giá" },
+                ].map(({ key, label, color, description }) => {
+                  const percentage = difficultyDistribution[key] || 0;
+                  const questionCount = Math.round((percentage / 100) * numQuestions);
+                  
+                  return (
+                    <div key={key} className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-3 h-3 rounded-full ${color}`}></div>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
+                          <span className="text-xs text-gray-400 dark:text-gray-500">({description})</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {questionCount} câu
+                          </span>
+                          <div className="flex items-center">
+                            <input
+                              type="number"
+                              min="0"
+                              max="100"
+                              value={percentage}
+                              onChange={(e) => handleDifficultyChange(key, e.target.value)}
+                              className="w-14 px-2 py-1 text-sm text-center border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded focus:ring-1 focus:ring-primary-500"
+                            />
+                            <span className="ml-1 text-sm text-gray-500 dark:text-gray-400">%</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full ${color} transition-all duration-200`} 
+                          style={{ width: `${percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className="pt-2 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Tổng:</span>
+                  <span className={`text-sm font-bold ${
+                    totalDifficultyPercentage === 100 
+                      ? "text-green-600 dark:text-green-400" 
+                      : "text-red-600 dark:text-red-400"
+                  }`}>
+                    {totalDifficultyPercentage}%
+                    {totalDifficultyPercentage !== 100 && (
+                      <span className="ml-1 text-xs font-normal">
+                        ({totalDifficultyPercentage < 100 ? `thiếu ${100 - totalDifficultyPercentage}%` : `thừa ${totalDifficultyPercentage - 100}%`})
+                      </span>
+                    )}
+                  </span>
+                </div>
               </div>
             </div>
 

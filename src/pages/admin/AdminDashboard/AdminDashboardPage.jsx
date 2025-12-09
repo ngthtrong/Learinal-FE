@@ -41,6 +41,7 @@ function AdminDashboardPage() {
   const [activities, setActivities] = useState([]);
   const [activitiesLoading, setActivitiesLoading] = useState(false);
   const [financialData, setFinancialData] = useState(null);
+  const [planDistribution, setPlanDistribution] = useState({ byUsers: [], byRevenue: [] });
 
   async function loadData() {
     try {
@@ -89,6 +90,37 @@ function AdminDashboardPage() {
         setFinancialData(finData);
       } catch (e) {
         console.warn("Financial data error", e);
+      }
+      // Fetch plan distribution data (users & revenue by plan)
+      try {
+        const subsRes = await adminService.listUserSubscriptions({ page: 1, pageSize: 1000 });
+        const allSubs = subsRes?.items || [];
+        
+        // Group by plan
+        const planMap = {};
+        allSubs.forEach((sub) => {
+          const planName = sub.planName || "Không xác định";
+          if (!planMap[planName]) {
+            planMap[planName] = {
+              users: 0,
+              revenue: 0,
+            };
+          }
+          planMap[planName].users += 1;
+          planMap[planName].revenue += sub.price || 0;
+        });
+
+        const byUsers = Object.entries(planMap)
+          .map(([name, data]) => ({ name, value: data.users }))
+          .sort((a, b) => b.value - a.value);
+
+        const byRevenue = Object.entries(planMap)
+          .map(([name, data]) => ({ name, value: data.revenue }))
+          .sort((a, b) => b.value - a.value);
+
+        setPlanDistribution({ byUsers, byRevenue });
+      } catch (e) {
+        console.warn("Plan distribution error", e);
       }
       // Recent activities: user subscription purchases & commission payments
       try {
@@ -525,27 +557,27 @@ function AdminDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Quản trị hệ thống</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Tổng quan & thao tác nhanh.</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Quản trị hệ thống</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">Tổng quan & thao tác nhanh.</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full sm:w-auto">
             <button
               onClick={() => {
                 setRefreshing(true);
                 loadData();
               }}
-              className="px-4 py-2 rounded-lg bg-primary-600 dark:bg-primary-500 text-white text-sm font-medium shadow hover:bg-primary-700 dark:hover:bg-primary-600 transition disabled:opacity-50"
+              className="flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg bg-primary-600 dark:bg-primary-500 text-white text-xs sm:text-sm font-medium shadow hover:bg-primary-700 dark:hover:bg-primary-600 transition disabled:opacity-50"
               disabled={refreshing}
             >
               {refreshing ? "Đang làm mới..." : "Làm mới"}
             </button>
             <button
               onClick={handleExportReport}
-              className="px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition disabled:opacity-50"
+              className="flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-xs sm:text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition disabled:opacity-50"
               disabled={loading || !stats}
             >
             Xuất báo cáo
@@ -729,6 +761,129 @@ function AdminDashboardPage() {
                 }}
               />
             </div>
+
+            {/* Plan Distribution by Users */}
+            {planDistribution.byUsers.length > 0 && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
+                  Phân bố người dùng theo gói
+                </h2>
+                <div className="flex justify-center">
+                  <div style={{ maxWidth: "300px", width: "100%" }}>
+                    <Doughnut
+                      data={{
+                        labels: planDistribution.byUsers.map((p) => p.name),
+                        datasets: [
+                          {
+                            data: planDistribution.byUsers.map((p) => p.value),
+                            backgroundColor: [
+                              "rgba(99, 102, 241, 0.8)",
+                              "rgba(59, 130, 246, 0.8)",
+                              "rgba(16, 185, 129, 0.8)",
+                              "rgba(245, 158, 11, 0.8)",
+                              "rgba(239, 68, 68, 0.8)",
+                              "rgba(168, 85, 247, 0.8)",
+                            ],
+                            borderColor: [
+                              "rgba(99, 102, 241, 1)",
+                              "rgba(59, 130, 246, 1)",
+                              "rgba(16, 185, 129, 1)",
+                              "rgba(245, 158, 11, 1)",
+                              "rgba(239, 68, 68, 1)",
+                              "rgba(168, 85, 247, 1)",
+                            ],
+                            borderWidth: 1,
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                          legend: {
+                            position: "bottom",
+                          },
+                          tooltip: {
+                            callbacks: {
+                              label: function (context) {
+                                const label = context.label || "";
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} (${percentage}%)`;
+                              },
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Plan Distribution by Revenue */}
+            {planDistribution.byRevenue.length > 0 && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
+                  Phân bố doanh thu theo gói
+                </h2>
+                <div className="flex justify-center">
+                  <div style={{ maxWidth: "300px", width: "100%" }}>
+                    <Doughnut
+                      data={{
+                        labels: planDistribution.byRevenue.map((p) => p.name),
+                        datasets: [
+                          {
+                            data: planDistribution.byRevenue.map((p) => p.value),
+                            backgroundColor: [
+                              "rgba(16, 185, 129, 0.8)",
+                              "rgba(99, 102, 241, 0.8)",
+                              "rgba(245, 158, 11, 0.8)",
+                              "rgba(59, 130, 246, 0.8)",
+                              "rgba(239, 68, 68, 0.8)",
+                              "rgba(168, 85, 247, 0.8)",
+                            ],
+                            borderColor: [
+                              "rgba(16, 185, 129, 1)",
+                              "rgba(99, 102, 241, 1)",
+                              "rgba(245, 158, 11, 1)",
+                              "rgba(59, 130, 246, 1)",
+                              "rgba(239, 68, 68, 1)",
+                              "rgba(168, 85, 247, 1)",
+                            ],
+                            borderWidth: 1,
+                          },
+                        ],
+                      }}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                          legend: {
+                            position: "bottom",
+                          },
+                          tooltip: {
+                            callbacks: {
+                              label: function (context) {
+                                const label = context.label || "";
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value.toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })} (${percentage}%)`;
+                              },
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
