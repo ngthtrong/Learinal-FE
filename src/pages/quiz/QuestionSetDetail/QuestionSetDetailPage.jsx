@@ -20,7 +20,6 @@ function QuestionSetDetailPage() {
   const [loadingAttempts, setLoadingAttempts] = useState(false);
   const { user } = useAuth();
   
-  console.log('QuestionSetDetailPage render', { userId: user?.id, questionSetId: questionSet?.id, questionSetUserId: questionSet?.userId });
   const [requestingReview, setRequestingReview] = useState(false);
   const [reviewRequested, setReviewRequested] = useState(false);
   const [currentReview, setCurrentReview] = useState(null); // active or last review
@@ -36,6 +35,18 @@ function QuestionSetDetailPage() {
   const [expertResponse, setExpertResponse] = useState("");
   const [respondingToFlag, setRespondingToFlag] = useState(null);
   const [submittingResponse, setSubmittingResponse] = useState(false);
+  const [isReportsCollapsed, setIsReportsCollapsed] = useState(false);
+
+  // Debug logging after all state declarations
+  console.log('🔍 QuestionSetDetailPage state:', { 
+    userId: user?.id, 
+    questionSetId: questionSet?.id, 
+    questionSetUserId: questionSet?.userId,
+    reviewRequested,
+    currentReview: currentReview?.id,
+    completedReview: completedReview?.id,
+    status: questionSet?.status
+  });
 
   useEffect(() => {
     fetchQuestionSet();
@@ -76,10 +87,13 @@ function QuestionSetDetailPage() {
   const fetchQuestionSet = async () => {
     try {
       setLoading(true);
+      console.log('🔍 Fetching question set with ID:', id);
       const data = await questionSetsService.getSetById(id);
+      console.log('✅ Question set loaded:', data);
       
       // Backend already checked premium requirement and set _premiumRequired flag
       if (data._premiumRequired) {
+        console.log('⚠️ Premium required for this question set');
         setShowPremiumModal(true);
         setLoading(false);
         return;
@@ -87,9 +101,11 @@ function QuestionSetDetailPage() {
       
       setQuestionSet(data);
     } catch (err) {
+      console.error('❌ Error loading question set:', err);
       const message = getErrorMessage(err);
       toast.showError(message);
-      setTimeout(() => navigate("/public"), 2000);
+      // Redirect back to quiz list instead of public page
+      setTimeout(() => navigate("/quiz"), 2000);
     } finally {
       setLoading(false);
     }
@@ -98,12 +114,13 @@ function QuestionSetDetailPage() {
   const fetchMyReports = async () => {
     try {
       setLoadingReports(true);
+      // Don't filter by status - show all reports including resolved/dismissed for history
       const data = await contentFlagsService.listFlags({
-        myReports: true,
         contentId: id,
         contentType: 'QuestionSet',
       });
-      setMyReports(data.flags || []);
+      console.log('📋 Fetched myReports:', data);
+      setMyReports(data.items || []);
     } catch (err) {
       console.error('Failed to fetch reports:', err);
       setMyReports([]);
@@ -173,10 +190,27 @@ function QuestionSetDetailPage() {
   };
 
   const canRequestReview = () => {
-    if (!questionSet || !user) return false;
-    const isOwner = String(questionSet.userId || questionSet.user?.id) === String(user.id);
+    if (!questionSet || !user) {
+      console.log('🔍 canRequestReview: No questionSet or user');
+      return false;
+    }
+    // questionSet.userId có thể là object {_id, name, email} hoặc string ID
+    const questionSetOwnerId = typeof questionSet.userId === 'object' 
+      ? (questionSet.userId._id || questionSet.userId.id) 
+      : questionSet.userId;
+    const isOwner = String(questionSetOwnerId) === String(user.id);
     const blockedStatuses = ["Validated", "Public"];
-    return isOwner && !reviewRequested && !blockedStatuses.includes(questionSet.status);
+    const result = isOwner && !reviewRequested && !blockedStatuses.includes(questionSet.status);
+    console.log('🔍 canRequestReview:', {
+      questionSetOwnerId,
+      userId: user.id,
+      isOwner,
+      reviewRequested,
+      status: questionSet.status,
+      blockedStatuses,
+      result
+    });
+    return result;
   };
 
   const handleRequestReview = async () => {
@@ -256,7 +290,7 @@ function QuestionSetDetailPage() {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Không tìm thấy bộ câu hỏi</h2>
           <p className="text-gray-600 dark:text-gray-400">Bộ câu hỏi này có thể đã bị xóa hoặc không tồn tại</p>
-          <Button onClick={() => navigate("/public")}>← Quay lại</Button>
+          <Button onClick={() => navigate("/quiz")}>← Quay lại</Button>
         </div>
       </div>
     );
@@ -276,7 +310,7 @@ function QuestionSetDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <Button variant="secondary" onClick={() => navigate("/public")}>
+            <Button variant="secondary" onClick={() => navigate("/quiz")}>
               ← Quay lại
             </Button>
             
@@ -347,16 +381,6 @@ function QuestionSetDetailPage() {
                   Đã chia sẻ
                 </span>
               )}
-              {canRequestReview() && (
-                <Button
-                  variant="outline"
-                  size="small"
-                  disabled={requestingReview}
-                  onClick={handleRequestReview}
-                >
-                  {requestingReview ? "Đang gửi..." : "Yêu cầu kiểm duyệt"}
-                </Button>
-              )}
               {reviewRequested && currentReview && (
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -399,6 +423,18 @@ function QuestionSetDetailPage() {
               )}
             </div>
           </div>
+          {canRequestReview() && (
+            <div className="mt-4">
+              <Button
+                variant="outline"
+                disabled={requestingReview}
+                onClick={handleRequestReview}
+                className="w-full sm:w-auto"
+              >
+                {requestingReview ? "Đang gửi..." : "Yêu cầu kiểm duyệt"}
+              </Button>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
             <div className="flex items-center gap-3 sm:gap-4 bg-primary-50 dark:bg-primary-900/30 rounded-lg p-3 sm:p-4">
@@ -750,12 +786,34 @@ function QuestionSetDetailPage() {
           </div>
         )}
 
-        {/* Content Reports Section */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-              Báo cáo vấn đề
-            </h2>
+        {/* Content Reports Section - Only show for Expert content */}
+        {questionSet?.userId?.role === 'Expert' && (
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg mb-6">
+          <div className="flex items-center justify-between p-6 pb-4">
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                Báo cáo vấn đề
+              </h2>
+              <button
+                onClick={() => setIsReportsCollapsed(!isReportsCollapsed)}
+                className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                title={isReportsCollapsed ? "Mở rộng" : "Thu gọn"}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={`transform transition-transform ${isReportsCollapsed ? 'rotate-180' : ''}`}
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+            </div>
             <Button
               variant="primary"
               onClick={() => setShowReportModal(true)}
@@ -769,6 +827,8 @@ function QuestionSetDetailPage() {
             </Button>
           </div>
 
+          {!isReportsCollapsed && (
+            <div className="px-6 pb-6">
             {loadingReports ? (
               <div className="text-center py-8">
                 <div className="inline-block w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
@@ -784,7 +844,7 @@ function QuestionSetDetailPage() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                 {myReports.map((report) => {
                   const statusColors = {
                     Pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
@@ -862,7 +922,10 @@ function QuestionSetDetailPage() {
                 })}
               </div>
             )}
+            </div>
+          )}
         </div>
+        )}
 
         {/* Quiz Attempts History */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -1041,7 +1104,7 @@ function QuestionSetDetailPage() {
               <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Chưa có lượt làm bài nào. Hãy bắt đầu làm bài đầu tiên!
               </p>
-              {questionSet.status !== "Processing" &&(
+              {questionSet.status !== "Processing" && (
               <Button onClick={handleStartQuiz}>
                 <span className="inline-flex items-center gap-2">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
@@ -1159,7 +1222,7 @@ function QuestionSetDetailPage() {
         <PremiumRequiredModal
           onClose={() => {
             setShowPremiumModal(false);
-            navigate("/public");
+            navigate("/quiz");
           }}
           onUpgrade={() => navigate("/subscriptions/plans")}
         />

@@ -31,6 +31,7 @@ function QuizTakingPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(useTimer ? timerMinutes * 60 : null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const timerRef = useRef(null);
   const autoSubmitRef = useRef(false);
 
@@ -76,23 +77,76 @@ function QuizTakingPage() {
     };
   }, []);
 
-  // Prevent accidental page close
+  // Prevent accidental page close/refresh
   useEffect(() => {
     const handleBeforeUnload = (e) => {
-      e.preventDefault();
-      e.returnValue = "";
-      return "";
+      if (!hasSubmitted) {
+        e.preventDefault();
+        e.returnValue = "";
+        return "";
+      }
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, []);
+  }, [hasSubmitted]);
+
+  // Prevent back navigation after submission
+  useEffect(() => {
+    if (!hasSubmitted) return;
+
+    const handlePopState = (e) => {
+      e.preventDefault();
+      toast.showWarning("Bạn đã nộp bài, không thể quay lại!");
+      // Push forward to result page
+      window.history.pushState(null, "", window.location.href);
+      navigate(`/quiz/result/${attemptId}`, { replace: true });
+    };
+
+    // Add a dummy state to history to intercept back button
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [hasSubmitted, attemptId, navigate, toast]);
+
+  useEffect(() => {
+    if (!hasSubmitted) return;
+
+    const handlePopState = (e) => {
+      e.preventDefault();
+      toast.showWarning("Bạn đã nộp bài, không thể quay lại!");
+      // Push forward to result page
+      window.history.pushState(null, "", window.location.href);
+      navigate(`/quiz/result/${attemptId}`, { replace: true });
+    };
+
+    // Add a dummy state to history to intercept back button
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [hasSubmitted, attemptId, navigate, toast]);
 
   const loadQuestionSet = async () => {
     try {
       setLoading(true);
       // Get attempt to find question set ID and restore answers
       const attempt = await quizAttemptsService.getAttemptById(attemptId);
+      
+      // ✅ Check if attempt is already completed - prevent re-taking
+      if (attempt.isCompleted) {
+        toast.showWarning("Bài thi này đã được nộp. Chuyển đến trang kết quả...");
+        setTimeout(() => {
+          navigate(`/quiz/result/${attemptId}`, { replace: true });
+        }, 1500);
+        return;
+      }
+      
       const qSet = await questionSetsService.getSetById(attempt.setId);
       setQuestionSet(qSet);
       loadQuestions(qSet);
@@ -167,10 +221,13 @@ function QuizTakingPage() {
 
       // Submit to backend with answers array wrapped in object
       await quizAttemptsService.submitAttempt(attemptId, { answers });
+      
+      // Mark as submitted to trigger navigation guard
+      setHasSubmitted(true);
 
-      // Navigate to result page
+      // Navigate to result page (replace history to prevent back navigation)
       setTimeout(() => {
-        navigate(`/quiz/result/${attemptId}`);
+        navigate(`/quiz/result/${attemptId}`, { replace: true });
       }, 1000);
     } catch (err) {
       const message = getErrorMessage(err);
@@ -219,14 +276,17 @@ function QuizTakingPage() {
 
       // Submit to backend with answers array wrapped in object
       await quizAttemptsService.submitAttempt(attemptId, { answers });
+      
+      // Mark as submitted to trigger navigation guard
+      setHasSubmitted(true);
 
       if (!isAutoSubmit) {
         toast.showSuccess("Nộp bài thành công!");
       }
 
-      // Navigate to result page
+      // Navigate to result page (replace history to prevent back navigation)
       setTimeout(() => {
-        navigate(`/quiz/result/${attemptId}`);
+        navigate(`/quiz/result/${attemptId}`, { replace: true });
       }, 1000);
     } catch (err) {
       const message = getErrorMessage(err);

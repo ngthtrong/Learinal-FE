@@ -16,7 +16,7 @@ import {
   ExpertSidebarLayout,
 } from "@/components/layout";
 import RoleBasedSidebarLayout from "./components/layout/RoleBasedSidebarLayout";
-import { AdminRoute, ExpertRoute } from "./components/common";
+import { AdminRoute, ExpertRoute, BackToTop } from "./components/common";
 
 // Pages
 import {
@@ -695,6 +695,7 @@ function App() {
             {/* 404 - Not found */}
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
+              <BackToTop />
             </Router>
           </NotificationProvider>
         </AuthProvider>

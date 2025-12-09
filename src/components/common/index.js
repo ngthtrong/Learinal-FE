@@ -17,3 +17,4 @@ export { default as ExpertRoute } from "./ExpertRoute";
 export { default as ThemeToggle } from "./ThemeToggle";
 export { default as PremiumRequiredModal } from "./PremiumRequiredModal";
 export { default as ReportContentModal } from "./ReportContentModal";
+export { default as BackToTop } from "./BackToTop";

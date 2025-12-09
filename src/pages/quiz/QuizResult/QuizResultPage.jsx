@@ -367,7 +367,7 @@ function QuizResultPage() {
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             {error || "Không tìm thấy kết quả bài thi"}
           </p>
-          <Button onClick={() => navigate(-1)} className="w-full justify-center">
+          <Button onClick={() => navigate("/quiz")} className="w-full justify-center">
             Quay lại
           </Button>
         </div>
