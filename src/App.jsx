@@ -16,7 +16,7 @@ import {
   ExpertSidebarLayout,
 } from "@/components/layout";
 import RoleBasedSidebarLayout from "./components/layout/RoleBasedSidebarLayout";
-import { AdminRoute, ExpertRoute } from "./components/common";
+import { AdminRoute, ExpertRoute, BackToTop } from "./components/common";
 
 // Pages
 import {
@@ -63,10 +63,15 @@ import {
   ExpertCreateByUploadPage,
   ExpertQuestionSetDetailPage,
   ExpertQuestionSetEditPage,
+  ExpertHandleReportsPage,
   ExpertQuizStartPage,
   ExpertQuizTakingPage,
   ExpertQuizResultPage,
 } from "./pages";
+
+// Content Flag Pages
+import AdminContentFlagsPage from "./pages/admin/ContentFlags/AdminContentFlagsPage";
+import AdminContentFlagDetailPage from "./pages/admin/ContentFlags/AdminContentFlagDetailPage";
 
 // Styles
 function App() {
@@ -457,6 +462,34 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/admin/content-flags"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminContentFlagsPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/content-flags/:id"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminContentFlagDetailPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
 
             {/* Expert routes */}
             <Route
@@ -586,6 +619,20 @@ function App() {
               }
             />
             <Route
+              path="/expert/question-sets/:id/handle-reports"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertHandleReportsPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/expert/quiz/:id"
               element={
                 <ProtectedRoute>
@@ -646,6 +693,7 @@ function App() {
             {/* 404 - Not found */}
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
+              <BackToTop />
             </Router>
           </NotificationProvider>
         </AuthProvider>

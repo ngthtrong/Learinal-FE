@@ -2,35 +2,50 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import questionSetsService from "@/services/api/questionSets.service";
 import Button from "@/components/common/Button";
-import { useToast } from "@/components/common";
+import { useToast, PremiumRequiredModal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { Footer } from "@/components/layout";
+import { useAuth } from "@/contexts/AuthContext";
 
 const PublicSetsPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const { user } = useAuth();
   const [questionSets, setQuestionSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [activeTab, setActiveTab] = useState("all"); // all, expert, user-shared
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   useEffect(() => {
     fetchPublicQuestionSets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [page, activeTab]);
 
   const fetchPublicQuestionSets = async () => {
     try {
       setLoading(true);
-      const response = await questionSetsService.filterSets({
+      
+      const params = {
         isShared: true,
         page,
         pageSize: 12,
-      });
+      };
+
+      // Filter based on active tab
+      if (activeTab === "expert") {
+        params.creatorRole = "Expert";
+      } else if (activeTab === "user-shared") {
+        params.creatorRole = "Learner";
+      }
+      // For "all" tab, don't add creatorRole filter
+
+      const response = await questionSetsService.filterSets(params);
 
       // Handle different response formats - filterSets returns { results, meta }
       const items = response.results || response.items || response.data || [];
-      const meta = response.meta || {};
+      const meta = response.pagination || response.meta || {};
 
       setQuestionSets(items);
       setTotalPages(meta.totalPages || 1);
@@ -42,12 +57,48 @@ const PublicSetsPage = () => {
     }
   };
 
-  const handleViewDetail = (id) => {
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setPage(1); // Reset to first page when changing tabs
+  };
+
+  const handleViewDetail = async (id, creatorRole) => {
+    // If this is an expert set, check premium first
+    if (creatorRole === "Expert") {
+      try {
+        const data = await questionSetsService.getSetById(id);
+        if (data._premiumRequired) {
+          // Show premium modal immediately
+          setShowPremiumModal(true);
+          return;
+        }
+      } catch (err) {
+        const message = getErrorMessage(err);
+        toast.showError(message);
+        return;
+      }
+    }
+    // Navigate if allowed
     navigate(`/question-sets/${id}`);
   };
 
-  const handleStartQuiz = (id) => {
-    navigate(`/quiz/start/${id}`);
+  const handleStartQuiz = async (questionSetId, isExpert) => {
+    // If this is an expert set, check premium first
+    if (isExpert) {
+      try {
+        const data = await questionSetsService.getSetById(questionSetId);
+        if (data._premiumRequired) {
+          // Show premium modal immediately
+          setShowPremiumModal(true);
+          return;
+        }
+      } catch (err) {
+        const message = getErrorMessage(err);
+        toast.showError(message);
+        return;
+      }
+    }
+    navigate(`/quiz/start/${questionSetId}`);
   };
 
   return (
@@ -64,6 +115,66 @@ const PublicSetsPage = () => {
           <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 ml-0 sm:ml-13">
             Khám phá và làm thử các bộ đề thi được chia sẻ công khai từ cộng đồng
           </p>
+
+          {/* Tabs */}
+          <div className="mt-6 border-b border-gray-200 dark:border-gray-700">
+            <nav className="flex gap-2 sm:gap-4 -mb-px overflow-x-auto">
+              <button
+                onClick={() => handleTabChange("all")}
+                className={`whitespace-nowrap pb-3 px-2 sm:px-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === "all"
+                    ? "border-primary-600 text-primary-600 dark:text-primary-400"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+                }`}
+              >
+                <span className="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                  </svg>
+                  Tất cả
+                </span>
+              </button>
+              <button
+                onClick={() => handleTabChange("expert")}
+                className={`whitespace-nowrap pb-3 px-2 sm:px-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === "expert"
+                    ? "border-primary-600 text-primary-600 dark:text-primary-400"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+                }`}
+              >
+                <span className="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                  Đề Expert
+                  <span className="ml-1 px-1.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                    Premium
+                  </span>
+                </span>
+              </button>
+              <button
+                onClick={() => handleTabChange("user-shared")}
+                className={`whitespace-nowrap pb-3 px-2 sm:px-4 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === "user-shared"
+                    ? "border-primary-600 text-primary-600 dark:text-primary-400"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+                }`}
+              >
+                <span className="flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                    <polyline points="16 6 12 2 8 6"></polyline>
+                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                  </svg>
+                  Người dùng chia sẻ
+                </span>
+              </button>
+            </nav>
+          </div>
         </div>
       </div>
 
@@ -119,7 +230,9 @@ const PublicSetsPage = () => {
                   : "";
                 const creatorName =
                   questionSet.creatorName || questionSet.creator?.name || "Ẩn danh";
+                const creatorRole = questionSet.creatorRole || "Learner";
                 const subjectName = questionSet.subject?.name || "";
+                const isExpertSet = creatorRole === "Expert";
 
                 const difficultyColors = {
                   Easy: "bg-blue-100 text-blue-700 border-blue-200",
@@ -130,15 +243,37 @@ const PublicSetsPage = () => {
                 return (
                   <div
                     key={questionSet.id}
-                    className="group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
-                    onClick={() => handleViewDetail(questionSet.id)}
+                    className={`group relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br border shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer ${
+                      isExpertSet
+                        ? "from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border-amber-300 dark:border-amber-700 hover:border-amber-500 dark:hover:border-amber-500"
+                        : "from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500"
+                    }`}
+                    onClick={() => handleViewDetail(questionSet.id, creatorRole)}
                   >
+                    {/* Expert Badge - Top Right */}
+                    {isExpertSet && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white text-xs font-bold shadow-lg">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                          </svg>
+                          Expert
+                        </div>
+                      </div>
+                    )}
+
                     {/* Decorative blurred blob */}
-                    <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
+                    <div className={`pointer-events-none absolute -top-6 -right-6 w-32 h-32 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity ${
+                      isExpertSet ? "bg-amber-500/30" : "bg-primary-500/20"
+                    }`} />
 
                     {/* Icon - Top Left */}
-                    <div className="mb-3 sm:mb-4">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl bg-primary-500/20 text-primary-600 dark:text-primary-400 shadow-inner group-hover:scale-110 transition-transform">
+                    <div className="mb-4">
+                      <div className={`w-14 h-14 flex items-center justify-center rounded-xl shadow-inner group-hover:scale-110 transition-transform ${
+                        isExpertSet
+                          ? "bg-amber-500/30 text-amber-700 dark:text-amber-400"
+                          : "bg-primary-500/20 text-primary-600 dark:text-primary-400"
+                      }`}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="26"
@@ -160,16 +295,28 @@ const PublicSetsPage = () => {
 
                     {/* Title and Description */}
                     <h3
-                      className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2"
+                      className={`text-xl font-semibold leading-tight mb-2 transition-colors ${
+                        isExpertSet
+                          ? "text-gray-900 dark:text-gray-100 group-hover:text-amber-700 dark:group-hover:text-amber-400"
+                          : "text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400"
+                      }`}
                       title={title}
                     >
                       {title}
                     </h3>
 
                     {/* Creator & Subject info */}
-                    <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-400 mb-2 sm:mb-3 space-y-0.5 sm:space-y-1">
-                      <div className="truncate">
-                        <span className="font-medium">Tạo bởi:</span> {creatorName}
+                    <div className="text-sm text-gray-700 dark:text-gray-400 mb-3 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Tạo bởi:</span>
+                        <span className="flex items-center gap-1">
+                          {creatorName}
+                          {isExpertSet && (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-amber-600 dark:text-amber-500">
+                              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          )}
+                        </span>
                       </div>
                       {subjectName && (
                         <div>
@@ -205,7 +352,7 @@ const PublicSetsPage = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleViewDetail(questionSet.id);
+                          handleViewDetail(questionSet.id, creatorRole);
                         }}
                         className="w-1/2 px-3 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-500 transition-all shadow-sm inline-flex items-center justify-center gap-1.5"
                       >
@@ -215,12 +362,27 @@ const PublicSetsPage = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleStartQuiz(questionSet.id);
+                          handleStartQuiz(questionSet.id, isExpertSet);
                         }}
-                        className="w-1/2 px-3 py-2 text-sm font-medium text-white dark:text-white bg-green-600 dark:bg-green-700/80 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-all shadow-sm inline-flex items-center justify-center gap-1.5"
+                        className={`w-1/2 px-3 py-2 text-sm font-medium text-white rounded-lg transition-all shadow-sm inline-flex items-center justify-center gap-1.5 ${
+                          isExpertSet
+                            ? "bg-amber-600 dark:bg-amber-700/80 hover:bg-amber-700 dark:hover:bg-amber-600"
+                            : "bg-green-600 dark:bg-green-700/80 hover:bg-green-700 dark:hover:bg-green-600"
+                        }`}
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                        Làm thử
+                        {isExpertSet ? (
+                          <>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            Premium
+                          </>
+                        ) : (
+                          <>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            Làm thử
+                          </>
+                        )}
                       </button>
                     </div>
 
@@ -258,6 +420,14 @@ const PublicSetsPage = () => {
 
       {/* Footer */}
       <Footer />
+      
+      {/* Premium Required Modal */}
+      {showPremiumModal && (
+        <PremiumRequiredModal
+          onClose={() => setShowPremiumModal(false)}
+          onUpgrade={() => navigate("/subscriptions/plans")}
+        />
+      )}
     </div>
   );
 };

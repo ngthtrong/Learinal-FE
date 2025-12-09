@@ -210,7 +210,7 @@ function CommissionRecordsPage() {
                   <span className="text-xs text-gray-500 dark:text-gray-400">Fixed Rate</span>
                 </div>
                 <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                  {formatCurrency(summary?.hybridModel?.totalFixed || 0)}
+                  {formatCurrency(summary?.fixed?.total || 0)}
                 </div>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
@@ -219,7 +219,7 @@ function CommissionRecordsPage() {
                   <span className="text-xs text-gray-500 dark:text-gray-400">Revenue Bonus</span>
                 </div>
                 <div className="text-xl font-bold text-amber-600 dark:text-amber-400">
-                  {formatCurrency(summary?.hybridModel?.totalBonus || 0)}
+                  {formatCurrency(summary?.bonus?.total || 0)}
                 </div>
               </div>
             </div>

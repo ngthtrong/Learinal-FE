@@ -580,7 +580,7 @@ function SubjectDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3 text-xs text-gray-700 dark:text-gray-400">
-                      <span>{set.questionCount || 0} câu hỏi</span>
+                      <span>{(set.questions?.length || set.questionCount || 0)} câu hỏi</span>
                       {set.isShared && <span>• Đã chia sẻ</span>}
                       <span className="text-xs text-gray-600 dark:text-gray-400">
                         {formatDate(set.createdAt)}

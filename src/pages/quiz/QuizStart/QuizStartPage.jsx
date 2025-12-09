@@ -3,17 +3,21 @@ import { useParams, useNavigate } from "react-router-dom";
 import questionSetsService from "@/services/api/questionSets.service";
 import quizAttemptsService from "@/services/api/quizAttempts.service";
 import Button from "@/components/common/Button";
-import { useToast } from "@/components/common";
+import { useToast, PremiumRequiredModal, ReportContentModal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { Footer } from "@/components/layout";
+import { useAuth } from "@/contexts/AuthContext";
 
 function QuizStartPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
+  const { user } = useAuth();
   const [questionSet, setQuestionSet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   // Quiz settings
   const [useTimer, setUseTimer] = useState(true);
@@ -30,6 +34,12 @@ function QuizStartPage() {
       setLoading(true);
       const data = await questionSetsService.getSetById(id);
       setQuestionSet(data);
+      
+      // Check if this is a premium-required expert set
+      if (data._premiumRequired) {
+        setShowPremiumModal(true);
+      }
+      
       // Set default timer based on question count (2 minutes per question)
       const questionCount = data.questionCount || data.questions?.length || 10;
       const defaultTime = Math.max(30, Math.min(120, questionCount * 2));
@@ -44,6 +54,12 @@ function QuizStartPage() {
   };
 
   const handleStartQuiz = async () => {
+    // Check premium requirement before starting quiz
+    if (questionSet?._premiumRequired) {
+      setShowPremiumModal(true);
+      return;
+    }
+
     try {
       setStarting(true);
 
@@ -95,6 +111,24 @@ function QuizStartPage() {
           <Button variant="secondary" onClick={() => navigate(`/question-sets/${id}`)} className="text-sm sm:text-base">
             ← Quay lại
           </Button>
+          
+          {/* Report button for expert content - only show if user has premium access */}
+          {questionSet?.creatorRole === 'Expert' && user?.currentSubscription?.status === 'Active' && (
+            <Button 
+              variant="secondary" 
+              onClick={() => setShowReportModal(true)}
+              className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 border-red-300 hover:border-red-400"
+            >
+              <span className="flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                Báo cáo vấn đề
+              </span>
+            </Button>
+          )}
         </div>
 
         {/* Quiz Info */}
@@ -264,19 +298,50 @@ function QuizStartPage() {
             size="large"
             onClick={handleStartQuiz}
             loading={starting}
-            disabled={starting}
+            disabled={starting || questionSet?._premiumRequired}
           >
             {starting ? (
               "Đang khởi tạo..."
             ) : (
               <span className="inline-flex items-center gap-2 ">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
-                Bắt đầu làm bài
+                {questionSet?._premiumRequired ? "Yêu cầu Premium" : "Bắt đầu làm bài"}
               </span>
             )}
           </Button>
+          
+          {/* Premium notice */}
+          {questionSet?._premiumRequired && (
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/>
+              </svg>
+              {questionSet._message || "Bạn cần nâng cấp lên gói Premium để làm bài tập này"}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Premium Required Modal */}
+      {showPremiumModal && (
+        <PremiumRequiredModal 
+          onClose={() => setShowPremiumModal(false)}
+          onUpgrade={() => {
+            setShowPremiumModal(false);
+            navigate("/subscriptions/plans");
+          }}
+          title={questionSet?.title}
+        />
+      )}
+
+      {/* Report Content Modal */}
+      <ReportContentModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        contentType="QuestionSet"
+        contentId={id}
+        contentTitle={questionSet?.title}
+      />
 
       {/* Footer */}
       <Footer />
