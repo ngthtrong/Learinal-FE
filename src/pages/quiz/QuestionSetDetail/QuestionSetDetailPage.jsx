@@ -166,10 +166,10 @@ function QuestionSetDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4">
         <div className="text-center space-y-4">
-          <div className="inline-block w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
-          <p className="text-gray-600 dark:text-gray-400">Đang tải thông tin...</p>
+          <div className="inline-block w-10 h-10 sm:w-12 sm:h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Đang tải thông tin...</p>
         </div>
       </div>
     );
@@ -177,13 +177,13 @@ function QuestionSetDetailPage() {
 
   if (!questionSet) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4">
         <div className="text-center space-y-4 max-w-md">
-          <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 dark:text-gray-500"><path d="M9 5H2v7l6.29 6.29c.94.94 2.48.94 3.42 0l3.58-3.58c.94-.94.94-2.48 0-3.42L9 5Z"></path><path d="M6 9.01V9"></path><path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19"></path></svg>
+          <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500"><path d="M9 5H2v7l6.29 6.29c.94.94 2.48.94 3.42 0l3.58-3.58c.94-.94.94-2.48 0-3.42L9 5Z"></path><path d="M6 9.01V9"></path><path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19"></path></svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Không tìm thấy bộ câu hỏi</h2>
-          <p className="text-gray-600 dark:text-gray-400">Bộ câu hỏi này có thể đã bị xóa hoặc không tồn tại</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Không tìm thấy bộ câu hỏi</h2>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Bộ câu hỏi này có thể đã bị xóa hoặc không tồn tại</p>
           <Button onClick={() => navigate(-1)}>← Quay lại</Button>
         </div>
       </div>
@@ -222,13 +222,13 @@ function QuestionSetDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {/* Question Set Info */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
-          <div className="flex items-start justify-between mb-4 sm:mb-6 flex-wrap gap-3 sm:gap-4">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 flex-1 min-w-0 break-words">
+          <div className="flex flex-col sm:flex-row items-start justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 min-w-0 break-words">
               {questionSet.title}
             </h1>
-            <div className="flex items-center gap-2 ml-4 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
               <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${
                   questionSet.status === "Draft"
                     ? "bg-slate-100 dark:bg-slate-900/30 text-slate-700 dark:text-slate-300"
                     : questionSet.status === "Processing"
@@ -269,7 +269,7 @@ function QuestionSetDetailPage() {
                 </span>
               </span>
               {questionSet.isShared && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300">
+                <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                   Đã chia sẻ
                 </span>
@@ -286,7 +286,7 @@ function QuestionSetDetailPage() {
               )}
               {reviewRequested && currentReview && (
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${
                     currentReview.status === "PendingAssignment"
                       ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300"
                       : currentReview.status === "Assigned"
@@ -319,7 +319,7 @@ function QuestionSetDetailPage() {
                 </span>
               )}
               {!reviewRequested && completedReview && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
+                <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                   Đã kiểm duyệt
                 </span>
@@ -330,53 +330,53 @@ function QuestionSetDetailPage() {
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
             <div className="flex items-center gap-3 sm:gap-4 bg-primary-50 dark:bg-primary-900/30 rounded-lg p-3 sm:p-4">
               <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-800/50">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
               </div>
               <div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {questionSet.questionCount || questionSet.questions?.length || 0}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Câu hỏi</div>
+                <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Câu hỏi</div>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-secondary-50 dark:bg-secondary-900/30 rounded-lg p-4">
-              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-secondary-100 dark:bg-secondary-800/50">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary-600 dark:text-secondary-400"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+            <div className="flex items-center gap-3 sm:gap-4 bg-secondary-50 dark:bg-secondary-900/30 rounded-lg p-3 sm:p-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg bg-secondary-100 dark:bg-secondary-800/50">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-secondary-600 dark:text-secondary-400"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
               </div>
               <div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {attempts.length}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Lượt làm</div>
+                <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Lượt làm</div>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-success-50 dark:bg-success-900/30 rounded-lg p-4">
-              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-success-100 dark:bg-success-800/50">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-success-600 dark:text-success-400"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <div className="flex items-center gap-3 sm:gap-4 bg-success-50 dark:bg-success-900/30 rounded-lg p-3 sm:p-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg bg-success-100 dark:bg-success-800/50">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-success-600 dark:text-success-400"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
               </div>
               <div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {bestScore.toFixed(1)}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Điểm cao nhất</div>
+                <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Điểm cao nhất</div>
               </div>
             </div>
-            <div className="flex items-center gap-4 bg-warning-50 dark:bg-warning-900/30 rounded-lg p-4">
-              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-warning-100 dark:bg-warning-800/50">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-warning-600 dark:text-warning-400"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            <div className="flex items-center gap-3 sm:gap-4 bg-warning-50 dark:bg-warning-900/30 rounded-lg p-3 sm:p-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg bg-warning-100 dark:bg-warning-800/50">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-warning-600 dark:text-warning-400"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
               </div>
               <div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {avgScore.toFixed(1)}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Điểm trung bình</div>
+                <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Điểm trung bình</div>
               </div>
             </div>
           </div>
 
           {questionSet.description && (
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-6 mb-4 sm:mb-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3 flex items-center gap-2">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 Mô tả
               </h3>
@@ -387,17 +387,17 @@ function QuestionSetDetailPage() {
           )}
 
           {questionSet.isShared && (
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-6 mb-4 sm:mb-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3 flex items-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                 Link chia sẻ
               </h3>
-              <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4">
                 <input
                   type="text"
                   readOnly
                   value={`${window.location.origin}/question-sets/${questionSet.id}`}
-                  className="flex-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="flex-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   onClick={(e) => e.target.select()}
                 />
                 <Button
@@ -422,7 +422,7 @@ function QuestionSetDetailPage() {
             </div>
           )}
 
-          <div className="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-4">
+          <div className="flex flex-col gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-4">
             <span className="flex items-center gap-2">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               Tạo: {formatDate(questionSet.createdAt)}
@@ -434,13 +434,13 @@ function QuestionSetDetailPage() {
               </span>
             )}
             {completedReview && (
-              <div className={`mt-2 rounded-lg p-4 ${
+              <div className={`mt-2 rounded-lg p-3 sm:p-4 ${
                 completedReview.decision === "Rejected"
                   ? "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
                   : "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
               }`}>
-                <div className="flex items-center justify-between mb-2">
-                  <div className={`font-semibold flex items-center gap-2 ${
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-2">
+                  <div className={`text-sm sm:text-base font-semibold flex items-center gap-2 ${
                     completedReview.decision === "Rejected"
                       ? "text-red-700 dark:text-red-300"
                       : "text-green-700 dark:text-green-300"
@@ -509,45 +509,124 @@ function QuestionSetDetailPage() {
 
         {/* Quiz Attempts History */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 sm:py-6 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
               Lịch sử làm bài
             </h2>
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
+            <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
               {completedAttempts.length}/{attempts.length} hoàn thành
             </span>
           </div>
 
           {loadingAttempts ? (
-            <div className="p-8 text-center">
+            <div className="p-6 sm:p-8 text-center">
               <div className="inline-block w-8 h-8 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-3"></div>
-              <p className="text-gray-600 dark:text-gray-400">Đang tải lịch sử...</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">Đang tải lịch sử...</p>
             </div>
           ) : attempts.length > 0 ? (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile Card View */}
+              <div className="block sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                {attempts.map((attempt, index) => {
+                  const duration = attempt.completedAt
+                    ? Math.floor(
+                        (new Date(attempt.completedAt) - new Date(attempt.startedAt)) / 1000 / 60
+                      )
+                    : null;
+                  return (
+                    <div
+                      key={attempt.id}
+                      className={`p-4 ${
+                        attempt.isCompleted ? "" : "bg-gray-50 dark:bg-gray-900/50"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                          Lần #{attempts.length - index}
+                        </span>
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                            attempt.isCompleted
+                              ? "bg-success-100 dark:bg-green-900/30 text-success-800 dark:text-green-300"
+                              : "bg-warning-100 dark:bg-yellow-900/30 text-warning-800 dark:text-yellow-300"
+                          }`}
+                        >
+                          {attempt.isCompleted ? "Hoàn thành" : "Đang làm"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                        <div>
+                          <span className="text-gray-500 dark:text-gray-400">Điểm: </span>
+                          {attempt.isCompleted ? (
+                            <span className="font-bold text-primary-600 dark:text-primary-400">
+                              {attempt.score?.toFixed(1) || 0}
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </div>
+                        <div>
+                          <span className="text-gray-500 dark:text-gray-400">Thời gian: </span>
+                          <span className="text-gray-700 dark:text-gray-300">
+                            {duration !== null ? `${duration} phút` : "-"}
+                          </span>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="text-gray-500 dark:text-gray-400">Bắt đầu: </span>
+                          <span className="text-gray-700 dark:text-gray-300">
+                            {formatTime(attempt.startedAt)}
+                          </span>
+                        </div>
+                      </div>
+                      {attempt.isCompleted ? (
+                        <Button
+                          variant="primary"
+                          size="small"
+                          onClick={() => handleViewAttempt(attempt.id)}
+                          className="w-full text-xs"
+                        >
+                          Xem kết quả
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="success"
+                          size="small"
+                          onClick={() => handleContinueAttempt(attempt.id)}
+                          className="w-full text-xs"
+                        >
+                          Tiếp tục làm
+                        </Button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden sm:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
                   <tr>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Lần
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Trạng thái
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Điểm
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Bắt đầu
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Hoàn thành
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Thời gian
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Hành động
                     </th>
                   </tr>
@@ -566,10 +645,10 @@ function QuestionSetDetailPage() {
                           attempt.isCompleted ? "" : "bg-gray-50 dark:bg-gray-900/50"
                         }`}
                       >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                           #{attempts.length - index}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-3 whitespace-nowrap">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               attempt.isCompleted
@@ -590,33 +669,33 @@ function QuestionSetDetailPage() {
                             )}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-4 py-3 whitespace-nowrap">
                           {attempt.isCompleted ? (
-                            <span className="text-lg font-bold text-primary-600 dark:text-primary-400">
+                            <span className="text-base font-bold text-primary-600 dark:text-primary-400">
                               {attempt.score?.toFixed(1) || 0}
                             </span>
                           ) : (
                             <span className="text-sm text-gray-400 dark:text-gray-500">-</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                           {formatTime(attempt.startedAt)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                           {attempt.completedAt ? (
                             formatTime(attempt.completedAt)
                           ) : (
                             <span className="text-gray-400 dark:text-gray-500">-</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                           {duration !== null ? (
                             `${duration} phút`
                           ) : (
                             <span className="text-gray-400 dark:text-gray-500">-</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm">
                           {attempt.isCompleted ? (
                             <Button
                               variant="primary"
@@ -676,12 +755,13 @@ function QuestionSetDetailPage() {
                 </tbody>
               </table>
             </div>
+            </>
           ) : (
-            <div className="p-8 sm:p-12 text-center">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 dark:text-gray-500"><path d="M21.5 12H16c-.7 2-2 3-4 3s-3.3-1-4-3H2.5"></path><path d="M5.5 5.1L2 12v6c0 1.1.9 2 2 2h16a2 2 0 002-2v-6l-3.4-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.8 1.1z"></path></svg>
+            <div className="p-6 sm:p-8 lg:p-12 text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500"><path d="M21.5 12H16c-.7 2-2 3-4 3s-3.3-1-4-3H2.5"></path><path d="M5.5 5.1L2 12v6c0 1.1.9 2 2 2h16a2 2 0 002-2v-6l-3.4-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.8 1.1z"></path></svg>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6">
                 Chưa có lượt làm bài nào. Hãy bắt đầu làm bài đầu tiên!
               </p>
               {questionSet.status !== "Processing" &&(
@@ -699,11 +779,11 @@ function QuestionSetDetailPage() {
 
       {/* Revision Request Modal */}
       {showRevisionModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
                   Yêu cầu kiểm duyệt lại
                 </h3>
@@ -718,9 +798,9 @@ function QuestionSetDetailPage() {
                 </button>
               </div>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                <p className="text-sm text-blue-800 dark:text-blue-300 flex items-start gap-2">
+            <div className="p-4 sm:p-6 space-y-4">
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-300 flex items-start gap-2">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                   <span>
                     Nếu bạn không hài lòng với kết quả kiểm duyệt, hãy cho chúng tôi biết lý do. Bộ câu hỏi của bạn sẽ được chuyên gia xem xét lại.
@@ -735,8 +815,8 @@ function QuestionSetDetailPage() {
                   value={revisionResponse}
                   onChange={(e) => setRevisionResponse(e.target.value)}
                   placeholder="Vui lòng mô tả lý do bạn muốn yêu cầu kiểm duyệt lại (10-1000 ký tự)..."
-                  rows="6"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100 resize-none"
+                  rows="5"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100 resize-none text-sm sm:text-base"
                 />
                 <div className="mt-2 flex items-center justify-between text-sm">
                   <span className="text-gray-500 dark:text-gray-400">
@@ -754,7 +834,7 @@ function QuestionSetDetailPage() {
                 </div>
               </div>
             </div>
-            <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+            <div className="p-4 sm:p-6 border-t border-gray-200 dark:border-gray-700 flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
               <Button
                 variant="secondary"
                 onClick={() => {

@@ -122,7 +122,7 @@ function MySubscriptionPage() {
     "canShare",
     "maxSubjects",
     "maxDocumentsPerSubject",
-    "maxTotalDocuments",
+    // "maxTotalDocuments", // Removed - now unlimited
   ];
 
   const formatEntitlementLabel = (key) => {
@@ -131,7 +131,7 @@ function MySubscriptionPage() {
       maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
       maxValidationRequests: "Số yêu cầu kiểm duyệt",
       maxDocumentsPerSubject: "Số tài liệu/môn học",
-      maxTotalDocuments: "Tổng số tài liệu",
+      // maxTotalDocuments: "Tổng số tài liệu", // Removed - now unlimited
       priorityProcessing: "Xử lý ưu tiên",
       canShare: "Cho phép chia sẻ",
     };
@@ -223,21 +223,21 @@ function MySubscriptionPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
         {/* Header */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6">
+          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
             </div>
           </div>
         </div>
 
         {/* Empty State */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pb-6 sm:pb-8">
           <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mb-6">
               <svg className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -300,28 +300,28 @@ function MySubscriptionPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
         {/* Header */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6">
+          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
             </div>
           </div>
         </div>
 
         {/* Pending Payment State */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="w-24 h-24 bg-yellow-100 dark:bg-yellow-900/30 rounded-3xl flex items-center justify-center mb-6">
-              <svg className="w-12 h-12 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pb-6 sm:pb-8">
+          <div className="flex flex-col items-center justify-center py-12 sm:py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-yellow-100 dark:bg-yellow-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6">
+              <svg className="w-8 h-8 sm:w-12 sm:h-12 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chờ thanh toán</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chờ thanh toán</h2>
             <div className="mb-4">{getStatusBadge(subscription.status)}</div>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
               Vui lòng hoàn tất thanh toán để kích hoạt gói.
@@ -338,28 +338,28 @@ function MySubscriptionPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
         {/* Header */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6">
+          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
             </div>
           </div>
         </div>
 
         {/* Empty State */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mb-6">
-              <svg className="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pb-6 sm:pb-8">
+          <div className="flex flex-col items-center justify-center py-12 sm:py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gray-100 dark:bg-gray-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6">
+              <svg className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
               Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
             </p>
@@ -376,21 +376,21 @@ function MySubscriptionPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-6 py-6 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                  <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div className="space-y-1 sm:space-y-2">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
                 </div>
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+                <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
               </div>
-              <p className="text-lg text-gray-600 dark:text-gray-400">Thông tin chi tiết về gói đăng ký hiện tại</p>
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">Thông tin chi tiết về gói đăng ký hiện tại</p>
             </div>
-            <Button variant="secondary" onClick={() => navigate("/subscriptions/plans")}>
+            <Button variant="secondary" onClick={() => navigate("/subscriptions/plans")} className="w-full sm:w-auto">
               Xem các gói khác
             </Button>
           </div>
@@ -398,64 +398,64 @@ function MySubscriptionPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pb-6 sm:pb-8">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           {/* Plan Header */}
-          <div className="bg-gradient-to-r from-primary-600 to-secondary-600 p-8 text-white">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+          <div className="bg-gradient-to-r from-primary-600 to-secondary-600 p-4 sm:p-6 lg:p-8 text-white">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
               <div>
-                <h2 className="text-3xl font-bold mb-3">{plan?.planName || "Gói đăng ký"}</h2>
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3">{plan?.planName || "Gói đăng ký"}</h2>
                 {getStatusBadge(subscription.status)}
               </div>
               <div className="text-left sm:text-right">
-                <div className="text-5xl font-bold mb-1">{formatPrice(plan?.price || 0)}</div>
-                <div className="text-white/90 text-lg">
+                <div className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-1">{formatPrice(plan?.price || 0)}</div>
+                <div className="text-white/90 text-sm sm:text-base lg:text-lg">
                   /{plan?.billingCycle === "Monthly" ? "tháng" : "năm"}
                 </div>
               </div>
             </div>
             {plan?.description && (
-              <p className="text-white/90 text-lg max-w-2xl">{plan.description}</p>
+              <p className="text-white/90 text-sm sm:text-base lg:text-lg max-w-2xl">{plan.description}</p>
             )}
           </div>
 
           {/* Subscription Details */}
-          <div className="p-8">
-            <div className="flex items-center gap-2 mb-4">
-              <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="p-4 sm:p-6 lg:p-8">
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Thông tin gói</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Thông tin gói</h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Tên gói</span>
-                <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4">
+                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Tên gói</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {plan?.planName || "N/A"}
                 </span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4 dark:bg-gray-700/50">
-                <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Chu kỳ thanh toán</span>
-                <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4 dark:bg-gray-700/50">
+                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Chu kỳ thanh toán</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {plan?.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
                 </span>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Ngày bắt đầu</span>
-                <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4">
+                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Ngày bắt đầu</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {formatDate(subscription.startDate)}
                 </span>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Ngày hết hạn</span>
-                <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4">
+                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Ngày hết hạn</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {formatDate(subscription.endDate)}
                 </span>
               </div>
               {subscription.renewalDate && (
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                  <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Ngày gia hạn</span>
-                  <span className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4">
+                  <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Ngày gia hạn</span>
+                  <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                     {formatDate(subscription.renewalDate)}
                   </span>
                 </div>
@@ -463,34 +463,34 @@ function MySubscriptionPage() {
             </div>
 
             {/* Quota Section - Lượt sử dụng */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-8 mb-8">
-              <div className="flex items-center justify-between mb-4">
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-6 sm:pt-8 mb-6 sm:mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                 <div className="flex items-center gap-2">
-                  <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Lượt sử dụng trong kỳ</h3>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Lượt sử dụng trong kỳ</h3>
                 </div>
-                <Button variant="secondary" onClick={() => navigate("/addon-packages")}>
-                  <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <Button variant="secondary" onClick={() => navigate("/addon-packages")} className="w-full sm:w-auto text-sm">
+                  <svg className="w-4 h-4 mr-1 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                   Mua thêm lượt
                 </Button>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
                 {/* Lượt tạo đề */}
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-blue-700 dark:text-blue-300 font-medium">Lượt tạo đề còn lại</span>
-                    <div className="w-10 h-10 bg-blue-200 dark:bg-blue-800 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-3 sm:p-5 border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center justify-between mb-2 sm:mb-3">
+                    <span className="text-blue-700 dark:text-blue-300 font-medium text-xs sm:text-sm">Lượt tạo đề còn lại</span>
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-200 dark:bg-blue-800 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                     </div>
                   </div>
-                  <div className="flex items-end gap-2">
+                  <div className="flex items-end gap-1 sm:gap-2">
                     {(() => {
                       const maxVal = usageStats.maxTestGenerations ?? 0;
                       const used = usageStats.usedTestGenerations ?? 0;
@@ -500,8 +500,8 @@ function MySubscriptionPage() {
                       if (maxVal === -1) {
                         return (
                           <>
-                            <span className="text-3xl font-bold text-blue-800 dark:text-blue-200">∞</span>
-                            <span className="text-blue-600 dark:text-blue-400 text-sm mb-1">không giới hạn</span>
+                            <span className="text-xl sm:text-3xl font-bold text-blue-800 dark:text-blue-200">∞</span>
+                            <span className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-0.5 sm:mb-1">không giới hạn</span>
                           </>
                         );
                       }
@@ -514,15 +514,15 @@ function MySubscriptionPage() {
                       
                       return (
                         <>
-                          <span className="text-3xl font-bold text-blue-800 dark:text-blue-200">{totalRemaining}</span>
-                          <span className="text-blue-600 dark:text-blue-400 text-sm mb-1">/ {totalLimit} lượt</span>
+                          <span className="text-xl sm:text-3xl font-bold text-blue-800 dark:text-blue-200">{totalRemaining}</span>
+                          <span className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-0.5 sm:mb-1">/ {totalLimit} lượt</span>
                         </>
                       );
                     })()}
                   </div>
                   {usageStats.addonPurchasedTestGenerations > 0 && (
-                    <div className="mt-2 pt-2 border-t border-blue-200 dark:border-blue-700">
-                      <span className="text-sm text-blue-600 dark:text-blue-400">
+                    <div className="mt-1.5 sm:mt-2 pt-1.5 sm:pt-2 border-t border-blue-200 dark:border-blue-700">
+                      <span className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">
                         Bao gồm <span className="font-semibold">{usageStats.addonPurchasedTestGenerations}</span> lượt từ gói mua thêm
                       </span>
                     </div>
@@ -530,16 +530,16 @@ function MySubscriptionPage() {
                 </div>
 
                 {/* Lượt kiểm duyệt */}
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-5 border border-purple-200 dark:border-purple-800">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-purple-700 dark:text-purple-300 font-medium">Lượt kiểm duyệt còn lại</span>
-                    <div className="w-10 h-10 bg-purple-200 dark:bg-purple-800 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-purple-600 dark:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-3 sm:p-5 border border-purple-200 dark:border-purple-800">
+                  <div className="flex items-center justify-between mb-2 sm:mb-3">
+                    <span className="text-purple-700 dark:text-purple-300 font-medium text-xs sm:text-sm">Lượt kiểm duyệt còn lại</span>
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-200 dark:bg-purple-800 rounded-lg flex items-center justify-center">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
                     </div>
                   </div>
-                  <div className="flex items-end gap-2">
+                  <div className="flex items-end gap-1 sm:gap-2">
                     {(() => {
                       const maxVal = usageStats.maxValidationRequests ?? 0;
                       const used = usageStats.usedValidationRequests ?? 0;
@@ -549,8 +549,8 @@ function MySubscriptionPage() {
                       if (maxVal === -1) {
                         return (
                           <>
-                            <span className="text-3xl font-bold text-purple-800 dark:text-purple-200">∞</span>
-                            <span className="text-purple-600 dark:text-purple-400 text-sm mb-1">không giới hạn</span>
+                            <span className="text-xl sm:text-3xl font-bold text-purple-800 dark:text-purple-200">∞</span>
+                            <span className="text-purple-600 dark:text-purple-400 text-xs sm:text-sm mb-0.5 sm:mb-1">không giới hạn</span>
                           </>
                         );
                       }
@@ -563,91 +563,49 @@ function MySubscriptionPage() {
                       
                       return (
                         <>
-                          <span className="text-3xl font-bold text-purple-800 dark:text-purple-200">{totalRemaining}</span>
-                          <span className="text-purple-600 dark:text-purple-400 text-sm mb-1">/ {totalLimit} lượt</span>
+                          <span className="text-xl sm:text-3xl font-bold text-purple-800 dark:text-purple-200">{totalRemaining}</span>
+                          <span className="text-purple-600 dark:text-purple-400 text-xs sm:text-sm mb-0.5 sm:mb-1">/ {totalLimit} lượt</span>
                         </>
                       );
                     })()}
                   </div>
                   {usageStats.addonPurchasedValidationRequests > 0 && (
-                    <div className="mt-2 pt-2 border-t border-purple-200 dark:border-purple-700">
-                      <span className="text-sm text-purple-600 dark:text-purple-400">
+                    <div className="mt-1.5 sm:mt-2 pt-1.5 sm:pt-2 border-t border-purple-200 dark:border-purple-700">
+                      <span className="text-xs sm:text-sm text-purple-600 dark:text-purple-400">
                         Bao gồm <span className="font-semibold">{usageStats.addonPurchasedValidationRequests}</span> lượt từ gói mua thêm
                       </span>
                     </div>
                   )}
                 </div>
 
-                {/* Tài liệu còn lại */}
-                <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-5 border border-green-200 dark:border-green-800">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-green-700 dark:text-green-300 font-medium">Lượt tải tài liệu còn lại</span>
-                    <div className="w-10 h-10 bg-green-200 dark:bg-green-800 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="flex items-end gap-2">
-                    {(() => {
-                      const maxVal = usageStats.maxTotalDocuments ?? 0;
-                      const used = usageStats.usedTotalDocuments ?? 0;
-                      const addonRemaining = usageStats.addonDocumentUploads ?? 0;
-                      const addonPurchased = usageStats.addonPurchasedDocumentUploads ?? 0;
-                      
-                      if (maxVal === -1) {
-                        return (
-                          <>
-                            <span className="text-3xl font-bold text-green-800 dark:text-green-200">∞</span>
-                            <span className="text-green-600 dark:text-green-400 text-sm mb-1">không giới hạn</span>
-                          </>
-                        );
-                      }
-                      
-                      // Số còn lại = (max từ gói - đã dùng) + addon còn lại
-                      const remainingFromSubscription = Math.max(0, maxVal - used);
-                      const totalRemaining = remainingFromSubscription + addonRemaining;
-                      // Tổng ban đầu = max từ gói + addon đã mua (không đổi)
-                      const totalLimit = maxVal + addonPurchased;
-                      
-                      return (
-                        <>
-                          <span className="text-3xl font-bold text-green-800 dark:text-green-200">{totalRemaining}</span>
-                          <span className="text-green-600 dark:text-green-400 text-sm mb-1">/ {totalLimit} lượt</span>
-                        </>
-                      );
-                    })()}
-                  </div>
-                  {usageStats.addonPurchasedDocumentUploads > 0 && (
-                    <div className="mt-2 pt-2 border-t border-green-200 dark:border-green-700">
-                      <span className="text-sm text-green-600 dark:text-green-400">
-                        Bao gồm <span className="font-semibold">{usageStats.addonPurchasedDocumentUploads}</span> lượt từ gói mua thêm
-                      </span>
-                    </div>
-                  )}
+              {/* [REMOVED] Tài liệu còn lại - now unlimited */}
+              {/*
+                <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-3 sm:p-5 border border-green-200 dark:border-green-800">
+                  ...
                 </div>
+              */}
               </div>
 
               {/* Other Entitlements */}
               {subscription.entitlementsSnapshot && getSortedEntitlements(subscription.entitlementsSnapshot, ["maxMonthlyTestGenerations", "maxValidationRequests"]).length > 0 && (
                 <>
-                  <div className="flex items-center gap-2 mb-4">
-                    <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                     </svg>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Quyền lợi khác</h3>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Quyền lợi khác</h3>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     {getSortedEntitlements(subscription.entitlementsSnapshot, ["maxMonthlyTestGenerations", "maxValidationRequests"])
                       .map(([key, value]) => (
                       <div
                         key={key}
-                        className="flex items-start gap-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4 border border-primary-200 dark:border-primary-800 hover:border-primary-500 dark:hover:border-primary-400 transition-colors"
+                        className="flex items-start gap-2 sm:gap-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg p-3 sm:p-4 border border-primary-200 dark:border-primary-800 hover:border-primary-500 dark:hover:border-primary-400 transition-colors"
                       >
-                        <span className="text-primary-600 dark:text-primary-400 font-bold text-xl">✓</span>
-                        <div className="flex-1">
-                          <span className="text-gray-900 dark:text-gray-100 font-semibold block">{formatEntitlementLabel(key)}</span>
-                          <span className="text-gray-700 dark:text-gray-300 text-sm">
+                        <span className="text-primary-600 dark:text-primary-400 font-bold text-lg sm:text-xl">✓</span>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-gray-900 dark:text-gray-100 font-semibold block text-sm sm:text-base">{formatEntitlementLabel(key)}</span>
+                          <span className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">
                             {formatEntitlementValue(value)}
                           </span>
                         </div>
@@ -659,8 +617,8 @@ function MySubscriptionPage() {
             </div>
 
             {/* Actions */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-6 flex justify-end">
-              <Button variant="danger" onClick={handleCancelSubscription} loading={cancelling}>
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-6 flex justify-center sm:justify-end">
+              <Button variant="danger" onClick={handleCancelSubscription} loading={cancelling} className="w-full sm:w-auto">
                 Hủy gói đăng ký
               </Button>
             </div>

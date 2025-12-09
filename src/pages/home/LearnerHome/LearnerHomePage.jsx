@@ -446,10 +446,10 @@ const LearnerHomePage = () => {
         </section>
 
         {/* Tài liệu Section */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
+        <section className="space-y-4 sm:space-y-6">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <h2
-              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
+              className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/documents")}
@@ -457,8 +457,8 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/documents");
               }}
             >
-              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
               </div>
               Tài Liệu{myDocumentsDedup?.length ? ` (${myDocumentsDedup.length})` : ""}
             </h2>
@@ -494,12 +494,12 @@ const LearnerHomePage = () => {
               ))}
             </CardGrid>
           ) : (
-            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <DocumentIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
-              <p className="text-gray-500 dark:text-gray-400">Chưa có tài liệu nào</p>
+            <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <DocumentIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">Chưa có tài liệu nào</p>
               <button
                 onClick={handleOpenUploadDocModal}
-                className="mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+                className="mt-4 text-sm sm:text-base text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Tải lên tài liệu đầu tiên
               </button>
@@ -508,10 +508,10 @@ const LearnerHomePage = () => {
         </section>
 
         {/* Đề thi cá nhân Section */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
+        <section className="space-y-4 sm:space-y-6">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <h2
-              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
+              className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/quiz")}
@@ -519,8 +519,8 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/quiz");
               }}
             >
-              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
               </div>
               Đề Thi (Cá Nhân)
             </h2>
@@ -570,10 +570,10 @@ const LearnerHomePage = () => {
         </section>
 
         {/* Đề thi công khai Section */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
+        <section className="space-y-4 sm:space-y-6">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <h2
-              className="text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
+              className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"
               role="button"
               tabIndex={0}
               onClick={() => navigate("/public")}
@@ -581,8 +581,8 @@ const LearnerHomePage = () => {
                 if (e.key === "Enter" || e.key === " ") navigate("/public");
               }}
             >
-              <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><path d="M12 2c1.5 0 2.92.69 3.82 1.97l1.38 2.16c.5.78 1.3 1.3 2.21 1.46l1.96.31c.95.15 1.73.86 2 1.8l.5 1.81c.22.8.77 1.48 1.5 1.85l1.3.66c.74.37 1.25 1.08 1.37 1.88l.25 1.65c.08.51.33.97.7 1.28l.96.82c.6.5.95 1.23.95 2 0 .77-.35 1.5-.95 2l-.96.82c-.37.31-.62.77-.7 1.28l-.25 1.65c-.12.8-.63 1.51-1.37 1.88l-1.3.66c-.73.37-1.28 1.05-1.5 1.85l-.5 1.81c-.27.94-1.05 1.65-2 1.8l-1.96.31c-.91.16-1.71.68-2.21 1.46l-1.38 2.16c-.9 1.28-2.32 1.97-3.82 1.97s-2.92-.69-3.82-1.97l-1.38-2.16c-.5-.78-1.3-1.3-2.21-1.46l-1.96-.31c-.95-.15-1.73-.86-2-1.8l-.5-1.81c-.22-.8-.77-1.48-1.5-1.85l-1.3-.66c-.74-.37-1.25-1.08-1.37-1.88l-.25-1.65c-.08-.51-.33-.97-.7-1.28l-.96-.82c-.6-.5-.95-1.23-.95-2 0-.77.35-1.5.95-2l.96-.82c.37-.31.62-.77.7-1.28l.25-1.65c.12-.8.63-1.51 1.37-1.88l1.3-.66c.73-.37 1.28-1.05 1.5-1.85l.5-1.81c.27-.94 1.05-1.65 2-1.8l1.96-.31c.91-.16 1.71-.68 2.21-1.46l1.38-2.16C9.08 2.69 10.5 2 12 2z"></path><path d="M2.5 12h19"></path></svg>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><path d="M12 2c1.5 0 2.92.69 3.82 1.97l1.38 2.16c.5.78 1.3 1.3 2.21 1.46l1.96.31c.95.15 1.73.86 2 1.8l.5 1.81c.22.8.77 1.48 1.5 1.85l1.3.66c.74.37 1.25 1.08 1.37 1.88l.25 1.65c.08.51.33.97.7 1.28l.96.82c.6.5.95 1.23.95 2 0 .77-.35 1.5-.95 2l-.96.82c-.37.31-.62.77-.7 1.28l-.25 1.65c-.12.8-.63 1.51-1.37 1.88l-1.3.66c-.73.37-1.28 1.05-1.5 1.85l-.5 1.81c-.27.94-1.05 1.65-2 1.8l-1.96.31c-.91.16-1.71.68-2.21 1.46l-1.38 2.16c-.9 1.28-2.32 1.97-3.82 1.97s-2.92-.69-3.82-1.97l-1.38-2.16c-.5-.78-1.3-1.3-2.21-1.46l-1.96-.31c-.95-.15-1.73-.86-2-1.8l-.5-1.81c-.22-.8-.77-1.48-1.5-1.85l-1.3-.66c-.74-.37-1.25-1.08-1.37-1.88l-.25-1.65c-.08-.51-.33-.97-.7-1.28l-.96-.82c-.6-.5-.95-1.23-.95-2 0-.77.35-1.5.95-2l.96-.82c.37-.31.62-.77.7-1.28l.25-1.65c.12-.8.63-1.51 1.37-1.88l1.3-.66c.73-.37 1.28-1.05 1.5-1.85l.5-1.81c.27-.94 1.05-1.65 2-1.8l1.96-.31c.91-.16 1.71-.68 2.21-1.46l1.38-2.16C9.08 2.69 10.5 2 12 2z"></path><path d="M2.5 12h19"></path></svg>
               </div>
               Đề Thi (Chung)
             </h2>
@@ -606,9 +606,9 @@ const LearnerHomePage = () => {
               ))}
             </CardGrid>
           ) : (
-            <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <GlobeIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
-              <p className="text-gray-500 dark:text-gray-400">Chưa có bộ đề công khai</p>
+            <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <GlobeIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">Chưa có bộ đề công khai</p>
             </div>
           )}
         </section>
@@ -620,27 +620,27 @@ const LearnerHomePage = () => {
       {/* Search Results Modal */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm"
           role="presentation"
           onClick={() => setModalOpen(false)}
         >
           <div
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden"
+            className="bg-white dark:bg-gray-800 rounded-t-2xl sm:rounded-xl shadow-2xl w-full sm:max-w-4xl max-h-[85vh] sm:max-h-[80vh] overflow-hidden animate-slide-up sm:animate-fade-in"
             role="dialog"
             aria-modal="true"
             aria-labelledby="search-modal-title"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20">
               <h3
                 id="search-modal-title"
-                className="text-xl font-bold text-gray-900 dark:text-gray-100"
+                className="text-base sm:text-xl font-bold text-gray-900 dark:text-gray-100 truncate pr-2"
               >
-                Kết quả tìm kiếm{submittedQ ? `: "${submittedQ}"` : ""}
+                Kết quả{submittedQ ? `: "${submittedQ}"` : ""}
               </h3>
               <button
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 flex-shrink-0"
                 onClick={() => setModalOpen(false)}
                 aria-label="Đóng"
               >
@@ -649,19 +649,19 @@ const LearnerHomePage = () => {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)]">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(85vh-60px)] sm:max-h-[calc(80vh-80px)]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 {/* Môn học */}
-                <div className="space-y-3">
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                    <BookIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                <div className="space-y-2 sm:space-y-3">
+                  <h4 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <BookIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
                     Môn học
                   </h4>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1.5 sm:space-y-2">
                     {results.subjects.map((s) => (
                       <li
                         key={s._id || s.id}
-                        className="px-3 py-2 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-700 dark:hover:text-primary-300 transition-colors cursor-pointer border border-transparent hover:border-primary-200 dark:hover:border-primary-700 text-gray-900 dark:text-gray-200"
+                        className="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/30 hover:text-primary-700 dark:hover:text-primary-300 transition-colors cursor-pointer border border-transparent hover:border-primary-200 dark:hover:border-primary-700 text-gray-900 dark:text-gray-200 text-sm"
                         onClick={() => {
                           navigate(`/subjects/${s._id || s.id}`);
                           setModalOpen(false);
@@ -671,7 +671,7 @@ const LearnerHomePage = () => {
                       </li>
                     ))}
                     {results.subjects.length === 0 && (
-                      <li className="px-3 py-2 text-gray-400 dark:text-gray-500 text-sm italic">
+                      <li className="px-2.5 sm:px-3 py-1.5 sm:py-2 text-gray-400 dark:text-gray-500 text-xs sm:text-sm italic">
                         Không có kết quả
                       </li>
                     )}
@@ -679,16 +679,16 @@ const LearnerHomePage = () => {
                 </div>
 
                 {/* Bộ đề */}
-                <div className="space-y-3">
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                    <PenIcon className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
+                <div className="space-y-2 sm:space-y-3">
+                  <h4 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <PenIcon className="w-4 h-4 sm:w-5 sm:h-5 text-secondary-600 dark:text-secondary-400" />
                     Bộ đề
                   </h4>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1.5 sm:space-y-2">
                     {results.sets.map((s) => (
                       <li
                         key={s._id || s.id}
-                        className="px-3 py-2 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-secondary-50 dark:hover:bg-secondary-900/30 hover:text-secondary-700 dark:hover:text-secondary-300 transition-colors cursor-pointer border border-transparent hover:border-secondary-200 dark:hover:border-secondary-700 text-gray-900 dark:text-gray-200"
+                        className="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-secondary-50 dark:hover:bg-secondary-900/30 hover:text-secondary-700 dark:hover:text-secondary-300 transition-colors cursor-pointer border border-transparent hover:border-secondary-200 dark:hover:border-secondary-700 text-gray-900 dark:text-gray-200 text-sm"
                         onClick={() => {
                           navigate(`/quiz/${s._id || s.id}`);
                           setModalOpen(false);
@@ -698,7 +698,7 @@ const LearnerHomePage = () => {
                       </li>
                     ))}
                     {results.sets.length === 0 && (
-                      <li className="px-3 py-2 text-gray-400 dark:text-gray-500 text-sm italic">
+                      <li className="px-2.5 sm:px-3 py-1.5 sm:py-2 text-gray-400 dark:text-gray-500 text-xs sm:text-sm italic">
                         Không có kết quả
                       </li>
                     )}
@@ -706,16 +706,16 @@ const LearnerHomePage = () => {
                 </div>
 
                 {/* Tài liệu */}
-                <div className="space-y-3">
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                    <DocumentIcon className="w-5 h-5 text-success-600 dark:text-success-400" />
+                <div className="space-y-2 sm:space-y-3">
+                  <h4 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <DocumentIcon className="w-4 h-4 sm:w-5 sm:h-5 text-success-600 dark:text-success-400" />
                     Tài liệu
                   </h4>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1.5 sm:space-y-2">
                     {results.documents.map((d) => (
                       <li
                         key={d._id || d.id}
-                        className="px-3 py-2 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-success-50 dark:hover:bg-success-900/30 hover:text-success-700 dark:hover:text-success-300 transition-colors cursor-pointer border border-transparent hover:border-success-200 dark:hover:border-success-700 text-gray-900 dark:text-gray-200"
+                        className="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-success-50 dark:hover:bg-success-900/30 hover:text-success-700 dark:hover:text-success-300 transition-colors cursor-pointer border border-transparent hover:border-success-200 dark:hover:border-success-700 text-gray-900 dark:text-gray-200 text-sm"
                         onClick={() => {
                           navigate(`/documents/${d._id || d.id}`);
                           setModalOpen(false);
@@ -725,7 +725,7 @@ const LearnerHomePage = () => {
                       </li>
                     ))}
                     {results.documents.length === 0 && (
-                      <li className="px-3 py-2 text-gray-400 dark:text-gray-500 text-sm italic">
+                      <li className="px-2.5 sm:px-3 py-1.5 sm:py-2 text-gray-400 dark:text-gray-500 text-xs sm:text-sm italic">
                         Không có kết quả
                       </li>
                     )}

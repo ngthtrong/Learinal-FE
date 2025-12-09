@@ -166,9 +166,9 @@ function UserManagementPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vai trò</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Vai trò</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={role}
                 onChange={(e) => {
                   setPage(1);
@@ -183,9 +183,9 @@ function UserManagementPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Trạng thái</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Trạng thái</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={status}
                 onChange={(e) => {
                   setPage(1);
@@ -225,7 +225,54 @@ function UserManagementPage() {
           ) : users.length === 0 ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Không có người dùng</div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile Cards */}
+              <div className="block md:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                {users.map((u) => (
+                  <div key={u.id || u._id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm truncate">
+                          {u.fullName || u.name || "(Không tên)"}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{u.email}</div>
+                      </div>
+                      <Button variant="secondary" size="small" onClick={() => openEdit(u)}>
+                        Sửa
+                      </Button>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                      {(() => {
+                        const role = u.role || "Learner";
+                        const meta = {
+                          Learner: { label: "Learner", className: "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" },
+                          Expert: { label: "Expert", className: "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" },
+                          Admin: { label: "Admin", className: "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" },
+                        }[role] || { label: role, className: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300" };
+                        return (
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${meta.className}`}>
+                            {meta.label}
+                          </span>
+                        );
+                      })()}
+                      {u.status === "Active" ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
+                          Hoạt động
+                        </span>
+                      ) : u.status === "Banned" ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-error-100 dark:bg-error-900/30 text-error-700 dark:text-error-400">
+                          Khóa
+                        </span>
+                      ) : null}
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {formatDate(u.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
@@ -306,6 +353,7 @@ function UserManagementPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </div>
 
@@ -372,7 +420,7 @@ function UserManagementPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vai trò</label>
                 <select
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   value={editRole}
                   onChange={(e) => setEditRole(e.target.value)}
                 >

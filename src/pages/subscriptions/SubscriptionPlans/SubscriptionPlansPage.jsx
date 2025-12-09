@@ -107,7 +107,7 @@ function SubscriptionPlansPage() {
     "canShare",
     "maxSubjects",
     "maxDocumentsPerSubject",
-    "maxTotalDocuments",
+    // "maxTotalDocuments", // Removed - now unlimited
   ];
 
   const formatEntitlementLabel = (key) => {
@@ -118,7 +118,7 @@ function SubscriptionPlansPage() {
       priorityProcessing: "Xử lý ưu tiên",
       canShare: "Cho phép chia sẻ",
       maxDocumentsPerSubject: "Số tài liệu/môn học",
-      maxTotalDocuments: "Tổng số tài liệu",
+      // maxTotalDocuments: "Tổng số tài liệu", // Removed - now unlimited
     };
     return labels[key] || key;
   };
@@ -151,50 +151,50 @@ function SubscriptionPlansPage() {
   const getPlanIcon = (planName) => {
     const name = planName.toLowerCase();
     if (name.includes("free")) return (
-      <div className="relative w-20 h-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 rounded-2xl"></div>
-        <div className="absolute inset-1 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center">
-          <svg className="w-10 h-10 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="relative w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 rounded-xl sm:rounded-2xl"></div>
+        <div className="absolute inset-0.5 sm:inset-1 bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl flex items-center justify-center">
+          <svg className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
         </div>
       </div>
     );
     if (name.includes("basic")) return (
-      <div className="relative w-20 h-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-500 rounded-2xl"></div>
-        <div className="absolute inset-1 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center">
-          <svg className="w-10 h-10 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="relative w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl sm:rounded-2xl"></div>
+        <div className="absolute inset-0.5 sm:inset-1 bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl flex items-center justify-center">
+          <svg className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
         </div>
       </div>
     );
     if (name.includes("pro")) return (
-      <div className="relative w-20 h-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-lg"></div>
-        <div className="absolute inset-1 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center">
-          <svg className="w-10 h-10 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="relative w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl sm:rounded-2xl shadow-lg"></div>
+        <div className="absolute inset-0.5 sm:inset-1 bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl flex items-center justify-center">
+          <svg className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
       </div>
     );
     if (name.includes("premium")) return (
-      <div className="relative w-20 h-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl shadow-xl"></div>
-        <div className="absolute inset-1 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center">
-          <svg className="w-10 h-10 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+      <div className="relative w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20">
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl sm:rounded-2xl shadow-xl"></div>
+        <div className="absolute inset-0.5 sm:inset-1 bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl flex items-center justify-center">
+          <svg className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
           </svg>
         </div>
       </div>
     );
     return (
-      <div className="relative w-20 h-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-300 to-gray-400 rounded-2xl"></div>
-        <div className="absolute inset-1 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center">
-          <svg className="w-10 h-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="relative w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-300 to-gray-400 rounded-xl sm:rounded-2xl"></div>
+        <div className="absolute inset-0.5 sm:inset-1 bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl flex items-center justify-center">
+          <svg className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         </div>
@@ -237,6 +237,12 @@ function SubscriptionPlansPage() {
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
+          <button 
+            onClick={() => navigate(-1)}
+            className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-xs sm:text-sm mb-3 sm:mb-4 flex items-center gap-1"
+          >
+            ← Quay lại
+          </button>
           <div className="text-center space-y-2">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Các gói đăng ký</h1>
             <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
@@ -276,45 +282,45 @@ function SubscriptionPlansPage() {
                 >
                   {isPro && (
                     <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-10">
-                      <span className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
+                      <span className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold shadow-md whitespace-nowrap">
                         Phổ biến nhất
                       </span>
                     </div>
                   )}
 
                   {/* Decorative blob */}
-                  <div className="pointer-events-none absolute -top-6 -right-6 w-24 h-24 bg-primary-200/30 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
+                  <div className="pointer-events-none absolute -top-6 -right-6 w-20 sm:w-24 h-20 sm:h-24 bg-primary-200/30 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
 
-                  <div className="relative p-8">
-                    <div className="text-center mb-6">
-                      <div className="flex justify-center mb-4">{getPlanIcon(plan.planName)}</div>
-                      <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">{plan.planName}</h3>
-                      <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-4xl font-bold text-primary-600 dark:text-primary-400">
+                  <div className="relative p-4 sm:p-6 lg:p-8">
+                    <div className="text-center mb-4 sm:mb-6">
+                      <div className="flex justify-center mb-3 sm:mb-4">{getPlanIcon(plan.planName)}</div>
+                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3">{plan.planName}</h3>
+                      <div className="flex items-baseline justify-center gap-0.5 sm:gap-1">
+                        <span className="text-xl sm:text-2xl lg:text-4xl font-bold text-primary-600 dark:text-primary-400">
                           {formatPrice(plan.price)}
                         </span>
-                        <span className="text-gray-600 dark:text-gray-400 text-lg">
+                        <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg">
                           /{plan.billingCycle === "Monthly" ? "tháng" : "năm"}
                         </span>
                       </div>
                     </div>
                     {plan.description && (
-                      <p className="text-gray-600 dark:text-gray-400 text-center mb-6 min-h-[3rem]">
+                      <p className="text-gray-600 dark:text-gray-400 text-center mb-4 sm:mb-6 min-h-[2rem] sm:min-h-[3rem] text-xs sm:text-sm lg:text-base">
                         {plan.description}
                       </p>
                     )}
                     {plan.entitlements && (
-                      <div className="mb-6 space-y-3">
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-center mb-4">
+                      <div className="mb-4 sm:mb-6 space-y-2 sm:space-y-3">
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-center mb-2 sm:mb-4 text-sm sm:text-base">
                           Quyền lợi:
                         </h4>
-                        <ul className="space-y-2">
+                        <ul className="space-y-1.5 sm:space-y-2">
                           {getSortedEntitlements(plan.entitlements).map(([key, value]) => (
-                            <li key={key} className="flex items-start gap-2.5">
-                              <span className="text-primary-600 dark:text-primary-400 font-bold text-lg flex-shrink-0">
+                            <li key={key} className="flex items-start gap-1.5 sm:gap-2.5">
+                              <span className="text-primary-600 dark:text-primary-400 font-bold text-base sm:text-lg flex-shrink-0">
                                 ✓
                               </span>
-                              <span className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+                              <span className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm leading-relaxed">
                                 <span className="font-medium">{formatEntitlementLabel(key)}:</span>{" "}
                                 {formatEntitlementValue(value)}
                               </span>

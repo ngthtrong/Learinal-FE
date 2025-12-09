@@ -97,16 +97,16 @@ const ResetPasswordPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large border border-gray-200 dark:border-gray-700 p-8">
-          <header className="flex flex-col items-center mb-8">
-            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="h-16 w-auto mb-3" />
-            <div className="text-2xl font-bold">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
+          <header className="flex flex-col items-center mb-6 sm:mb-8">
+            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="h-12 sm:h-16 w-auto mb-3" />
+            <div className="text-xl sm:text-2xl font-bold">
               <span className="text-primary-600 dark:text-primary-400">Lear</span>
               <span className="text-gray-800 dark:text-gray-100">inal</span>
             </div>
           </header>
 
-          <div className="text-center mb-6">
+          <div className="text-center mb-4 sm:mb-6">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Đặt lại mật khẩu</h1>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Nhập mật khẩu mới của bạn</p>
           </div>

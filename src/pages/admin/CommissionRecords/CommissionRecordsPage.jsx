@@ -151,9 +151,9 @@ function CommissionRecordsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Trạng thái</label>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Trạng thái</label>
                 <select
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   value={status}
                   onChange={(e) => {
                     setStatus(e.target.value);
@@ -225,40 +225,6 @@ function CommissionRecordsPage() {
             </div>
           )}
         </div>
-        {role === "Expert" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
-              <div className="text-xs text-gray-500 dark:text-gray-400">Đã nhận</div>
-              <div className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                {formatCurrency(summary?.totalEarned || 0)}
-              </div>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
-              <div className="text-xs text-gray-500 dark:text-gray-400">Đang chờ</div>
-              <div className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                {formatCurrency(summary?.totalPending || 0)}
-              </div>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
-              <div className="flex items-center gap-1">
-                <CoinsIcon size={14} className="text-blue-500" />
-                <span className="text-xs text-gray-500 dark:text-gray-400">Fixed Rate</span>
-              </div>
-              <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                {formatCurrency(summary?.hybridModel?.totalFixed || 0)}
-              </div>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
-              <div className="flex items-center gap-1">
-                <DashboardIcon size={14} className="text-amber-500" />
-                <span className="text-xs text-gray-500 dark:text-gray-400">Revenue Bonus</span>
-              </div>
-              <div className="text-xl font-bold text-amber-600 dark:text-amber-400">
-                {formatCurrency(summary?.hybridModel?.totalBonus || 0)}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Table container */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
@@ -272,7 +238,62 @@ function CommissionRecordsPage() {
           ) : records.length === 0 ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Không có bản ghi hoa hồng</div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile Cards View */}
+              <div className="block md:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                {records.map((r) => (
+                  <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                          {r.expertName || r.expertId || "(Không rõ)"}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          {r.type === "Published" ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                              Published
+                            </span>
+                          ) : r.type === "Validated" ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400">
+                              Validated
+                            </span>
+                          ) : null}
+                          {r.status === "Paid" ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
+                              Đã trả
+                            </span>
+                          ) : r.status === "Pending" ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400">
+                              Chờ
+                            </span>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-gray-900 dark:text-gray-100">
+                          {formatCurrency(r.commissionAmount || 0)}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {(() => { try { return new Date(r.createdAt).toLocaleDateString("vi-VN"); } catch { return "-"; } })()}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-2">
+                      <span className="text-blue-600 dark:text-blue-400">Fixed: {formatCurrency(r.fixedAmount || 0)}</span>
+                      {r.bonusAmount > 0 && (
+                        <span className="text-amber-600 dark:text-amber-400">Bonus: {formatCurrency(r.bonusAmount)}</span>
+                      )}
+                    </div>
+                    {role === "Admin" && r.status === "Pending" && (
+                      <Button size="small" onClick={() => openMarkPaid(r)} className="w-full mt-2">
+                        Đánh dấu đã trả
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
@@ -375,6 +396,7 @@ function CommissionRecordsPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </div>
 

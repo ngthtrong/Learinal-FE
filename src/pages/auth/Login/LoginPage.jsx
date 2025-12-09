@@ -164,9 +164,9 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large p-6 sm:p-8">
           {/* Brand Header */}
-          <header className="flex flex-col items-center mb-8">
+          <header className="flex flex-col items-center mb-6 sm:mb-8">
             <img src={logoLight} alt="Learinal" className="h-12 sm:h-16 w-auto mb-3 dark:hidden" />
             <img src={logoDark} alt="Learinal" className="h-12 sm:h-16 w-auto mb-3 hidden dark:block" />
             <div className="text-xl sm:text-2xl font-bold">
@@ -176,9 +176,9 @@ const LoginPage = () => {
           </header>
 
           {/* Page Header */}
-          <div className="text-center mb-6">
+          <div className="text-center mb-4 sm:mb-6">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Đăng nhập</h1>
-            <p className="text-gray-600 dark:text-gray-400">Truy cập tài khoản Learinal của bạn</p>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Truy cập tài khoản Learinal của bạn</p>
           </div>
 
           {/* Login Form */}
@@ -206,7 +206,7 @@ const LoginPage = () => {
             />
 
             {/* Form Options */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
@@ -215,12 +215,12 @@ const LoginPage = () => {
                   onChange={handleChange}
                   className="w-4 h-4 text-primary-600 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500 dark:bg-gray-700"
                 />
-                <span className="text-sm text-gray-700 dark:text-gray-300">Ghi nhớ đăng nhập</span>
+                <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">Ghi nhớ đăng nhập</span>
               </label>
 
               <Link
                 to="/forgot-password"
-                className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+                className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Quên mật khẩu?
               </Link>

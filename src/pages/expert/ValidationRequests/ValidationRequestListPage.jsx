@@ -35,37 +35,34 @@ function ValidationRequestListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Yêu cầu kiểm duyệt</h1>
-          <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Yêu cầu kiểm duyệt</h1>
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
             <button
               onClick={() => setFilter("Assigned")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                filter === "Assigned"
+              className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition ${filter === "Assigned"
                   ? "bg-primary-600 text-white shadow"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
+                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
               }`}
             >
               Chờ duyệt
             </button>
             <button
               onClick={() => setFilter("RevisionRequested")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                filter === "RevisionRequested"
+              className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition ${filter === "RevisionRequested"
                   ? "bg-warning-600 text-white shadow"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
+                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
               }`}
             >
-              Yêu cầu xem lại
+              Xem lại
             </button>
             <button
               onClick={() => setFilter("Completed")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                filter === "Completed"
+              className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition ${filter === "Completed"
                   ? "bg-success-600 text-white shadow"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
+                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
               }`}
             >
               Đã duyệt
@@ -74,66 +71,72 @@ function ValidationRequestListPage() {
         </div>
 
         {error && (
-          <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-700 border border-red-200">
+          <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800 text-xs sm:text-sm">
             {error}
           </div>
         )}
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           {loading ? (
-            <div className="p-8 text-center text-gray-500">Đang tải...</div>
+            <div className="p-6 sm:p-8 text-center text-gray-500 dark:text-gray-400">
+              <div className="inline-block w-8 h-8 sm:w-10 sm:h-10 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-3"></div>
+              <p className="text-sm sm:text-base">Đang tải...</p>
+            </div>
           ) : requests.length === 0 ? (
-            <div className="p-12 text-center">
-              <div className="text-4xl mb-3">📭</div>
-              <h3 className="text-lg font-medium text-gray-900">Không có yêu cầu nào</h3>
-              <p className="text-gray-500 mt-1">
+            <div className="p-8 sm:p-12 text-center">
+              <div className="text-3xl sm:text-4xl mb-3">📭</div>
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100">Không có yêu cầu nào</h3>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">
                 Hiện tại bạn không có yêu cầu kiểm duyệt nào ở trạng thái này.
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {requests.map((req) => (
                 <div
                   key={req.id}
-                  className="p-6 hover:bg-gray-50 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition flex flex-col gap-3 sm:gap-4"
                 >
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        className={`inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           req.status === "Assigned"
-                            ? "bg-blue-100 text-blue-800"
+                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400"
                             : req.status === "RevisionRequested"
-                            ? "bg-warning-100 text-warning-800"
+                            ? "bg-warning-100 dark:bg-warning-900/30 text-warning-800 dark:text-warning-400"
                             : req.status === "Completed"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
+                            ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
+                            : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
                         }`}
                       >
                         {req.status === "Assigned"
                           ? "Chờ duyệt"
                           : req.status === "RevisionRequested"
-                          ? "Yêu cầu xem lại"
+                          ? "Xem lại"
                           : req.status === "Completed"
                           ? "Đã duyệt"
                           : req.status}
                       </span>
-                      <span className="text-xs text-gray-500">ID: {req.id.slice(-6)}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">ID: {req.id.slice(-6)}</span>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">
+                    <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">
                       {req.questionSetTitle || "Bộ câu hỏi không tên"}
                     </h3>
-                    <div className="text-sm text-gray-500 flex flex-wrap gap-x-4 gap-y-1">
+                    <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1">
                       <span>👤 {req.requesterName}</span>
                       <span>📅 {new Date(req.createdAt).toLocaleDateString("vi-VN")}</span>
                       <span>💰 {req.commissionAmount?.toLocaleString("vi-VN")}đ</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <Link to={`/expert/requests/${req.id}`}>
-                      <Button variant={req.status === "Assigned" || req.status === "RevisionRequested" ? "primary" : "outline"}>
-                        {req.status === "Assigned" ? "Kiểm duyệt ngay" : req.status === "RevisionRequested" ? "Xem lại ngay" : "Xem chi tiết"}
+                  <div className="flex items-center">
+                    <Link to={`/expert/requests/${req.id}`} className="w-full sm:w-auto">
+                      <Button 
+                        variant={req.status === "Assigned" || req.status === "RevisionRequested" ? "primary" : "outline"}
+                        className="w-full sm:w-auto text-sm"
+                      >
+                        {req.status === "Assigned" ? "Kiểm duyệt" : req.status === "RevisionRequested" ? "Xem lại" : "Chi tiết"}
                       </Button>
                     </Link>
                   </div>

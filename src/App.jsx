@@ -304,9 +304,7 @@ function App() {
               path="/quiz/take/:attemptId"
               element={
                 <ProtectedRoute>
-                  <TopbarLayout>
-                    <QuizTakingPage />
-                  </TopbarLayout>
+                  <QuizTakingPage />
                 </ProtectedRoute>
               }
             />

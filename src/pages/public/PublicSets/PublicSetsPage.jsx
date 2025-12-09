@@ -70,18 +70,18 @@ const PublicSetsPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {/* Loading Skeleton */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <div
                 key={n}
-                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm animate-pulse"
+                className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm animate-pulse"
               >
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
-                <div className="space-y-2 mb-4">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                <div className="h-5 sm:h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3 sm:mb-4"></div>
+                <div className="space-y-2 mb-3 sm:mb-4">
+                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
                 </div>
-                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-9 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
               </div>
             ))}
           </div>
@@ -89,14 +89,14 @@ const PublicSetsPage = () => {
 
         {/* Empty State */}
         {!loading && questionSets.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-3xl flex items-center justify-center mb-6">
+          <div className="flex flex-col items-center justify-center py-10 sm:py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-primary-100 dark:bg-primary-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><path d="M12 2c1.5 0 2.92.69 3.82 1.97l1.38 2.16c.5.78 1.3 1.3 2.21 1.46l1.96.31c.95.15 1.73.86 2 1.8l.5 1.81c.22.8.77 1.48 1.5 1.85l1.3.66c.74.37 1.25 1.08 1.37 1.88l.25 1.65c.08.51.33.97.7 1.28l.96.82c.6.5.95 1.23.95 2 0 .77-.35 1.5-.95 2l-.96.82c-.37.31-.62.77-.7 1.28l-.25 1.65c-.12.8-.63 1.51-1.37 1.88l-1.3.66c-.73.37-1.28 1.05-1.5 1.85l-.5 1.81c-.27.94-1.05 1.65-2 1.8l-1.96.31c-.91.16-1.71.68-2.21 1.46l-1.38 2.16c-.9 1.28-2.32 1.97-3.82 1.97s-2.92-.69-3.82-1.97l-1.38-2.16c-.5-.78-1.3-1.3-2.21-1.46l-1.96-.31c-.95-.15-1.73-.86-2-1.8l-.5-1.81c-.22-.8-.77-1.48-1.5-1.85l-1.3-.66c-.74-.37-1.25-1.08-1.37-1.88l-.25-1.65c-.08-.51-.33-.97-.7-1.28l-.96-.82c-.6-.5-.95-1.23-.95-2 0-.77.35-1.5.95-2l.96-.82c.37-.31.62-.77.7-1.28l.25-1.65c.12-.8.63-1.51 1.37-1.88l1.3-.66c.73-.37 1.28-1.05 1.5-1.85l.5-1.81c.27-.94 1.05-1.65 2-1.8l1.96-.31c.91-.16 1.71-.68 2.21-1.46l1.38-2.16C9.08 2.69 10.5 2 12 2z"></path><path d="M2.5 12h19"></path></svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 text-center">
               Chưa có bộ đề công khai nào
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center mb-4 sm:mb-6 max-w-md">
               Hiện tại chưa có bộ đề nào được chia sẻ công khai. Hãy quay lại sau!
             </p>
           </div>
@@ -105,7 +105,7 @@ const PublicSetsPage = () => {
         {/* Question Sets Grid */}
         {!loading && questionSets.length > 0 && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {questionSets.map((questionSet) => {
                 const title = questionSet.title || "Bộ đề thi";
                 const questionCount =
@@ -130,15 +130,15 @@ const PublicSetsPage = () => {
                 return (
                   <div
                     key={questionSet.id}
-                    className="group relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                    className="group relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
                     onClick={() => handleViewDetail(questionSet.id)}
                   >
                     {/* Decorative blurred blob */}
                     <div className="pointer-events-none absolute -top-6 -right-6 w-32 h-32 bg-primary-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
 
                     {/* Icon - Top Left */}
-                    <div className="mb-4">
-                      <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-primary-500/20 text-primary-600 dark:text-primary-400 shadow-inner group-hover:scale-110 transition-transform">
+                    <div className="mb-3 sm:mb-4">
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl bg-primary-500/20 text-primary-600 dark:text-primary-400 shadow-inner group-hover:scale-110 transition-transform">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="26"
@@ -160,15 +160,15 @@ const PublicSetsPage = () => {
 
                     {/* Title and Description */}
                     <h3
-                      className="text-xl font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                      className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 leading-tight mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2"
                       title={title}
                     >
                       {title}
                     </h3>
 
                     {/* Creator & Subject info */}
-                    <div className="text-sm text-gray-700 dark:text-gray-400 mb-3 space-y-1">
-                      <div>
+                    <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-400 mb-2 sm:mb-3 space-y-0.5 sm:space-y-1">
+                      <div className="truncate">
                         <span className="font-medium">Tạo bởi:</span> {creatorName}
                       </div>
                       {subjectName && (
@@ -179,9 +179,9 @@ const PublicSetsPage = () => {
                     </div>
 
                     {/* Badges */}
-                    <div className="mt-4 flex flex-wrap gap-2 items-center">
+                    <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2 items-center">
                       {questionCount > 0 && (
-                        <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-primary-500/20 text-primary-700 dark:text-primary-300 border border-primary-500/30">
+                        <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 text-xs font-medium rounded-full bg-primary-500/20 text-primary-700 dark:text-primary-300 border border-primary-500/30">
                           {questionCount} câu hỏi
                         </span>
                       )}
@@ -233,11 +233,11 @@ const PublicSetsPage = () => {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4 mt-8">
-                <Button variant="secondary" disabled={page === 1} onClick={() => setPage(page - 1)}>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-6 sm:mt-8">
+                <Button variant="secondary" disabled={page === 1} onClick={() => setPage(page - 1)} className="w-full sm:w-auto">
                   ← Trang trước
                 </Button>
-                <div className="flex items-center gap-2 text-gray-700">
+                <div className="flex items-center gap-2 text-sm sm:text-base text-gray-700 dark:text-gray-300">
                   <span className="font-medium">Trang {page}</span>
                   <span>/</span>
                   <span>{totalPages}</span>
@@ -246,6 +246,7 @@ const PublicSetsPage = () => {
                   variant="secondary"
                   disabled={page === totalPages}
                   onClick={() => setPage(page + 1)}
+                  className="w-full sm:w-auto"
                 >
                   Trang sau →
                 </Button>

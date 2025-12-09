@@ -119,48 +119,48 @@ function ExpertDashboardPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {cards.map((c) => (
             <div
               key={c.key}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-gray-700 hover:shadow-large transition group"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-gray-700 hover:shadow-large transition group"
             >
               <div
-                className={`w-12 h-12 rounded-lg bg-gradient-to-br ${c.color} flex items-center justify-center text-xl text-white mb-4 shadow`}
+                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br ${c.color} flex items-center justify-center text-lg sm:text-xl text-white mb-3 sm:mb-4 shadow`}
               >
                 {(() => {
                   const Icon = c.icon;
-                  return <Icon size={20} stroke={2} className="text-white" />;
+                  return <Icon size={18} stroke={2} className="text-white sm:w-5 sm:h-5" />;
                 })()}
               </div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
+              <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
                 {loading ? "—" :
                   c.key.startsWith("earn") || c.key === "avg_validation"
                     ? formatCurrency(c.value || 0)
                     : c.value}
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">{c.label}</div>
+              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">{c.label}</div>
             </div>
           ))}
         </div>
 
         {/* Hybrid Model Breakdown */}
         {(totalFixed > 0 || totalBonus > 0) && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6 mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Chi tiết thu nhập</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 sm:p-6 mb-6 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 sm:mb-4">Chi tiết thu nhập</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {/* Fixed Rate */}
-              <div className="p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700">
+              <div className="p-3 sm:p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                    <CoinsIcon size={16} className="text-white" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                    <CoinsIcon size={14} className="text-white sm:w-4 sm:h-4" />
                   </div>
-                  <span className="font-medium text-blue-700 dark:text-blue-300">Fixed Rate</span>
+                  <span className="text-sm sm:text-base font-medium text-blue-700 dark:text-blue-300">Fixed Rate</span>
                 </div>
-                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+                <div className="text-xl sm:text-2xl font-bold text-blue-900 dark:text-blue-100">
                   {formatCurrency(totalFixed)}
                 </div>
-                <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 mt-1">
                   Thu nhập cố định từ mỗi lần làm quiz
                 </p>
                 {hybridBreakdown.byType && (
@@ -178,17 +178,17 @@ function ExpertDashboardPage() {
               </div>
 
               {/* Revenue Bonus */}
-              <div className="p-4 rounded-lg bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border border-amber-200 dark:border-amber-700">
+              <div className="p-3 sm:p-4 rounded-lg bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border border-amber-200 dark:border-amber-700">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center">
-                    <DashboardIcon size={16} className="text-white" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-500 flex items-center justify-center">
+                    <DashboardIcon size={14} className="text-white sm:w-4 sm:h-4" />
                   </div>
-                  <span className="font-medium text-amber-700 dark:text-amber-300">Revenue Bonus</span>
+                  <span className="text-sm sm:text-base font-medium text-amber-700 dark:text-amber-300">Revenue Bonus</span>
                 </div>
-                <div className="text-2xl font-bold text-amber-900 dark:text-amber-100">
+                <div className="text-xl sm:text-2xl font-bold text-amber-900 dark:text-amber-100">
                   {formatCurrency(totalBonus)}
                 </div>
-                <p className="text-sm text-amber-600 dark:text-amber-400 mt-1">
+                <p className="text-xs sm:text-sm text-amber-600 dark:text-amber-400 mt-1">
                   Thưởng khi content đạt &gt;100 lượt/tháng
                 </p>
                 {hybridBreakdown.byType && (
@@ -208,9 +208,9 @@ function ExpertDashboardPage() {
           </div>
         )}
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-8 mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Hướng dẫn nhanh</h2>
-          <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400 list-disc pl-5">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 sm:mb-4">Hướng dẫn nhanh</h2>
+          <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400 list-disc pl-4 sm:pl-5">
             <li>Vào mục Hoa hồng để xem chi tiết các bản ghi thu nhập.</li>
             <li>Vào mục Kiểm duyệt để xử lý yêu cầu được gán cho bạn.</li>
             <li>Sau khi hoàn thành kiểm duyệt nhớ gửi quyết định và phản hồi chất lượng.</li>
