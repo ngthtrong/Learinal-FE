@@ -101,6 +101,17 @@
   }
 }
 
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* Utility classes for animations */
 .animate-fade-in {
   animation: fadeIn 0.3s ease-in-out;
@@ -112,6 +123,10 @@
 
 .animate-slide-up {
   animation: slideUp 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.2s ease-out;
 }
 
 /* Scrollbar styling */
@@ -174,4 +189,41 @@ input:-webkit-autofill:active {
 .dark input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px #1f2937 inset !important;
   -webkit-text-fill-color: #f3f4f6 !important;
+}
+
+/* Safe area for mobile devices (notch, home indicator) */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Mobile bottom navigation spacing */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Prevent text selection on mobile navigation */
+.mobile-nav-item {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Responsive text utilities */
+@media (max-width: 374px) {
+  .text-responsive-xs {
+    font-size: 0.625rem; /* 10px */
+  }
+  .text-responsive-sm {
+    font-size: 0.75rem; /* 12px */
+  }
 }

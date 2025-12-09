@@ -101,11 +101,11 @@ function SubscriptionPurchasesPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
                 Số dòng / trang
               </label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={pageSize}
                 onChange={(e) => {
                   setPageSize(Number(e.target.value));
@@ -156,7 +156,49 @@ function SubscriptionPurchasesPage() {
           ) : items.length === 0 ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Chưa có dữ liệu gói</div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile Cards */}
+              <div className="block md:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                {items.map((r) => (
+                  <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                          {r.userName || "(N/A)"}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                          {r.planName || "—"} • {r.billingCycle === "Monthly" ? "Tháng" : r.billingCycle === "Yearly" ? "Năm" : "—"}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                          {formatCurrency(r.price || 0)}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {(() => {
+                        const meta = statusMeta[r.status] || {
+                          label: r.status || "—",
+                          className: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
+                        };
+                        return (
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${meta.className}`}>
+                            {meta.label}
+                          </span>
+                        );
+                      })()}
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {(() => { try { return r.startDate ? new Date(r.startDate).toLocaleDateString("vi-VN") : ""; } catch { return ""; } })()}
+                        {r.startDate && r.endDate && " - "}
+                        {(() => { try { return r.endDate ? new Date(r.endDate).toLocaleDateString("vi-VN") : ""; } catch { return ""; } })()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
@@ -251,6 +293,7 @@ function SubscriptionPurchasesPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </div>
 

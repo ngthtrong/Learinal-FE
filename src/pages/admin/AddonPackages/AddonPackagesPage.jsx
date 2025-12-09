@@ -13,6 +13,7 @@ const DEFAULT_ADDON = {
   price: 0,
   additionalTestGenerations: 0,
   additionalValidationRequests: 0,
+  // additionalDocumentUploads: 0, // Removed - now unlimited
   packageType: "stackable",
   maxPurchasesPerUser: 0,
   displayOrder: 0,
@@ -68,6 +69,7 @@ function AdminAddonPackagesPage() {
       price: pkg.price || 0,
       additionalTestGenerations: pkg.additionalTestGenerations || 0,
       additionalValidationRequests: pkg.additionalValidationRequests || 0,
+      // additionalDocumentUploads: pkg.additionalDocumentUploads || 0, // Removed - now unlimited
       packageType: pkg.packageType || "stackable",
       maxPurchasesPerUser: pkg.maxPurchasesPerUser || 0,
       displayOrder: pkg.displayOrder || 0,
@@ -86,6 +88,7 @@ function AdminAddonPackagesPage() {
         price: Number(form.price) || 0,
         additionalTestGenerations: Number(form.additionalTestGenerations) || 0,
         additionalValidationRequests: Number(form.additionalValidationRequests) || 0,
+        // additionalDocumentUploads: Number(form.additionalDocumentUploads) || 0, // Removed - now unlimited
         packageType: form.packageType,
         maxPurchasesPerUser: Number(form.maxPurchasesPerUser) || 0,
         displayOrder: Number(form.displayOrder) || 0,
@@ -170,11 +173,11 @@ function AdminAddonPackagesPage() {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 mb-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
                 Trạng thái
               </label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
@@ -200,7 +203,55 @@ function AdminAddonPackagesPage() {
               Chưa có gói add-on nào
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile Cards */}
+              <div className="block sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                {packages.map((pkg) => (
+                  <div key={pkg.id || pkg._id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{pkg.packageName}</div>
+                        {pkg.description && (
+                          <div className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 mt-0.5">{pkg.description}</div>
+                        )}
+                      </div>
+                      <div className="flex gap-1 flex-shrink-0 ml-2">
+                        <Button size="small" variant="secondary" onClick={() => openEdit(pkg)}>✏️</Button>
+                        <Button size="small" variant="danger" onClick={() => setConfirmDelete(pkg)}>🗑️</Button>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {formatPrice(pkg.price)}
+                      </span>
+                      {pkg.status === "Active" ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
+                          Hoạt động
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                          Tạm dừng
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {pkg.additionalTestGenerations > 0 && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                          +{pkg.additionalTestGenerations} tạo đề
+                        </span>
+                      )}
+                      {pkg.additionalValidationRequests > 0 && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
+                          +{pkg.additionalValidationRequests} kiểm duyệt
+                        </span>
+                      )}
+                      {/* additionalDocumentUploads removed - now unlimited */}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Desktop Table */}
+              <div className="hidden sm:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
@@ -216,6 +267,7 @@ function AdminAddonPackagesPage() {
                     <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Lượt kiểm duyệt
                     </th>
+                    {/* Lượt tài liệu column removed - now unlimited */}
                     <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Trạng thái
                     </th>
@@ -259,6 +311,7 @@ function AdminAddonPackagesPage() {
                           <span className="text-gray-400">-</span>
                         )}
                       </td>
+                      {/* additionalDocumentUploads cell removed - now unlimited */}
                       <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap">
                         {pkg.status === "Active" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
@@ -287,6 +340,7 @@ function AdminAddonPackagesPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </div>
 
@@ -334,6 +388,8 @@ function AdminAddonPackagesPage() {
                 min="0"
               />
             </div>
+
+            {/* additionalDocumentUploads input removed - now unlimited */}
 
             <div className="grid grid-cols-2 gap-4">
               <div>

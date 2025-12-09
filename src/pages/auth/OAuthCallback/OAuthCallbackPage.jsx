@@ -158,34 +158,34 @@ const OAuthCallbackPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-large p-12 max-w-md w-full text-center">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large p-6 sm:p-8 md:p-12 max-w-md w-full text-center">
         {status === "processing" && (
-          <div className="space-y-4">
-            <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-            <h2 className="text-2xl font-bold text-gray-900">Đang xử lý đăng nhập...</h2>
-            <p className="text-gray-600">Vui lòng đợi trong giây lát</p>
+          <div className="space-y-3 sm:space-y-4">
+            <div className="inline-block w-10 h-10 sm:w-12 sm:h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Đang xử lý đăng nhập...</h2>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Vui lòng đợi trong giây lát</p>
           </div>
         )}
 
         {status === "success" && (
-          <div className="space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full text-4xl text-green-600">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-green-100 dark:bg-green-900/30 rounded-full text-2xl sm:text-4xl text-green-600 dark:text-green-400">
               ✓
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">Đăng nhập thành công!</h2>
-            <p className="text-gray-600">Đang chuyển hướng...</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Đăng nhập thành công!</h2>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Đang chuyển hướng...</p>
           </div>
         )}
 
         {status === "error" && (
-          <div className="space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full text-4xl text-red-600">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-red-100 dark:bg-red-900/30 rounded-full text-2xl sm:text-4xl text-red-600 dark:text-red-400">
               ✗
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">Đăng nhập thất bại</h2>
-            <p className="text-red-600">{error}</p>
-            <p className="text-sm text-gray-500">Đang quay lại trang đăng nhập...</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Đăng nhập thất bại</h2>
+            <p className="text-sm sm:text-base text-red-600 dark:text-red-400">{error}</p>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Đang quay lại trang đăng nhập...</p>
           </div>
         )}
       </div>

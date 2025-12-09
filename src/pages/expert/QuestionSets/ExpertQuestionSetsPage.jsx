@@ -146,7 +146,55 @@ function ExpertQuestionSetsPage() {
               </Button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+              {/* Mobile Cards */}
+              <div className="block md:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                {questionSets.map((set) => (
+                  <div key={set.id || set._id} className="p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 truncate">{set.title}</div>
+                        {set.description && (
+                          <div className="text-sm text-gray-500 dark:text-gray-400 truncate mt-1">
+                            {set.description}
+                          </div>
+                        )}
+                      </div>
+                      {getStatusBadge(set.status)}
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                      <span>📝 {set.questionCount || set.questions?.length || 0} câu</span>
+                      <span>📅 {formatDate(set.createdAt)}</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="small"
+                        variant="secondary"
+                        onClick={() => navigate(`/expert/question-sets/${set.id || set._id}`)}
+                        className="flex-1"
+                      >
+                        Xem
+                      </Button>
+                      <Button
+                        size="small"
+                        onClick={() => navigate(`/expert/question-sets/${set.id || set._id}/edit`)}
+                        className="flex-1"
+                      >
+                        Sửa
+                      </Button>
+                      <Button
+                        size="small"
+                        variant="danger"
+                        onClick={() => handleDelete(set.id || set._id, set.title)}
+                      >
+                        Xóa
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
@@ -241,7 +289,8 @@ function ExpertQuestionSetsPage() {
                   })}
                 </tbody>
               </table>
-            </div>
+              </div>
+            </>
           )}
         </div>
       </div>

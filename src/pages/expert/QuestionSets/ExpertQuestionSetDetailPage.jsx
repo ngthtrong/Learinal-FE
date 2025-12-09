@@ -116,10 +116,10 @@ function ExpertQuestionSetDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-6 sm:py-8">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-600">Đang tải...</p>
+          <div className="inline-block w-10 h-10 sm:w-12 sm:h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-4"></div>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Đang tải...</p>
         </div>
       </div>
     );
@@ -128,43 +128,43 @@ function ExpertQuestionSetDetailPage() {
   if (!questionSet) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-6 sm:py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-6">
-          <Button variant="secondary" onClick={() => navigate("/expert/question-sets")}>
+        <div className="mb-4 sm:mb-6">
+          <Button variant="secondary" onClick={() => navigate("/expert/question-sets")} className="w-full sm:w-auto">
             ← Quay lại
           </Button>
         </div>
 
         {/* Expert Badge */}
-        <div className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-2 rounded-t-xl">
+        <div className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-3 sm:px-4 py-2 rounded-t-xl">
           <div className="flex items-center gap-2">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5">
               <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
               <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
             </svg>
-            <span className="font-semibold">Bộ đề của Expert</span>
+            <span className="text-sm sm:text-base font-semibold">Bộ đề của Expert</span>
           </div>
         </div>
 
         {/* Question Set Info */}
-        <div className="bg-white rounded-b-xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 mb-6">
-          <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-b-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 mb-4">
             <div className="flex-1 w-full">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">{questionSet.title}</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">{questionSet.title}</h1>
               {questionSet.description && (
-                <p className="text-gray-600 mb-4">{questionSet.description}</p>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">{questionSet.description}</p>
               )}
-              <div className="flex items-center gap-4 text-sm text-gray-500">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 <span>📅 {formatDate(questionSet.createdAt)}</span>
                 <span>📝 {questionSet.questionCount || questionSet.questions?.length || 0} câu hỏi</span>
               </div>
             </div>
-            <div className="flex flex-col items-end gap-2">
+            <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2">
               {getStatusBadge(questionSet.status)}
               {questionSet.isShared && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
+                <span className="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
                   ✓ Đã chia sẻ
                 </span>
               )}
@@ -172,7 +172,7 @@ function ExpertQuestionSetDetailPage() {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button onClick={handleStartQuiz} className="w-full sm:w-auto">
               Làm bài thử
             </Button>
@@ -205,8 +205,8 @@ function ExpertQuestionSetDetailPage() {
         </div>
 
         {/* Questions List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
             Danh sách câu hỏi ({questionSet.questions?.length || 0})
           </h2>
 
@@ -216,16 +216,16 @@ function ExpertQuestionSetDetailPage() {
                 {/* Question Header */}
                 <div
                   onClick={() => toggleQuestion(index)}
-                  className="flex items-center justify-between p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 dark:bg-gray-900 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <div className="flex items-center gap-3 flex-1">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-100 text-primary-700 font-semibold text-sm">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                    <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 font-semibold text-xs sm:text-sm flex-shrink-0">
                       {index + 1}
                     </span>
-                    <p className="font-medium text-gray-900 line-clamp-1">{q.questionText}</p>
+                    <p className="font-medium text-sm sm:text-base text-gray-900 dark:text-gray-100 line-clamp-1">{q.questionText}</p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    {q.difficultyLevel && getDifficultyBadge(q.difficultyLevel)}
+                  <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <span className="hidden sm:inline-flex">{q.difficultyLevel && getDifficultyBadge(q.difficultyLevel)}</span>
                     <svg
                       width="20"
                       height="20"
@@ -244,28 +244,28 @@ function ExpertQuestionSetDetailPage() {
 
                 {/* Question Details */}
                 {expandedQuestions[index] && (
-                  <div className="p-4 border-t border-gray-200">
-                    <p className="text-gray-900 mb-4 font-medium">{q.questionText}</p>
+                  <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700">
+                    <p className="text-sm sm:text-base text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 font-medium">{q.questionText}</p>
 
                     {/* Options */}
-                    <div className="space-y-2 mb-4">
+                    <div className="space-y-2 mb-3 sm:mb-4">
                       {q.options?.map((opt, optIdx) => (
                         <div
                           key={optIdx}
-                          className={`flex items-start gap-3 p-3 rounded-lg border ${
+                          className={`flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg border ${
                             optIdx === q.correctAnswerIndex
-                              ? "bg-green-50 border-green-300"
-                              : "bg-white border-gray-200"
+                              ? "bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700"
+                              : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
                           }`}
                         >
-                          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-700 font-medium text-sm flex-shrink-0 mt-0.5">
+                          <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium text-xs sm:text-sm flex-shrink-0 mt-0.5">
                             {String.fromCharCode(65 + optIdx)}
                           </span>
-                          <span className={optIdx === q.correctAnswerIndex ? "text-green-700 font-medium" : "text-gray-700"}>
+                          <span className={`text-xs sm:text-sm flex-1 ${optIdx === q.correctAnswerIndex ? "text-green-700 dark:text-green-400 font-medium" : "text-gray-700 dark:text-gray-300"}`}>
                             {opt}
                           </span>
                           {optIdx === q.correctAnswerIndex && (
-                            <span className="ml-auto text-green-600 font-medium text-sm">✓ Đáp án đúng</span>
+                            <span className="text-green-600 dark:text-green-400 font-medium text-xs sm:text-sm whitespace-nowrap">✓ Đáp án đúng</span>
                           )}
                         </div>
                       ))}
@@ -273,9 +273,9 @@ function ExpertQuestionSetDetailPage() {
 
                     {/* Explanation */}
                     {q.explanation && (
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <p className="text-sm font-medium text-blue-900 mb-1">💡 Giải thích:</p>
-                        <p className="text-blue-800">{q.explanation}</p>
+                      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4">
+                        <p className="text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">💡 Giải thích:</p>
+                        <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-400">{q.explanation}</p>
                       </div>
                     )}
                   </div>

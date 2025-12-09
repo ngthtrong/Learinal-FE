@@ -25,7 +25,7 @@ function Footer() {
           />
         </svg>
       ),
-      href: "#",
+      href: "https://www.facebook.com/profile.php?id=61584655836142",
     },
     {
       name: "Instagram",
@@ -137,28 +137,30 @@ function Footer() {
 
   return (
     <footer className="mt-auto border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 mb-6 sm:mb-8">
           {/* About Section */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">L</span>
+          <div className="col-span-2 sm:col-span-2 md:col-span-2 lg:col-span-1">
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-base sm:text-lg">L</span>
               </div>
-              <span className="text-xl font-bold text-gray-900 dark:text-gray-100">
+              <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
                 Learinal
               </span>
             </div>
-            <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-4 sm:mb-6 leading-relaxed">
               Nền tảng học tập trực tuyến hàng đầu, cung cấp các bộ câu hỏi và
               tài liệu chất lượng cao cho người học.
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center flex-wrap gap-3 sm:gap-4">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
                   href={social.href}
-                  onClick={(e) => e.preventDefault()}
+                  target={social.href !== "#" ? "_blank" : undefined}
+                  rel={social.href !== "#" ? "noopener noreferrer" : undefined}
+                  onClick={social.href === "#" ? (e) => e.preventDefault() : undefined}
                   className="text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors duration-200"
                   aria-label={social.name}
                 >
@@ -170,15 +172,15 @@ function Footer() {
 
           {/* Product Links */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
+            <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-2 sm:mb-4">
               Sản phẩm
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}
-                    className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-sm transition-colors duration-200"
+                    className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-xs sm:text-sm transition-colors duration-200"
                   >
                     {link.name}
                   </Link>
@@ -189,16 +191,16 @@ function Footer() {
 
           {/* Support Links */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
+            <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-2 sm:mb-4">
               Hỗ trợ
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
                     onClick={(e) => e.preventDefault()}
-                    className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-sm transition-colors duration-200"
+                    className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-xs sm:text-sm transition-colors duration-200"
                   >
                     {link.name}
                   </a>
@@ -209,16 +211,16 @@ function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
+            <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-2 sm:mb-4">
               Pháp lý
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
                     onClick={(e) => e.preventDefault()}
-                    className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-sm transition-colors duration-200"
+                    className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-xs sm:text-sm transition-colors duration-200"
                   >
                     {link.name}
                   </a>
@@ -229,23 +231,23 @@ function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-600 dark:text-gray-400 text-sm text-center md:text-left">
+        <div className="pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm text-center sm:text-left">
               © {currentYear} Learinal. All rights reserved.
             </p>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}
-                className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-sm transition-colors duration-200"
+                className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-xs sm:text-sm transition-colors duration-200"
               >
                 Tiếng Việt
               </a>
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}
-                className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-sm transition-colors duration-200"
+                className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-xs sm:text-sm transition-colors duration-200"
               >
                 English
               </a>

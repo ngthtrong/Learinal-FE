@@ -183,13 +183,12 @@ function ExpertCreateManualPage() {
             </div>
           </div>
 
-          {/* Questions */}
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
                 Câu hỏi ({questions.length})
               </h2>
-              <Button size="small" onClick={addQuestion}>
+              <Button size="small" onClick={addQuestion} className="w-full sm:w-auto">
                 <span className="inline-flex items-center gap-1.5">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -201,17 +200,17 @@ function ExpertCreateManualPage() {
             </div>
 
             {questions.map((q, qIdx) => (
-              <div key={qIdx} className="border-2 border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-900 relative">
+              <div key={qIdx} className="border-2 border-gray-200 dark:border-gray-700 rounded-lg p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 relative">
                 {/* Question Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
+                  <span className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Câu #{qIdx + 1}
                   </span>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
                     <select
                       value={q.difficultyLevel}
                       onChange={(e) => handleQuestionChange(qIdx, "difficultyLevel", e.target.value)}
-                      className="text-sm px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 flex-1 sm:flex-none"
                     >
                       <option value="Easy">Dễ</option>
                       <option value="Medium">Trung bình</option>
@@ -259,19 +258,19 @@ function ExpertCreateManualPage() {
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Đáp án <span className="text-red-500">*</span>
-                    <span className="ml-2 text-xs text-gray-500">(Click radio để chọn đáp án đúng)</span>
+                    <span className="hidden sm:inline ml-2 text-xs text-gray-500">(Click radio để chọn đáp án đúng)</span>
                   </label>
                   <div className="space-y-2">
                     {q.options.map((opt, oIdx) => (
-                      <div key={oIdx} className="flex items-center gap-2">
+                      <div key={oIdx} className="flex items-center gap-1.5 sm:gap-2">
                         <input
                           type="radio"
                           name={`correct-${qIdx}`}
                           checked={q.correctAnswerIndex === oIdx}
                           onChange={() => handleQuestionChange(qIdx, "correctAnswerIndex", oIdx)}
-                          className="w-4 h-4 text-green-600 focus:ring-green-500"
+                          className="w-4 h-4 text-green-600 focus:ring-green-500 flex-shrink-0"
                         />
-                        <span className={`text-sm px-2.5 py-1 rounded font-medium min-w-[32px] text-center ${
+                        <span className={`text-xs sm:text-sm px-2 sm:px-2.5 py-0.5 sm:py-1 rounded font-medium min-w-[28px] sm:min-w-[32px] text-center flex-shrink-0 ${
                           q.correctAnswerIndex === oIdx
                             ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
                             : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
@@ -283,7 +282,7 @@ function ExpertCreateManualPage() {
                           value={opt}
                           onChange={(e) => handleOptionChange(qIdx, oIdx, e.target.value)}
                           placeholder={`Đáp án ${String.fromCharCode(65 + oIdx)}`}
-                          className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                          className="flex-1 min-w-0 px-3 sm:px-4 py-1.5 sm:py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                         />
                       </div>
                     ))}
@@ -308,18 +307,19 @@ function ExpertCreateManualPage() {
           </div>
 
           {/* Actions */}
-          <div className="mt-8 flex gap-4">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Button
               variant="secondary"
               onClick={() => navigate("/expert/question-sets")}
               disabled={saving}
+              className="w-full sm:w-auto order-2 sm:order-1"
             >
               Hủy
             </Button>
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1"
+              className="w-full sm:flex-1 order-1 sm:order-2"
             >
               {saving ? (
                 <span className="inline-flex items-center gap-2">
