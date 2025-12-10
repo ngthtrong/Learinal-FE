@@ -25,23 +25,8 @@ const CommissionRecordsPage = () => {
     try {
       setLoading(true);
       
-      // For "Pending" tab, fetch both Pending and Processing records
-      let recordsRes;
-      if (activeTab === "Pending") {
-        const [pendingRes, processingRes] = await Promise.all([
-          commissionRecordsService.list({ status: "Pending" }),
-          commissionRecordsService.list({ status: "Processing" }),
-        ]);
-        // Combine both results
-        recordsRes = {
-          items: [...(pendingRes?.items || []), ...(processingRes?.items || [])],
-          totalItems: (pendingRes?.totalItems || 0) + (processingRes?.totalItems || 0),
-        };
-      } else {
-        recordsRes = await commissionRecordsService.list({ status: activeTab });
-      }
-      
-      const [summaryRes, bankRes] = await Promise.all([
+      const [recordsRes, summaryRes, bankRes] = await Promise.all([
+        commissionRecordsService.list({ status: activeTab }),
         commissionRecordsService.summary(),
         expertBankAccountService.getMyBankAccount().catch(() => null),
       ]);
