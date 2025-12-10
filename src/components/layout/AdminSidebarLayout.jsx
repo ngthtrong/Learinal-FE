@@ -106,6 +106,29 @@ const AdminSidebarLayout = ({ children }) => {
       icon: CoinsIcon,
     },
     {
+      key: "admin_withdrawals",
+      label: "Yêu Cầu Rút Tiền",
+      to: "/admin/withdrawal-requests",
+      icon: ({ size = 20, stroke = 2 }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <polyline points="17 18 12 23 7 18"/>
+          <polyline points="7 6 12 1 17 6"/>
+        </svg>
+      ),
+    },
+    {
+      key: "admin_bank_accounts",
+      label: "Tài Khoản NH",
+      to: "/admin/bank-accounts",
+      icon: ({ size = 20, stroke = 2 }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+          <line x1="1" y1="10" x2="23" y2="10"/>
+        </svg>
+      ),
+    },
+    {
       key: "admin_financials",
       label: "Thống Kê",
       to: "/admin/financials",

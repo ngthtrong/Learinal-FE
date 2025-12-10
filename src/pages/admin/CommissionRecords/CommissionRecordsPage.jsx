@@ -28,6 +28,12 @@ function CommissionRecordsPage() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
 
+  // Admin: Group by expert view
+  const [groupByExpert, setGroupByExpert] = useState(role === "Admin"); // Default true for Admin
+  const [expertsData, setExpertsData] = useState([]);
+  const [expandedExpert, setExpandedExpert] = useState(null);
+  const [expertRecords, setExpertRecords] = useState({});
+
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300);
     return () => clearTimeout(t);
@@ -43,21 +49,34 @@ function CommissionRecordsPage() {
     try {
       setLoading(true);
       setError("");
-      const data = await commissionRecordsService.list({
-        page,
-        pageSize,
-        status: status || undefined,
-        q: debouncedSearch || undefined,
-      });
-      setRecords(data?.items || []);
-      setTotal(data?.meta?.total || 0);
-      // Expert summary endpoint only for Experts
-      if (role === "Expert") {
-        try {
-          const s = await commissionRecordsService.summary();
-          setSummary(s);
-        } catch (e) {
-          console.warn("Summary error", e);
+
+      // Admin group by expert view
+      if (role === "Admin" && groupByExpert) {
+        const data = await commissionRecordsService.byExpert({
+          status: status || undefined,
+          q: debouncedSearch || undefined,
+        });
+        setExpertsData(data?.experts || []);
+        setSummary(data?.summary);
+      } else {
+        // Normal list view (Expert or Admin detailed)
+        const data = await commissionRecordsService.list({
+          page,
+          pageSize,
+          status: status || undefined,
+          q: debouncedSearch || undefined,
+        });
+        setRecords(data?.items || []);
+        setTotal(data?.meta?.total || 0);
+        
+        // Expert summary endpoint only for Experts
+        if (role === "Expert") {
+          try {
+            const s = await commissionRecordsService.summary();
+            setSummary(s);
+          } catch (e) {
+            console.warn("Summary error", e);
+          }
         }
       }
     } catch (e) {
@@ -71,7 +90,33 @@ function CommissionRecordsPage() {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize, status, debouncedSearch]);
+  }, [page, pageSize, status, debouncedSearch, groupByExpert]);
+
+  const fetchExpertRecords = async (expertId) => {
+    try {
+      const data = await commissionRecordsService.list({
+        page: 1,
+        pageSize: 100,
+        status: status || undefined,
+        q: expertId, // Search by expertId
+      });
+      setExpertRecords((prev) => ({ ...prev, [expertId]: data?.items || [] }));
+    } catch (e) {
+      console.error(e);
+      toast.showError("Không thể tải chi tiết hoa hồng");
+    }
+  };
+
+  const toggleExpertExpand = async (expertId) => {
+    if (expandedExpert === expertId) {
+      setExpandedExpert(null);
+    } else {
+      setExpandedExpert(expertId);
+      if (!expertRecords[expertId]) {
+        await fetchExpertRecords(expertId);
+      }
+    }
+  };
 
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total, pageSize]);
 
@@ -224,7 +269,55 @@ function CommissionRecordsPage() {
               </div>
             </div>
           )}
+          {role === "Admin" && groupByExpert && summary && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
+                <div className="text-xs text-gray-500 dark:text-gray-400">Tổng hoa hồng</div>
+                <div className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                  {formatCurrency(summary?.grandTotal || 0)}
+                </div>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
+                <div className="text-xs text-gray-500 dark:text-gray-400">Đang chờ thanh toán</div>
+                <div className="text-xl font-bold text-warning-600 dark:text-warning-400">
+                  {formatCurrency(summary?.grandPending || 0)}
+                </div>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
+                <div className="text-xs text-gray-500 dark:text-gray-400">Đã thanh toán</div>
+                <div className="text-xl font-bold text-success-600 dark:text-success-400">
+                  {formatCurrency(summary?.grandPaid || 0)}
+                </div>
+              </div>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
+                <div className="text-xs text-gray-500 dark:text-gray-400">Số Expert</div>
+                <div className="text-xl font-bold text-primary-600 dark:text-primary-400">
+                  {summary?.expertCount || 0}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Toggle View for Admin */}
+        {role === "Admin" && (
+          <div className="mb-4 flex gap-2">
+            <Button
+              variant={groupByExpert ? "primary" : "secondary"}
+              size="small"
+              onClick={() => setGroupByExpert(true)}
+            >
+              Theo Expert
+            </Button>
+            <Button
+              variant={!groupByExpert ? "primary" : "secondary"}
+              size="small"
+              onClick={() => setGroupByExpert(false)}
+            >
+              Chi tiết
+            </Button>
+          </div>
+        )}
 
         {/* Table container */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
@@ -235,6 +328,147 @@ function CommissionRecordsPage() {
               <div className="text-5xl mb-3">⚠️</div>
               <div className="text-error-600 dark:text-error-400 font-medium">{error}</div>
             </div>
+          ) : role === "Admin" && groupByExpert ? (
+            // Group by Expert View
+            expertsData.length === 0 ? (
+              <div className="py-16 text-center text-gray-600 dark:text-gray-400">Không có dữ liệu</div>
+            ) : (
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                {expertsData.map((expert) => (
+                  <div key={expert.expertId} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div
+                      className="flex items-center justify-between cursor-pointer"
+                      onClick={() => toggleExpertExpand(expert.expertId)}
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                          {expert.expertName}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          {expert.expertEmail} • {expert.count} bản ghi
+                        </div>
+                        <div className="flex gap-4 mt-2 text-xs">
+                          <span className="text-blue-600 dark:text-blue-400">
+                            Published: {expert.publishedCount}
+                          </span>
+                          <span className="text-purple-600 dark:text-purple-400">
+                            Validated: {expert.validatedCount}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                          {formatCurrency(expert.totalCommission)}
+                        </div>
+                        <div className="flex gap-2 mt-1 text-xs">
+                          <span className="text-warning-600 dark:text-warning-400">
+                            Chờ: {formatCurrency(expert.totalPending)}
+                          </span>
+                          <span className="text-success-600 dark:text-success-400">
+                            Trả: {formatCurrency(expert.totalPaid)}
+                          </span>
+                        </div>
+                        <div className="mt-1 text-xs text-gray-500">
+                          {expandedExpert === expert.expertId ? "▲" : "▼"} Chi tiết
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Expanded Details */}
+                    {expandedExpert === expert.expertId && (
+                      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                        {!expertRecords[expert.expertId] ? (
+                          <div className="text-center py-4 text-gray-500">Đang tải...</div>
+                        ) : expertRecords[expert.expertId].length === 0 ? (
+                          <div className="text-center py-4 text-gray-500">Không có bản ghi</div>
+                        ) : (
+                          <>
+                            {expert.totalPending > 0 && (
+                              <div className="mb-3 flex justify-end">
+                                <Button
+                                  size="small"
+                                  onClick={async () => {
+                                    if (!window.confirm(`Xác nhận thanh toán tổng ${formatCurrency(expert.totalPending)} cho ${expert.expertName}?`)) {
+                                      return;
+                                    }
+                                    try {
+                                      const pendingIds = expertRecords[expert.expertId]
+                                        .filter(r => r.status === "Pending")
+                                        .map(r => r.id);
+                                      
+                                      // Mark each as paid
+                                      for (const id of pendingIds) {
+                                        await commissionRecordsService.markPaid(id);
+                                      }
+                                      
+                                      toast.showSuccess("Đã thanh toán thành công");
+                                      fetchData();
+                                      setExpandedExpert(null);
+                                    } catch (e) {
+                                      toast.showError(e?.response?.data?.message || "Thanh toán thất bại");
+                                    }
+                                  }}
+                                >
+                                  💰 Thanh toán tổng {formatCurrency(expert.totalPending)}
+                                </Button>
+                              </div>
+                            )}
+                            <div className="space-y-2">
+                            {expertRecords[expert.expertId].map((r) => (
+                              <div
+                                key={r.id}
+                                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg"
+                              >
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2">
+                                    {r.type === "Published" ? (
+                                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
+                                        Published
+                                      </span>
+                                    ) : (
+                                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400">
+                                        Validated
+                                      </span>
+                                    )}
+                                    {r.status === "Paid" ? (
+                                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
+                                        Đã trả
+                                      </span>
+                                    ) : (
+                                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400">
+                                        Chờ
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    {(() => {
+                                      try {
+                                        return new Date(r.createdAt).toLocaleString("vi-VN");
+                                      } catch {
+                                        return "-";
+                                      }
+                                    })()}
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="font-medium text-gray-900 dark:text-gray-100">
+                                    {formatCurrency(r.commissionAmount)}
+                                  </div>
+                                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                                    Fixed: {formatCurrency(r.fixedAmount)} {r.bonusAmount > 0 && `+ ${formatCurrency(r.bonusAmount)}`}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )
           ) : records.length === 0 ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Không có bản ghi hoa hồng</div>
           ) : (
@@ -400,47 +634,49 @@ function CommissionRecordsPage() {
           )}
         </div>
 
-        {/* Pagination */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Hiển thị {records.length} / {total} bản ghi
-          </div>
-          <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-end">
-            <select
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-                setPage(1);
-              }}
-            >
-              {PAGE_SIZES.map((n) => (
-                <option key={n} value={n}>
-                  {n}/trang
-                </option>
-              ))}
-            </select>
-            <Button
-              variant="secondary"
-              size="small"
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page <= 1}
-            >
-              Trước
-            </Button>
-            <div className="text-sm text-gray-700 dark:text-gray-300">
-              {page}/{totalPages}
+        {/* Pagination (only for detailed view) */}
+        {!(role === "Admin" && groupByExpert) && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Hiển thị {records.length} / {total} bản ghi
             </div>
-            <Button
-              variant="secondary"
-              size="small"
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages}
-            >
-              Sau
-            </Button>
+            <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-end">
+              <select
+                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setPage(1);
+                }}
+              >
+                {PAGE_SIZES.map((n) => (
+                  <option key={n} value={n}>
+                    {n}/trang
+                  </option>
+                ))}
+              </select>
+              <Button
+                variant="secondary"
+                size="small"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+              >
+                Trước
+              </Button>
+              <div className="text-sm text-gray-700 dark:text-gray-300">
+                {page}/{totalPages}
+              </div>
+              <Button
+                variant="secondary"
+                size="small"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+              >
+                Sau
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Mark Paid Modal */}
         <Modal

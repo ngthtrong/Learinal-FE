@@ -112,6 +112,29 @@ export const API_CONFIG = {
       STATS: "/commission-records/stats",
       CONFIG: "/commission-records/config",
       MARK_PAID: (id) => `/commission-records/${id}/mark-paid`,
+      BY_EXPERT: "/commission-records/by-expert",
+    },
+    // Expert Bank Accounts
+    EXPERT_BANK_ACCOUNTS: {
+      CREATE_OR_UPDATE: "/expert-bank-accounts",
+      GET_MY_ACCOUNT: "/expert-bank-accounts/me",
+      DELETE_MY_ACCOUNT: "/expert-bank-accounts/me",
+      LIST_ALL: "/expert-bank-accounts",
+      VERIFY: (id) => `/expert-bank-accounts/${id}/verify`,
+      UNVERIFY: (id) => `/expert-bank-accounts/${id}/unverify`,
+      BANKS: "/expert-bank-accounts/banks",
+    },
+    // Withdrawal Requests
+    WITHDRAWAL_REQUESTS: {
+      CREATE: "/withdrawal-requests",
+      GET_MY_REQUESTS: "/withdrawal-requests/me",
+      GET_MY_STATS: "/withdrawal-requests/me/stats",
+      CANCEL: (id) => `/withdrawal-requests/${id}/cancel`,
+      LIST_ALL: "/withdrawal-requests",
+      PROCESS: (id) => `/withdrawal-requests/${id}/process`,
+      REJECT: (id) => `/withdrawal-requests/${id}/reject`,
+      COMPLETE: (id) => `/withdrawal-requests/${id}/complete`,
+      GET_BY_ID: (id) => `/withdrawal-requests/${id}`,
     },
     // Health check
     HEALTH: "/health",

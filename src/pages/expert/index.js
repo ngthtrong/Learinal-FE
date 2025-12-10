@@ -10,5 +10,5 @@ export { default as ExpertHandleReportsPage } from "./QuestionSets/ExpertHandleR
 export { default as ExpertQuizStartPage } from "./Quiz/ExpertQuizStartPage";
 export { default as ExpertQuizTakingPage } from "./Quiz/ExpertQuizTakingPage";
 export { default as ExpertQuizResultPage } from "./Quiz/ExpertQuizResultPage";
-// Reuse commission records page from admin for expert (role logic internal)
-export { default as ExpertCommissionRecordsPage } from "../admin/CommissionRecords/CommissionRecordsPage";
+// Expert Commission Records Page with withdrawal request feature
+export { default as ExpertCommissionRecordsPage } from "./CommissionRecords/CommissionRecordsPage";

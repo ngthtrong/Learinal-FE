@@ -60,6 +60,16 @@ export const commissionRecordsService = {
     });
     return response.data;
   },
+
+  /** Admin: get commissions grouped by expert */
+  byExpert: async (params = {}) => {
+    const { status, q } = params;
+    const response = await axiosInstance.get(COMMISSIONS.BY_EXPERT, {
+      params: { status: status || undefined, q: q || undefined },
+      headers: { "Cache-Control": "no-cache" },
+    });
+    return response.data;
+  },
 };
 
 export default commissionRecordsService;

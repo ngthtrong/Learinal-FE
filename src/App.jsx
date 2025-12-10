@@ -69,6 +69,14 @@ import {
   ExpertQuizResultPage,
 } from "./pages";
 
+// Expert Bank & Withdrawal Pages
+import BankAccountPage from "./pages/expert/BankAccount/BankAccountPage";
+import WithdrawalRequestsPage from "./pages/expert/WithdrawalRequests/WithdrawalRequestsPage";
+
+// Admin Bank & Withdrawal Pages
+import AdminBankAccountsPage from "./pages/admin/BankAccounts/AdminBankAccountsPage";
+import AdminWithdrawalRequestsPage from "./pages/admin/WithdrawalRequests/AdminWithdrawalRequestsPage";
+
 // Content Flag Pages
 import AdminContentFlagsPage from "./pages/admin/ContentFlags/AdminContentFlagsPage";
 import AdminContentFlagDetailPage from "./pages/admin/ContentFlags/AdminContentFlagDetailPage";
@@ -490,6 +498,34 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/admin/withdrawal-requests"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminWithdrawalRequestsPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/bank-accounts"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <AdminBankAccountsPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
 
             {/* Expert routes */}
             <Route
@@ -514,6 +550,34 @@ function App() {
                     <TopbarLayout>
                       <ExpertSidebarLayout>
                         <ExpertCommissionRecordsPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/bank-account"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <BankAccountPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/withdrawal-requests"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <WithdrawalRequestsPage />
                       </ExpertSidebarLayout>
                     </TopbarLayout>
                   </ExpertRoute>
