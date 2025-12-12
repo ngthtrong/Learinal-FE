@@ -27,9 +27,11 @@ export const commissionRecordsService = {
     return response.data;
   },
 
-  /** Expert earnings summary with optional month filter */
-  summary: async (month = null) => {
-    const params = month ? { month } : {};
+  /** Expert earnings summary with optional month filter and expertId (for admin) */
+  summary: async (month = null, expertId = null) => {
+    const params = {};
+    if (month) params.month = month;
+    if (expertId) params.expertId = expertId;
     const response = await axiosInstance.get(COMMISSIONS.SUMMARY, {
       params,
       headers: { "Cache-Control": "no-cache" },

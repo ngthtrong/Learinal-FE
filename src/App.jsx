@@ -50,12 +50,14 @@ import {
   AdminDashboardPage,
   UserManagementPage,
   CommissionRecordsPage,
+  BankAccountsPage,
   AdminSubscriptionPlansPage,
   AdminAddonPackagesPage,
   AdminFinancialsPage,
   SubscriptionPurchasesPage,
   ExpertDashboardPage,
   ExpertCommissionRecordsPage,
+  ExpertBankAccountPage,
   ExpertValidationRequestsPage,
   ExpertValidationRequestDetailPage,
   ExpertQuestionSetsPage,
@@ -449,6 +451,20 @@ function App() {
               }
             />
             <Route
+              path="/admin/bank-accounts"
+              element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <TopbarLayout>
+                      <AdminSidebarLayout>
+                        <BankAccountsPage />
+                      </AdminSidebarLayout>
+                    </TopbarLayout>
+                  </AdminRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/admin/financials"
               element={
                 <ProtectedRoute>
@@ -514,6 +530,20 @@ function App() {
                     <TopbarLayout>
                       <ExpertSidebarLayout>
                         <ExpertCommissionRecordsPage />
+                      </ExpertSidebarLayout>
+                    </TopbarLayout>
+                  </ExpertRoute>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/expert/bank-account"
+              element={
+                <ProtectedRoute>
+                  <ExpertRoute>
+                    <TopbarLayout>
+                      <ExpertSidebarLayout>
+                        <ExpertBankAccountPage />
                       </ExpertSidebarLayout>
                     </TopbarLayout>
                   </ExpertRoute>

@@ -71,6 +71,17 @@ const ExpertSidebarLayout = ({ children }) => {
       icon: CoinsIcon,
     },
     {
+      key: "expert_bank_account",
+      label: "Tài khoản NH",
+      to: "/expert/bank-account",
+      icon: ({ size = 20, stroke = 2 }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+          <path d="M7 15h0M2 9.5h20"></path>
+        </svg>
+      ),
+    },
+    {
       key: "expert_validations",
       label: "Kiểm duyệt",
       to: "/expert/validation-requests",
