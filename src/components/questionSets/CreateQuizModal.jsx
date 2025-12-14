@@ -216,14 +216,26 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
     // Convert percentage-based difficulty to count-based for backend
     const questionsPerDifficulty = getQuestionsPerDifficulty();
 
+    // Map Vietnamese difficulty levels to English keys expected by backend
+    const difficultyMapping = {
+      "Biết": "Remember",
+      "Hiểu": "Understand",
+      "Vận dụng": "Apply",
+      "Vận dụng cao": "Analyze"
+    };
+
+    const mappedDifficultyDistribution = {};
+    Object.entries(questionsPerDifficulty).forEach(([key, value]) => {
+      const englishKey = difficultyMapping[key] || key;
+      mappedDifficultyDistribution[englishKey] = value;
+    });
+
     const data = {
       subjectId: selectedSubject.id,
       title,
       numQuestions,
       topics,
-      // Send both formats for compatibility
-      difficulty: difficultyDistribution, // percentage format
-      difficultyDistribution: questionsPerDifficulty, // count format for backend
+      difficultyDistribution: mappedDifficultyDistribution, // count format with English keys
     };
 
     onGenerate(data);

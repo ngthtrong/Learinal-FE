@@ -24,6 +24,7 @@ function NotificationItem({ notification, onClose }) {
         quiz: `/quiz-attempts/${notification.relatedEntityId}`,
         document: `/documents/${notification.relatedEntityId}`,
         questionSet: `/question-sets/${notification.relatedEntityId}`,
+        QuestionSet: `/question-sets/${notification.relatedEntityId}`,
         commission: `/commissions`,
         subscription: `/subscriptions`,
       };
