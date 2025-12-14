@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
+import { ActiveQuizProvider } from "./contexts/ActiveQuizContext";
 import { ToastProvider } from "./components/common";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import {
@@ -16,7 +17,7 @@ import {
   ExpertSidebarLayout,
 } from "@/components/layout";
 import RoleBasedSidebarLayout from "./components/layout/RoleBasedSidebarLayout";
-import { AdminRoute, ExpertRoute, BackToTop } from "./components/common";
+import { AdminRoute, ExpertRoute, BackToTop, ActiveQuizBanner } from "./components/common";
 
 // Pages
 import {
@@ -81,6 +82,7 @@ function App() {
         <AuthProvider>
           <NotificationProvider>
             <Router>
+              <ActiveQuizProvider>
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
@@ -693,7 +695,9 @@ function App() {
             {/* 404 - Not found */}
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
+              <ActiveQuizBanner />
               <BackToTop />
+              </ActiveQuizProvider>
             </Router>
           </NotificationProvider>
         </AuthProvider>

@@ -4,6 +4,7 @@
  */
 
 import { Link } from "react-router-dom";
+import logo from "@/assets/images/logo/learinal-logo.png";
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -142,9 +143,11 @@ function Footer() {
           {/* About Section */}
           <div className="col-span-2 sm:col-span-2 md:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2 mb-3 sm:mb-4">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <span className="text-white font-bold text-base sm:text-lg">L</span>
-              </div>
+              <img
+                src={logo}
+                alt="Learinal"
+                className="h-8 sm:h-10 w-auto"
+              />
               <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
                 Learinal
               </span>

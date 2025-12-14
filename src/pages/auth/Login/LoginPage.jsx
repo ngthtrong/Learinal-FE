@@ -11,8 +11,7 @@ import { getErrorMessage } from "@utils/errorHandler";
 // Theme is now global via <html data-theme>; no per-page state
 import { oauthService } from "@services/api";
 import { isValidEmail } from "@utils/validators";
-import logoLight from "@/assets/images/logo/learinal-logo-light.png";
-import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
+import logo from "@/assets/images/logo/learinal-logo.png";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -167,8 +166,7 @@ const LoginPage = () => {
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large p-6 sm:p-8">
           {/* Brand Header */}
           <header className="flex flex-col items-center mb-6 sm:mb-8">
-            <img src={logoLight} alt="Learinal" className="h-12 sm:h-16 w-auto mb-3 dark:hidden" />
-            <img src={logoDark} alt="Learinal" className="h-12 sm:h-16 w-auto mb-3 hidden dark:block" />
+            <img src={logo} alt="Learinal" className="h-12 sm:h-16 w-auto mb-3" />
             <div className="text-xl sm:text-2xl font-bold">
               <span className="text-primary-600 dark:text-primary-400">Lear</span>
               <span className="text-gray-800 dark:text-gray-200">inal</span>

@@ -10,16 +10,18 @@ import quizAttemptsService from "@/services/api/quizAttempts.service";
 import Button from "@/components/common/Button";
 import { useToast, Modal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { useActiveQuiz } from "@/contexts/ActiveQuizContext";
 function QuizTakingPage() {
   const { attemptId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const toast = useToast();
+  const { startQuizTimer, clearActiveQuiz, timeRemaining: contextTimeRemaining, isActiveQuiz } = useActiveQuiz();
 
-  // Settings from QuizStartPage
+  // Settings from QuizStartPage (initial values, may be updated from attempt data)
   const {
-    useTimer,
-    timerMinutes,
+    useTimer: initialUseTimer,
+    timerMinutes: initialTimerMinutes,
     shuffleQuestions,
     questionSet: initialQuestionSet,
   } = location.state || {};
@@ -30,10 +32,15 @@ function QuizTakingPage() {
   const [loading, setLoading] = useState(!initialQuestionSet);
   const [submitting, setSubmitting] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(useTimer ? timerMinutes * 60 : null);
+  // Timer state - use context for background tracking, local for display sync
+  const [timerEnabled, setTimerEnabled] = useState(initialUseTimer || false);
+  // Use context time if this quiz is being tracked, otherwise use local state
+  const [localTimeRemaining, setLocalTimeRemaining] = useState(initialUseTimer ? initialTimerMinutes * 60 : null);
+  const timeRemaining = isActiveQuiz(attemptId) ? contextTimeRemaining : localTimeRemaining;
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const timerRef = useRef(null);
   const autoSubmitRef = useRef(false);
+  const timerInitializedRef = useRef(!!initialUseTimer); // Track if timer was initialized from location.state
 
   // Load question set and questions
   useEffect(() => {
@@ -45,16 +52,23 @@ function QuizTakingPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Timer countdown
+  // Timer countdown - only run local timer if NOT tracked by context
+  // Context handles auto-submit globally, this is just for display sync when not using context
   useEffect(() => {
-    if (useTimer && timeRemaining !== null) {
-      if (timeRemaining <= 0) {
+    // If this quiz is tracked by context, don't run local timer
+    // The context will handle auto-submit
+    if (isActiveQuiz(attemptId)) {
+      return;
+    }
+    
+    if (timerEnabled && localTimeRemaining !== null) {
+      if (localTimeRemaining <= 0) {
         handleAutoSubmit();
         return;
       }
 
       timerRef.current = setInterval(() => {
-        setTimeRemaining((prev) => {
+        setLocalTimeRemaining((prev) => {
           if (prev <= 1) {
             clearInterval(timerRef.current);
             return 0;
@@ -66,7 +80,7 @@ function QuizTakingPage() {
       return () => clearInterval(timerRef.current);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useTimer, timeRemaining]);
+  }, [timerEnabled, localTimeRemaining, attemptId]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -146,6 +160,42 @@ function QuizTakingPage() {
         }, 1500);
         return;
       }
+
+      // ✅ Restore timer from attempt data (for resuming after navigation)
+      // Only restore if timer wasn't initialized from location.state and not tracked by context
+      if (!timerInitializedRef.current && !isActiveQuiz(attemptId) && attempt.isTimed && attempt.timerMinutes && attempt.startTime) {
+        const startTime = new Date(attempt.startTime).getTime();
+        const now = Date.now();
+        const elapsedSeconds = Math.floor((now - startTime) / 1000);
+        const totalSeconds = attempt.timerMinutes * 60;
+        const remaining = totalSeconds - elapsedSeconds;
+
+        console.log("Timer restoration:", { 
+          startTime: attempt.startTime, 
+          timerMinutes: attempt.timerMinutes,
+          elapsedSeconds, 
+          remaining 
+        });
+
+        if (remaining <= 0) {
+          // Time already expired - auto submit
+          toast.showWarning("Thời gian làm bài đã hết! Đang tự động nộp bài...");
+          setTimerEnabled(true);
+          setLocalTimeRemaining(0);
+          // Let the timer effect handle auto-submit
+        } else {
+          // Resume with remaining time and start tracking in context
+          setTimerEnabled(true);
+          setLocalTimeRemaining(remaining);
+          // Also start context tracking for background auto-submit
+          startQuizTimer(
+            attemptId,
+            attempt.timerMinutes,
+            attempt.startTime,
+            qSet?.title || "Quiz"
+          );
+        }
+      }
       
       const qSet = await questionSetsService.getSetById(attempt.setId);
       setQuestionSet(qSet);
@@ -222,6 +272,9 @@ function QuizTakingPage() {
       // Submit to backend with answers array wrapped in object
       await quizAttemptsService.submitAttempt(attemptId, { answers });
       
+      // Clear active quiz tracking (stop background timer)
+      clearActiveQuiz();
+      
       // Mark as submitted to trigger navigation guard
       setHasSubmitted(true);
 
@@ -236,6 +289,20 @@ function QuizTakingPage() {
     }
   }, [toast, questions, userAnswers, attemptId, navigate]);
 
+  // Auto-save answer to backend
+  const autoSaveAnswer = useCallback(async (questionId, optionIndex) => {
+    try {
+      await quizAttemptsService.saveAnswer(attemptId, {
+        questionId: String(questionId),
+        selectedOptionIndex: optionIndex,
+      });
+      console.log("Auto-saved answer:", { questionId, optionIndex });
+    } catch (err) {
+      console.error("Failed to auto-save answer:", err);
+      // Don't show error to user - silent save
+    }
+  }, [attemptId]);
+
   const handleAnswerSelect = (questionId, optionIndex) => {
     console.log("handleAnswerSelect called:", { questionId, optionIndex });
     setUserAnswers((prev) => {
@@ -246,6 +313,8 @@ function QuizTakingPage() {
       console.log("Updated userAnswers:", newAnswers);
       return newAnswers;
     });
+    // Auto-save to backend
+    autoSaveAnswer(questionId, optionIndex);
   };
 
   const handleSubmitQuiz = async (isAutoSubmit = false) => {
@@ -276,6 +345,9 @@ function QuizTakingPage() {
 
       // Submit to backend with answers array wrapped in object
       await quizAttemptsService.submitAttempt(attemptId, { answers });
+      
+      // Clear active quiz tracking (stop background timer)
+      clearActiveQuiz();
       
       // Mark as submitted to trigger navigation guard
       setHasSubmitted(true);
@@ -330,7 +402,7 @@ function QuizTakingPage() {
 
   const answeredCount = getAnsweredCount();
   const progress = questions.length > 0 ? (answeredCount / questions.length) * 100 : 0;
-  const isWarningTime = useTimer && timeRemaining !== null && timeRemaining <= 60;
+  const isWarningTime = timerEnabled && timeRemaining !== null && timeRemaining <= 60;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 pb-24">
@@ -355,7 +427,7 @@ function QuizTakingPage() {
                 </span>
               </div>
             </div>
-            {useTimer && timeRemaining !== null && (
+            {timerEnabled && timeRemaining !== null && (
               <div
                 className={`flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold text-base sm:text-lg ${
                   isWarningTime

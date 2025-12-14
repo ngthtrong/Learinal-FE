@@ -5,8 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { Modal, ThemeToggle } from "@/components/common";
 import { NotificationBell } from "@/components/notifications";
 import { APP_CONFIG } from "@/config/app.config";
-import logoLight from "@/assets/images/logo/learinal-logo-light.png";
-import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
+import logoLight from "@/assets/images/logo/learinal-logo.png";
 
 const Topbar = ({ theme: themeProp = "light" }) => {
   const navigate = useNavigate();
@@ -134,7 +133,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
           role="link"
         >
           <img
-            src={theme === "dark" ? logoDark : logoLight}
+            src={logoLight}
             alt="Learinal"
             className="h-8 sm:h-10 w-auto"
           />

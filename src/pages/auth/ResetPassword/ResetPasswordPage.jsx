@@ -8,8 +8,7 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Button, Input, PasswordStrengthIndicator, useToast } from "@components/common";
 import { isValidPassword, getErrorMessage } from "@utils";
 import { authService } from "@services/api";
-import logoLight from "@/assets/images/logo/learinal-logo-light.png";
-import logoDark from "@/assets/images/logo/learinal-logo-dark.png";
+import logo from "@/assets/images/logo/learinal-logo.png";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -99,7 +98,7 @@ const ResetPasswordPage = () => {
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-large border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
           <header className="flex flex-col items-center mb-6 sm:mb-8">
-            <img src={isDark ? logoDark : logoLight} alt="Learinal" className="h-12 sm:h-16 w-auto mb-3" />
+            <img src={logo} alt="Learinal" className="h-12 sm:h-16 w-auto mb-3" />
             <div className="text-xl sm:text-2xl font-bold">
               <span className="text-primary-600 dark:text-primary-400">Lear</span>
               <span className="text-gray-800 dark:text-gray-100">inal</span>

@@ -7,12 +7,14 @@ import { useToast, PremiumRequiredModal, ReportContentModal } from "@/components
 import { getErrorMessage } from "@/utils/errorHandler";
 import { Footer } from "@/components/layout";
 import { useAuth } from "@/contexts/AuthContext";
+import { useActiveQuiz } from "@/contexts/ActiveQuizContext";
 
 function QuizStartPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
   const { user } = useAuth();
+  const { startQuizTimer } = useActiveQuiz();
   const [questionSet, setQuestionSet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
@@ -42,7 +44,7 @@ function QuizStartPage() {
       
       // Set default timer based on question count (2 minutes per question)
       const questionCount = data.questionCount || data.questions?.length || 10;
-      const defaultTime = Math.max(30, Math.min(120, questionCount * 2));
+      const defaultTime = Math.max(1, Math.min(120, questionCount * 2));
       setTimerMinutes(defaultTime);
     } catch (err) {
       const message = getErrorMessage(err);
@@ -63,11 +65,22 @@ function QuizStartPage() {
     try {
       setStarting(true);
 
-      // Create quiz attempt
+      // Create quiz attempt with timer info
       const attempt = await quizAttemptsService.createAttempt({
         setId: id,
         isTimed: useTimer,
+        timerMinutes: useTimer ? timerMinutes : null, // Save timer duration for resume
       });
+
+      // Start background timer tracking for auto-submit
+      if (useTimer && timerMinutes) {
+        startQuizTimer(
+          attempt.id,
+          timerMinutes,
+          attempt.startTime || new Date().toISOString(),
+          questionSet.title
+        );
+      }
 
       toast.showSuccess("Bắt đầu làm bài!");
 
@@ -200,7 +213,7 @@ function QuizStartPage() {
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => setTimerMinutes(Math.max(10, timerMinutes - 10))}
+                      onClick={() => setTimerMinutes(Math.max(1, timerMinutes - 10))}
                       className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-bold text-gray-700 dark:text-gray-300 transition-colors"
                     >
                       −
@@ -208,17 +221,17 @@ function QuizStartPage() {
                     <input
                       id="timer-minutes"
                       type="number"
-                      min="10"
-                      max="180"
+                      min="1"
+                      max="120"
                       value={timerMinutes}
                       onChange={(e) =>
-                        setTimerMinutes(Math.max(10, parseInt(e.target.value) || 10))
+                        setTimerMinutes(Math.min(120, Math.max(1, parseInt(e.target.value) || 1)))
                       }
                       className="w-16 sm:w-20 px-2 sm:px-3 py-1.5 sm:py-2 text-center border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent font-bold text-base sm:text-lg"
                     />
                     <button
                       type="button"
-                      onClick={() => setTimerMinutes(Math.min(180, timerMinutes + 10))}
+                      onClick={() => setTimerMinutes(Math.min(120, timerMinutes + 10))}
                       className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-bold text-gray-700 dark:text-gray-300 transition-colors"
                     >
                       +

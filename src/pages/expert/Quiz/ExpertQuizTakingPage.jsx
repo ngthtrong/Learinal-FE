@@ -9,17 +9,19 @@ import quizAttemptsService from "@/services/api/quizAttempts.service";
 import Button from "@/components/common/Button";
 import { useToast, Modal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { useActiveQuiz } from "@/contexts/ActiveQuizContext";
 
 function ExpertQuizTakingPage() {
   const { attemptId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const toast = useToast();
+  const { startQuizTimer, clearActiveQuiz, timeRemaining: contextTimeRemaining, isActiveQuiz } = useActiveQuiz();
 
-  // Settings from QuizStartPage
+  // Settings from QuizStartPage (initial values, may be updated from attempt data)
   const {
-    useTimer,
-    timerMinutes,
+    useTimer: initialUseTimer,
+    timerMinutes: initialTimerMinutes,
     shuffleQuestions,
     questionSet: initialQuestionSet,
   } = location.state || {};
@@ -30,9 +32,13 @@ function ExpertQuizTakingPage() {
   const [loading, setLoading] = useState(!initialQuestionSet);
   const [submitting, setSubmitting] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(useTimer ? timerMinutes * 60 : null);
+  // Timer state - use context for background tracking
+  const [timerEnabled, setTimerEnabled] = useState(initialUseTimer || false);
+  const [localTimeRemaining, setLocalTimeRemaining] = useState(initialUseTimer ? initialTimerMinutes * 60 : null);
+  const timeRemaining = isActiveQuiz(attemptId) ? contextTimeRemaining : localTimeRemaining;
   const timerRef = useRef(null);
   const autoSubmitRef = useRef(false);
+  const timerInitializedRef = useRef(!!initialUseTimer); // Track if timer was initialized from location.state
 
   // Load question set and questions
   useEffect(() => {
@@ -44,16 +50,20 @@ function ExpertQuizTakingPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Timer countdown
+  // Timer countdown - only run local timer if NOT tracked by context
   useEffect(() => {
-    if (useTimer && timeRemaining !== null) {
-      if (timeRemaining <= 0) {
+    if (isActiveQuiz(attemptId)) {
+      return;
+    }
+    
+    if (timerEnabled && localTimeRemaining !== null) {
+      if (localTimeRemaining <= 0) {
         handleAutoSubmit();
         return;
       }
 
       timerRef.current = setInterval(() => {
-        setTimeRemaining((prev) => {
+        setLocalTimeRemaining((prev) => {
           if (prev <= 1) {
             clearInterval(timerRef.current);
             return 0;
@@ -65,7 +75,7 @@ function ExpertQuizTakingPage() {
       return () => clearInterval(timerRef.current);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [useTimer, timeRemaining]);
+  }, [timerEnabled, localTimeRemaining, attemptId]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -93,6 +103,52 @@ function ExpertQuizTakingPage() {
       setLoading(true);
       // Get attempt to find question set ID and restore answers
       const attempt = await quizAttemptsService.getAttemptById(attemptId);
+      
+      // ✅ Check if attempt is already completed - prevent re-taking
+      if (attempt.isCompleted) {
+        toast.showWarning("Bài thi này đã được nộp. Chuyển đến trang kết quả...");
+        setTimeout(() => {
+          navigate(`/expert/quiz/result/${attemptId}`, { replace: true });
+        }, 1500);
+        return;
+      }
+
+      // ✅ Restore timer from attempt data (for resuming after navigation)
+      // Only restore if timer wasn't initialized from location.state and not tracked by context
+      if (!timerInitializedRef.current && !isActiveQuiz(attemptId) && attempt.isTimed && attempt.timerMinutes && attempt.startTime) {
+        const startTime = new Date(attempt.startTime).getTime();
+        const now = Date.now();
+        const elapsedSeconds = Math.floor((now - startTime) / 1000);
+        const totalSeconds = attempt.timerMinutes * 60;
+        const remaining = totalSeconds - elapsedSeconds;
+
+        console.log("Timer restoration:", { 
+          startTime: attempt.startTime, 
+          timerMinutes: attempt.timerMinutes,
+          elapsedSeconds, 
+          remaining 
+        });
+
+        if (remaining <= 0) {
+          // Time already expired - auto submit
+          toast.showWarning("Thời gian làm bài đã hết! Đang tự động nộp bài...");
+          setTimerEnabled(true);
+          setLocalTimeRemaining(0);
+          // Let the timer effect handle auto-submit
+        } else {
+          // Resume with remaining time and start tracking in context
+          setTimerEnabled(true);
+          setLocalTimeRemaining(remaining);
+          // Also start context tracking for background auto-submit
+          startQuizTimer(
+            attemptId,
+            attempt.timerMinutes,
+            attempt.startTime,
+            qSet?.title || "Quiz"
+          );
+        }
+      }
+      
       const qSet = await questionSetsService.getSetById(attempt.setId);
       setQuestionSet(qSet);
       loadQuestions(qSet);
@@ -168,6 +224,9 @@ function ExpertQuizTakingPage() {
       // Submit to backend with answers array wrapped in object
       await quizAttemptsService.submitAttempt(attemptId, { answers });
 
+      // Clear active quiz tracking
+      clearActiveQuiz();
+
       // Navigate to expert result page
       setTimeout(() => {
         navigate(`/expert/quiz/result/${attemptId}`);
@@ -179,6 +238,20 @@ function ExpertQuizTakingPage() {
     }
   }, [toast, questions, userAnswers, attemptId, navigate]);
 
+  // Auto-save answer to backend
+  const autoSaveAnswer = useCallback(async (questionId, optionIndex) => {
+    try {
+      await quizAttemptsService.saveAnswer(attemptId, {
+        questionId: String(questionId),
+        selectedOptionIndex: optionIndex,
+      });
+      console.log("Auto-saved answer:", { questionId, optionIndex });
+    } catch (err) {
+      console.error("Failed to auto-save answer:", err);
+      // Don't show error to user - silent save
+    }
+  }, [attemptId]);
+
   const handleAnswerSelect = (questionId, optionIndex) => {
     console.log("handleAnswerSelect called:", { questionId, optionIndex });
     setUserAnswers((prev) => {
@@ -189,6 +262,8 @@ function ExpertQuizTakingPage() {
       console.log("Updated userAnswers:", newAnswers);
       return newAnswers;
     });
+    // Auto-save to backend
+    autoSaveAnswer(questionId, optionIndex);
   };
 
   const handleSubmitQuiz = async (isAutoSubmit = false) => {
@@ -219,6 +294,9 @@ function ExpertQuizTakingPage() {
 
       // Submit to backend with answers array wrapped in object
       await quizAttemptsService.submitAttempt(attemptId, { answers });
+
+      // Clear active quiz tracking
+      clearActiveQuiz();
 
       if (!isAutoSubmit) {
         toast.showSuccess("Nộp bài thành công!");
@@ -270,7 +348,7 @@ function ExpertQuizTakingPage() {
 
   const answeredCount = getAnsweredCount();
   const progress = questions.length > 0 ? (answeredCount / questions.length) * 100 : 0;
-  const isWarningTime = useTimer && timeRemaining !== null && timeRemaining <= 60;
+  const isWarningTime = timerEnabled && timeRemaining !== null && timeRemaining <= 60;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 pb-24">
@@ -300,7 +378,7 @@ function ExpertQuizTakingPage() {
                 </span>
               </div>
             </div>
-            {useTimer && timeRemaining !== null && (
+            {timerEnabled && timeRemaining !== null && (
               <div
                 className={`flex items-center gap-3 px-6 py-3 rounded-lg font-bold text-lg ${
                   isWarningTime

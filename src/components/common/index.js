@@ -18,3 +18,4 @@ export { default as ThemeToggle } from "./ThemeToggle";
 export { default as PremiumRequiredModal } from "./PremiumRequiredModal";
 export { default as ReportContentModal } from "./ReportContentModal";
 export { default as BackToTop } from "./BackToTop";
+export { default as ActiveQuizBanner } from "./ActiveQuizBanner";

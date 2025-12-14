@@ -8,12 +8,14 @@ import quizAttemptsService from "@/services/api/quizAttempts.service";
 import questionSetsService from "@/services/api/questionSets.service";
 import Button from "@/components/common/Button";
 import { useToast } from "@/components/common";
+import { useActiveQuiz } from "@/contexts/ActiveQuizContext";
 
 function ExpertQuizStartPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const toast = useToast();
+  const { startQuizTimer } = useActiveQuiz();
   const [questionSet, setQuestionSet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
@@ -65,8 +67,18 @@ function ExpertQuizStartPage() {
       
       console.log("Attempt created:", attemptData);
       
-      // Navigate to expert quiz taking page
+      // Start background timer tracking if timed quiz
       const attemptId = attemptData?.data?.id || attemptData?.id;
+      if (settings.isTimed && settings.timerMinutes) {
+        startQuizTimer(
+          attemptId,
+          settings.timerMinutes,
+          attemptData?.startTime || new Date().toISOString(),
+          questionSet?.title || "Expert Quiz"
+        );
+      }
+      
+      // Navigate to expert quiz taking page
       if (!attemptId) {
         throw new Error("Không nhận được ID của bài làm");
       }
