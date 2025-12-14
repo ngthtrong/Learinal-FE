@@ -106,6 +106,17 @@ const AdminSidebarLayout = ({ children }) => {
       icon: CoinsIcon,
     },
     {
+      key: "admin_bank_accounts",
+      label: "Tài Khoản NH",
+      to: "/admin/bank-accounts",
+      icon: ({ size = 20, stroke = 2 }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+          <path d="M7 15h0M2 9.5h20"></path>
+        </svg>
+      ),
+    },
+    {
       key: "admin_financials",
       label: "Thống Kê",
       to: "/admin/financials",
