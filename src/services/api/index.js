@@ -18,3 +18,6 @@ export { default as commissionRecordsService } from "./commissionRecords.service
 export { default as validationRequestsService } from "./validationRequests.service";
 export { default as notificationsService } from "./notifications.service";
 export { default as contentFlagsService } from "./contentFlags.service";
+export { bankAccountsService } from "./bankAccounts.service";
+export { banksService } from "./banks.service";
+export { paymentBatchesService } from "./paymentBatches.service";
