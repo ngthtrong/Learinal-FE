@@ -98,9 +98,9 @@ const BankAccountPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8 px-4">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Tài khoản ngân hàng
           </h1>
@@ -197,7 +197,7 @@ const BankAccountPage = () => {
                 value={formData.bankCode}
                 onChange={(e) => setFormData({ ...formData, bankCode: e.target.value })}
                 disabled={loading}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
                 <option value="">Chọn ngân hàng</option>
                 {banks.map((bank) => (
@@ -215,7 +215,7 @@ const BankAccountPage = () => {
             </div>
           </form>
 
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+          <div className="mt-6 p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
               📌 Lưu ý
             </h3>

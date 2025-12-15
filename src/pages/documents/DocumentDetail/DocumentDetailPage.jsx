@@ -83,7 +83,7 @@ function DocumentDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center px-4">
         <div className="inline-block w-10 h-10 sm:w-12 sm:h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
       </div>
     );
@@ -91,7 +91,7 @@ function DocumentDetailPage() {
 
   if (error || !document) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center px-4">
         <div className="text-center space-y-4">
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-error-100 dark:bg-error-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-error-600 dark:text-error-400"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
@@ -104,10 +104,10 @@ function DocumentDetailPage() {
   }
 
   return (
-    <div className="mmin-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <Button variant="secondary" onClick={() => navigate(-1)}>
             ← Quay lại
           </Button>
@@ -115,7 +115,7 @@ function DocumentDetailPage() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
             <div className="shrink-0 hidden sm:block">{getFileIcon(document.fileType)}</div>
             <div className="flex-1 w-full">
@@ -174,13 +174,13 @@ function DocumentDetailPage() {
           </div>
         )}
         {document.status === "Completed" && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="flex border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 overflow-hidden">
+            <div className="flex border-b border-gray-200 dark:border-slate-700 overflow-x-auto">
               <button
                 className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm md:text-base transition-colors inline-flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
                   activeTab === "info"
                     ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20"
-                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700/50"
                 }`}
                 onClick={() => setActiveTab("info")}
               >
@@ -191,7 +191,7 @@ function DocumentDetailPage() {
                 className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm md:text-base transition-colors inline-flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
                   activeTab === "summary"
                     ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20"
-                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700/50"
                 }`}
                 onClick={() => setActiveTab("summary")}
               >
@@ -202,7 +202,7 @@ function DocumentDetailPage() {
                 className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm md:text-base transition-colors inline-flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
                   activeTab === "text"
                     ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20"
-                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700/50"
                 }`}
                 onClick={() => setActiveTab("text")}
               >
@@ -257,7 +257,7 @@ function DocumentDetailPage() {
                       </div>
                     ) : (
                       <div className="text-center py-8 sm:py-12">
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-gray-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-slate-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
                           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
                         </div>
                         <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">Chưa có tóm tắt cho tài liệu này</p>
@@ -271,14 +271,14 @@ function DocumentDetailPage() {
                   <div>
                     <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Nội dung trích xuất</h2>
                     {document.extractedText ? (
-                      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                      <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-4 sm:p-6 border border-gray-200 dark:border-slate-700">
                         <pre className="whitespace-pre-wrap font-mono text-xs sm:text-sm text-gray-800 dark:text-gray-200 leading-relaxed overflow-x-auto">
                           {document.extractedText}
                         </pre>
                       </div>
                     ) : (
                       <div className="text-center py-8 sm:py-12">
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-gray-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-slate-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
                           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
                         </div>
                         <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">Không có nội dung văn bản được trích xuất</p>

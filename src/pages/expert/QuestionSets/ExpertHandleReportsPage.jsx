@@ -211,7 +211,7 @@ function ExpertHandleReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
@@ -251,7 +251,7 @@ function ExpertHandleReportsPage() {
                 const hasResponded = flag.status === 'ExpertResponded';
 
                 return (
-                  <div key={flag.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
+                  <div key={flag.id} className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -332,7 +332,7 @@ function ExpertHandleReportsPage() {
                             Gửi phản hồi
                           </Button>
                         ) : (
-                          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                          <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-4">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                               Phản hồi của bạn <span className="text-red-500">*</span>
                             </label>
@@ -342,7 +342,7 @@ function ExpertHandleReportsPage() {
                               placeholder="Mô tả những gì bạn đã kiểm tra/sửa chữa..."
                               rows={4}
                               maxLength={1000}
-                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-gray-100"
+                              className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-800 dark:text-gray-100"
                             />
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                               {expertResponse.length}/1000 ký tự
@@ -378,7 +378,7 @@ function ExpertHandleReportsPage() {
         )}
 
         {/* Question Set Edit Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
             Chỉnh sửa bộ đề
           </h2>
@@ -405,7 +405,7 @@ function ExpertHandleReportsPage() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Nhập mô tả bộ đề"
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-700 dark:text-gray-100"
             />
           </div>
 
@@ -453,7 +453,7 @@ function ExpertHandleReportsPage() {
                       onChange={(e) => handleQuestionChange(qIndex, 'questionText', e.target.value)}
                       placeholder="Nhập nội dung câu hỏi"
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-700 dark:text-gray-100"
                     />
                   </div>
 
@@ -487,7 +487,7 @@ function ExpertHandleReportsPage() {
                     <select
                       value={question.difficultyLevel}
                       onChange={(e) => handleQuestionChange(qIndex, 'difficultyLevel', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-700 dark:text-gray-100"
                     >
                       <option value="Easy">Dễ</option>
                       <option value="Medium">Trung bình</option>
@@ -505,7 +505,7 @@ function ExpertHandleReportsPage() {
                       onChange={(e) => handleQuestionChange(qIndex, 'explanation', e.target.value)}
                       placeholder="Giải thích đáp án đúng (tùy chọn)"
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-700 dark:text-gray-100"
                     />
                   </div>
                 </div>

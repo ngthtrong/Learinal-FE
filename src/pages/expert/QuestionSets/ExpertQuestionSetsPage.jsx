@@ -102,7 +102,7 @@ function ExpertQuestionSetsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -126,7 +126,7 @@ function ExpertQuestionSetsPage() {
         </div>
 
         {/* Question Sets List */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
           {loading ? (
             <div className="p-12 text-center">
               <div className="inline-block w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-4"></div>
@@ -134,7 +134,7 @@ function ExpertQuestionSetsPage() {
             </div>
           ) : questionSets.length === 0 ? (
             <div className="p-12 text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-slate-800">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
                   <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
                 </svg>
@@ -196,7 +196,7 @@ function ExpertQuestionSetsPage() {
               {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-900">
+                <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Tiêu đề
@@ -215,7 +215,7 @@ function ExpertQuestionSetsPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                   {questionSets.map((set) => {
                     const setId = set.id || set._id;
                     const flags = flagsMap[setId] || [];

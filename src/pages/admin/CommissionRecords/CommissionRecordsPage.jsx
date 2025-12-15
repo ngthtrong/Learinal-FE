@@ -255,7 +255,7 @@ function CommissionRecordsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
@@ -282,7 +282,7 @@ function CommissionRecordsPage() {
 
         {/* Filters + Summary */}
         <div className="mb-6 space-y-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="md:col-span-2">
                 <Input
@@ -301,7 +301,7 @@ function CommissionRecordsPage() {
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Trạng thái</label>
                 <select
-                  className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   value={status}
                   onChange={(e) => {
                     setStatus(e.target.value);
@@ -340,13 +340,13 @@ function CommissionRecordsPage() {
           </div>
           {role === "Expert" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4">
                 <div className="text-xs text-gray-500 dark:text-gray-400">Đã nhận</div>
                 <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
                   {formatCurrency(summary?.totalEarned || 0)}
                 </div>
               </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4">
                 <div className="flex items-center justify-between">
                   <div className="text-xs text-gray-500 dark:text-gray-400">Đang chờ</div>
                   <button
@@ -368,7 +368,7 @@ function CommissionRecordsPage() {
         </div>
 
         {/* Table container */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
           {loading ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
           ) : error ? (
@@ -382,11 +382,11 @@ function CommissionRecordsPage() {
             <>
               {role === "Admin" ? (
                 /* Admin View: Expert Summary List */
-                <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                <div className="divide-y divide-gray-200 dark:divide-slate-700">
                   {expertSummaries.map((expert) => (
                     <div
                       key={expert.expertId}
-                      className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition"
+                      className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition"
                     >
                       <div className="flex items-center justify-between">
                         <div 
@@ -442,9 +442,9 @@ function CommissionRecordsPage() {
                 /* Expert View: Original Table */
                 <>
               {/* Mobile Cards View */}
-              <div className="block md:hidden divide-y divide-gray-200 dark:divide-gray-700">
+              <div className="block md:hidden divide-y divide-gray-200 dark:divide-slate-700">
                 {records.map((r) => (
-                  <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50">
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
@@ -493,8 +493,8 @@ function CommissionRecordsPage() {
               </div>
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-900">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Chuyên gia
@@ -517,9 +517,9 @@ function CommissionRecordsPage() {
                     <th className="px-3 sm:px-6 py-3" />
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                   {records.map((r) => (
-                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                       <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                           {r.expertName || r.expertId || "(Không rõ)"}
@@ -558,7 +558,7 @@ function CommissionRecordsPage() {
                             Chờ
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
                             {r.status || "-"}
                           </span>
                         )}
@@ -600,7 +600,7 @@ function CommissionRecordsPage() {
           </div>
           <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-end">
             <select
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+              className="px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 text-sm"
               value={pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
@@ -784,7 +784,7 @@ function CommissionRecordsPage() {
           )}
 
           {/* Records List */}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          <div className="border-t border-gray-200 dark:border-slate-700 pt-4">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
               Danh sách giao dịch ({expertRecords.length})
             </h3>
@@ -796,7 +796,7 @@ function CommissionRecordsPage() {
             ) : (
               <div className="max-h-96 overflow-y-auto space-y-2">
                     {expertRecords.map((r) => (
-                      <div key={r.id} className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg flex items-center justify-between">
+                      <div key={r.id} className="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-between">
                         <div className="flex-1">
                           <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                             📚 {r.metadata?.questionSetTitle || "(Không rõ)"}
@@ -849,7 +849,7 @@ function CommissionRecordsPage() {
           {paymentBatch && (
             <div className="space-y-6">
               {/* Bank Account Info */}
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+              <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                   Thông tin tài khoản nhận
                 </h3>

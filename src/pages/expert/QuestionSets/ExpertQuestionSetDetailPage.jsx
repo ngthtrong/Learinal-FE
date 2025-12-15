@@ -129,7 +129,7 @@ function ExpertQuestionSetDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-6 sm:py-8">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="inline-block w-10 h-10 sm:w-12 sm:h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-4"></div>
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Đang tải...</p>
@@ -141,7 +141,7 @@ function ExpertQuestionSetDetailPage() {
   if (!questionSet) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-6 sm:py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-4 sm:mb-6">
@@ -162,7 +162,7 @@ function ExpertQuestionSetDetailPage() {
         </div>
 
         {/* Question Set Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-b-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-b-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 mb-4">
             <div className="flex-1 w-full">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">{questionSet.title}</h1>
@@ -218,7 +218,7 @@ function ExpertQuestionSetDetailPage() {
         </div>
 
         {/* Questions List */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6">
           <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
             Danh sách câu hỏi ({questionSet.questions?.length || 0})
           </h2>
@@ -229,7 +229,7 @@ function ExpertQuestionSetDetailPage() {
                 {/* Question Header */}
                 <div
                   onClick={() => toggleQuestion(index)}
-                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 dark:bg-gray-900 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 dark:bg-slate-900 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
                 >
                   <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                     <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 font-semibold text-xs sm:text-sm flex-shrink-0">
@@ -268,10 +268,10 @@ function ExpertQuestionSetDetailPage() {
                           className={`flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg border ${
                             optIdx === q.correctAnswerIndex
                               ? "bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700"
-                              : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                              : "bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700"
                           }`}
                         >
-                          <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium text-xs sm:text-sm flex-shrink-0 mt-0.5">
+                          <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium text-xs sm:text-sm flex-shrink-0 mt-0.5">
                             {String.fromCharCode(65 + optIdx)}
                           </span>
                           <span className={`text-xs sm:text-sm flex-1 ${optIdx === q.correctAnswerIndex ? "text-green-700 dark:text-green-400 font-medium" : "text-gray-700 dark:text-gray-300"}`}>

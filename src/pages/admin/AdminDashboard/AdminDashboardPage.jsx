@@ -557,7 +557,7 @@ function AdminDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
@@ -577,7 +577,7 @@ function AdminDashboardPage() {
             </button>
             <button
               onClick={handleExportReport}
-              className="flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-xs sm:text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition disabled:opacity-50"
+              className="flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 text-xs sm:text-sm font-medium hover:bg-gray-50 dark:hover:bg-slate-700 transition disabled:opacity-50"
               disabled={loading || !stats}
             >
             Xuất báo cáo
@@ -595,7 +595,7 @@ function AdminDashboardPage() {
           {cards.map((s) => (
             <div
               key={s.key}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-gray-700 hover:shadow-large transition group"
+              className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-slate-700 hover:shadow-large transition group"
             >
               <div
                 className={`w-12 h-12 rounded-lg bg-gradient-to-br ${s.color} flex items-center justify-center text-xl text-white mb-4 shadow`}
@@ -617,19 +617,19 @@ function AdminDashboardPage() {
         {/* Financial Summary - Current Month */}
         {!loading && currentMonthData && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-gray-700">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-slate-700">
               <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Doanh thu gói (tháng {currentMonth})</div>
               <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {formatCurrency(currentMonthData.subscriptionRevenue || 0)}
               </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-gray-700">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-slate-700">
               <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Chi hoa hồng (tháng {currentMonth})</div>
               <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {formatCurrency(currentMonthData.commissionsPaid || 0)}
               </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-gray-700">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-5 border border-gray-100 dark:border-slate-700">
               <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Lợi nhuận ròng (tháng {currentMonth})</div>
               <div className={`text-2xl font-bold ${(currentMonthData.net || 0) >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                 {formatCurrency(currentMonthData.net || 0)}
@@ -639,7 +639,7 @@ function AdminDashboardPage() {
         )}
 
         {/* Recent activities panel */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-8 mb-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-8 mb-8">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Hoạt động gần đây</h2>
           {activitiesLoading && (
             <div className="py-6 text-center text-sm text-gray-500 dark:text-gray-400">Đang tải hoạt động...</div>
@@ -678,7 +678,7 @@ function AdminDashboardPage() {
         {!loading && stats && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* User Distribution Chart */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6">
               <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Phân bố người dùng</h2>
               <div className="flex justify-center">
                 <div style={{ maxWidth: "300px", width: "100%" }}>
@@ -712,7 +712,7 @@ function AdminDashboardPage() {
             </div>
 
             {/* Content Statistics Chart */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6">
               <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Thống kê nội dung</h2>
               <Bar
                 data={{
@@ -764,7 +764,7 @@ function AdminDashboardPage() {
 
             {/* Plan Distribution by Users */}
             {planDistribution.byUsers.length > 0 && (
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6">
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
                   Phân bố người dùng theo gói
                 </h2>
@@ -824,7 +824,7 @@ function AdminDashboardPage() {
 
             {/* Plan Distribution by Revenue */}
             {planDistribution.byRevenue.length > 0 && (
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6">
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
                   Phân bố doanh thu theo gói
                 </h2>
@@ -889,7 +889,7 @@ function AdminDashboardPage() {
 
         {/* Quick actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6 flex flex-col">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6 flex flex-col">
             <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Người dùng</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Quản lý danh sách và vai trò người dùng.</p>
             <Link
@@ -899,7 +899,7 @@ function AdminDashboardPage() {
               Đi tới quản lý
             </Link>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6 flex flex-col">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6 flex flex-col">
             <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Gói nâng cấp</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               Tạo, chỉnh sửa, kích hoạt hay tạm dừng gói.
@@ -911,7 +911,7 @@ function AdminDashboardPage() {
               Quản lý gói nâng cấp
             </Link>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6 flex flex-col">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6 flex flex-col">
             <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Gói người dùng</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               Xem và theo dõi gói mà người dùng đang sở hữu.
@@ -923,7 +923,7 @@ function AdminDashboardPage() {
               Quản lý gói
             </Link>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6 flex flex-col">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6 flex flex-col">
             <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Hoa hồng</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Theo dõi & xử lý thanh toán hoa hồng.</p>
             <Link

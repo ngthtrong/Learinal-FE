@@ -135,7 +135,7 @@ function ExpertCreateByUploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
@@ -144,7 +144,7 @@ function ExpertCreateByUploadPage() {
           </Button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Tạo bộ đề từ tài liệu
           </h1>
@@ -174,7 +174,7 @@ function ExpertCreateByUploadPage() {
                 </span>
                 {i < 2 && (
                   <div className={`flex-1 h-0.5 mx-4 ${
-                    step > s.num ? "bg-primary-600" : "bg-gray-300 dark:bg-gray-600"
+                    step > s.num ? "bg-primary-600" : "bg-gray-300 dark:bg-slate-600"
                   }`} />
                 )}
               </div>
@@ -192,7 +192,7 @@ function ExpertCreateByUploadPage() {
                   type="file"
                   accept=".pdf,.docx,.txt"
                   onChange={handleFileChange}
-                  className="block w-full text-sm text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 focus:outline-none"
+                  className="block w-full text-sm text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-600 rounded-lg cursor-pointer bg-gray-50 dark:bg-slate-700 focus:outline-none"
                 />
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   Hỗ trợ: PDF, DOCX, TXT (tối đa 10MB)
@@ -237,7 +237,7 @@ function ExpertCreateByUploadPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Mô tả ngắn về bộ đề..."
                   rows="3"
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
@@ -252,7 +252,7 @@ function ExpertCreateByUploadPage() {
                     max="50"
                     value={numQuestions}
                     onChange={(e) => setNumQuestions(parseInt(e.target.value) || 10)}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                   />
                 </div>
 
@@ -263,7 +263,7 @@ function ExpertCreateByUploadPage() {
                   <select
                     value={difficulty}
                     onChange={(e) => setDifficulty(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                   >
                     <option value="Easy">Dễ</option>
                     <option value="Medium">Trung bình</option>
@@ -278,7 +278,7 @@ function ExpertCreateByUploadPage() {
                   <select
                     value={questionType}
                     onChange={(e) => setQuestionType(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                   >
                     <option value="multiple-choice">Trắc nghiệm</option>
                     <option value="true-false">Đúng/Sai</option>
@@ -312,7 +312,7 @@ function ExpertCreateByUploadPage() {
 
               <div className="space-y-4 max-h-[600px] overflow-y-auto">
                 {questions.map((q, qIdx) => (
-                  <div key={qIdx} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+                  <div key={qIdx} className="border border-gray-200 dark:border-slate-700 rounded-lg p-4 bg-gray-50 dark:bg-slate-900">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         Câu #{qIdx + 1}
@@ -320,7 +320,7 @@ function ExpertCreateByUploadPage() {
                       <select
                         value={q.difficultyLevel || "Medium"}
                         onChange={(e) => handleQuestionChange(qIdx, "difficultyLevel", e.target.value)}
-                        className="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        className="text-xs px-2 py-1 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                       >
                         <option value="Easy">Dễ</option>
                         <option value="Medium">Trung bình</option>
@@ -331,7 +331,7 @@ function ExpertCreateByUploadPage() {
                     <textarea
                       value={q.questionText || ""}
                       onChange={(e) => handleQuestionChange(qIdx, "questionText", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 mb-3"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 mb-3"
                       rows="2"
                     />
 
@@ -351,7 +351,7 @@ function ExpertCreateByUploadPage() {
                           <span className={`text-xs px-2 py-0.5 rounded font-medium ${
                             q.correctAnswerIndex === oIdx
                               ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                              : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                              : "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300"
                           }`}>
                             {String.fromCharCode(65 + oIdx)}
                           </span>
@@ -359,7 +359,7 @@ function ExpertCreateByUploadPage() {
                             type="text"
                             value={opt || ""}
                             onChange={(e) => handleOptionChange(qIdx, oIdx, e.target.value)}
-                            className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-gray-100"
+                            className="flex-1 px-3 py-2 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-sm text-gray-900 dark:text-gray-100"
                           />
                         </div>
                       ))}
@@ -373,7 +373,7 @@ function ExpertCreateByUploadPage() {
                         <textarea
                           value={q.explanation || ""}
                           onChange={(e) => handleQuestionChange(qIdx, "explanation", e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-sm text-gray-900 dark:text-gray-100"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-sm text-gray-900 dark:text-gray-100"
                           rows="2"
                         />
                       </div>

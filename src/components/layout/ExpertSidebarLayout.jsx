@@ -96,7 +96,7 @@ const ExpertSidebarLayout = ({ children }) => {
         ref={sideNavRef}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`hidden md:block fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 z-40 overflow-y-auto ${
+        className={`hidden md:block fixed left-0 top-0 h-screen backdrop-blur-[10px] bg-white/70 dark:bg-slate-900/70 border-r border-white/30 dark:border-white/5 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-16 lg:w-20" : "w-56 lg:w-64"
         }`}
       >

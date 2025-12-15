@@ -284,13 +284,13 @@ function DocumentUploadPage() {
   const isComplete = uploadResults.successful.length > 0 || uploadResults.failed.length > 0;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <div className="space-y-2">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">📄 Tải lên tài liệu</h1>
-            <p className="text-base sm:text-lg text-gray-600">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">📄 Tải lên tài liệu</h1>
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
               Tải lên nhiều tài liệu cùng lúc để hệ thống tự động trích xuất nội dung và tạo tóm tắt
             </p>
           </div>
@@ -352,7 +352,7 @@ function DocumentUploadPage() {
           <form onSubmit={handleUpload} className="space-y-6">
             {/* Subject Selection */}
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Chọn môn học <span className="text-error-600">*</span>
               </label>
               <select
@@ -361,7 +361,7 @@ function DocumentUploadPage() {
                 onChange={(e) => setSelectedSubject(e.target.value)}
                 required
                 disabled={uploading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-slate-700 disabled:cursor-not-allowed bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
               >
                 <option value="">-- Chọn môn học --</option>
                 {subjects.map((subject) => (
@@ -458,14 +458,14 @@ function DocumentUploadPage() {
 
             {/* File Upload - Drag & Drop */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Chọn file <span className="text-error-600">*</span>
               </label>
               <div
                 className={`relative border-2 border-dashed rounded-xl p-3 sm:p-6 lg:p-8 text-center transition-all cursor-pointer ${
                   dragActive
-                    ? "border-primary-500 bg-primary-50"
-                    : "border-gray-300 hover:border-primary-500 hover:bg-primary-50"
+                    ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
+                    : "border-gray-300 dark:border-slate-600 hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20"
                 } ${uploading ? "pointer-events-none opacity-60" : ""}`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -485,10 +485,10 @@ function DocumentUploadPage() {
                 />
                 <div className="flex flex-col items-center">
                   <span className="text-3xl sm:text-5xl mb-2 sm:mb-4">📁</span>
-                  <p className="text-sm sm:text-lg font-medium text-gray-700 mb-1 sm:mb-2">
+                  <p className="text-sm sm:text-lg font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                     {dragActive ? "Thả file vào đây" : "Kéo thả hoặc click"}
                   </p>
-                  <p className="text-[10px] sm:text-sm text-gray-500">
+                  <p className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400">
                     <span className="hidden sm:inline">Hỗ trợ: PDF, DOCX, TXT | Tối đa: 20MB/file | Tối đa {UPLOAD_CONSTRAINTS.maxFiles} file</span>
                     <span className="sm:hidden">PDF, DOCX, TXT • 20MB • {UPLOAD_CONSTRAINTS.maxFiles} file</span>
                   </p>
@@ -500,7 +500,7 @@ function DocumentUploadPage() {
             {selectedFiles.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Đã chọn {selectedFiles.length} file
                   </span>
                   {!uploading && selectedFiles.length > 1 && (
@@ -535,12 +535,12 @@ function DocumentUploadPage() {
                   {selectedFiles.map((file, index) => (
                     <div
                       key={`${file.name}-${index}`}
-                      className="flex items-center gap-2 sm:gap-4 bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200"
+                      className="flex items-center gap-2 sm:gap-4 bg-gray-50 dark:bg-slate-800 rounded-lg p-2 sm:p-3 border border-gray-200 dark:border-slate-700"
                     >
                       <div className="text-2xl sm:text-3xl flex-shrink-0">{getFileIcon(file.name)}</div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm sm:text-base font-medium text-gray-900 truncate">{file.name}</p>
-                        <p className="text-xs sm:text-sm text-gray-500">{formatFileSize(file.size)}</p>
+                        <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-gray-100 truncate">{file.name}</p>
+                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{formatFileSize(file.size)}</p>
                       </div>
                       {uploading && uploadProgress[index] !== undefined && (
                         <span className="text-sm font-medium text-primary-600">{uploadProgress[index]}%</span>
@@ -626,7 +626,7 @@ function DocumentUploadPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
             © 2025 Learinal. All rights reserved.

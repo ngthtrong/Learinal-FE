@@ -70,7 +70,7 @@ function AddonPackagesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
@@ -85,7 +85,7 @@ function AddonPackagesPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-6 py-4 rounded-lg max-w-2xl mx-auto mt-8">
             <p className="font-medium">{error}</p>
@@ -99,10 +99,10 @@ function AddonPackagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <button 
             onClick={() => navigate(-1)}
             className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-xs sm:text-sm mb-3 sm:mb-4 flex items-center gap-1"
@@ -126,7 +126,7 @@ function AddonPackagesPage() {
 
       {/* Current Quota Summary */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 mb-4 sm:mb-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6">
           <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
             Lượt mua thêm hiện có
           </h2>
@@ -150,7 +150,7 @@ function AddonPackagesPage() {
       {/* Packages Grid */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pb-6 sm:pb-8">
         {packages.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 sm:p-12 text-center">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-8 sm:p-12 text-center">
             <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">📦</div>
             <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
               Chưa có gói mua thêm
@@ -164,7 +164,7 @@ function AddonPackagesPage() {
             {packages.map((pkg) => (
               <div
                 key={pkg._id || pkg.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
+                className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow"
               >
                 {/* Package Header */}
                 <div className="bg-gradient-to-r from-primary-500 to-secondary-500 p-3 sm:p-4 text-white">

@@ -112,7 +112,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
   }, [location.pathname]);
 
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-3 sm:px-4 md:px-6 py-2 sm:py-3 sticky top-0 z-50 shadow-sm">
+    <header className="backdrop-blur-[10px] bg-white/70 dark:bg-slate-900/70 border-b border-white/30 dark:border-white/5 px-3 sm:px-4 md:px-6 py-2 sm:py-3 sticky top-0 z-50 transition-all duration-300">
       <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
         {/* Left: Logo & Brand */}
         <div

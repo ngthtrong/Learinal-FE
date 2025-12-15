@@ -108,7 +108,7 @@ function FinancialsPage() {
   }, [currentYear]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 mb-6">
           <div>
@@ -119,11 +119,11 @@ function FinancialsPage() {
           </div>
           <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
             {/* Filter Mode Toggle */}
-            <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1 w-full sm:w-auto">
+            <div className="flex gap-1 bg-gray-100 dark:bg-slate-700 rounded-lg p-1 w-full sm:w-auto">
               <button
                 className={`flex-1 sm:flex-none px-3 py-1.5 rounded text-sm font-medium transition-colors ${
                   filterMode === "year"
-                    ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm"
+                    ? "bg-white dark:bg-slate-600 text-gray-900 dark:text-gray-100 shadow-sm"
                     : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                 }`}
                 onClick={() => setFilterMode("year")}
@@ -133,7 +133,7 @@ function FinancialsPage() {
               <button
                 className={`flex-1 sm:flex-none px-3 py-1.5 rounded text-sm font-medium transition-colors ${
                   filterMode === "dateRange"
-                    ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm"
+                    ? "bg-white dark:bg-slate-600 text-gray-900 dark:text-gray-100 shadow-sm"
                     : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                 }`}
                 onClick={() => setFilterMode("dateRange")}
@@ -145,7 +145,7 @@ function FinancialsPage() {
             {/* Year Selector */}
             {filterMode === "year" && (
               <select
-                className="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                className="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 text-sm"
                 value={year}
                 onChange={(e) => setYear(parseInt(e.target.value, 10))}
               >
@@ -162,14 +162,14 @@ function FinancialsPage() {
               <>
                 <input
                   type="date"
-                  className="w-full sm:w-auto px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                  className="w-full sm:w-auto px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 text-sm"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   placeholder="Từ ngày"
                 />
                 <input
                   type="date"
-                  className="w-full sm:w-auto px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                  className="w-full sm:w-auto px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 text-sm"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   placeholder="Đến ngày"
@@ -205,19 +205,19 @@ function FinancialsPage() {
 
         {/* Summary cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-gray-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-slate-700">
             <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Doanh thu gói</div>
             <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
               {loading ? "—" : formatCurrency(totals.subscriptionRevenue)}
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-gray-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-slate-700">
             <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Chi hoa hồng</div>
             <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
               {loading ? "—" : formatCurrency(totals.commissionsPaid)}
             </div>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-gray-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-slate-700">
             <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Lợi nhuận ròng</div>
             <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
               {loading ? "—" : formatCurrency(totals.net)}
@@ -226,8 +226,8 @@ function FinancialsPage() {
         </div>
 
         {/* Monthly breakdown */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden mb-6 sm:mb-8">
-          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden mb-6 sm:mb-8">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <h2 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-100">
               Chi tiết theo {getPeriodLabel()} {filterMode === "year" ? year : "(khoảng đã chọn)"}
             </h2>
@@ -239,7 +239,7 @@ function FinancialsPage() {
           ) : (
             <>
               {/* Mobile Cards */}
-              <div className="block sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+              <div className="block sm:hidden divide-y divide-gray-200 dark:divide-slate-700">
                 {months.map((m, idx) => {
                   const hasTx = (m.subscriptionRevenue || 0) > 0 || (m.commissionsPaid || 0) > 0;
                   return (
@@ -273,8 +273,8 @@ function FinancialsPage() {
               </div>
               {/* Desktop Table */}
               <div className="hidden sm:block overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-900">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       {groupBy === 'day' ? 'Ngày' : 'Tháng'}
@@ -290,11 +290,11 @@ function FinancialsPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                   {months.map((m, idx) => {
                     const hasTx = (m.subscriptionRevenue || 0) > 0 || (m.commissionsPaid || 0) > 0;
                     return (
-                      <tr key={`${m.year}-${m.month}-${m.day || 0}-${idx}`} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <tr key={`${m.year}-${m.month}-${m.day || 0}-${idx}`} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                         <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-gray-100">
                           {formatMonthLabel(m)}
                         </td>
@@ -321,7 +321,7 @@ function FinancialsPage() {
         {!loading && months.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Bar Chart - Revenue vs Commission */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6">
               <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Doanh thu & Hoa hồng</h2>
               <Bar
                 data={{
@@ -381,7 +381,7 @@ function FinancialsPage() {
             </div>
 
             {/* Line Chart - Net Profit Trend */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6">
               <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Xu hướng lợi nhuận ròng</h2>
               <Line
                 data={{

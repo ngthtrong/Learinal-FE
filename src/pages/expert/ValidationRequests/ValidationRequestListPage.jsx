@@ -35,7 +35,7 @@ function ValidationRequestListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Yêu cầu kiểm duyệt</h1>
@@ -44,7 +44,7 @@ function ValidationRequestListPage() {
               onClick={() => setFilter("Assigned")}
               className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition ${filter === "Assigned"
                   ? "bg-primary-600 text-white shadow"
-                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
+                  : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700"
               }`}
             >
               Chờ duyệt
@@ -53,7 +53,7 @@ function ValidationRequestListPage() {
               onClick={() => setFilter("RevisionRequested")}
               className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition ${filter === "RevisionRequested"
                   ? "bg-warning-600 text-white shadow"
-                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
+                  : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700"
               }`}
             >
               Xem lại
@@ -62,7 +62,7 @@ function ValidationRequestListPage() {
               onClick={() => setFilter("Completed")}
               className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition ${filter === "Completed"
                   ? "bg-success-600 text-white shadow"
-                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
+                  : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700"
               }`}
             >
               Đã duyệt
@@ -76,7 +76,7 @@ function ValidationRequestListPage() {
           </div>
         )}
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
           {loading ? (
             <div className="p-6 sm:p-8 text-center text-gray-500 dark:text-gray-400">
               <div className="inline-block w-8 h-8 sm:w-10 sm:h-10 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-3"></div>
@@ -91,11 +91,11 @@ function ValidationRequestListPage() {
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="divide-y divide-gray-200 dark:divide-slate-700">
               {requests.map((req) => (
                 <div
                   key={req.id}
-                  className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition flex flex-col gap-3 sm:gap-4"
+                  className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition flex flex-col gap-3 sm:gap-4"
                 >
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -107,7 +107,7 @@ function ValidationRequestListPage() {
                             ? "bg-warning-100 dark:bg-warning-900/30 text-warning-800 dark:text-warning-400"
                             : req.status === "Completed"
                             ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
-                            : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
+                            : "bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-gray-300"
                         }`}
                       >
                         {req.status === "Assigned"

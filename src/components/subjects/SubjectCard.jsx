@@ -74,7 +74,10 @@ const SubjectCard = ({ subject, onClick }) => {
       <div className="flex flex-wrap gap-2 items-center">
         {levelInfo && (
           <span className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border ${levelInfo.color}`}>
-            <BookIcon size={14} strokeWidth={2} />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+            </svg>
             {levelInfo.label}
           </span>
         )}

@@ -125,10 +125,10 @@ function QuizListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2 sm:gap-3">
@@ -151,14 +151,14 @@ function QuizListPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {/* Sort & Filter Controls */}
         {questionSets.length > 0 && !loading && (
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6 bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6 bg-white dark:bg-slate-800 rounded-lg p-3 sm:p-4 shadow-sm border border-gray-200 dark:border-slate-700">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Sắp xếp:</span>
               <button
                 className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   sortBy === "updatedAt"
                     ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
                 onClick={() => handleSortChange("updatedAt")}
               >
@@ -170,7 +170,7 @@ function QuizListPage() {
                 className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   sortBy === "title"
                     ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
                 onClick={() => handleSortChange("title")}
               >
@@ -180,7 +180,7 @@ function QuizListPage() {
                 className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   sortBy === "createdAt"
                     ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
                 onClick={() => handleSortChange("createdAt")}
               >
@@ -201,14 +201,14 @@ function QuizListPage() {
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <div
                 key={n}
-                className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm animate-pulse"
+                className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm animate-pulse"
               >
-                <div className="h-5 sm:h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3 sm:mb-4"></div>
+                <div className="h-5 sm:h-6 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-3 sm:mb-4"></div>
                 <div className="space-y-2 mb-3 sm:mb-4">
-                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-slate-700 rounded w-2/3"></div>
                 </div>
-                <div className="h-8 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-8 sm:h-10 bg-gray-200 dark:bg-slate-700 rounded"></div>
               </div>
             ))}
           </div>
@@ -216,7 +216,7 @@ function QuizListPage() {
 
         {/* Empty State */}
         {!loading && questionSets.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-10 sm:py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col items-center justify-center py-10 sm:py-16 px-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
             <div className="w-16 h-16 sm:w-24 sm:h-24 bg-primary-100 dark:bg-primary-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6">
               <QuizIcon size={32} strokeWidth={2} className="sm:w-12 sm:h-12 text-primary-600 dark:text-primary-400" />
             </div>

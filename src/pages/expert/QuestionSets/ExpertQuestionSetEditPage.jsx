@@ -161,7 +161,7 @@ function ExpertQuestionSetEditPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-8">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <div className="inline-block w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">Đang tải...</p>
@@ -171,7 +171,7 @@ function ExpertQuestionSetEditPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-4 sm:mb-6">
@@ -180,7 +180,7 @@ function ExpertQuestionSetEditPage() {
           </Button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Chỉnh sửa bộ đề
           </h1>
@@ -207,7 +207,7 @@ function ExpertQuestionSetEditPage() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Mô tả ngắn về bộ đề..."
                 rows="3"
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
           </div>
@@ -230,7 +230,7 @@ function ExpertQuestionSetEditPage() {
             </div>
 
             {questions.map((q, qIdx) => (
-              <div key={qIdx} className="border-2 border-gray-200 dark:border-gray-700 rounded-lg p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 relative">
+              <div key={qIdx} className="border-2 border-gray-200 dark:border-slate-700 rounded-lg p-4 sm:p-6 bg-gray-50 dark:bg-slate-900 relative">
                 {/* Question Header */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
                   <span className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -240,7 +240,7 @@ function ExpertQuestionSetEditPage() {
                     <select
                       value={q.difficultyLevel}
                       onChange={(e) => handleQuestionChange(qIdx, "difficultyLevel", e.target.value)}
-                      className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 flex-1 sm:flex-none"
+                      className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 flex-1 sm:flex-none"
                     >
                       <option value="Easy">Dễ</option>
                       <option value="Medium">Trung bình</option>
@@ -280,7 +280,7 @@ function ExpertQuestionSetEditPage() {
                     onChange={(e) => handleQuestionChange(qIdx, "questionText", e.target.value)}
                     placeholder="Nhập nội dung câu hỏi..."
                     rows="3"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
 
@@ -303,7 +303,7 @@ function ExpertQuestionSetEditPage() {
                         <span className={`text-xs sm:text-sm px-2 sm:px-2.5 py-0.5 sm:py-1 rounded font-medium min-w-[28px] sm:min-w-[32px] text-center flex-shrink-0 ${
                           q.correctAnswerIndex === oIdx
                             ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                            : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                            : "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300"
                         }`}>
                           {String.fromCharCode(65 + oIdx)}
                         </span>
@@ -312,7 +312,7 @@ function ExpertQuestionSetEditPage() {
                           value={opt}
                           onChange={(e) => handleOptionChange(qIdx, oIdx, e.target.value)}
                           placeholder={`Đáp án ${String.fromCharCode(65 + oIdx)}`}
-                          className="flex-1 min-w-0 px-3 sm:px-4 py-1.5 sm:py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                          className="flex-1 min-w-0 px-3 sm:px-4 py-1.5 sm:py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                         />
                       </div>
                     ))}
@@ -329,7 +329,7 @@ function ExpertQuestionSetEditPage() {
                     onChange={(e) => handleQuestionChange(qIdx, "explanation", e.target.value)}
                     placeholder="Giải thích đáp án đúng..."
                     rows="2"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
               </div>

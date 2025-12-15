@@ -114,7 +114,7 @@ const SidebarLayout = ({ children }) => {
         ref={sideNavRef}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`hidden md:block fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 z-40 overflow-y-auto ${
+        className={`hidden md:block fixed left-0 top-0 h-screen backdrop-blur-[10px] bg-white/70 dark:bg-slate-900/70 border-r border-white/30 dark:border-white/5 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-16 lg:w-20" : "w-56 lg:w-64"
         }`}
       >
@@ -122,7 +122,7 @@ const SidebarLayout = ({ children }) => {
         <div
           className={`flex items-center ${
             collapsed ? "justify-center" : "px-4 lg:px-6"
-          } h-14 lg:h-16 border-b border-gray-200 dark:border-gray-700`}
+          } h-14 lg:h-16 border-b border-white/30 dark:border-white/5`}
         >
           {collapsed ? (
             <span className="text-xl lg:text-2xl font-bold text-primary-600 dark:text-primary-400">L</span>

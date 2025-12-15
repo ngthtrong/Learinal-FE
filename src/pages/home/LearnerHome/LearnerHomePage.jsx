@@ -334,10 +334,10 @@ const LearnerHomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
       {/* Header with Search */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <form
             className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2 max-w-2xl mx-auto"
             onSubmit={(e) => {
@@ -410,7 +410,7 @@ const LearnerHomePage = () => {
               {/* Add new subject card */}
               <div
                 onClick={() => navigate("/subjects/create")}
-                className="group cursor-pointer bg-gray-50 dark:bg-gray-800/50 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 flex flex-col items-center justify-center min-h-[120px] sm:min-h-[140px]"
+                className="group cursor-pointer bg-white dark:bg-slate-800/50 rounded-2xl border-2 border-dashed border-gray-300 dark:border-slate-600 hover:border-primary-400 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 flex flex-col items-center justify-center min-h-[120px] sm:min-h-[140px]"
               >
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gray-200 dark:bg-gray-700 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50 flex items-center justify-center transition-colors">
                   <span className="text-2xl sm:text-3xl font-light text-gray-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">+</span>

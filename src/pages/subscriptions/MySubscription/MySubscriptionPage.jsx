@@ -166,14 +166,14 @@ function MySubscriptionPage() {
   const getStatusBadge = (status) => {
     const statusMap = {
       Active: { text: "Đang hoạt động", className: "bg-success-100 dark:bg-green-900/30 text-success-800 dark:text-green-300" },
-      Expired: { text: "Đã hết hạn", className: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300" },
+      Expired: { text: "Đã hết hạn", className: "bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-gray-300" },
       Canceled: { text: "Đã hủy", className: "bg-error-100 dark:bg-red-900/30 text-error-800 dark:text-red-300" },
       PendingPayment: { text: "Chờ thanh toán", className: "bg-warning-100 dark:bg-yellow-900/30 text-warning-800 dark:text-yellow-300" },
     };
 
     const statusInfo = statusMap[status] || {
       text: status,
-      className: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300",
+      className: "bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-gray-300",
     };
     return (
       <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusInfo.className}`}>
@@ -194,7 +194,7 @@ function MySubscriptionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
@@ -209,7 +209,7 @@ function MySubscriptionPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-6 py-4 rounded-lg max-w-2xl mx-auto mt-8">
             <p className="font-medium">{error}</p>
@@ -221,10 +221,10 @@ function MySubscriptionPage() {
 
   if (!subscription) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6">
-          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+          <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -238,8 +238,8 @@ function MySubscriptionPage() {
 
         {/* Empty State */}
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pb-6 sm:pb-8">
-          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mb-6">
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-slate-700 rounded-3xl flex items-center justify-center mb-6">
               <svg className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
@@ -258,14 +258,14 @@ function MySubscriptionPage() {
   // Nếu gói đã hủy hoặc hết hạn, hiển thị như chưa có gói
   if (subscription.status === "Canceled" || subscription.status === "Expired") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
+          <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
             <div className="flex items-center gap-3">
               <div className="relative w-8 h-8 sm:w-10 sm:h-10">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl"></div>
-                <div className="absolute inset-0.5 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                <div className="absolute inset-0.5 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center">
                   <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
@@ -278,8 +278,8 @@ function MySubscriptionPage() {
 
         {/* Empty State */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mb-6">
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+            <div className="w-24 h-24 bg-gray-100 dark:bg-slate-700 rounded-3xl flex items-center justify-center mb-6">
               <svg className="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
@@ -298,10 +298,10 @@ function MySubscriptionPage() {
   // Hiển thị thông báo cho PendingPayment
   if (subscription.status === "PendingPayment") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6">
-          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+          <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -315,7 +315,7 @@ function MySubscriptionPage() {
 
         {/* Pending Payment State */}
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pb-6 sm:pb-8">
-          <div className="flex flex-col items-center justify-center py-12 sm:py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col items-center justify-center py-12 sm:py-16 px-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
             <div className="w-16 h-16 sm:w-24 sm:h-24 bg-yellow-100 dark:bg-yellow-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6">
               <svg className="w-8 h-8 sm:w-12 sm:h-12 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -336,10 +336,10 @@ function MySubscriptionPage() {
   // Nếu status không phải Active, hiển thị như chưa có gói
   if (subscription.status !== "Active") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         {/* Header */}
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6">
-          <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+          <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -353,8 +353,8 @@ function MySubscriptionPage() {
 
         {/* Empty State */}
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pb-6 sm:pb-8">
-          <div className="flex flex-col items-center justify-center py-12 sm:py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gray-100 dark:bg-gray-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6">
+          <div className="flex flex-col items-center justify-center py-12 sm:py-16 px-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gray-100 dark:bg-slate-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6">
               <svg className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
@@ -374,10 +374,10 @@ function MySubscriptionPage() {
   const plan = subscription.plan;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div className="space-y-1 sm:space-y-2">
               <div className="flex items-center gap-2 sm:gap-3">
@@ -399,7 +399,7 @@ function MySubscriptionPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pb-6 sm:pb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
           {/* Plan Header */}
           <div className="bg-gradient-to-r from-primary-600 to-secondary-600 p-4 sm:p-6 lg:p-8 text-white">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
@@ -428,32 +428,32 @@ function MySubscriptionPage() {
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Thông tin gói</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4">
+              <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-3 sm:p-4">
                 <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Tên gói</span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {plan?.planName || "N/A"}
                 </span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-3 sm:p-4 dark:bg-gray-700/50">
+              <div className="bg-gray-50 rounded-lg p-3 sm:p-4 dark:bg-slate-700/50">
                 <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Chu kỳ thanh toán</span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {plan?.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
                 </span>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4">
+              <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-3 sm:p-4">
                 <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Ngày bắt đầu</span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {formatDate(subscription.startDate)}
                 </span>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4">
+              <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-3 sm:p-4">
                 <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Ngày hết hạn</span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {formatDate(subscription.endDate)}
                 </span>
               </div>
               {subscription.renewalDate && (
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 sm:p-4">
+                <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-3 sm:p-4">
                   <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Ngày gia hạn</span>
                   <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                     {formatDate(subscription.renewalDate)}
@@ -463,7 +463,7 @@ function MySubscriptionPage() {
             </div>
 
             {/* Quota Section - Lượt sử dụng */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-6 sm:pt-8 mb-6 sm:mb-8">
+            <div className="border-t border-gray-200 dark:border-slate-700 pt-6 sm:pt-8 mb-6 sm:mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                 <div className="flex items-center gap-2">
                   <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -617,7 +617,7 @@ function MySubscriptionPage() {
             </div>
 
             {/* Actions */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-6 flex justify-center sm:justify-end">
+            <div className="border-t border-gray-200 dark:border-slate-700 pt-4 sm:pt-6 flex justify-center sm:justify-end">
               <Button variant="danger" onClick={handleCancelSubscription} loading={cancelling} className="w-full sm:w-auto">
                 Hủy gói đăng ký
               </Button>

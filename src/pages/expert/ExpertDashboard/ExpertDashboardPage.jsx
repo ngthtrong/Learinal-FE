@@ -92,7 +92,7 @@ function ExpertDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div>
@@ -123,7 +123,7 @@ function ExpertDashboardPage() {
           {cards.map((c) => (
             <div
               key={c.key}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-gray-700 hover:shadow-large transition group"
+              className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-slate-700 hover:shadow-large transition group"
             >
               <div
                 className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br ${c.color} flex items-center justify-center text-lg sm:text-xl text-white mb-3 sm:mb-4 shadow`}
@@ -146,7 +146,7 @@ function ExpertDashboardPage() {
 
         {/* Hybrid Model Breakdown */}
         {(totalFixed > 0 || totalBonus > 0) && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 sm:p-6 mb-6 sm:mb-8">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 sm:mb-4">Chi tiết thu nhập</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {/* Fixed Rate */}
@@ -208,7 +208,7 @@ function ExpertDashboardPage() {
           </div>
         )}
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 sm:mb-4">Hướng dẫn nhanh</h2>
           <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400 list-disc pl-4 sm:pl-5">
             <li>Vào mục Hoa hồng để xem chi tiết các bản ghi thu nhập.</li>

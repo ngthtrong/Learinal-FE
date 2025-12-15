@@ -103,7 +103,7 @@ function QuizStartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-slate-900">
         <div className="text-center space-y-4">
           <div className="inline-block w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
           <p className="text-gray-600 dark:text-gray-400">Đang tải thông tin...</p>
@@ -117,7 +117,7 @@ function QuizStartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         {/* Header */}
         <div className="mb-4 sm:mb-6">
@@ -145,7 +145,7 @@ function QuizStartPage() {
         </div>
 
         {/* Quiz Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 text-center mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8 text-center mb-4 sm:mb-6">
           <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 flex items-center justify-center rounded-2xl bg-primary-100 dark:bg-primary-900/30">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
           </div>
@@ -178,14 +178,14 @@ function QuizStartPage() {
         </div>
 
         {/* Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 p-4 sm:p-6 mb-4 sm:mb-6">
           <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 flex items-center gap-2">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6m5.657-13.657l-4.243 4.243m-4.243 0L4.93 4.343m12.728 0l-4.242 4.243m-4.243 0L4.93 19.657"></path></svg>
             Cài đặt bài thi
           </h2>
 
           {/* Timer Setting */}
-          <div className="border-b border-gray-200 dark:border-gray-700 pb-4 sm:pb-6 mb-4 sm:mb-6">
+          <div className="border-b border-gray-200 dark:border-slate-700 pb-4 sm:pb-6 mb-4 sm:mb-6">
             <label className="flex items-start gap-2 sm:gap-3 cursor-pointer group">
               <input
                 type="checkbox"
@@ -214,7 +214,7 @@ function QuizStartPage() {
                     <button
                       type="button"
                       onClick={() => setTimerMinutes(Math.max(1, timerMinutes - 10))}
-                      className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-bold text-gray-700 dark:text-gray-300 transition-colors"
+                      className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-lg font-bold text-gray-700 dark:text-gray-300 transition-colors"
                     >
                       −
                     </button>
@@ -227,12 +227,12 @@ function QuizStartPage() {
                       onChange={(e) =>
                         setTimerMinutes(Math.min(120, Math.max(1, parseInt(e.target.value) || 1)))
                       }
-                      className="w-16 sm:w-20 px-2 sm:px-3 py-1.5 sm:py-2 text-center border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent font-bold text-base sm:text-lg"
+                      className="w-16 sm:w-20 px-2 sm:px-3 py-1.5 sm:py-2 text-center border border-gray-300 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent font-bold text-base sm:text-lg"
                     />
                     <button
                       type="button"
                       onClick={() => setTimerMinutes(Math.min(120, timerMinutes + 10))}
-                      className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-bold text-gray-700 dark:text-gray-300 transition-colors"
+                      className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-lg font-bold text-gray-700 dark:text-gray-300 transition-colors"
                     >
                       +
                     </button>

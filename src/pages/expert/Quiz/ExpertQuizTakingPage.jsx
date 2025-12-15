@@ -326,7 +326,7 @@ function ExpertQuizTakingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="inline-block w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
           <p className="text-gray-600 dark:text-gray-400">Đang tải bài thi...</p>
@@ -337,7 +337,7 @@ function ExpertQuizTakingPage() {
 
   if (!questionSet || questions.length === 0) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center space-y-4">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Không có câu hỏi</h2>
           <Button onClick={() => navigate("/expert/question-sets")}>← Quay lại</Button>
@@ -351,9 +351,9 @@ function ExpertQuizTakingPage() {
   const isWarningTime = timerEnabled && timeRemaining !== null && timeRemaining <= 60;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 pb-24">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 pb-24">
       {/* Header - Fixed */}
-      <div className="sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+      <div className="sticky top-0 z-40 bg-white dark:bg-slate-800 shadow-sm border-b border-gray-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex-1">
@@ -394,13 +394,13 @@ function ExpertQuizTakingPage() {
         </div>
 
         {/* Progress Bar */}
-        <div className="relative h-2 bg-gray-200 dark:bg-gray-700">
+        <div className="relative h-2 bg-gray-200 dark:bg-slate-700">
           <div
             className="absolute top-0 left-0 h-full bg-linear-to-r from-primary-500 to-secondary-500 transition-all duration-300"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-0.5 rounded shadow-sm">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-slate-700 px-2 py-0.5 rounded shadow-sm">
           {answeredCount}/{questions.length} câu ({Math.round(progress)}%)
         </div>
       </div>
@@ -420,7 +420,7 @@ function ExpertQuizTakingPage() {
               return (
                 <div
                   key={`question-${questionKey}`}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-6 scroll-mt-32"
+                  className="bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 p-6 scroll-mt-32"
                   id={`question-${qIndex}`}
                 >
                   <div className="flex items-center justify-between mb-4">
@@ -447,7 +447,7 @@ function ExpertQuizTakingPage() {
                           className={`flex items-start gap-4 p-4 rounded-lg border-2 transition-all cursor-pointer hover:shadow-sm ${
                             isSelected
                               ? "border-primary-500 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20"
-                              : "border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-500 bg-white dark:bg-gray-800"
+                              : "border-gray-200 dark:border-slate-600 hover:border-primary-300 dark:hover:border-primary-500 bg-white dark:bg-slate-800"
                           }`}
                           onClick={() => handleAnswerSelect(questionKey, optIndex)}
                         >
@@ -484,7 +484,7 @@ function ExpertQuizTakingPage() {
 
           {/* Question Navigator Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-36 bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-6">
+            <div className="sticky top-36 bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 p-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
                 Danh sách câu hỏi
               </h3>
@@ -505,7 +505,7 @@ function ExpertQuizTakingPage() {
                       className={`w-full aspect-square flex items-center justify-center rounded-lg font-bold text-sm transition-all ${
                         isAnswered
                           ? "bg-success-500 dark:bg-green-600 text-white hover:bg-success-600 dark:hover:bg-green-700 shadow-sm"
-                          : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600"
+                          : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600"
                       }`}
                     >
                       {index + 1}
@@ -532,7 +532,7 @@ function ExpertQuizTakingPage() {
       </div>
 
       {/* Submit Button - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Button
             variant="primary"

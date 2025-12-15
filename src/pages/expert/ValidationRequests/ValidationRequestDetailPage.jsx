@@ -77,7 +77,7 @@ function ValidationRequestDetailPage() {
   };
 
   return (
-    <div className="p-4 sm:p-6 min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="p-4 sm:p-6 min-h-screen bg-gray-100 dark:bg-slate-900">
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 sm:mb-6">
           <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 dark:text-gray-100">Chi tiết kiểm duyệt</h1>
@@ -87,7 +87,7 @@ function ValidationRequestDetailPage() {
       {error && !loading && <div className="mb-4 text-xs sm:text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">{error}</div>}
       {!loading && data && (
         <div className="space-y-4 sm:space-y-6">
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-3 sm:p-4">
+          <div className="bg-white dark:bg-slate-800 shadow rounded-lg p-3 sm:p-4">
             <h2 className="font-medium text-base sm:text-lg text-gray-900 dark:text-gray-100">Thông tin yêu cầu</h2>
             <div className="mt-2 text-xs sm:text-sm space-y-1.5 sm:space-y-2 text-gray-700 dark:text-gray-300">
               <div><span className="font-medium">ID:</span> {data.request.id}</div>
@@ -124,7 +124,7 @@ function ValidationRequestDetailPage() {
               </div>
             )}
           </div>
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-3 sm:p-4">
+          <div className="bg-white dark:bg-slate-800 shadow rounded-lg p-3 sm:p-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3">
               <h2 className="font-medium text-base sm:text-lg text-gray-900 dark:text-gray-100">Câu hỏi trong bộ đề</h2>
               {canComplete && (
@@ -136,10 +136,10 @@ function ValidationRequestDetailPage() {
             {data.questionSet?.questions?.length ? (
               <div className="space-y-4">
                 {editedQuestions.map((q, idx) => (
-                  <div key={q.questionId || idx} className="border border-gray-200 dark:border-gray-700 rounded p-3 bg-gray-50 dark:bg-gray-900">
+                  <div key={q.questionId || idx} className="border border-gray-200 dark:border-slate-700 rounded p-3 bg-gray-50 dark:bg-slate-900">
                     <div className="flex justify-between mb-2">
                       <div className="text-xs text-gray-500 dark:text-gray-400">Câu #{idx + 1}</div>
-                      {q.difficultyLevel && <span className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">{q.difficultyLevel}</span>}
+                      {q.difficultyLevel && <span className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300">{q.difficultyLevel}</span>}
                     </div>
                     {viewMode === 'edit' ? (
                       <Input label="Nội dung" value={q.questionText || ''} onChange={(e) => handleQuestionChange(idx, 'questionText', e.target.value)} />
@@ -161,7 +161,7 @@ function ValidationRequestDetailPage() {
                                 onChange={() => handleQuestionChange(idx, 'correctAnswerIndex', ai)}
                                 className="w-4 h-4 text-green-600 focus:ring-green-500 cursor-pointer"
                               />
-                              <div className={`text-xs px-2 py-0.5 rounded font-medium ${q.correctAnswerIndex === ai ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>
+                              <div className={`text-xs px-2 py-0.5 rounded font-medium ${q.correctAnswerIndex === ai ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300'}`}>
                                 {String.fromCharCode(65 + ai)}
                               </div>
                               <Input 
@@ -179,7 +179,7 @@ function ValidationRequestDetailPage() {
                             </>
                           ) : (
                             <>
-                              <div className={`text-xs px-2 py-0.5 rounded font-medium ${q.correctAnswerIndex === ai ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>
+                              <div className={`text-xs px-2 py-0.5 rounded font-medium ${q.correctAnswerIndex === ai ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300'}`}>
                                 {String.fromCharCode(65 + ai)}
                                 {q.correctAnswerIndex === ai && ' ✓'}
                               </div>
@@ -193,7 +193,7 @@ function ValidationRequestDetailPage() {
                       <div className="mt-3">
                         <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Giải thích</div>
                         {viewMode === 'edit' ? (
-                          <textarea className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm" value={q.explanation} onChange={(e) => handleQuestionChange(idx, 'explanation', e.target.value)} />
+                          <textarea className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 text-sm" value={q.explanation} onChange={(e) => handleQuestionChange(idx, 'explanation', e.target.value)} />
                         ) : (
                           <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">{q.explanation}</p>
                         )}
@@ -213,15 +213,15 @@ function ValidationRequestDetailPage() {
               <div className="text-sm text-gray-500 dark:text-gray-400">Không có câu hỏi để hiển thị.</div>
             )}
           </div>
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-3 sm:p-4 relative">
+          <div className="bg-white dark:bg-slate-800 shadow rounded-lg p-3 sm:p-4 relative">
             {saving && (
-              <div className="absolute inset-0 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm flex flex-col items-center justify-center z-10 rounded-lg">
+              <div className="absolute inset-0 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm flex flex-col items-center justify-center z-10 rounded-lg">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 border-4 border-indigo-200 dark:border-indigo-800 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin mb-2" />
                 <div className="text-xs sm:text-sm text-indigo-700 dark:text-indigo-400">Đang xử lý...</div>
               </div>
             )}
             <h2 className="font-medium text-base sm:text-lg mb-2 text-gray-900 dark:text-gray-100">Phản hồi</h2>
-            <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder="Nhận xét của bạn..." className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[100px] sm:min-h-[120px] text-xs sm:text-sm" />
+            <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder="Nhận xét của bạn..." className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[100px] sm:min-h-[120px] text-xs sm:text-sm" />
             {canComplete ? (
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3 sm:mt-4">
                 <Button disabled={saving} onClick={() => submitCompletion('Approved')} className="w-full sm:w-auto">Phê duyệt</Button>

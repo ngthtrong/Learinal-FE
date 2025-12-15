@@ -125,7 +125,7 @@ const AdminContentFlagDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
           <p className="text-gray-600 dark:text-gray-400 mt-4">Đang tải...</p>
@@ -148,7 +148,7 @@ const AdminContentFlagDetailPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-6">
@@ -158,7 +158,7 @@ const AdminContentFlagDetailPage = () => {
         </div>
 
         {/* Flag Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6 mb-6">
           <div className="flex items-start justify-between mb-4">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               Chi tiết báo cáo #{flag.id.slice(-8)}
@@ -229,7 +229,7 @@ const AdminContentFlagDetailPage = () => {
         </div>
 
         {/* Question Set Content */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6 mb-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
@@ -283,14 +283,14 @@ const AdminContentFlagDetailPage = () => {
                                   className={`p-3 rounded-lg border-2 transition-all ${
                                     isCorrect
                                       ? 'bg-green-100 dark:bg-green-900/40 border-green-600 dark:border-green-500 shadow-md'
-                                      : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+                                      : 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-600'
                                   }`}
                                 >
                                   <div className="flex items-start gap-3">
                                     <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold ${
                                       isCorrect
                                         ? 'bg-green-600 text-white shadow-sm'
-                                        : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                                        : 'bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-gray-400'
                                     }`}>
                                       {String.fromCharCode(65 + optIndex)}
                                     </span>
@@ -346,7 +346,7 @@ const AdminContentFlagDetailPage = () => {
 
         {/* Actions */}
         {flag.status === "Pending" && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
               Xử lý báo cáo
             </h2>
@@ -361,7 +361,7 @@ const AdminContentFlagDetailPage = () => {
                 placeholder="Nhập ghi chú cho quyết định của bạn..."
                 rows={4}
                 maxLength={1000}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 resize-none"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
                 {adminNote.length}/1000
@@ -390,7 +390,7 @@ const AdminContentFlagDetailPage = () => {
         )}
 
         {(flag.status === "ExpertResponded" || flag.status === "SentToExpert") && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
               Đánh dấu là đã giải quyết
             </h2>
@@ -414,7 +414,7 @@ const AdminContentFlagDetailPage = () => {
                     placeholder="Nhập kết luận về việc giải quyết..."
                     rows={3}
                     maxLength={1000}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 resize-none"
                   />
                 </div>
                 

@@ -114,9 +114,9 @@ function ExpertQuizStartPage() {
   if (!questionSet) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-6 sm:py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8">
           <div className="text-center mb-6 sm:mb-8">
             <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 mb-3 sm:mb-4">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-8 sm:h-8">
@@ -138,7 +138,7 @@ function ExpertQuizStartPage() {
             </div>
           </div>
 
-          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
+          <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Thông tin bài thi</h2>
             <div className="space-y-2 sm:space-y-3 text-sm sm:text-base">
               <div className="flex items-center justify-between">

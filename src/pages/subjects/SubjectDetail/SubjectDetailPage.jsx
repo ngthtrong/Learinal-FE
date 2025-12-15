@@ -293,14 +293,14 @@ function SubjectDetailPage() {
   // Loading Skeleton
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
-        <div className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
+        <div className="bg-white dark:bg-slate-900 shadow-sm border-b border-gray-200 dark:border-slate-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 animate-pulse">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-8 animate-pulse">
             <div className="h-10 bg-gray-200 rounded w-3/4 mb-4"></div>
             <div className="space-y-2">
               <div className="h-4 bg-gray-200 rounded w-full"></div>
@@ -316,9 +316,9 @@ function SubjectDetailPage() {
   // Subject Not Found
   if (!subject) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col items-center justify-center py-16 px-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
             <div className="text-4xl sm:text-6xl mb-4">🔍</div>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 text-center">
               Không tìm thấy môn học
@@ -334,10 +334,10 @@ function SubjectDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <Button variant="secondary" onClick={() => navigate(-1)}>
               ← Quay lại
@@ -370,7 +370,7 @@ function SubjectDetailPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-6">
         {/* Subject Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8">
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
               {subject.subjectName}
@@ -378,7 +378,10 @@ function SubjectDetailPage() {
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               {subject.level && LEVEL_LABELS[subject.level] && (
                 <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${LEVEL_LABELS[subject.level].color}`}>
-                  <BookIcon size={18} strokeWidth={2} />
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                  </svg>
                   {LEVEL_LABELS[subject.level].label}
                 </span>
               )}
@@ -431,7 +434,7 @@ function SubjectDetailPage() {
         </div>
 
         {/* Documents Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-6">
             <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <DocumentIcon size={20} strokeWidth={2} className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" />
@@ -520,8 +523,8 @@ function SubjectDetailPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-slate-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-slate-700">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-slate-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
                 <DocumentIcon size={32} strokeWidth={2} className="sm:w-10 sm:h-10 text-gray-400 dark:text-gray-500" />
               </div>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 px-4">
@@ -536,7 +539,7 @@ function SubjectDetailPage() {
         </div>
 
         {/* Question Sets Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-6">
             <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <QuizIcon size={20} strokeWidth={2} className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" />
@@ -619,8 +622,8 @@ function SubjectDetailPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-800/50 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-gray-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-slate-800/50 rounded-lg border-2 border-dashed border-gray-300 dark:border-slate-700">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-slate-700 rounded-3xl flex items-center justify-center mx-auto mb-4">
                 <QuizIcon size={32} strokeWidth={2} className="sm:w-10 sm:h-10 text-gray-400" />
               </div>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 px-4">
@@ -634,7 +637,7 @@ function SubjectDetailPage() {
           )}
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6">
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
             <span>Tạo: {formatDate(subject.createdAt)}</span>
             {subject.updatedAt !== subject.createdAt && (
