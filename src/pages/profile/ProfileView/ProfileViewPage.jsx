@@ -2,15 +2,36 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { Footer } from "@/components/layout";
 import subscriptionsService from "@/services/api/subscriptions.service";
+import { usersService } from "@/services/api/users.service";
+import commissionRecordsService from "@/services/api/commissionRecords.service";
+import { Modal, useToast } from "@/components/common";
 
 function ProfileViewPage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
+  const toast = useToast();
   const [subscription, setSubscription] = useState(null);
   const [loadingSubscription, setLoadingSubscription] = useState(true);
+  
+  // Expert stats
+  const [expertStats, setExpertStats] = useState(null);
+  const [loadingStats, setLoadingStats] = useState(false);
+  
+  // Expert edit modal state
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editField, setEditField] = useState(null); // 'expertise' or 'yearsOfExperience'
+  const [editValue, setEditValue] = useState("");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchSubscription();
   }, []);
+
+  // Fetch expert stats when user is Expert
+  useEffect(() => {
+    if (user?.role === "Expert") {
+      fetchExpertStats();
+    }
+  }, [user?.role]);
 
   const fetchSubscription = async () => {
     try {
@@ -24,6 +45,57 @@ function ProfileViewPage() {
     } finally {
       setLoadingSubscription(false);
     }
+  };
+
+  const fetchExpertStats = async () => {
+    try {
+      setLoadingStats(true);
+      const response = await commissionRecordsService.summary();
+      console.log("Expert stats response:", response);
+      setExpertStats(response.data || response);
+    } catch (err) {
+      console.error("Error fetching expert stats:", err);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
+
+  // Open edit modal for expert fields
+  const handleOpenEditModal = (field) => {
+    setEditField(field);
+    setEditValue(user[field] || "");
+    setShowEditModal(true);
+  };
+
+  // Save expert field
+  const handleSaveField = async () => {
+    if (!editField) return;
+    
+    try {
+      setSaving(true);
+      await usersService.updateProfile({ [editField]: editValue });
+      toast.showSuccess("Cập nhật thành công!");
+      setShowEditModal(false);
+      // Refresh user data
+      if (refreshUser) {
+        await refreshUser();
+      }
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      toast.showError(err?.response?.data?.message || "Không thể cập nhật thông tin");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Get field label for modal
+  const getFieldLabel = (field) => {
+    if (!field) return "";
+    const labels = {
+      expertise: "Chuyên môn",
+      yearsOfExperience: "Số năm kinh nghiệm",
+    };
+    return labels[field] || field;
   };
 
   if (!user) {
@@ -200,25 +272,59 @@ function ProfileViewPage() {
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Chuyên môn
                       </label>
-                      <p className="text-gray-900 dark:text-gray-100 font-medium">
-                        {user.expertise || "Chưa cập nhật"}
-                      </p>
+                      {user.expertise ? (
+                        <div className="flex items-center gap-2">
+                          <p className="text-gray-900 dark:text-gray-100 font-medium">{user.expertise}</p>
+                          <button
+                            onClick={() => handleOpenEditModal("expertise")}
+                            className="p-1 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                            title="Chỉnh sửa"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleOpenEditModal("expertise")}
+                          className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                          </svg>
+                          Thêm chuyên môn
+                        </button>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Số năm kinh nghiệm
                       </label>
-                      <p className="text-gray-900 dark:text-gray-100 font-medium">
-                        {user.yearsOfExperience || "Chưa cập nhật"}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Tỷ lệ hoa hồng
-                      </label>
-                      <p className="text-gray-900 dark:text-gray-100 font-bold text-lg text-primary-600 dark:text-primary-400">
-                        {user.commissionRate ? `${user.commissionRate}%` : "Chưa thiết lập"}
-                      </p>
+                      {user.yearsOfExperience ? (
+                        <div className="flex items-center gap-2">
+                          <p className="text-gray-900 dark:text-gray-100 font-medium">{user.yearsOfExperience} năm</p>
+                          <button
+                            onClick={() => handleOpenEditModal("yearsOfExperience")}
+                            className="p-1 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                            title="Chỉnh sửa"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleOpenEditModal("yearsOfExperience")}
+                          className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                          </svg>
+                          Thêm số năm kinh nghiệm
+                        </button>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -231,7 +337,7 @@ function ProfileViewPage() {
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                           </>
                         ) : (
-                          "Chưa có"
+                          <span className="text-gray-500 dark:text-gray-400 font-normal">Chưa có đánh giá</span>
                         )}
                       </p>
                     </div>
@@ -246,32 +352,39 @@ function ProfileViewPage() {
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
                     Thống kê:
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                    <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng kiểm duyệt</p>
-                      <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
-                        {user.totalValidations || 0}
-                      </p>
+                  {loadingStats ? (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600 dark:border-primary-400"></div>
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Đang tải...</span>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng hoa hồng</p>
-                      <p className="text-xl sm:text-2xl font-bold text-primary-600 dark:text-primary-400">
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(user.totalEarned || 0)}
-                      </p>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                      <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng kiểm duyệt</p>
+                        <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+                          {expertStats?.totalValidations || expertStats?.count || 0}
+                        </p>
+                      </div>
+                      <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Đã thanh toán</p>
+                        <p className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(expertStats?.totalPaid || expertStats?.totalEarned || 0)}
+                        </p>
+                      </div>
+                      <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Hoa hồng chờ</p>
+                        <p className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400">
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(expertStats?.pendingEarnings || expertStats?.totalPending || 0)}
+                        </p>
+                      </div>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Hoa hồng chờ</p>
-                      <p className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400">
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(user.pendingEarnings || 0)}
-                      </p>
-                    </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
@@ -416,6 +529,62 @@ function ProfileViewPage() {
           )}
         </div>
       </div>
+
+      {/* Edit Expert Field Modal */}
+      <Modal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        title={`Cập nhật ${getFieldLabel(editField)}`}
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {getFieldLabel(editField)}
+            </label>
+            {editField === "yearsOfExperience" ? (
+              <input
+                type="number"
+                min="0"
+                max="50"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                placeholder="Nhập số năm kinh nghiệm"
+              />
+            ) : (
+              <input
+                type="text"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
+                placeholder={`Nhập ${getFieldLabel(editField).toLowerCase()}`}
+              />
+            )}
+          </div>
+          <div className="flex justify-end gap-3 pt-4">
+            <button
+              onClick={() => setShowEditModal(false)}
+              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-medium transition-colors"
+              disabled={saving}
+            >
+              Hủy
+            </button>
+            <button
+              onClick={handleSaveField}
+              disabled={saving || !editValue}
+              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {saving && (
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              )}
+              Lưu
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Footer */}
       <Footer />

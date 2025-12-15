@@ -17,10 +17,12 @@ function QuestionSetCreatorPage() {
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [numQuestions, setNumQuestions] = useState(20);
   const [difficulty, setDifficulty] = useState({
-    know: 30,
-    understand: 30,
-    apply: 25,
+    remember: 20,
+    understand: 25,
+    apply: 20,
     analyze: 15,
+    evaluate: 10,
+    create: 10,
   });
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -222,15 +224,17 @@ function QuestionSetCreatorPage() {
           </div>
         </section>
 
-        {/* Difficulty Distribution */}
+        {/* Difficulty Distribution - Bloom's Taxonomy (6 levels) */}
         <section className="form-section">
-          <h2>3. Phân bổ mức độ khó</h2>
+          <h2>3. Phân bổ mức độ khó (Bloom's Taxonomy)</h2>
           <div className="difficulty-controls">
             {[
-              { key: "know", label: "Biết" },
+              { key: "remember", label: "Ghi nhớ" },
               { key: "understand", label: "Hiểu" },
-              { key: "apply", label: "Vận dụng" },
-              { key: "analyze", label: "Vận dụng cao" },
+              { key: "apply", label: "Áp dụng" },
+              { key: "analyze", label: "Phân tích" },
+              { key: "evaluate", label: "Đánh giá" },
+              { key: "create", label: "Sáng tạo" },
             ].map(({ key, label }) => (
               <div key={key} className="difficulty-row">
                 <label className="difficulty-label">{label}</label>

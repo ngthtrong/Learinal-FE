@@ -421,20 +421,18 @@ function QuestionSetDetailPage() {
                   Đã kiểm duyệt
                 </span>
               )}
+              {canRequestReview() && (
+                <Button
+                  variant="outline"
+                  disabled={requestingReview}
+                  onClick={handleRequestReview}
+                  className="w-full sm:w-auto"
+                >
+                  {requestingReview ? "Đang gửi..." : "Yêu cầu kiểm duyệt"}
+                </Button>
+              )}
             </div>
           </div>
-          {canRequestReview() && (
-            <div className="mt-4">
-              <Button
-                variant="outline"
-                disabled={requestingReview}
-                onClick={handleRequestReview}
-                className="w-full sm:w-auto"
-              >
-                {requestingReview ? "Đang gửi..." : "Yêu cầu kiểm duyệt"}
-              </Button>
-            </div>
-          )}
 
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6">
             <div className="flex items-center gap-3 sm:gap-4 bg-primary-50 dark:bg-primary-900/30 rounded-lg p-3 sm:p-4">

@@ -97,14 +97,27 @@ function ExpertQuestionSetDetailPage() {
   };
 
   const getDifficultyBadge = (level) => {
+    // Bloom's Taxonomy (6 levels) + Old mappings
     const badges = {
       Easy: { bg: "bg-green-100", text: "text-green-700", label: "Dễ" },
       Medium: { bg: "bg-yellow-100", text: "text-yellow-700", label: "Trung bình" },
       Hard: { bg: "bg-red-100", text: "text-red-700", label: "Khó" },
-      Remember: { bg: "bg-green-100", text: "text-green-700", label: "Nhớ" },
-      Understand: { bg: "bg-yellow-100", text: "text-yellow-700", label: "Hiểu" },
-      Apply: { bg: "bg-orange-100", text: "text-orange-700", label: "Vận dụng" },
-      Analyze: { bg: "bg-red-100", text: "text-red-700", label: "Phân tích" },
+      "Ghi nhớ": { bg: "bg-green-100", text: "text-green-700", label: "Ghi nhớ" },
+      "Hiểu": { bg: "bg-blue-100", text: "text-blue-700", label: "Hiểu" },
+      "Áp dụng": { bg: "bg-cyan-100", text: "text-cyan-700", label: "Áp dụng" },
+      "Phân tích": { bg: "bg-yellow-100", text: "text-yellow-700", label: "Phân tích" },
+      "Đánh giá": { bg: "bg-orange-100", text: "text-orange-700", label: "Đánh giá" },
+      "Sáng tạo": { bg: "bg-red-100", text: "text-red-700", label: "Sáng tạo" },
+      Remember: { bg: "bg-green-100", text: "text-green-700", label: "Ghi nhớ" },
+      Understand: { bg: "bg-blue-100", text: "text-blue-700", label: "Hiểu" },
+      Apply: { bg: "bg-cyan-100", text: "text-cyan-700", label: "Áp dụng" },
+      Analyze: { bg: "bg-yellow-100", text: "text-yellow-700", label: "Phân tích" },
+      Evaluate: { bg: "bg-orange-100", text: "text-orange-700", label: "Đánh giá" },
+      Create: { bg: "bg-red-100", text: "text-red-700", label: "Sáng tạo" },
+      // Old mappings
+      "Biết": { bg: "bg-green-100", text: "text-green-700", label: "Ghi nhớ" },
+      "Vận dụng": { bg: "bg-cyan-100", text: "text-cyan-700", label: "Áp dụng" },
+      "Vận dụng cao": { bg: "bg-yellow-100", text: "text-yellow-700", label: "Phân tích" },
     };
     const badge = badges[level] || { bg: "bg-gray-100", text: "text-gray-700", label: level };
     return (

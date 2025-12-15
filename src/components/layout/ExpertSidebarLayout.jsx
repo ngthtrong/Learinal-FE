@@ -5,10 +5,6 @@ import DashboardIcon from "@/components/icons/DashboardIcon";
 import CoinsIcon from "@/components/icons/CoinsIcon";
 import ShieldCheckIcon from "@/components/icons/ShieldCheckIcon";
 
-/**
- * ExpertSidebarLayout
- * Sidebar dành cho chuyên gia (Expert): Dashboard, Hoa hồng, Yêu cầu kiểm duyệt
- */
 const ExpertSidebarLayout = ({ children }) => {
   const { user } = useAuth();
   const role = user?.role;
@@ -72,7 +68,7 @@ const ExpertSidebarLayout = ({ children }) => {
     },
     {
       key: "expert_bank_account",
-      label: "Tài khoản NH",
+      label: "Tài khoản Ngân Hàng",
       to: "/expert/bank-account",
       icon: ({ size = 20, stroke = 2 }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round">

@@ -14,14 +14,21 @@ import { Input, Button } from "@components/common";
  * @param {boolean} props.loading - Loading state
  * @param {string} props.submitText - Submit button text (default: "Lưu")
  */
+const LEVEL_OPTIONS = [
+  { value: '', label: 'Chưa chọn' },
+  { value: 'secondary', label: 'Cấp 2 (THCS)' },
+  { value: 'highschool', label: 'Cấp 3 (THPT)' },
+  { value: 'university', label: 'Đại học' },
+];
+
 const SubjectForm = ({
-  initialData = { subjectName: "", description: "" },
+  initialData = { subjectName: "", description: "", level: "" },
   onSubmit,
   onCancel,
   loading = false,
   submitText = "Lưu",
 }) => {
-  const [formData, setFormData] = useState(initialData);
+  const [formData, setFormData] = useState({ ...initialData, level: initialData.level || '' });
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -67,6 +74,7 @@ const SubjectForm = ({
     const cleanedData = {
       subjectName: formData.subjectName.trim(),
       description: formData.description.trim(),
+      level: formData.level || '',
     };
 
     await onSubmit(cleanedData);
@@ -74,6 +82,30 @@ const SubjectForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Level selection */}
+      <div className="space-y-2">
+        <label
+          htmlFor="level"
+          className="block text-sm font-semibold text-gray-900 dark:text-gray-100"
+        >
+          Cấp bậc <span className="text-gray-500 dark:text-gray-400 font-normal">(tùy chọn)</span>
+        </label>
+        <select
+          id="level"
+          name="level"
+          value={formData.level}
+          onChange={handleChange}
+          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-gray-900 dark:text-gray-100 dark:bg-gray-800"
+        >
+          {LEVEL_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-gray-500 dark:text-gray-400">Chọn cấp bậc phù hợp để dễ dàng phân loại môn học</p>
+      </div>
+
       <div className="space-y-2">
         <label
           htmlFor="subjectName"

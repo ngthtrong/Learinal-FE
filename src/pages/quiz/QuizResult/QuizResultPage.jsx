@@ -5,30 +5,46 @@ import { quizAttemptsService, questionSetsService } from "@/services/api";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { Footer } from "@/components/layout";
 
-// Difficulty weights for scoring
+// Difficulty weights for scoring - Bloom's Taxonomy (6 levels)
 const DIFFICULTY_WEIGHTS = {
-  "Biết": 1,
-  "Hiểu": 1.25,
-  "Vận dụng": 1.5,
-  "Vận dụng cao": 2,
+  "Ghi nhớ": 1,
+  "Hiểu": 1.2,
+  "Áp dụng": 1.4,
+  "Phân tích": 1.6,
+  "Đánh giá": 1.8,
+  "Sáng tạo": 2,
   // English fallbacks
   "Remember": 1,
-  "Understand": 1.25,
-  "Apply": 1.5,
-  "Analyze": 2,
+  "Understand": 1.2,
+  "Apply": 1.4,
+  "Analyze": 1.6,
+  "Evaluate": 1.8,
+  "Create": 2,
+  // Old mappings (backward compatibility)
+  "Biết": 1,
+  "Vận dụng": 1.4,
+  "Vận dụng cao": 1.6,
 };
 
-// Difficulty display config
+// Difficulty display config - Bloom's Taxonomy (6 levels)
 const DIFFICULTY_CONFIG = {
-  "Biết": { label: "Biết", color: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400", dotColor: "bg-green-500" },
+  "Ghi nhớ": { label: "Ghi nhớ", color: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400", dotColor: "bg-green-500" },
   "Hiểu": { label: "Hiểu", color: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400", dotColor: "bg-blue-500" },
-  "Vận dụng": { label: "Vận dụng", color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400", dotColor: "bg-yellow-500" },
-  "Vận dụng cao": { label: "Vận dụng cao", color: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400", dotColor: "bg-red-500" },
+  "Áp dụng": { label: "Áp dụng", color: "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400", dotColor: "bg-cyan-500" },
+  "Phân tích": { label: "Phân tích", color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400", dotColor: "bg-yellow-500" },
+  "Đánh giá": { label: "Đánh giá", color: "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400", dotColor: "bg-orange-500" },
+  "Sáng tạo": { label: "Sáng tạo", color: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400", dotColor: "bg-red-500" },
   // English fallbacks
-  "Remember": { label: "Biết", color: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400", dotColor: "bg-green-500" },
+  "Remember": { label: "Ghi nhớ", color: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400", dotColor: "bg-green-500" },
   "Understand": { label: "Hiểu", color: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400", dotColor: "bg-blue-500" },
-  "Apply": { label: "Vận dụng", color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400", dotColor: "bg-yellow-500" },
-  "Analyze": { label: "Vận dụng cao", color: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400", dotColor: "bg-red-500" },
+  "Apply": { label: "Áp dụng", color: "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400", dotColor: "bg-cyan-500" },
+  "Analyze": { label: "Phân tích", color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400", dotColor: "bg-yellow-500" },
+  "Evaluate": { label: "Đánh giá", color: "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400", dotColor: "bg-orange-500" },
+  "Create": { label: "Sáng tạo", color: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400", dotColor: "bg-red-500" },
+  // Old mappings (backward compatibility)
+  "Biết": { label: "Ghi nhớ", color: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400", dotColor: "bg-green-500" },
+  "Vận dụng": { label: "Áp dụng", color: "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400", dotColor: "bg-cyan-500" },
+  "Vận dụng cao": { label: "Phân tích", color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400", dotColor: "bg-yellow-500" },
 };
 
 function QuizResultPage() {
@@ -125,17 +141,19 @@ function QuizResultPage() {
   const answersMap = useMemo(() => {
     const map = new Map();
     rawAnswers.forEach((answer) => {
+      // Use questionId as primary key (matches BE format like "CN_Q001")
       const key = String(
         answer?.questionId ||
+          answer?.question?.questionId ||
           answer?.question?._id ||
           answer?.question?.id ||
-          answer?.question?.questionId ||
           ""
       );
       if (key) {
         map.set(key, answer);
       }
     });
+    console.log("📍 Answers map keys:", Array.from(map.keys()));
     return map;
   }, [rawAnswers]);
 
@@ -147,8 +165,9 @@ function QuizResultPage() {
     if (questionSet?.questions?.length) {
       console.log("✅ Using question set questions:", questionSet.questions.length, "questions");
       return questionSet.questions.map((question, index) => {
+        // Use questionId as primary key to match BE format (e.g., "CN_Q001")
         const questionKey = String(
-          question?.id || question?._id || question?.questionId || `q-${index}`
+          question?.questionId || question?._id || question?.id || `q-${index}`
         );
         const baseAnswer = answersMap.get(questionKey) || {};
         const selectedOptionIndex =
@@ -246,12 +265,14 @@ function QuizResultPage() {
     let weightedScore = 0;
     let maxWeightedScore = 0;
 
-    // Count by difficulty
+    // Count by difficulty - Bloom's Taxonomy (6 levels)
     const difficultyStats = {
-      "Biết": { correct: 0, total: 0 },
+      "Ghi nhớ": { correct: 0, total: 0 },
       "Hiểu": { correct: 0, total: 0 },
-      "Vận dụng": { correct: 0, total: 0 },
-      "Vận dụng cao": { correct: 0, total: 0 },
+      "Áp dụng": { correct: 0, total: 0 },
+      "Phân tích": { correct: 0, total: 0 },
+      "Đánh giá": { correct: 0, total: 0 },
+      "Sáng tạo": { correct: 0, total: 0 },
     };
 
     enrichedAnswers.forEach((answer) => {
@@ -310,12 +331,9 @@ function QuizResultPage() {
       case "incorrect":
         return enrichedAnswers.filter((answer) => {
           const selected = answer?.selectedOptionIndex;
-          return (
-            selected !== undefined &&
-            selected !== null &&
-            selected !== -1 &&
-            answer?.isCorrect === false
-          );
+          const hasAnswered = selected !== undefined && selected !== null && selected !== -1;
+          // Show questions where user answered but got it wrong (isCorrect === false OR couldn't determine but user answered)
+          return hasAnswered && answer?.isCorrect !== true;
         });
       default:
         return enrichedAnswers;
@@ -441,13 +459,13 @@ function QuizResultPage() {
                   </svg>
                   <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center">
                     <span className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${scoreColorClass.split(" ")[0]}`}>
-                      {formattedScore}
+                      {stats.correct}
                     </span>
                     <span className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500">
-                      / {stats.maxWeightedScore}
+                      / {stats.total}
                     </span>
                     <span className="text-[10px] sm:text-xs lg:text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mt-0.5 sm:mt-1">
-                      Điểm
+                      Câu đúng
                     </span>
                   </div>
                 </div>
@@ -455,14 +473,14 @@ function QuizResultPage() {
                 <div className="text-center space-y-1 sm:space-y-2">
                   <div>
                     <div className="text-[10px] sm:text-xs font-medium text-gray-400 dark:text-gray-500">
-                      Điểm theo trọng số
+                      Tỷ lệ chính xác
                     </div>
                     <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100">
-                      {weightedPercentage}%
+                      {scorePercentage}%
                     </div>
                   </div>
                   <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
-                    (Đúng: {stats.correct}/{stats.total} câu = {scorePercentage}%)
+                    (Điểm trọng số: {formattedScore}/{stats.maxWeightedScore} = {weightedPercentage}%)
                   </div>
                 </div>
               </div>

@@ -358,12 +358,18 @@ function AdminAddonPackagesPage() {
               onChange={(e) => setForm({ ...form, packageName: e.target.value })}
               placeholder="Ví dụ: Thêm 3 lượt tạo đề"
             />
-            <Input
-              label="Mô tả"
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              placeholder="Mô tả ngắn về gói"
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Mô tả
+              </label>
+              <textarea
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                placeholder="Mô tả ngắn về gói (có thể nhiều dòng)"
+                rows={3}
+              />
+            </div>
             <Input
               label="Giá (VND)"
               type="number"
@@ -392,19 +398,6 @@ function AdminAddonPackagesPage() {
             {/* additionalDocumentUploads input removed - now unlimited */}
 
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Loại gói
-                </label>
-                <select
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  value={form.packageType}
-                  onChange={(e) => setForm({ ...form, packageType: e.target.value })}
-                >
-                  <option value="stackable">Mua nhiều lần</option>
-                  <option value="one-time">Mua 1 lần</option>
-                </select>
-              </div>
               <Input
                 label="Giới hạn mua/user (0 = không giới hạn)"
                 type="number"
@@ -422,6 +415,22 @@ function AdminAddonPackagesPage() {
                 onChange={(e) => setForm({ ...form, displayOrder: e.target.value })}
                 min="0"
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Loại gói
+                </label>
+                <select
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  value={form.packageType}
+                  onChange={(e) => setForm({ ...form, packageType: e.target.value })}
+                >
+                  <option value="stackable">Mua nhiều lần</option>
+                  <option value="one-time">Mua 1 lần</option>
+                </select>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Trạng thái

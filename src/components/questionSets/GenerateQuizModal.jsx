@@ -8,27 +8,38 @@ import PropTypes from "prop-types";
 import Button from "@/components/common/Button";
 import Modal from "@/components/common/Modal";
 import SubjectsIcon from "@/components/icons/SubjectsIcon";
+
+const LANGUAGE_OPTIONS = [
+  { value: 'vi', label: 'Tiếng Việt' },
+  { value: 'en', label: 'English' },
+];
+
 function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
   const [title, setTitle] = useState("");
   const [numQuestions, setNumQuestions] = useState(10);
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [topicDistribution, setTopicDistribution] = useState({});
+  const [language, setLanguage] = useState("vi"); // Default to Vietnamese
   
   // Difficulty distribution - stored as question counts for precision
   const [difficultyMode, setDifficultyMode] = useState("percentage"); // "percentage" or "count"
   const [difficultyQuestions, setDifficultyQuestions] = useState({
-    "Biết": 3,
-    "Hiểu": 4,
-    "Vận dụng": 2,
-    "Vận dụng cao": 1,
+    "Ghi nhớ": 2,
+    "Hiểu": 2,
+    "Áp dụng": 2,
+    "Phân tích": 2,
+    "Đánh giá": 1,
+    "Sáng tạo": 1,
   });
 
-  // Difficulty levels config
+  // Difficulty levels config - Bloom's Taxonomy (6 levels)
   const difficultyLevels = [
-    { key: "Biết", label: "Biết", color: "bg-green-500", textColor: "text-green-600 dark:text-green-400", description: "Nhớ, nhận biết" },
+    { key: "Ghi nhớ", label: "Ghi nhớ", color: "bg-green-500", textColor: "text-green-600 dark:text-green-400", description: "Nhớ, nhận biết" },
     { key: "Hiểu", label: "Hiểu", color: "bg-blue-500", textColor: "text-blue-600 dark:text-blue-400", description: "Giải thích, so sánh" },
-    { key: "Vận dụng", label: "Vận dụng", color: "bg-yellow-500", textColor: "text-yellow-600 dark:text-yellow-400", description: "Áp dụng kiến thức" },
-    { key: "Vận dụng cao", label: "Vận dụng cao", color: "bg-red-500", textColor: "text-red-600 dark:text-red-400", description: "Phân tích, đánh giá" },
+    { key: "Áp dụng", label: "Áp dụng", color: "bg-cyan-500", textColor: "text-cyan-600 dark:text-cyan-400", description: "Sử dụng kiến thức" },
+    { key: "Phân tích", label: "Phân tích", color: "bg-yellow-500", textColor: "text-yellow-600 dark:text-yellow-400", description: "Phân tích, so sánh" },
+    { key: "Đánh giá", label: "Đánh giá", color: "bg-orange-500", textColor: "text-orange-600 dark:text-orange-400", description: "Đánh giá, phê phán" },
+    { key: "Sáng tạo", label: "Sáng tạo", color: "bg-red-500", textColor: "text-red-600 dark:text-red-400", description: "Tạo ra, thiết kế" },
   ];
 
   // Calculate total questions assigned
@@ -117,21 +128,21 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
     }
   };
 
-  // Quick presets
+  // Quick presets - Bloom's Taxonomy (6 levels)
   const applyPreset = (preset) => {
     let distribution;
     switch (preset) {
       case "easy":
-        distribution = { "Biết": 40, "Hiểu": 35, "Vận dụng": 20, "Vận dụng cao": 5 };
+        distribution = { "Ghi nhớ": 30, "Hiểu": 30, "Áp dụng": 20, "Phân tích": 10, "Đánh giá": 5, "Sáng tạo": 5 };
         break;
       case "balanced":
-        distribution = { "Biết": 25, "Hiểu": 35, "Vận dụng": 25, "Vận dụng cao": 15 };
+        distribution = { "Ghi nhớ": 20, "Hiểu": 25, "Áp dụng": 20, "Phân tích": 15, "Đánh giá": 10, "Sáng tạo": 10 };
         break;
       case "hard":
-        distribution = { "Biết": 15, "Hiểu": 25, "Vận dụng": 35, "Vận dụng cao": 25 };
+        distribution = { "Ghi nhớ": 10, "Hiểu": 15, "Áp dụng": 20, "Phân tích": 20, "Đánh giá": 20, "Sáng tạo": 15 };
         break;
       case "equal":
-        distribution = { "Biết": 25, "Hiểu": 25, "Vận dụng": 25, "Vận dụng cao": 25 };
+        distribution = { "Ghi nhớ": 16.67, "Hiểu": 16.67, "Áp dụng": 16.67, "Phân tích": 16.67, "Đánh giá": 16.66, "Sáng tạo": 16.66 };
         break;
       default:
         return;
@@ -294,6 +305,7 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
       subjectId: subject.id,
       title,
       numQuestions,
+      language, // Language for question generation
       topics, // Keep for display purposes
       topicDistribution: topicDistributionForBackend, // Backend format: { topicId: count }
       difficultyDistribution: difficultyQuestions, // Backend format: { "Biết": 3, "Hiểu": 4, ... }
@@ -357,6 +369,29 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
           />
         </div>
 
+        {/* Language Selection */}
+        <div className="form-group">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Ngôn ngữ đề thi
+          </label>
+          <div className="flex gap-3">
+            {LANGUAGE_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setLanguage(opt.value)}
+                className={`flex items-center justify-center gap-2 min-w-[140px] px-4 py-2.5 rounded-lg border-2 transition-all ${
+                  language === opt.value
+                    ? "border-primary-500 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
+                    : "border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500"
+                }`}
+              >
+                <span className="font-medium">{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Number of Questions Slider */}
         <div className="form-group">
           <label htmlFor="num-questions" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -366,14 +401,14 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
             id="num-questions"
             type="range"
             min="1"
-            max="20"
+            max="50"
             value={numQuestions}
             onChange={(e) => setNumQuestions(parseInt(e.target.value))}
             className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
           />
           <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>1 câu</span>
-            <span>20 câu</span>
+            <span>50 câu</span>
           </div>
         </div>
 
@@ -417,28 +452,28 @@ function GenerateQuizModal({ isOpen, onClose, subject, onGenerate, loading }) {
               onClick={() => applyPreset("easy")}
               className="px-3 py-1 text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
             >
-              🌱 Dễ
+              Dễ
             </button>
             <button
               type="button"
               onClick={() => applyPreset("balanced")}
               className="px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
             >
-              ⚖️ Cân bằng
+              Cân bằng
             </button>
             <button
               type="button"
               onClick={() => applyPreset("hard")}
               className="px-3 py-1 text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
             >
-              🔥 Khó
+              Khó
             </button>
             <button
               type="button"
               onClick={() => applyPreset("equal")}
               className="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
-              📊 Đều nhau
+              Đều nhau
             </button>
           </div>
 

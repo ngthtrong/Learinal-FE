@@ -125,35 +125,73 @@ export const documentsService = {
       failed: [],
     };
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("subjectId", subjectId);
+    // Upload all files at once (batch upload)
+    try {
+      const formData = new FormData();
+      
+      // DEBUG: Log files being uploaded
+      console.log("[uploadMultipleDocuments] Starting batch upload:", {
+        filesCount: files.length,
+        fileNames: files.map(f => f.name),
+        subjectId
+      });
+      
+      // Append all files with the same key "files"
+      files.forEach((file, index) => {
+        console.log(`[uploadMultipleDocuments] Appending file ${index + 1}:`, file.name, file.size);
+        formData.append("files", file);
+      });
+      formData.append("subjectId", subjectId);
+      
+      // DEBUG: Log FormData contents
+      console.log("[uploadMultipleDocuments] FormData entries:");
+      for (let [key, value] of formData.entries()) {
+        console.log(`  ${key}:`, value instanceof File ? `File(${value.name}, ${value.size})` : value);
+      }
 
-        const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.DOCUMENTS.CREATE, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            if (onFileProgress) {
+      const response = await axiosInstance.post(API_CONFIG.ENDPOINTS.DOCUMENTS.CREATE, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          // Report overall progress
+          if (onFileProgress) {
+            files.forEach((file, i) => {
               onFileProgress(i, progress, file.name);
-            }
-          },
-        });
+            });
+          }
+        },
+      });
 
-        results.successful.push(response.data);
-        if (onFileComplete) {
-          onFileComplete(i, response.data, file.name);
-        }
-      } catch (error) {
-        results.failed.push({ file: file.name, error: error.response?.data?.message || error.message });
+      // Process response - backend now returns { documents: [], successCount, failureCount, errors }
+      if (response.data.documents) {
+        response.data.documents.forEach((doc, i) => {
+          results.successful.push(doc);
+          if (onFileComplete) {
+            onFileComplete(i, doc, files[i].name);
+          }
+        });
+      }
+
+      // Handle errors if any
+      if (response.data.errors && response.data.errors.length > 0) {
+        response.data.errors.forEach((error) => {
+          const fileIndex = files.findIndex(f => f.name === error.fileName);
+          results.failed.push({ file: files[fileIndex], error: error.error });
+          if (onFileError) {
+            onFileError(fileIndex, new Error(error.error), error.fileName);
+          }
+        });
+      }
+    } catch (error) {
+      // If the entire batch upload fails, mark all files as failed
+      files.forEach((file, i) => {
+        results.failed.push({ file: file, error: error.response?.data?.message || error.message });
         if (onFileError) {
           onFileError(i, error, file.name);
         }
-      }
+      });
     }
 
     return results;

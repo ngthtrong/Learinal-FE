@@ -1,5 +1,6 @@
 import React from "react";
 import SubjectsIcon from "@/components/icons/SubjectsIcon";
+import BookIcon from "@/components/icons/BookIcon";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -10,12 +11,19 @@ import { useNavigate } from "react-router-dom";
  *  - Displays description (clamped) if available
  *  - Optional badges for AI-generated summary and table of contents length
  */
+const LEVEL_LABELS = {
+  secondary: { label: 'Cấp 2', color: 'bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30' },
+  highschool: { label: 'Cấp 3', color: 'bg-orange-500/20 text-orange-700 dark:text-orange-300 border-orange-500/30' },
+  university: { label: 'Đại học', color: 'bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border-indigo-500/30' },
+};
+
 const SubjectCard = ({ subject, onClick }) => {
   if (!subject) return null;
   const name = subject.subjectName || subject.name || subject.title || "Môn học";
   const description = subject.description || subject.summary || "Không có mô tả";
   const tocLen = Array.isArray(subject.tableOfContents) ? subject.tableOfContents.length : 0;
   const hasSummary = !!subject.summary;
+  const levelInfo = subject.level ? LEVEL_LABELS[subject.level] : null;
   const documentCount =
     subject.documentCount || subject.documentsCount || subject.numDocuments || 0;
   const questionSetCount = subject.questionSetCount || subject.numQuestionSets || 0;
@@ -64,6 +72,12 @@ const SubjectCard = ({ subject, onClick }) => {
       </p>
       {/* Badges + stats */}
       <div className="flex flex-wrap gap-2 items-center">
+        {levelInfo && (
+          <span className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border ${levelInfo.color}`}>
+            <BookIcon size={14} strokeWidth={2} />
+            {levelInfo.label}
+          </span>
+        )}
         {(documentCount > 0 || questionSetCount > 0) && (
           <span className="px-3 py-1.5 text-xs font-medium rounded-lg bg-primary-500/20 text-primary-700 dark:text-primary-300 border border-primary-500/30">
             {documentCount} mục

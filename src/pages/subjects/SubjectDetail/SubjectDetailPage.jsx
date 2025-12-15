@@ -17,6 +17,13 @@ import QuizIcon from "@/components/icons/QuizIcon";
 import UploadIcon from "@/components/icons/UploadIcon";
 import PenIcon from "@/components/icons/PenIcon";
 import SubjectsIcon from "@/components/icons/SubjectsIcon";
+import BookIcon from "@/components/icons/BookIcon";
+
+const LEVEL_LABELS = {
+  secondary: { label: 'Cấp 2 (THCS)', color: 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300' },
+  highschool: { label: 'Cấp 3 (THPT)', color: 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300' },
+  university: { label: 'Đại học', color: 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' },
+};
 
 function SubjectDetailPage() {
   const { id } = useParams();
@@ -65,6 +72,8 @@ function SubjectDetailPage() {
     try {
       setLoading(true);
       const data = await subjectsService.getSubjectById(id);
+      console.log("Subject data from API:", data);
+      console.log("Subject level:", data?.level);
       setSubject(data);
     } catch (err) {
       const message = getErrorMessage(err);
@@ -367,6 +376,12 @@ function SubjectDetailPage() {
               {subject.subjectName}
             </h1>
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+              {subject.level && LEVEL_LABELS[subject.level] && (
+                <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${LEVEL_LABELS[subject.level].color}`}>
+                  <BookIcon size={18} strokeWidth={2} />
+                  {LEVEL_LABELS[subject.level].label}
+                </span>
+              )}
               <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg text-sm font-medium">
                 <DocumentIcon size={18} strokeWidth={2} />
                 {documents.length} tài liệu
@@ -639,6 +654,7 @@ function SubjectDetailPage() {
           initialData={{
             subjectName: subject.subjectName,
             description: subject.description || "",
+            level: subject.level || "",
           }}
           onSubmit={handleEditSubmit}
           onCancel={() => setIsEditModalOpen(false)}

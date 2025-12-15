@@ -107,7 +107,7 @@ const AdminSidebarLayout = ({ children }) => {
     },
     {
       key: "admin_bank_accounts",
-      label: "Tài Khoản NH",
+      label: "Tài Khoản Ngân Hàng",
       to: "/admin/bank-accounts",
       icon: ({ size = 20, stroke = 2 }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round">
@@ -124,13 +124,12 @@ const AdminSidebarLayout = ({ children }) => {
     },
     {
       key: "admin_content_flags",
-      label: "Báo Cáo Nội Dung",
+      label: "Báo Cáo",
       to: "/admin/content-flags",
       icon: ({ size = 20, stroke = 2 }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-          <line x1="12" y1="9" x2="12" y2="13"></line>
-          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+          <line x1="4" y1="22" x2="4" y2="15"></line>
         </svg>
       ),
     },
