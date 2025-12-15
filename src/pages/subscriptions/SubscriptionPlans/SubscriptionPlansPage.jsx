@@ -4,9 +4,11 @@ import subscriptionsService from "@/services/api/subscriptions.service";
 import paymentsService from "@/services/api/payments.service";
 import Button from "@/components/common/Button";
 import { Footer } from "@/components/layout";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function SubscriptionPlansPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -111,16 +113,9 @@ function SubscriptionPlansPage() {
   ];
 
   const formatEntitlementLabel = (key) => {
-    const labels = {
-      maxSubjects: "Số môn học",
-      maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
-      maxValidationRequests: "Số yêu cầu kiểm duyệt",
-      priorityProcessing: "Xử lý ưu tiên",
-      canShare: "Cho phép chia sẻ",
-      maxDocumentsPerSubject: "Số tài liệu/môn học",
-      // maxTotalDocuments: "Tổng số tài liệu", // Removed - now unlimited
-    };
-    return labels[key] || key;
+    const labelKey = `subscription.entitlementLabels.${key}`;
+    const translated = t(labelKey);
+    return translated !== labelKey ? translated : key;
   };
 
   // Hàm sắp xếp entitlements theo thứ tự cố định
@@ -133,17 +128,17 @@ function SubscriptionPlansPage() {
 
   const formatEntitlementValue = (value) => {
     if (typeof value === "boolean") {
-      return value ? "Có" : "Không";
+      return value ? t("common.yes") : t("common.no");
     }
     if (typeof value === "object" && value !== null) {
       // Format boolean
       if (typeof value === "boolean") {
-        return value ? "Có" : "Không";
+        return value ? t("common.yes") : t("common.no");
       }
       return JSON.stringify(value);
     }
     if (value === -1) {
-      return "Không giới hạn";
+      return t("subscription.mySubscription.unlimited");
     }
     return value;
   };
@@ -209,7 +204,7 @@ function SubscriptionPlansPage() {
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Đang tải danh sách gói đăng ký...</p>
+              <p className="text-gray-600 dark:text-gray-400">{t("subscription.plans.loading")}</p>
             </div>
           </div>
         </div>
@@ -241,12 +236,12 @@ function SubscriptionPlansPage() {
             onClick={() => navigate(-1)}
             className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-xs sm:text-sm mb-3 sm:mb-4 flex items-center gap-1"
           >
-            ← Quay lại
+            ← {t("subscription.plans.back")}
           </button>
           <div className="text-center space-y-2">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Các gói đăng ký</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.plans.pageTitle")}</h1>
             <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
-              Chọn gói phù hợp với bạn để trải nghiệm đầy đủ tính năng
+              {t("subscription.plans.pageSubtitle")}
             </p>
           </div>
         </div>
@@ -264,9 +259,9 @@ function SubscriptionPlansPage() {
                 </svg>
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký nào</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("subscription.plans.noPlans")}</h2>
             <p className="text-gray-600 dark:text-gray-400">
-              Hiện tại chưa có gói đăng ký nào được kích hoạt. Vui lòng quay lại sau.
+              {t("subscription.plans.noPlansDesc")}
             </p>
           </div>
         ) : (
@@ -285,7 +280,7 @@ function SubscriptionPlansPage() {
                   {isPro && (
                     <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-10">
                       <span className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold shadow-md whitespace-nowrap">
-                        Phổ biến nhất
+                        {t("subscription.plans.mostPopular")}
                       </span>
                     </div>
                   )}
@@ -302,7 +297,7 @@ function SubscriptionPlansPage() {
                           {formatPrice(plan.price)}
                         </span>
                         <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg">
-                          /{plan.billingCycle === "Monthly" ? "tháng" : "năm"}
+                          /{plan.billingCycle === "Monthly" ? t("subscription.viewPlans.month") : t("subscription.viewPlans.year")}
                         </span>
                       </div>
                     </div>
@@ -314,7 +309,7 @@ function SubscriptionPlansPage() {
                     {plan.entitlements && (
                       <div className="mb-4 sm:mb-6 space-y-2 sm:space-y-3">
                         <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-center mb-2 sm:mb-4 text-sm sm:text-base">
-                          Quyền lợi:
+                          {t("subscription.plans.entitlements")}
                         </h4>
                         <ul className="space-y-1.5 sm:space-y-2">
                           {getSortedEntitlements(plan.entitlements).map(([key, value]) => (
@@ -336,7 +331,7 @@ function SubscriptionPlansPage() {
                       variant={isPro ? "primary" : "secondary"}
                       className={`w-full ${isPro ? "bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 border-0" : ""}`}
                     >
-                      Chọn gói này
+                      {t("subscription.plans.selectPlan")}
                     </Button>
                   </div>
                 </div>
@@ -360,7 +355,7 @@ function SubscriptionPlansPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-slate-700">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Xác nhận đăng ký</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.payment.confirmTitle")}</h2>
               <button
                 className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
                 onClick={() => setShowPaymentModal(false)}
@@ -371,28 +366,28 @@ function SubscriptionPlansPage() {
 
             <div className="p-4 space-y-3">
               <div className="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Gói:</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">{t("subscription.payment.package")}</span>
                 <strong className="text-sm text-gray-900 dark:text-gray-100">{selectedPlan.planName}</strong>
               </div>
               <div className="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Giá:</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">{t("subscription.payment.price")}</span>
                 <strong className="text-sm text-primary-600 dark:text-primary-400">
                   {formatPrice(selectedPlan.price)}
                 </strong>
               </div>
               <div className="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Chu kỳ:</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">{t("subscription.payment.cycle")}</span>
                 <strong className="text-sm text-gray-900 dark:text-gray-100">
-                  {selectedPlan.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
+                  {selectedPlan.billingCycle === "Monthly" ? t("subscription.payment.monthly") : t("subscription.payment.yearly")}
                 </strong>
               </div>
             </div>
 
             <div className="px-4 pb-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <p>
-                Bạn có chắc chắn muốn đăng ký gói <strong>{selectedPlan.planName}</strong> không?
+                {t("subscription.payment.confirmMessage").replace("{planName}", selectedPlan.planName)}
               </p>
-              <p className="text-xs sm:text-sm">Sau khi xác nhận, bạn sẽ nhận được mã QR để thanh toán.</p>
+              <p className="text-xs sm:text-sm">{t("subscription.payment.confirmNote")}</p>
             </div>
 
             <div className="flex gap-2 p-4 border-t border-gray-200 dark:border-slate-700">
@@ -403,10 +398,10 @@ function SubscriptionPlansPage() {
                 disabled={generatingQR}
                 className="flex-1"
               >
-                Hủy
+                {t("subscription.payment.cancel")}
               </Button>
               <Button onClick={handleConfirmPlan} loading={generatingQR} className="flex-1">
-                {generatingQR ? "Đang tạo QR..." : "Xác nhận"}
+                {generatingQR ? t("subscription.payment.generatingQR") : t("subscription.payment.confirm")}
               </Button>
             </div>
           </div>
@@ -424,7 +419,7 @@ function SubscriptionPlansPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-slate-700">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Quét mã QR để thanh toán</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.payment.qrTitle")}</h2>
               <button
                 className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
                 onClick={() => setShowQRModal(false)}
@@ -440,33 +435,33 @@ function SubscriptionPlansPage() {
                 ) : qrData.qrDataUrl ? (
                   <img src={qrData.qrDataUrl} alt="QR Code" className="w-48 h-48 object-contain" />
                 ) : (
-                  <div className="text-error-600 dark:text-red-400 text-center py-12">Không thể tải mã QR</div>
+                  <div className="text-error-600 dark:text-red-400 text-center py-12">{t("subscription.payment.qrLoadError")}</div>
                 )}
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">Thông tin thanh toán</h3>
+                <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-2">{t("subscription.payment.paymentInfo")}</h3>
                 <div className="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Gói:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">{t("subscription.payment.package")}</span>
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{qrData.plan?.name}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Số tiền:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">{t("subscription.payment.amount")}</span>
                   <span className="text-sm font-bold text-primary-600 dark:text-primary-400">
                     {formatPrice(qrData.amount)}
                   </span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Chu kỳ:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">{t("subscription.payment.cycle")}</span>
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {qrData.plan?.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
+                    {qrData.plan?.billingCycle === "Monthly" ? t("subscription.payment.monthly") : t("subscription.payment.yearly")}
                   </span>
                 </div>
               </div>
 
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 space-y-1 text-xs text-blue-800 dark:text-blue-300">
-                <p>• Vui lòng quét mã QR bằng ứng dụng ngân hàng</p>
-                <p>• Sau khi thanh toán thành công, hệ thống sẽ tự động kích hoạt gói của bạn</p>
+                <p>• {t("subscription.payment.scanInstructions")}</p>
+                <p>• {t("subscription.payment.autoActivation")}</p>
               </div>
             </div>
 
@@ -479,10 +474,10 @@ function SubscriptionPlansPage() {
                 }}
                 className="flex-1"
               >
-                Đã thanh toán
+                {t("subscription.payment.alreadyPaid")}
               </Button>
               <Button onClick={() => setShowQRModal(false)} className="flex-1">
-                Đóng
+                {t("subscription.payment.close")}
               </Button>
             </div>
           </div>

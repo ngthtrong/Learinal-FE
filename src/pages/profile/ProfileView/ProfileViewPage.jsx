@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Footer } from "@/components/layout";
 import subscriptionsService from "@/services/api/subscriptions.service";
 import { usersService } from "@/services/api/users.service";
@@ -9,6 +10,7 @@ import { Modal, useToast } from "@/components/common";
 function ProfileViewPage() {
   const { user, refreshUser } = useAuth();
   const toast = useToast();
+  const { t, language } = useLanguage();
   const [subscription, setSubscription] = useState(null);
   const [loadingSubscription, setLoadingSubscription] = useState(true);
   
@@ -74,7 +76,7 @@ function ProfileViewPage() {
     try {
       setSaving(true);
       await usersService.updateProfile({ [editField]: editValue });
-      toast.showSuccess("Cập nhật thành công!");
+      toast.showSuccess(t("profile.updateSuccess"));
       setShowEditModal(false);
       // Refresh user data
       if (refreshUser) {
@@ -82,7 +84,7 @@ function ProfileViewPage() {
       }
     } catch (err) {
       console.error("Error updating profile:", err);
-      toast.showError(err?.response?.data?.message || "Không thể cập nhật thông tin");
+      toast.showError(err?.response?.data?.message || t("profile.updateError"));
     } finally {
       setSaving(false);
     }
@@ -92,8 +94,8 @@ function ProfileViewPage() {
   const getFieldLabel = (field) => {
     if (!field) return "";
     const labels = {
-      expertise: "Chuyên môn",
-      yearsOfExperience: "Số năm kinh nghiệm",
+      expertise: t("profile.expertFields.expertise"),
+      yearsOfExperience: t("profile.expertFields.yearsOfExperience"),
     };
     return labels[field] || field;
   };
@@ -105,7 +107,7 @@ function ProfileViewPage() {
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Đang tải thông tin...</p>
+              <p className="text-gray-600 dark:text-gray-400">{t("profile.loading")}</p>
             </div>
           </div>
         </div>
@@ -152,13 +154,13 @@ function ProfileViewPage() {
 
   const formatEntitlementLabel = (key) => {
     const labels = {
-      maxSubjects: "Số môn học",
-      maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
-      maxValidationRequests: "Số yêu cầu kiểm duyệt",
-      maxDocumentsPerSubject: "Số tài liệu/môn học",
+      maxSubjects: t("profile.entitlements.maxSubjects"),
+      maxMonthlyTestGenerations: t("profile.entitlements.maxMonthlyTestGenerations"),
+      maxValidationRequests: t("profile.entitlements.maxValidationRequests"),
+      maxDocumentsPerSubject: t("profile.entitlements.maxDocumentsPerSubject"),
       // maxTotalDocuments: "Tổng số tài liệu", // Removed - now unlimited
-      priorityProcessing: "Xử lý ưu tiên",
-      canShare: "Cho phép chia sẻ",
+      priorityProcessing: t("profile.entitlements.priorityProcessing"),
+      canShare: t("profile.entitlements.canShare"),
     };
     return labels[key] || key;
   };
@@ -173,16 +175,16 @@ function ProfileViewPage() {
 
   const formatEntitlementValue = (value) => {
     if (typeof value === "boolean") {
-      return value ? "Có" : "Không";
+      return value ? t("profile.entitlements.yes") : t("profile.entitlements.no");
     }
     if (typeof value === "object" && value !== null) {
       if (typeof value === "boolean") {
-        return value ? "Có" : "Không";
+        return value ? t("profile.entitlements.yes") : t("profile.entitlements.no");
       }
       return JSON.stringify(value);
     }
     if (value === -1) {
-      return "Không giới hạn";
+      return t("profile.entitlements.unlimited");
     }
     return value;
   };
@@ -207,10 +209,10 @@ function ProfileViewPage() {
                   )}`}
                 >
                   {user.role === "Learner"
-                    ? "Học viên"
+                    ? t("profile.roles.learner")
                     : user.role === "Expert"
-                    ? "Chuyên gia"
-                    : "Quản trị viên"}
+                    ? t("profile.roles.expert")
+                    : t("profile.roles.admin")}
                 </span>
               </div>
             </div>
@@ -224,21 +226,21 @@ function ProfileViewPage() {
               ) : (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               )}{" "}
-              {user.role === "Expert" ? "Thông tin chuyên gia" : "Thông tin cá nhân"}
+              {user.role === "Expert" ? t("profile.sections.expertInfo") : t("profile.sections.personalInfo")}
             </h3>
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Họ và tên</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("profile.fields.fullName")}</label>
                   <p className="text-gray-900 dark:text-gray-100 font-medium">{user.fullName}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("profile.fields.email")}</label>
                   <p className="text-gray-900 dark:text-gray-100 font-medium">{user.email}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 ">
-                    Trạng thái tài khoản
+                    {t("profile.fields.accountStatus")}
                   </label>
                   <span
                     className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
@@ -246,21 +248,21 @@ function ProfileViewPage() {
                     )}`}
                   >
                     {user.status === "Active"
-                      ? "Hoạt động"
+                      ? t("profile.accountStatus.active")
                       : user.status === "PendingActivation"
-                      ? "Chờ kích hoạt"
+                      ? t("profile.accountStatus.pending")
                       : user.status === "Deactivated"
-                      ? "Đã vô hiệu hóa"
+                      ? t("profile.accountStatus.deactivated")
                       : user.status}
                   </span>
                 </div>
                 {user.createdAt && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 ">
-                      Ngày tham gia
+                      {t("profile.fields.joinDate")}
                     </label>
                     <p className="text-gray-900 dark:text-gray-100 font-medium">
-                      {new Date(user.createdAt).toLocaleDateString("vi-VN")}
+                      {new Date(user.createdAt).toLocaleDateString(language === "vi" ? "vi-VN" : "en-US")}
                     </p>
                   </div>
                 )}
@@ -270,7 +272,7 @@ function ProfileViewPage() {
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Chuyên môn
+                        {t("profile.expertFields.expertise")}
                       </label>
                       {user.expertise ? (
                         <div className="flex items-center gap-2">
@@ -278,7 +280,7 @@ function ProfileViewPage() {
                           <button
                             onClick={() => handleOpenEditModal("expertise")}
                             className="p-1 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                            title="Chỉnh sửa"
+                            title={t("profile.edit")}
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
@@ -293,21 +295,21 @@ function ProfileViewPage() {
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                           </svg>
-                          Thêm chuyên môn
+                          {t("profile.addExpertise")}
                         </button>
                       )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Số năm kinh nghiệm
+                        {t("profile.expertFields.yearsOfExperience")}
                       </label>
                       {user.yearsOfExperience ? (
                         <div className="flex items-center gap-2">
-                          <p className="text-gray-900 dark:text-gray-100 font-medium">{user.yearsOfExperience} năm</p>
+                          <p className="text-gray-900 dark:text-gray-100 font-medium">{user.yearsOfExperience} {t("profile.years")}</p>
                           <button
                             onClick={() => handleOpenEditModal("yearsOfExperience")}
                             className="p-1 text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                            title="Chỉnh sửa"
+                            title={t("profile.edit")}
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
@@ -322,13 +324,13 @@ function ProfileViewPage() {
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                           </svg>
-                          Thêm số năm kinh nghiệm
+                          {t("profile.addYearsOfExperience")}
                         </button>
                       )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Đánh giá
+                        {t("profile.expertFields.rating")}
                       </label>
                       <p className="text-gray-900 dark:text-gray-100 font-bold text-lg flex items-center gap-1.5">
                         {user.rating ? (
@@ -337,7 +339,7 @@ function ProfileViewPage() {
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                           </>
                         ) : (
-                          <span className="text-gray-500 dark:text-gray-400 font-normal">Chưa có đánh giá</span>
+                          <span className="text-gray-500 dark:text-gray-400 font-normal">{t("profile.noRating")}</span>
                         )}
                       </p>
                     </div>
@@ -350,34 +352,34 @@ function ProfileViewPage() {
                 <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
                   <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                    Thống kê:
+                    {t("profile.expertStats.title")}:
                   </h4>
                   {loadingStats ? (
                     <div className="flex items-center justify-center py-4">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600 dark:border-primary-400"></div>
-                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Đang tải...</span>
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">{t("profile.loadingStats")}</span>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                       <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng kiểm duyệt</p>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">{t("profile.expertStats.totalValidations")}</p>
                         <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                           {expertStats?.totalValidations || expertStats?.count || 0}
                         </p>
                       </div>
                       <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Đã thanh toán</p>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">{t("profile.expertStats.totalPaid")}</p>
                         <p className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">
-                          {new Intl.NumberFormat("vi-VN", {
+                          {new Intl.NumberFormat(language === "vi" ? "vi-VN" : "en-US", {
                             style: "currency",
                             currency: "VND",
                           }).format(expertStats?.totalPaid || expertStats?.totalEarned || 0)}
                         </p>
                       </div>
                       <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Hoa hồng chờ</p>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">{t("profile.expertStats.pendingCommission")}</p>
                         <p className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400">
-                          {new Intl.NumberFormat("vi-VN", {
+                          {new Intl.NumberFormat(language === "vi" ? "vi-VN" : "en-US", {
                             style: "currency",
                             currency: "VND",
                           }).format(expertStats?.pendingEarnings || expertStats?.totalPending || 0)}
@@ -395,19 +397,19 @@ function ProfileViewPage() {
             <div>
               <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                Thông tin gói đăng ký
+                {t("profile.subscription.title")}
               </h3>
               {loadingSubscription ? (
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6 text-center">
                   <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-2"></div>
-                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">Đang tải thông tin gói đăng ký...</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">{t("profile.subscription.loading")}</p>
                 </div>
               ) : subscription ? (
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 ">
-                        Tên gói
+                        {t("profile.subscription.planName")}
                       </label>
                       <p className="text-gray-900 dark:text-gray-100 font-bold text-lg ">
                         {subscription.plan?.planName || "N/A"}
@@ -415,7 +417,7 @@ function ProfileViewPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 ">
-                        Trạng thái
+                        {t("profile.subscription.status")}
                       </label>
                       <span
                         className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
@@ -431,61 +433,61 @@ function ProfileViewPage() {
                         }`}
                       >
                         {subscription.status === "Active"
-                          ? "Hoạt động"
+                          ? t("profile.subscription.statusActive")
                           : subscription.status === "Expired"
-                          ? "Hết hạn"
+                          ? t("profile.subscription.statusExpired")
                           : subscription.status === "Cancelled"
-                          ? "Đã hủy"
+                          ? t("profile.subscription.statusCancelled")
                           : subscription.status === "PendingPayment"
-                          ? "Chờ thanh toán"
+                          ? t("profile.subscription.statusPending")
                           : subscription.status}
                       </span>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Ngày bắt đầu
+                        {t("profile.subscription.startDate")}
                       </label>
                       <p className="text-gray-900 dark:text-gray-100 font-medium">
-                        {new Date(subscription.startDate).toLocaleDateString("vi-VN")}
+                        {new Date(subscription.startDate).toLocaleDateString(language === "vi" ? "vi-VN" : "en-US")}
                       </p>
                     </div>
                     {subscription.endDate && (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                          Ngày kết thúc
+                          {t("profile.subscription.endDate")}
                         </label>
                         <p className="text-gray-900 dark:text-gray-100 font-medium">
-                          {new Date(subscription.endDate).toLocaleDateString("vi-VN")}
+                          {new Date(subscription.endDate).toLocaleDateString(language === "vi" ? "vi-VN" : "en-US")}
                         </p>
                       </div>
                     )}
                     {subscription.renewalDate && (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                          Ngày gia hạn
+                          {t("profile.subscription.renewalDate")}
                         </label>
                         <p className="text-gray-900 dark:text-gray-100 font-medium">
-                          {new Date(subscription.renewalDate).toLocaleDateString("vi-VN")}
+                          {new Date(subscription.renewalDate).toLocaleDateString(language === "vi" ? "vi-VN" : "en-US")}
                         </p>
                       </div>
                     )}
                     {subscription.plan?.billingCycle && (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                          Chu kỳ thanh toán
+                          {t("profile.subscription.billingCycle")}
                         </label>
                         <p className="text-gray-900 dark:text-gray-100 font-medium">
-                          {subscription.plan.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
+                          {subscription.plan.billingCycle === "Monthly" ? t("profile.subscription.monthly") : t("profile.subscription.yearly")}
                         </p>
                       </div>
                     )}
                     {subscription.plan?.price !== undefined && (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                          Giá gói
+                          {t("profile.subscription.price")}
                         </label>
                         <p className="text-gray-900 dark:text-gray-100 font-bold text-lg text-primary-600">
-                          {new Intl.NumberFormat("vi-VN", {
+                          {new Intl.NumberFormat(language === "vi" ? "vi-VN" : "en-US", {
                             style: "currency",
                             currency: "VND",
                           }).format(subscription.plan.price)}
@@ -500,7 +502,7 @@ function ProfileViewPage() {
                       <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
                         <h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 flex items-center gap-2">
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg>
-                          Quyền lợi của gói:
+                          {t("profile.entitlements.title")}:
                         </h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                           {getSortedEntitlements(subscription.entitlementsSnapshot).map(([key, value]) => (
@@ -521,8 +523,8 @@ function ProfileViewPage() {
                   <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-100 dark:bg-primary-900/30 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-8 sm:h-8 text-primary-600 dark:text-primary-400"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                   </div>
-                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-medium mb-1 sm:mb-2">Chưa có gói đăng ký</p>
-                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Bạn chưa đăng ký gói nào</p>
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 font-medium mb-1 sm:mb-2">{t("profile.subscription.noSubscription")}</p>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{t("profile.subscription.noSubscriptionDesc")}</p>
                 </div>
               )}
             </div>
@@ -534,7 +536,7 @@ function ProfileViewPage() {
       <Modal
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
-        title={`Cập nhật ${getFieldLabel(editField)}`}
+        title={t("profile.modal.updateTitle", { field: getFieldLabel(editField) })}
       >
         <div className="space-y-4">
           <div>
@@ -549,7 +551,7 @@ function ProfileViewPage() {
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
-                placeholder="Nhập số năm kinh nghiệm"
+                placeholder={t("profile.modal.yearsPlaceholder")}
               />
             ) : (
               <input
@@ -557,7 +559,7 @@ function ProfileViewPage() {
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100"
-                placeholder={`Nhập ${getFieldLabel(editField).toLowerCase()}`}
+                placeholder={t("profile.modal.expertisePlaceholder")}
               />
             )}
           </div>
@@ -567,7 +569,7 @@ function ProfileViewPage() {
               className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg font-medium transition-colors"
               disabled={saving}
             >
-              Hủy
+              {t("profile.modal.cancel")}
             </button>
             <button
               onClick={handleSaveField}
@@ -580,7 +582,7 @@ function ProfileViewPage() {
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               )}
-              Lưu
+              {t("profile.modal.save")}
             </button>
           </div>
         </div>

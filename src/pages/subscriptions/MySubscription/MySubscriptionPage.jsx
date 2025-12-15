@@ -4,9 +4,11 @@ import subscriptionsService from "@/services/api/subscriptions.service";
 import addonPackagesService from "@/services/api/addonPackages.service";
 import Button from "@/components/common/Button";
 import { Footer } from "@/components/layout";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function MySubscriptionPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -126,16 +128,9 @@ function MySubscriptionPage() {
   ];
 
   const formatEntitlementLabel = (key) => {
-    const labels = {
-      maxSubjects: "Số môn học",
-      maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
-      maxValidationRequests: "Số yêu cầu kiểm duyệt",
-      maxDocumentsPerSubject: "Số tài liệu/môn học",
-      // maxTotalDocuments: "Tổng số tài liệu", // Removed - now unlimited
-      priorityProcessing: "Xử lý ưu tiên",
-      canShare: "Cho phép chia sẻ",
-    };
-    return labels[key] || key;
+    const labelKey = `subscription.entitlementLabels.${key}`;
+    const translated = t(labelKey);
+    return translated !== labelKey ? translated : key;
   };
 
   // Hàm sắp xếp entitlements theo thứ tự cố định (loại bỏ các key không muốn hiển thị)
@@ -148,27 +143,27 @@ function MySubscriptionPage() {
 
   const formatEntitlementValue = (value) => {
     if (typeof value === "boolean") {
-      return value ? "Có" : "Không";
+      return value ? t("common.yes") : t("common.no");
     }
     if (typeof value === "object" && value !== null) {
       // Format boolean
       if (typeof value === "boolean") {
-        return value ? "Có" : "Không";
+        return value ? t("common.yes") : t("common.no");
       }
       return JSON.stringify(value);
     }
     if (value === -1) {
-      return "Không giới hạn";
+      return t("subscription.mySubscription.unlimited");
     }
     return value;
   };
 
   const getStatusBadge = (status) => {
     const statusMap = {
-      Active: { text: "Đang hoạt động", className: "bg-success-100 dark:bg-green-900/30 text-success-800 dark:text-green-300" },
-      Expired: { text: "Đã hết hạn", className: "bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-gray-300" },
-      Canceled: { text: "Đã hủy", className: "bg-error-100 dark:bg-red-900/30 text-error-800 dark:text-red-300" },
-      PendingPayment: { text: "Chờ thanh toán", className: "bg-warning-100 dark:bg-yellow-900/30 text-warning-800 dark:text-yellow-300" },
+      Active: { text: t("subscription.status.active"), className: "bg-success-100 dark:bg-green-900/30 text-success-800 dark:text-green-300" },
+      Expired: { text: t("subscription.status.expired"), className: "bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-gray-300" },
+      Canceled: { text: t("subscription.status.canceled"), className: "bg-error-100 dark:bg-red-900/30 text-error-800 dark:text-red-300" },
+      PendingPayment: { text: t("subscription.status.pendingPayment"), className: "bg-warning-100 dark:bg-yellow-900/30 text-warning-800 dark:text-yellow-300" },
     };
 
     const statusInfo = statusMap[status] || {
@@ -184,10 +179,10 @@ function MySubscriptionPage() {
 
   const getStatusText = (status) => {
     const statusMap = {
-      Active: "Đang hoạt động",
-      Expired: "Đã hết hạn",
-      Canceled: "Đã hủy",
-      PendingPayment: "Chờ thanh toán",
+      Active: t("subscription.status.active"),
+      Expired: t("subscription.status.expired"),
+      Canceled: t("subscription.status.canceled"),
+      PendingPayment: t("subscription.status.pendingPayment"),
     };
     return statusMap[status] || status;
   };
@@ -199,7 +194,7 @@ function MySubscriptionPage() {
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Đang tải thông tin gói đăng ký...</p>
+              <p className="text-gray-600 dark:text-gray-400">{t("subscription.mySubscription.loading")}</p>
             </div>
           </div>
         </div>
@@ -231,7 +226,7 @@ function MySubscriptionPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
               </div>
-              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.mySubscription.pageTitle")}</h1>
             </div>
           </div>
         </div>
@@ -244,11 +239,11 @@ function MySubscriptionPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("subscription.mySubscription.noSubscription")}</h2>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
-              Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
+              {t("subscription.mySubscription.noSubscriptionDesc")}
             </p>
-            <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
+            <Button onClick={() => navigate("/subscriptions/plans")}>{t("subscription.mySubscription.viewPlans")}</Button>
           </div>
         </div>
       </div>
@@ -271,7 +266,7 @@ function MySubscriptionPage() {
                   </svg>
                 </div>
               </div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.mySubscription.pageTitle")}</h1>
             </div>
           </div>
         </div>
@@ -284,11 +279,11 @@ function MySubscriptionPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("subscription.mySubscription.noSubscription")}</h2>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
-              Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
+              {t("subscription.mySubscription.noSubscriptionDesc")}
             </p>
-            <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
+            <Button onClick={() => navigate("/subscriptions/plans")}>{t("subscription.mySubscription.viewPlans")}</Button>
           </div>
         </div>
       </div>
@@ -308,7 +303,7 @@ function MySubscriptionPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
               </div>
-              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.mySubscription.pageTitle")}</h1>
             </div>
           </div>
         </div>
@@ -321,12 +316,12 @@ function MySubscriptionPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chờ thanh toán</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("subscription.mySubscription.pendingPayment")}</h2>
             <div className="mb-4">{getStatusBadge(subscription.status)}</div>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
-              Vui lòng hoàn tất thanh toán để kích hoạt gói.
+              {t("subscription.mySubscription.pendingPaymentDesc")}
             </p>
-            <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
+            <Button onClick={() => navigate("/subscriptions/plans")}>{t("subscription.mySubscription.viewPlans")}</Button>
           </div>
         </div>
       </div>
@@ -346,7 +341,7 @@ function MySubscriptionPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
               </div>
-              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.mySubscription.pageTitle")}</h1>
             </div>
           </div>
         </div>
@@ -359,11 +354,11 @@ function MySubscriptionPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("subscription.mySubscription.noSubscription")}</h2>
             <p className="text-gray-600 dark:text-gray-400 text-center mb-6 max-w-md">
-              Bạn chưa đăng ký gói nào. Hãy chọn một gói phù hợp để bắt đầu!
+              {t("subscription.mySubscription.noSubscriptionDesc")}
             </p>
-            <Button onClick={() => navigate("/subscriptions/plans")}>Xem các gói đăng ký</Button>
+            <Button onClick={() => navigate("/subscriptions/plans")}>{t("subscription.mySubscription.viewPlans")}</Button>
           </div>
         </div>
       </div>
@@ -386,12 +381,12 @@ function MySubscriptionPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
                 </div>
-                <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Gói đăng ký của tôi</h1>
+                <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.mySubscription.pageTitle")}</h1>
               </div>
-              <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">Thông tin chi tiết về gói đăng ký hiện tại</p>
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">{t("subscription.mySubscription.pageSubtitle")}</p>
             </div>
             <Button variant="secondary" onClick={() => navigate("/subscriptions/plans")} className="w-full sm:w-auto">
-              Xem các gói khác
+              {t("subscription.mySubscription.viewOtherPlans")}
             </Button>
           </div>
         </div>
@@ -404,13 +399,13 @@ function MySubscriptionPage() {
           <div className="bg-gradient-to-r from-primary-600 to-secondary-600 p-4 sm:p-6 lg:p-8 text-white">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
               <div>
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3">{plan?.planName || "Gói đăng ký"}</h2>
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3">{plan?.planName || t("subscription.title")}</h2>
                 {getStatusBadge(subscription.status)}
               </div>
               <div className="text-left sm:text-right">
                 <div className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-1">{formatPrice(plan?.price || 0)}</div>
                 <div className="text-white/90 text-sm sm:text-base lg:text-lg">
-                  /{plan?.billingCycle === "Monthly" ? "tháng" : "năm"}
+                  /{plan?.billingCycle === "Monthly" ? t("subscription.viewPlans.month") : t("subscription.viewPlans.year")}
                 </div>
               </div>
             </div>
@@ -425,36 +420,36 @@ function MySubscriptionPage() {
               <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Thông tin gói</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.mySubscription.planInfo")}</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
               <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-3 sm:p-4">
-                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Tên gói</span>
+                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">{t("subscription.mySubscription.planName")}</span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {plan?.planName || "N/A"}
                 </span>
               </div>
               <div className="bg-gray-50 rounded-lg p-3 sm:p-4 dark:bg-slate-700/50">
-                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Chu kỳ thanh toán</span>
+                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">{t("subscription.mySubscription.billingCycle")}</span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
-                  {plan?.billingCycle === "Monthly" ? "Hàng tháng" : "Hàng năm"}
+                  {plan?.billingCycle === "Monthly" ? t("subscription.mySubscription.monthly") : t("subscription.mySubscription.yearly")}
                 </span>
               </div>
               <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-3 sm:p-4">
-                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Ngày bắt đầu</span>
+                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">{t("subscription.mySubscription.startDate")}</span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {formatDate(subscription.startDate)}
                 </span>
               </div>
               <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-3 sm:p-4">
-                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Ngày hết hạn</span>
+                <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">{t("subscription.mySubscription.endDate")}</span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                   {formatDate(subscription.endDate)}
                 </span>
               </div>
               {subscription.renewalDate && (
                 <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-3 sm:p-4">
-                  <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">Ngày gia hạn</span>
+                  <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm block mb-1">{t("subscription.mySubscription.renewalDate")}</span>
                   <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-lg">
                     {formatDate(subscription.renewalDate)}
                   </span>
@@ -469,13 +464,13 @@ function MySubscriptionPage() {
                   <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Lượt sử dụng trong kỳ</h3>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.mySubscription.usageInPeriod")}</h3>
                 </div>
                 <Button variant="secondary" onClick={() => navigate("/addon-packages")} className="w-full sm:w-auto text-sm">
                   <svg className="w-4 h-4 mr-1 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
-                  Mua thêm lượt
+                  {t("subscription.mySubscription.buyMoreQuota")}
                 </Button>
               </div>
               
@@ -483,7 +478,7 @@ function MySubscriptionPage() {
                 {/* Lượt tạo đề */}
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-3 sm:p-5 border border-blue-200 dark:border-blue-800">
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
-                    <span className="text-blue-700 dark:text-blue-300 font-medium text-xs sm:text-sm">Lượt tạo đề còn lại</span>
+                    <span className="text-blue-700 dark:text-blue-300 font-medium text-xs sm:text-sm">{t("subscription.mySubscription.remainingTestGenerations")}</span>
                     <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-200 dark:bg-blue-800 rounded-lg flex items-center justify-center">
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -501,7 +496,7 @@ function MySubscriptionPage() {
                         return (
                           <>
                             <span className="text-xl sm:text-3xl font-bold text-blue-800 dark:text-blue-200">∞</span>
-                            <span className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-0.5 sm:mb-1">không giới hạn</span>
+                            <span className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-0.5 sm:mb-1">{t("subscription.mySubscription.unlimited")}</span>
                           </>
                         );
                       }
@@ -515,7 +510,7 @@ function MySubscriptionPage() {
                       return (
                         <>
                           <span className="text-xl sm:text-3xl font-bold text-blue-800 dark:text-blue-200">{totalRemaining}</span>
-                          <span className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-0.5 sm:mb-1">/ {totalLimit} lượt</span>
+                          <span className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-0.5 sm:mb-1">/ {totalLimit} {t("subscription.mySubscription.quotas")}</span>
                         </>
                       );
                     })()}
@@ -523,7 +518,7 @@ function MySubscriptionPage() {
                   {usageStats.addonPurchasedTestGenerations > 0 && (
                     <div className="mt-1.5 sm:mt-2 pt-1.5 sm:pt-2 border-t border-blue-200 dark:border-blue-700">
                       <span className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">
-                        Bao gồm <span className="font-semibold">{usageStats.addonPurchasedTestGenerations}</span> lượt từ gói mua thêm
+                        {t("subscription.mySubscription.includingAddon", { count: usageStats.addonPurchasedTestGenerations })}
                       </span>
                     </div>
                   )}
@@ -532,7 +527,7 @@ function MySubscriptionPage() {
                 {/* Lượt kiểm duyệt */}
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-3 sm:p-5 border border-purple-200 dark:border-purple-800">
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
-                    <span className="text-purple-700 dark:text-purple-300 font-medium text-xs sm:text-sm">Lượt kiểm duyệt còn lại</span>
+                    <span className="text-purple-700 dark:text-purple-300 font-medium text-xs sm:text-sm">{t("subscription.mySubscription.remainingValidations")}</span>
                     <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-200 dark:bg-purple-800 rounded-lg flex items-center justify-center">
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -550,7 +545,7 @@ function MySubscriptionPage() {
                         return (
                           <>
                             <span className="text-xl sm:text-3xl font-bold text-purple-800 dark:text-purple-200">∞</span>
-                            <span className="text-purple-600 dark:text-purple-400 text-xs sm:text-sm mb-0.5 sm:mb-1">không giới hạn</span>
+                            <span className="text-purple-600 dark:text-purple-400 text-xs sm:text-sm mb-0.5 sm:mb-1">{t("subscription.mySubscription.unlimited")}</span>
                           </>
                         );
                       }
@@ -564,7 +559,7 @@ function MySubscriptionPage() {
                       return (
                         <>
                           <span className="text-xl sm:text-3xl font-bold text-purple-800 dark:text-purple-200">{totalRemaining}</span>
-                          <span className="text-purple-600 dark:text-purple-400 text-xs sm:text-sm mb-0.5 sm:mb-1">/ {totalLimit} lượt</span>
+                          <span className="text-purple-600 dark:text-purple-400 text-xs sm:text-sm mb-0.5 sm:mb-1">/ {totalLimit} {t("subscription.mySubscription.quotas")}</span>
                         </>
                       );
                     })()}
@@ -572,7 +567,7 @@ function MySubscriptionPage() {
                   {usageStats.addonPurchasedValidationRequests > 0 && (
                     <div className="mt-1.5 sm:mt-2 pt-1.5 sm:pt-2 border-t border-purple-200 dark:border-purple-700">
                       <span className="text-xs sm:text-sm text-purple-600 dark:text-purple-400">
-                        Bao gồm <span className="font-semibold">{usageStats.addonPurchasedValidationRequests}</span> lượt từ gói mua thêm
+                        {t("subscription.mySubscription.includingAddon", { count: usageStats.addonPurchasedValidationRequests })}
                       </span>
                     </div>
                   )}
@@ -593,7 +588,7 @@ function MySubscriptionPage() {
                     <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                     </svg>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Quyền lợi khác</h3>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.mySubscription.otherEntitlements")}</h3>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     {getSortedEntitlements(subscription.entitlementsSnapshot, ["maxMonthlyTestGenerations", "maxValidationRequests"])
@@ -619,7 +614,7 @@ function MySubscriptionPage() {
             {/* Actions */}
             <div className="border-t border-gray-200 dark:border-slate-700 pt-4 sm:pt-6 flex justify-center sm:justify-end">
               <Button variant="danger" onClick={handleCancelSubscription} loading={cancelling} className="w-full sm:w-auto">
-                Hủy gói đăng ký
+                {t("subscription.mySubscription.cancelSubscription")}
               </Button>
             </div>
           </div>

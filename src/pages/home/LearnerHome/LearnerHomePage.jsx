@@ -4,6 +4,7 @@ import { documentsService, subjectsService, questionSetsService } from "@/servic
 import { CardGrid, CategoryCard, Modal, Button, useToast } from "@/components/common";
 import { Footer } from "@/components/layout";
 import { CreateQuizModal } from "@/components/questionSets";
+import { useLanguage } from "@/contexts/LanguageContext";
 import SubjectsIcon from "@/components/icons/SubjectsIcon";
 import BookIcon from "@/components/icons/BookIcon";
 import DocumentIcon from "@/components/icons/DocumentIcon";
@@ -13,6 +14,7 @@ const LearnerHomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const toast = useToast();
+  const { t } = useLanguage();
   const fileInputRef = useRef(null);
 
   const [q, setQ] = useState("");
@@ -263,7 +265,7 @@ const LearnerHomePage = () => {
       setIsUploadDocModalOpen(true);
     } catch (err) {
       console.error("Failed to fetch subjects:", err);
-      toast.showError("Không thể tải danh sách môn học");
+      toast.showError(t("learnerHome.errors.loadSubjects"));
     }
   };
 
@@ -274,11 +276,11 @@ const LearnerHomePage = () => {
       const allowedTypes = [".pdf", ".docx", ".txt"];
       const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
       if (!allowedTypes.includes(ext)) {
-        toast.showError("Chỉ hỗ trợ file .pdf, .docx, .txt");
+        toast.showError(t("learnerHome.errors.fileType"));
         return;
       }
       if (file.size > 20 * 1024 * 1024) {
-        toast.showError("File không được vượt quá 20MB");
+        toast.showError(t("learnerHome.errors.fileSize"));
         return;
       }
       setUploadFile(file);
@@ -288,24 +290,24 @@ const LearnerHomePage = () => {
   // Handle document upload
   const handleUploadDocument = async () => {
     if (!selectedUploadSubject) {
-      toast.showError("Vui lòng chọn môn học");
+      toast.showError(t("learnerHome.errors.selectSubject"));
       return;
     }
     if (!uploadFile) {
-      toast.showError("Vui lòng chọn file");
+      toast.showError(t("learnerHome.errors.selectFile"));
       return;
     }
 
     try {
       setUploading(true);
       await documentsService.uploadDocument(uploadFile, selectedUploadSubject.id || selectedUploadSubject._id);
-      toast.showSuccess("Tải tài liệu thành công!");
+      toast.showSuccess(t("learnerHome.uploadSuccess"));
       setIsUploadDocModalOpen(false);
       // Refresh documents list
       window.location.reload();
     } catch (err) {
       console.error("Upload failed:", err);
-      toast.showError(err.response?.data?.message || "Tải tài liệu thất bại");
+      toast.showError(err.response?.data?.message || t("learnerHome.errors.uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -316,7 +318,7 @@ const LearnerHomePage = () => {
     try {
       setGeneratingQuiz(true);
       const response = await questionSetsService.generateQuestions(data);
-      toast.showSuccess("Tạo bộ đề thành công!");
+      toast.showSuccess(t("learnerHome.createQuizSuccess"));
       setIsCreateQuizModalOpen(false);
       // Navigate to the new quiz
       const quizId = response?.id || response?._id || response?.data?.id;
@@ -327,7 +329,7 @@ const LearnerHomePage = () => {
       }
     } catch (err) {
       console.error("Generate quiz failed:", err);
-      toast.showError(err.response?.data?.message || "Tạo bộ đề thất bại");
+      toast.showError(err.response?.data?.message || t("learnerHome.errors.createQuizFailed"));
     } finally {
       setGeneratingQuiz(false);
     }
@@ -348,7 +350,7 @@ const LearnerHomePage = () => {
             <div className="relative flex-1">
               <input
                 type="text"
-                placeholder="Tìm môn học, bộ đề, tài liệu..."
+                placeholder={t("learnerHome.search.placeholder")}
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 className="w-full px-4 py-2.5 sm:py-3 pl-10 sm:pl-12 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-sm sm:text-base"
@@ -371,10 +373,10 @@ const LearnerHomePage = () => {
             <button
               type="submit"
               className="px-6 py-2.5 sm:py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm sm:text-base w-full sm:w-auto"
-              aria-label="Tìm kiếm"
+              aria-label={t("learnerHome.search.button")}
               disabled={loading}
             >
-              {loading ? "Đang tìm..." : "Tìm kiếm"}
+              {loading ? t("learnerHome.search.searching") : t("learnerHome.search.button")}
             </button>
           </form>
         </div>
@@ -396,13 +398,13 @@ const LearnerHomePage = () => {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
                 <BookIcon size={20} strokeWidth={2} className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400" />
               </div>
-              Môn Học
+              {t("learnerHome.sections.subjects")}
             </h2>
             <button
               onClick={() => navigate("/subjects")}
               className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
             >
-              Xem tất cả →
+              {t("learnerHome.viewAll")} →
             </button>
           </div>
           {subjectsToShow.length > 0 ? (
@@ -416,7 +418,7 @@ const LearnerHomePage = () => {
                   <span className="text-2xl sm:text-3xl font-light text-gray-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">+</span>
                 </div>
                 <span className="mt-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 font-medium transition-colors">
-                  Thêm môn học
+                  {t("learnerHome.addCards.subject")}
                 </span>
               </div>
               {subjectsToShow.map((it) => (
@@ -434,12 +436,12 @@ const LearnerHomePage = () => {
           ) : (
             <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
               <BookIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
-              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">Chưa có môn học nào</p>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">{t("learnerHome.emptyStates.subjects")}</p>
               <button
                 onClick={() => navigate("/subjects/create")}
                 className="mt-4 text-sm sm:text-base text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
-                Tạo môn học đầu tiên
+                {t("learnerHome.createFirst.subject")}
               </button>
             </div>
           )}
@@ -460,13 +462,13 @@ const LearnerHomePage = () => {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
               </div>
-              Tài Liệu{myDocumentsDedup?.length ? ` (${myDocumentsDedup.length})` : ""}
+              {t("learnerHome.sections.documents")}{myDocumentsDedup?.length ? ` (${myDocumentsDedup.length})` : ""}
             </h2>
             <button
               onClick={() => navigate("/documents")}
               className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
             >
-              Xem tất cả →
+              {t("learnerHome.viewAll")} →
             </button>
           </div>
           {myDocumentsDedup.length > 0 ? (
@@ -480,7 +482,7 @@ const LearnerHomePage = () => {
                   <span className="text-2xl sm:text-3xl font-light text-gray-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">+</span>
                 </div>
                 <span className="mt-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 font-medium transition-colors">
-                  Thêm tài liệu
+                  {t("learnerHome.addCards.document")}
                 </span>
               </div>
               {myDocumentsDedup.map((it) => (
@@ -496,12 +498,12 @@ const LearnerHomePage = () => {
           ) : (
             <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
               <DocumentIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
-              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">Chưa có tài liệu nào</p>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">{t("learnerHome.emptyStates.documents")}</p>
               <button
                 onClick={handleOpenUploadDocModal}
                 className="mt-4 text-sm sm:text-base text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
-                Tải lên tài liệu đầu tiên
+                {t("learnerHome.createFirst.document")}
               </button>
             </div>
           )}
@@ -522,13 +524,13 @@ const LearnerHomePage = () => {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
               </div>
-              Đề Thi (Cá Nhân)
+              {t("learnerHome.sections.myQuiz")}
             </h2>
             <button
               onClick={() => navigate("/quiz")}
               className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
             >
-              Xem tất cả →
+              {t("learnerHome.viewAll")} →
             </button>
           </div>
           {lists.mySets.length > 0 ? (
@@ -542,7 +544,7 @@ const LearnerHomePage = () => {
                   <span className="text-2xl sm:text-3xl font-light text-gray-400 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">+</span>
                 </div>
                 <span className="mt-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 font-medium transition-colors">
-                  Tạo bộ đề
+                  {t("learnerHome.addCards.quiz")}
                 </span>
               </div>
               {lists.mySets.map((it) => (
@@ -558,12 +560,12 @@ const LearnerHomePage = () => {
           ) : (
             <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
               <BookIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
-              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">Chưa có bộ đề nào</p>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">{t("learnerHome.emptyStates.myQuiz")}</p>
               <button
                 onClick={() => setIsCreateQuizModalOpen(true)}
                 className="mt-4 text-sm sm:text-base text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
-                Tạo bộ đề đầu tiên
+                {t("learnerHome.createFirst.quiz")}
               </button>
             </div>
           )}
@@ -584,13 +586,13 @@ const LearnerHomePage = () => {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><path d="M12 2c1.5 0 2.92.69 3.82 1.97l1.38 2.16c.5.78 1.3 1.3 2.21 1.46l1.96.31c.95.15 1.73.86 2 1.8l.5 1.81c.22.8.77 1.48 1.5 1.85l1.3.66c.74.37 1.25 1.08 1.37 1.88l.25 1.65c.08.51.33.97.7 1.28l.96.82c.6.5.95 1.23.95 2 0 .77-.35 1.5-.95 2l-.96.82c-.37.31-.62.77-.7 1.28l-.25 1.65c-.12.8-.63 1.51-1.37 1.88l-1.3.66c-.73.37-1.28 1.05-1.5 1.85l-.5 1.81c-.27.94-1.05 1.65-2 1.8l-1.96.31c-.91.16-1.71.68-2.21 1.46l-1.38 2.16c-.9 1.28-2.32 1.97-3.82 1.97s-2.92-.69-3.82-1.97l-1.38-2.16c-.5-.78-1.3-1.3-2.21-1.46l-1.96-.31c-.95-.15-1.73-.86-2-1.8l-.5-1.81c-.22-.8-.77-1.48-1.5-1.85l-1.3-.66c-.74-.37-1.25-1.08-1.37-1.88l-.25-1.65c-.08-.51-.33-.97-.7-1.28l-.96-.82c-.6-.5-.95-1.23-.95-2 0-.77.35-1.5.95-2l.96-.82c.37-.31.62-.77.7-1.28l.25-1.65c.12-.8.63-1.51 1.37-1.88l1.3-.66c.73-.37 1.28-1.05 1.5-1.85l.5-1.81c.27-.94 1.05-1.65 2-1.8l1.96-.31c.91-.16 1.71-.68 2.21-1.46l1.38-2.16C9.08 2.69 10.5 2 12 2z"></path><path d="M2.5 12h19"></path></svg>
               </div>
-              Đề Thi (Chung)
+              {t("learnerHome.sections.publicQuiz")}
             </h2>
             <button
               onClick={() => navigate("/public")}
               className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
             >
-              Xem tất cả →
+              {t("learnerHome.viewAll")} →
             </button>
           </div>
           {lists.publicSets.length > 0 ? (
@@ -608,7 +610,7 @@ const LearnerHomePage = () => {
           ) : (
             <div className="text-center py-8 sm:py-12 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700">
               <GlobeIcon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
-              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">Chưa có bộ đề công khai</p>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">{t("learnerHome.emptyStates.publicQuiz")}</p>
             </div>
           )}
         </section>
@@ -637,12 +639,12 @@ const LearnerHomePage = () => {
                 id="search-modal-title"
                 className="text-base sm:text-xl font-bold text-gray-900 dark:text-gray-100 truncate pr-2"
               >
-                Kết quả{submittedQ ? `: "${submittedQ}"` : ""}
+                {t("learnerHome.searchModal.results")}{submittedQ ? `: "${submittedQ}"` : ""}
               </h3>
               <button
                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 flex-shrink-0"
                 onClick={() => setModalOpen(false)}
-                aria-label="Đóng"
+                aria-label={t("common.close")}
               >
                 <span className="text-2xl leading-none">×</span>
               </button>
@@ -655,7 +657,7 @@ const LearnerHomePage = () => {
                 <div className="space-y-2 sm:space-y-3">
                   <h4 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                     <BookIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
-                    Môn học
+                    {t("learnerHome.searchModal.subjects")}
                   </h4>
                   <ul className="space-y-1.5 sm:space-y-2">
                     {results.subjects.map((s) => (
@@ -667,12 +669,12 @@ const LearnerHomePage = () => {
                           setModalOpen(false);
                         }}
                       >
-                        {s.subjectName || s.name || s.title || "Môn học"}
+                        {s.subjectName || s.name || s.title || t("learnerHome.searchModal.defaultSubject")}
                       </li>
                     ))}
                     {results.subjects.length === 0 && (
                       <li className="px-2.5 sm:px-3 py-1.5 sm:py-2 text-gray-400 dark:text-gray-500 text-xs sm:text-sm italic">
-                        Không có kết quả
+                        {t("learnerHome.searchModal.noResults")}
                       </li>
                     )}
                   </ul>
@@ -682,7 +684,7 @@ const LearnerHomePage = () => {
                 <div className="space-y-2 sm:space-y-3">
                   <h4 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                     <PenIcon className="w-4 h-4 sm:w-5 sm:h-5 text-secondary-600 dark:text-secondary-400" />
-                    Bộ đề
+                    {t("learnerHome.searchModal.quizSets")}
                   </h4>
                   <ul className="space-y-1.5 sm:space-y-2">
                     {results.sets.map((s) => (
@@ -694,12 +696,12 @@ const LearnerHomePage = () => {
                           setModalOpen(false);
                         }}
                       >
-                        {s.name || s.title || "Bộ đề"}
+                        {s.name || s.title || t("learnerHome.searchModal.defaultQuizSet")}
                       </li>
                     ))}
                     {results.sets.length === 0 && (
                       <li className="px-2.5 sm:px-3 py-1.5 sm:py-2 text-gray-400 dark:text-gray-500 text-xs sm:text-sm italic">
-                        Không có kết quả
+                        {t("learnerHome.searchModal.noResults")}
                       </li>
                     )}
                   </ul>
@@ -709,7 +711,7 @@ const LearnerHomePage = () => {
                 <div className="space-y-2 sm:space-y-3">
                   <h4 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                     <DocumentIcon className="w-4 h-4 sm:w-5 sm:h-5 text-success-600 dark:text-success-400" />
-                    Tài liệu
+                    {t("learnerHome.searchModal.documents")}
                   </h4>
                   <ul className="space-y-1.5 sm:space-y-2">
                     {results.documents.map((d) => (
@@ -721,12 +723,12 @@ const LearnerHomePage = () => {
                           setModalOpen(false);
                         }}
                       >
-                        {d.name || d.filename || d.title || "Tài liệu"}
+                        {d.name || d.filename || d.title || t("learnerHome.searchModal.defaultDocument")}
                       </li>
                     ))}
                     {results.documents.length === 0 && (
                       <li className="px-2.5 sm:px-3 py-1.5 sm:py-2 text-gray-400 dark:text-gray-500 text-xs sm:text-sm italic">
-                        Không có kết quả
+                        {t("learnerHome.searchModal.noResults")}
                       </li>
                     )}
                   </ul>
@@ -753,14 +755,14 @@ const LearnerHomePage = () => {
           setSelectedUploadSubject(null);
           setUploadFile(null);
         }}
-        title="Thêm tài liệu mới"
+        title={t("learnerHome.uploadModal.title")}
         size="md"
       >
         <div className="space-y-6">
           {/* Subject Selection - Dropdown like CreateQuizModal */}
           <div className="form-group">
             <label htmlFor="upload-subject-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Chọn môn học <span className="text-red-500 dark:text-red-400">*</span>
+              {t("learnerHome.uploadModal.selectSubject")} <span className="text-red-500 dark:text-red-400">*</span>
             </label>
             <select
               id="upload-subject-select"
@@ -772,7 +774,7 @@ const LearnerHomePage = () => {
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               required
             >
-              <option value="">-- Chọn môn học --</option>
+              <option value="">{t("learnerHome.uploadModal.selectSubjectPlaceholder")}</option>
               {uploadSubjects.map((subject) => (
                 <option key={subject.id || subject._id} value={subject.id || subject._id}>
                   {subject.subjectName || subject.name}
@@ -790,10 +792,10 @@ const LearnerHomePage = () => {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">
-                    Môn học: {selectedUploadSubject.subjectName || selectedUploadSubject.name}
+                    {t("learnerHome.uploadModal.subjectLabel")}: {selectedUploadSubject.subjectName || selectedUploadSubject.name}
                   </p>
                   <p className="text-sm text-blue-700 dark:text-blue-400">
-                    Tài liệu sẽ được thêm vào môn học này
+                    {t("learnerHome.uploadModal.subjectNote")}
                   </p>
                 </div>
               </div>
@@ -804,7 +806,7 @@ const LearnerHomePage = () => {
           {selectedUploadSubject && (
             <div className="form-group">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Chọn file <span className="text-red-500 dark:text-red-400">*</span>
+                {t("learnerHome.uploadModal.selectFile")} <span className="text-red-500 dark:text-red-400">*</span>
               </label>
               <div
                 onClick={() => fileInputRef.current?.click()}
@@ -857,7 +859,7 @@ const LearnerHomePage = () => {
                         }}
                         className="text-xs text-red-600 dark:text-red-400 hover:underline mt-1"
                       >
-                        Xóa và chọn file khác
+                        {t("learnerHome.uploadModal.removeFile")}
                       </button>
                     </div>
                   </div>
@@ -865,10 +867,10 @@ const LearnerHomePage = () => {
                   <>
                     <DocumentIcon className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-2" />
                     <p className="text-gray-600 dark:text-gray-400">
-                      Kéo thả file vào đây hoặc click để chọn
+                      {t("learnerHome.uploadModal.dropzone")}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                      Hỗ trợ: PDF, DOCX, TXT (tối đa 20MB)
+                      {t("learnerHome.uploadModal.supportedFormats")}
                     </p>
                   </>
                 )}
@@ -880,7 +882,7 @@ const LearnerHomePage = () => {
           {uploading && uploadProgress > 0 && (
             <div>
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-gray-600 dark:text-gray-400">Đang tải lên...</span>
+                <span className="text-gray-600 dark:text-gray-400">{t("learnerHome.uploadModal.uploading")}</span>
                 <span className="text-primary-600 dark:text-primary-400 font-medium">{uploadProgress}%</span>
               </div>
               <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -903,14 +905,14 @@ const LearnerHomePage = () => {
               }}
               disabled={uploading}
             >
-              Hủy
+              {t("common.cancel")}
             </Button>
             <Button
               onClick={handleUploadDocument}
               disabled={!selectedUploadSubject || !uploadFile || uploading}
               loading={uploading}
             >
-              {uploading ? "Đang tải..." : "Tải lên"}
+              {uploading ? t("learnerHome.uploadModal.uploading") : t("learnerHome.uploadModal.upload")}
             </Button>
           </div>
         </div>

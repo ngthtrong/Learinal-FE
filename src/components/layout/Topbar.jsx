@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Modal, ThemeToggle } from "@/components/common";
 import { NotificationBell } from "@/components/notifications";
 import { APP_CONFIG } from "@/config/app.config";
@@ -12,6 +13,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
   const location = useLocation();
   const { user, logout } = useAuth();
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const role = user?.role || "Learner";
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -28,7 +30,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
   const items = [
     {
       key: "upgrade",
-      label: "Nâng cấp",
+      label: t('topbar.upgrade'),
       to: role === "Admin" ? "/subscriptions/view" : "/mysubscription",
       roles: ["Learner", "Admin"],
     },
@@ -124,12 +126,12 @@ const Topbar = ({ theme: themeProp = "light" }) => {
           }}
           title={
             role === "Admin"
-              ? "Về trang quản trị"
+              ? t('topbar.goToAdmin')
               : role === "Expert"
-              ? "Về trang chuyên gia"
-              : "Về trang chính"
+              ? t('topbar.goToExpert')
+              : t('topbar.goToHome')
           }
-          aria-label="Đi tới trang chính"
+          aria-label={t('topbar.goToHome')}
           role="link"
         >
           <img
@@ -148,7 +150,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
             <div className="relative flex-1 max-w-xs sm:max-w-md">
               <input
                 type="text"
-                placeholder="Tìm môn học, bộ đề..."
+                placeholder={t('topbar.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full px-3 py-1.5 sm:py-2 pl-9 sm:pl-10 pr-3 sm:pr-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-xs sm:text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
@@ -171,9 +173,9 @@ const Topbar = ({ theme: themeProp = "light" }) => {
             <button
               type="submit"
               className="px-3 sm:px-4 py-1.5 sm:py-2 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 text-xs sm:text-sm font-medium transition-colors"
-              aria-label="Tìm kiếm"
+              aria-label={t('topbar.search')}
             >
-              Tìm
+              {t('topbar.search')}
             </button>
           </form>
         )}
@@ -236,7 +238,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
             <button
               className="sm:hidden p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
               onClick={() => setMobileSearchOpen(true)}
-              aria-label="Tìm kiếm"
+              aria-label={t('topbar.search')}
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
@@ -273,7 +275,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
                         navigate("/profile");
                       }}
                     >
-                      Trang cá nhân
+                      {t('topbar.profile')}
                     </button>
                     <button
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -283,14 +285,14 @@ const Topbar = ({ theme: themeProp = "light" }) => {
                         navigate("/profile/edit");
                       }}
                     >
-                      Cài đặt
+                      {t('topbar.settings')}
                     </button>
                     <a
                       className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                       role="menuitem"
                       href="mailto:contact@learinalapp.page.gd"
                     >
-                      Liên hệ hỗ trợ
+                      {t('topbar.contactSupport')}
                     </a>
                     <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                   </>
@@ -300,7 +302,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
                   role="menuitem"
                   onClick={openLogoutModal}
                 >
-                  Đăng xuất
+                  {t('topbar.logout')}
                 </button>
               </div>
             )}
@@ -313,7 +315,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
               onClick={() => setMobileMenuOpen((v) => !v)}
               aria-haspopup="menu"
               aria-expanded={mobileMenuOpen}
-              aria-label="Menu"
+              aria-label={t('topbar.menu')}
             >
               {mobileMenuOpen ? (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -372,7 +374,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
                         navigate("/profile");
                       }}
                     >
-                      Trang cá nhân
+                      {t('topbar.profile')}
                     </button>
                     <button
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -381,13 +383,13 @@ const Topbar = ({ theme: themeProp = "light" }) => {
                         navigate("/profile/edit");
                       }}
                     >
-                      Cài đặt
+                      {t('topbar.settings')}
                     </button>
                     <a
                       className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                       href="mailto:contact@learinalapp.page.gd"
                     >
-                      Liên hệ hỗ trợ
+                      {t('topbar.contactSupport')}
                     </a>
                     <div className="border-t border-gray-200 dark:border-gray-700 my-2" />
                   </>
@@ -400,7 +402,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
                     openLogoutModal();
                   }}
                 >
-                  Đăng xuất
+                  {t('topbar.logout')}
                 </button>
               </div>
             )}
@@ -420,7 +422,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
                 <input
                   ref={mobileSearchRef}
                   type="text"
-                  placeholder="Tìm môn học, bộ đề..."
+                  placeholder={t('topbar.searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full px-3 py-2.5 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
@@ -444,15 +446,15 @@ const Topbar = ({ theme: themeProp = "light" }) => {
               <button
                 type="submit"
                 className="px-4 py-2.5 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm font-medium transition-colors"
-                aria-label="Tìm kiếm"
+                aria-label={t('topbar.search')}
               >
-                Tìm
+                {t('topbar.search')}
               </button>
               <button
                 type="button"
                 onClick={() => setMobileSearchOpen(false)}
                 className="p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
-                aria-label="Đóng"
+                aria-label={t('topbar.close')}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -467,19 +469,19 @@ const Topbar = ({ theme: themeProp = "light" }) => {
       <Modal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
-        title="Xác nhận đăng xuất"
-        confirmText="Đăng xuất"
-        cancelText="Hủy"
+        title={t('topbar.logoutConfirmTitle')}
+        confirmText={t('topbar.logout')}
+        cancelText={t('topbar.cancel')}
         onConfirm={handleLogout}
         variant="danger"
         loading={loggingOut}
         showCloseButton={false}
       >
         <p className="text-gray-700 dark:text-gray-300">
-          Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?
+          {t('topbar.logoutConfirmMessage')}
         </p>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          Bạn sẽ cần đăng nhập lại để tiếp tục sử dụng Learinal.
+          {t('topbar.logoutConfirmNote')}
         </p>
       </Modal>
     </header>

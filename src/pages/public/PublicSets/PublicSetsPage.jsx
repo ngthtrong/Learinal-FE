@@ -6,11 +6,13 @@ import { useToast, PremiumRequiredModal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { Footer } from "@/components/layout";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const PublicSetsPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [questionSets, setQuestionSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -110,10 +112,10 @@ const PublicSetsPage = () => {
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><path d="M12 2c1.5 0 2.92.69 3.82 1.97l1.38 2.16c.5.78 1.3 1.3 2.21 1.46l1.96.31c.95.15 1.73.86 2 1.8l.5 1.81c.22.8.77 1.48 1.5 1.85l1.3.66c.74.37 1.25 1.08 1.37 1.88l.25 1.65c.08.51.33.97.7 1.28l.96.82c.6.5.95 1.23.95 2 0 .77-.35 1.5-.95 2l-.96.82c-.37.31-.62.77-.7 1.28l-.25 1.65c-.12.8-.63 1.51-1.37 1.88l-1.3.66c-.73.37-1.28 1.05-1.5 1.85l-.5 1.81c-.27.94-1.05 1.65-2 1.8l-1.96.31c-.91.16-1.71.68-2.21 1.46l-1.38 2.16c-.9 1.28-2.32 1.97-3.82 1.97s-2.92-.69-3.82-1.97l-1.38-2.16c-.5-.78-1.3-1.3-2.21-1.46l-1.96-.31c-.95-.15-1.73-.86-2-1.8l-.5-1.81c-.22-.8-.77-1.48-1.5-1.85l-1.3-.66c-.74-.37-1.25-1.08-1.37-1.88l-.25-1.65c-.08-.51-.33-.97-.7-1.28l-.96-.82c-.6-.5-.95-1.23-.95-2 0-.77.35-1.5.95-2l.96-.82c.37-.31.62-.77.7-1.28l.25-1.65c.12-.8.63-1.51 1.37-1.88l1.3-.66c.73-.37 1.28-1.05 1.5-1.85l.5-1.81c.27-.94 1.05-1.65 2-1.8l1.96-.31c.91-.16 1.71-.68 2.21-1.46l1.38-2.16C9.08 2.69 10.5 2 12 2z"></path><path d="M2.5 12h19"></path></svg>
             </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Bộ Đề Chung</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("publicSets.pageTitle")}</h1>
           </div>
           <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 ml-0 sm:ml-13">
-            Khám phá và làm thử các bộ đề thi được chia sẻ công khai từ cộng đồng
+            {t("publicSets.pageSubtitle")}
           </p>
 
           {/* Tabs */}
@@ -132,7 +134,7 @@ const PublicSetsPage = () => {
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                   </svg>
-                  Tất cả
+                  {t("publicSets.tabAll")}
                 </span>
               </button>
               <button
@@ -150,9 +152,9 @@ const PublicSetsPage = () => {
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                   </svg>
-                  Đề Expert
+                  {t("publicSets.tabExpert")}
                   <span className="ml-1 px-1.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                    Premium
+                    {t("publicSets.premium")}
                   </span>
                 </span>
               </button>
@@ -170,7 +172,7 @@ const PublicSetsPage = () => {
                     <polyline points="16 6 12 2 8 6"></polyline>
                     <line x1="12" y1="2" x2="12" y2="15"></line>
                   </svg>
-                  Người dùng chia sẻ
+                  {t("publicSets.tabUserShared")}
                 </span>
               </button>
             </nav>
@@ -205,10 +207,10 @@ const PublicSetsPage = () => {
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><path d="M12 2c1.5 0 2.92.69 3.82 1.97l1.38 2.16c.5.78 1.3 1.3 2.21 1.46l1.96.31c.95.15 1.73.86 2 1.8l.5 1.81c.22.8.77 1.48 1.5 1.85l1.3.66c.74.37 1.25 1.08 1.37 1.88l.25 1.65c.08.51.33.97.7 1.28l.96.82c.6.5.95 1.23.95 2 0 .77-.35 1.5-.95 2l-.96.82c-.37.31-.62.77-.7 1.28l-.25 1.65c-.12.8-.63 1.51-1.37 1.88l-1.3.66c-.73.37-1.28 1.05-1.5 1.85l-.5 1.81c-.27.94-1.05 1.65-2 1.8l-1.96.31c-.91.16-1.71.68-2.21 1.46l-1.38 2.16c-.9 1.28-2.32 1.97-3.82 1.97s-2.92-.69-3.82-1.97l-1.38-2.16c-.5-.78-1.3-1.3-2.21-1.46l-1.96-.31c-.95-.15-1.73-.86-2-1.8l-.5-1.81c-.22-.8-.77-1.48-1.5-1.85l-1.3-.66c-.74-.37-1.25-1.08-1.37-1.88l-.25-1.65c-.08-.51-.33-.97-.7-1.28l-.96-.82c-.6-.5-.95-1.23-.95-2 0-.77.35-1.5.95-2l.96-.82c.37-.31.62-.77.7-1.28l.25-1.65c.12-.8.63-1.51 1.37-1.88l1.3-.66c.73-.37 1.28-1.05 1.5-1.85l.5-1.81c.27-.94 1.05-1.65 2-1.8l1.96-.31c.91-.16 1.71-.68 2.21-1.46l1.38-2.16C9.08 2.69 10.5 2 12 2z"></path><path d="M2.5 12h19"></path></svg>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 text-center">
-              Chưa có bộ đề công khai nào
+              {t("publicSets.noSets")}
             </h2>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center mb-4 sm:mb-6 max-w-md">
-              Hiện tại chưa có bộ đề nào được chia sẻ công khai. Hãy quay lại sau!
+              {t("publicSets.noSetsDesc")}
             </p>
           </div>
         )}
@@ -229,7 +231,7 @@ const PublicSetsPage = () => {
                   ? new Date(questionSet.createdAt).toLocaleDateString("vi-VN")
                   : "";
                 const creatorName =
-                  questionSet.creatorName || questionSet.creator?.name || "Ẩn danh";
+                  questionSet.creatorName || questionSet.creator?.name || t("publicSets.anonymous");
                 const creatorRole = questionSet.creatorRole || "Learner";
                 const subjectName = questionSet.subject?.name || "";
                 const isExpertSet = creatorRole === "Expert";
@@ -375,12 +377,12 @@ const PublicSetsPage = () => {
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                             </svg>
-                            Premium
+                            {t("publicSets.premium")}
                           </>
                         ) : (
                           <>
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            Làm thử
+                            {t("publicSets.tryNow")}
                           </>
                         )}
                       </button>
@@ -397,10 +399,10 @@ const PublicSetsPage = () => {
             {totalPages > 1 && (
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-6 sm:mt-8">
                 <Button variant="secondary" disabled={page === 1} onClick={() => setPage(page - 1)} className="w-full sm:w-auto">
-                  ← Trang trước
+                  {t("publicSets.prevPage")}
                 </Button>
                 <div className="flex items-center gap-2 text-sm sm:text-base text-gray-700 dark:text-gray-300">
-                  <span className="font-medium">Trang {page}</span>
+                  <span className="font-medium">{t("publicSets.page")} {page}</span>
                   <span>/</span>
                   <span>{totalPages}</span>
                 </div>
@@ -410,7 +412,7 @@ const PublicSetsPage = () => {
                   onClick={() => setPage(page + 1)}
                   className="w-full sm:w-auto"
                 >
-                  Trang sau →
+                  {t("publicSets.nextPage")}
                 </Button>
               </div>
             )}

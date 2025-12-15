@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { ActiveQuizProvider } from "./contexts/ActiveQuizContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import { ToastProvider } from "./components/common";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import {
@@ -80,12 +81,13 @@ import AdminContentFlagDetailPage from "./pages/admin/ContentFlags/AdminContentF
 function App() {
   return (
     <ThemeProvider>
-      <ToastProvider>
-        <AuthProvider>
-          <NotificationProvider>
-            <Router>
-              <ActiveQuizProvider>
-          <Routes>
+      <LanguageProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <NotificationProvider>
+              <Router>
+                <ActiveQuizProvider>
+            <Routes>
             {/* Public routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -732,6 +734,7 @@ function App() {
           </NotificationProvider>
         </AuthProvider>
       </ToastProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }
