@@ -9,6 +9,7 @@ import Button from "@/components/common/Button";
 import Modal from "@/components/common/Modal";
 import subjectsService from "@/services/api/subjects.service";
 import documentsService from "@/services/api/documents.service";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const LANGUAGE_OPTIONS = [
   { value: 'vi', label: 'Tiếng Việt' },
@@ -16,6 +17,7 @@ const LANGUAGE_OPTIONS = [
 ];
 
 function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
+  const { t } = useLanguage();
   const [subjects, setSubjects] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [documents, setDocuments] = useState([]);
@@ -59,7 +61,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
           initialDistribution[id] = equalPercentage;
         });
         setTopicDistribution(initialDistribution);
-        setTitle(`Bộ đề thi ${selectedSubject.subjectName}`);
+        setTitle(t("components.createQuizModal.defaultQuizTitle", { subjectName: selectedSubject.subjectName }));
       }
     } else {
       setDocuments([]);
@@ -201,17 +203,17 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
     e.preventDefault();
 
     if (!selectedSubject) {
-      alert("Vui lòng chọn môn học!");
+      alert(t("components.createQuizModal.subjectRequired"));
       return;
     }
 
     if (selectedTopics.length === 0) {
-      alert("Vui lòng chọn ít nhất một chương!");
+      alert(t("components.createQuizModal.topicRequired"));
       return;
     }
 
     if (totalDifficultyPercentage !== 100) {
-      alert("Tổng phân bổ mức độ khó phải bằng 100%!");
+      alert(t("components.createQuizModal.difficultyTotalError"));
       return;
     }
 
@@ -271,12 +273,12 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Tạo bộ đề thi mới" size="large">
+    <Modal isOpen={isOpen} onClose={onClose} title={t("components.createQuizModal.title")} size="large">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Subject Selection */}
         <div className="form-group">
           <label htmlFor="subject-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Chọn môn học <span className="text-red-500 dark:text-red-400">*</span>
+            {t("components.createQuizModal.selectSubjectLabel")} <span className="text-red-500 dark:text-red-400">*</span>
           </label>
           <select
             id="subject-select"
@@ -288,7 +290,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             required
           >
-            <option value="">-- Chọn môn học --</option>
+            <option value="">{t("components.createQuizModal.selectSubjectPlaceholder")}</option>
             {subjects.map((subject) => (
               <option key={subject.id} value={subject.id}>
                 {subject.subjectName}
@@ -306,20 +308,20 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">
-                  Môn học: {selectedSubject.subjectName}
+                  {t("components.createQuizModal.subjectInfo")}: {selectedSubject.subjectName}
                 </p>
                 {loadingDocuments ? (
-                  <p className="text-sm text-blue-700 dark:text-blue-400">Đang tải tài liệu...</p>
+                  <p className="text-sm text-blue-700 dark:text-blue-400">{t("components.createQuizModal.loadingDocuments")}</p>
                 ) : (
                   <p className="text-sm text-blue-700 dark:text-blue-400 flex items-center gap-3">
                     <span className="inline-flex items-center gap-1">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                      {documents.length} tài liệu
+                      {t("components.createQuizModal.documentsCount", { count: documents.length })}
                     </span>
                     <span>•</span>
                     <span className="inline-flex items-center gap-1">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
-                      {allTopics.length} chương
+                      {t("components.createQuizModal.chaptersCount", { count: allTopics.length })}
                     </span>
                   </p>
                 )}
@@ -334,14 +336,14 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
             {/* Title Input */}
             <div className="form-group">
               <label htmlFor="quiz-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Tên bộ đề <span className="text-red-500 dark:text-red-400">*</span>
+                {t("components.createQuizModal.quizTitleLabel")} <span className="text-red-500 dark:text-red-400">*</span>
               </label>
               <input
                 id="quiz-title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Ví dụ: Đề thi cuối kỳ"
+                placeholder={t("components.createQuizModal.quizTitlePlaceholder")}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 required
                 maxLength={100}
@@ -351,7 +353,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
             {/* Language Selection */}
             <div className="form-group">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Ngôn ngữ đề thi
+                {t("components.createQuizModal.languageLabel")}
               </label>
               <div className="flex gap-3">
                 {LANGUAGE_OPTIONS.map((opt) => (
@@ -377,7 +379,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                 htmlFor="num-questions"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Số lượng câu hỏi: <strong className="text-primary-600 dark:text-primary-400">{numQuestions}</strong>
+                {t("components.createQuizModal.numQuestionsLabel")}: <strong className="text-primary-600 dark:text-primary-400">{numQuestions}</strong>
               </label>
               <input
                 id="num-questions"
@@ -389,25 +391,25 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                 className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
               />
               <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                <span>1 câu</span>
-                <span>50 câu</span>
+                <span>1 {t("components.createQuizModal.questionsUnit")}</span>
+                <span>50 {t("components.createQuizModal.questionsUnit")}</span>
               </div>
             </div>
 
             {/* Difficulty Distribution - Bloom's Taxonomy (6 levels) */}
             <div className="form-group">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Phân bổ mức độ khó (Bloom's Taxonomy)
+                {t("components.createQuizModal.difficultyLabel")}
               </label>
               <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 space-y-3">
                 {[
-                  { key: "Ghi nhớ", label: "Ghi nhớ", color: "bg-green-500", description: "Nhớ, nhận biết" },
-                  { key: "Hiểu", label: "Hiểu", color: "bg-blue-500", description: "Giải thích, so sánh" },
-                  { key: "Áp dụng", label: "Áp dụng", color: "bg-cyan-500", description: "Sử dụng kiến thức" },
-                  { key: "Phân tích", label: "Phân tích", color: "bg-yellow-500", description: "Phân tích, so sánh" },
-                  { key: "Đánh giá", label: "Đánh giá", color: "bg-orange-500", description: "Đánh giá, phê phán" },
-                  { key: "Sáng tạo", label: "Sáng tạo", color: "bg-red-500", description: "Tạo ra, thiết kế" },
-                ].map(({ key, label, color, description }) => {
+                  { key: "Ghi nhớ", labelKey: "difficultyRemember", color: "bg-green-500", descKey: "difficultyRememberDesc" },
+                  { key: "Hiểu", labelKey: "difficultyUnderstand", color: "bg-blue-500", descKey: "difficultyUnderstandDesc" },
+                  { key: "Áp dụng", labelKey: "difficultyApply", color: "bg-cyan-500", descKey: "difficultyApplyDesc" },
+                  { key: "Phân tích", labelKey: "difficultyAnalyze", color: "bg-yellow-500", descKey: "difficultyAnalyzeDesc" },
+                  { key: "Đánh giá", labelKey: "difficultyEvaluate", color: "bg-orange-500", descKey: "difficultyEvaluateDesc" },
+                  { key: "Sáng tạo", labelKey: "difficultyCreate", color: "bg-red-500", descKey: "difficultyCreateDesc" },
+                ].map(({ key, labelKey, color, descKey }) => {
                   const percentage = difficultyDistribution[key] || 0;
                   const questionCount = Math.round((percentage / 100) * numQuestions);
                   
@@ -416,12 +418,12 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div className={`w-3 h-3 rounded-full ${color}`}></div>
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
-                          <span className="text-xs text-gray-400 dark:text-gray-500">({description})</span>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t(`components.createQuizModal.${labelKey}`)}</span>
+                          <span className="text-xs text-gray-400 dark:text-gray-500">({t(`components.createQuizModal.${descKey}`)})</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {questionCount} câu
+                            {questionCount} {t("components.createQuizModal.questionsUnit")}
                           </span>
                           <div className="flex items-center">
                             <input
@@ -446,7 +448,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                   );
                 })}
                 <div className="pt-2 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Tổng:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">{t("components.createQuizModal.totalLabel")}:</span>
                   <span className={`text-sm font-bold ${
                     totalDifficultyPercentage === 100 
                       ? "text-green-600 dark:text-green-400" 
@@ -455,7 +457,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                     {totalDifficultyPercentage}%
                     {totalDifficultyPercentage !== 100 && (
                       <span className="ml-1 text-xs font-normal">
-                        ({totalDifficultyPercentage < 100 ? `thiếu ${100 - totalDifficultyPercentage}%` : `thừa ${totalDifficultyPercentage - 100}%`})
+                        ({totalDifficultyPercentage < 100 ? t("components.createQuizModal.missing", { percent: 100 - totalDifficultyPercentage }) : t("components.createQuizModal.excess", { percent: totalDifficultyPercentage - 100 })})
                       </span>
                     )}
                   </span>
@@ -467,7 +469,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
             {allTopics.length > 0 && (
               <div className="form-group">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Chọn chương và tỉ lệ câu hỏi ({selectedTopics.length}/{allTopics.length} đã chọn)
+                  {t("components.createQuizModal.topicSelectionLabel", { selected: selectedTopics.length, total: allTopics.length })}
                 </label>
                 <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 space-y-3">
                   {allTopics.map((topic) => {
@@ -522,7 +524,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
                   })}
                 </div>
                 <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                  Tổng:{" "}
+                  {t("components.createQuizModal.totalLabel")}:{" "}
                   <strong
                     className={`${
                       Math.round(
@@ -546,10 +548,10 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
         {/* Form Actions */}
         <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
           <Button type="button" variant="secondary" onClick={handleReset} disabled={loading}>
-            Đặt lại
+            {t("components.createQuizModal.resetButton")}
           </Button>
           <Button type="button" variant="secondary" onClick={onClose} disabled={loading}>
-            Hủy
+            {t("components.createQuizModal.cancelButton")}
           </Button>
           <Button
             type="submit"
@@ -558,7 +560,7 @@ function CreateQuizModal({ isOpen, onClose, onGenerate, loading }) {
           >
             <span className="inline-flex items-center gap-2">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="10" width="20" height="12" rx="2" ry="2"></rect><path d="M22 12V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v6"></path></svg>
-              Tạo đề thi
+              {t("components.createQuizModal.createButton")}
             </span>
           </Button>
         </div>

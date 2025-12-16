@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Button, Modal, useToast } from "@/components/common";
 import { Footer } from "@/components/layout";
 import addonPackagesService from "@/services/api/addonPackages.service";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function AddonPackagesPage() {
   const navigate = useNavigate();
   const toast = useToast();
+  const { t } = useLanguage();
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,7 +40,7 @@ function AddonPackagesPage() {
       setMyQuota(quotaRes || { totalTestGenerations: 0, totalValidationRequests: 0 });
     } catch (err) {
       console.error("Error fetching addon packages:", err);
-      setError(err?.response?.data?.message || "Không thể tải danh sách gói mua thêm");
+      setError(err?.response?.data?.message || t("common.error"));
     } finally {
       setLoading(false);
     }
@@ -54,7 +56,7 @@ function AddonPackagesPage() {
       setQrData(res);
     } catch (err) {
       console.error("Error generating QR:", err);
-      toast.showError(err?.response?.data?.message || "Không thể tạo mã QR thanh toán");
+      toast.showError(err?.response?.data?.message || t("subscription.payment.qrError"));
       setQrModalOpen(false);
     } finally {
       setGeneratingQr(false);
@@ -70,12 +72,12 @@ function AddonPackagesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Đang tải danh sách gói...</p>
+              <p className="text-gray-600 dark:text-gray-400">{t("subscription.addon.loading")}</p>
             </div>
           </div>
         </div>
@@ -85,12 +87,12 @@ function AddonPackagesPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-6 py-4 rounded-lg max-w-2xl mx-auto mt-8">
             <p className="font-medium">{error}</p>
             <Button variant="secondary" className="mt-4" onClick={fetchData}>
-              Thử lại
+              {t("subscription.addon.retry")}
             </Button>
           </div>
         </div>
@@ -99,15 +101,15 @@ function AddonPackagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pt-4 sm:pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <button 
             onClick={() => navigate(-1)}
             className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-xs sm:text-sm mb-3 sm:mb-4 flex items-center gap-1"
           >
-            ← Quay lại danh sách gói
+            ← {t("subscription.addon.backToList")}
           </button>
           
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
@@ -116,32 +118,32 @@ function AddonPackagesPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
             </div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Mua thêm lượt</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.addon.pageTitle")}</h1>
           </div>
           <p className="text-xs sm:text-sm lg:text-base text-gray-600 dark:text-gray-400">
-            Mua thêm lượt tạo đề và lượt kiểm duyệt để cộng dồn vào gói hiện tại của bạn
+            {t("subscription.addon.pageSubtitle")}
           </p>
         </div>
       </div>
 
       {/* Current Quota Summary */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 mb-4 sm:mb-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6">
           <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
-            Lượt mua thêm hiện có
+            {t("subscription.addon.currentQuota")}
           </h2>
           <div className="grid grid-cols-2 gap-2 sm:gap-4">
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-2 sm:p-4 text-center">
               <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-blue-600 dark:text-blue-400">
                 {myQuota.totalTestGenerations}
               </div>
-              <div className="text-[10px] sm:text-xs lg:text-sm text-blue-700 dark:text-blue-300">Lượt tạo đề</div>
+              <div className="text-[10px] sm:text-xs lg:text-sm text-blue-700 dark:text-blue-300">{t("subscription.addon.testGenerations")}</div>
             </div>
             <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-2 sm:p-4 text-center">
               <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-purple-600 dark:text-purple-400">
                 {myQuota.totalValidationRequests}
               </div>
-              <div className="text-[10px] sm:text-xs lg:text-sm text-purple-700 dark:text-purple-300">Lượt kiểm duyệt</div>
+              <div className="text-[10px] sm:text-xs lg:text-sm text-purple-700 dark:text-purple-300">{t("subscription.addon.validationRequests")}</div>
             </div>
           </div>
         </div>
@@ -150,13 +152,13 @@ function AddonPackagesPage() {
       {/* Packages Grid */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 pb-6 sm:pb-8">
         {packages.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 sm:p-12 text-center">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-8 sm:p-12 text-center">
             <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">📦</div>
             <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Chưa có gói mua thêm
+              {t("subscription.addon.noPackages")}
             </h3>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Hiện tại chưa có gói mua thêm nào. Vui lòng quay lại sau.
+              {t("subscription.addon.noPackagesDesc")}
             </p>
           </div>
         ) : (
@@ -164,7 +166,7 @@ function AddonPackagesPage() {
             {packages.map((pkg) => (
               <div
                 key={pkg._id || pkg.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
+                className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow"
               >
                 {/* Package Header */}
                 <div className="bg-gradient-to-r from-primary-500 to-secondary-500 p-3 sm:p-4 text-white">
@@ -197,7 +199,7 @@ function AddonPackagesPage() {
                             +{pkg.additionalTestGenerations}
                           </span>
                           <span className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm ml-1">
-                            lượt tạo đề
+                            {t("subscription.addon.testGenerations")}
                           </span>
                         </div>
                       </div>
@@ -214,7 +216,7 @@ function AddonPackagesPage() {
                             +{pkg.additionalValidationRequests}
                           </span>
                           <span className="text-purple-600 dark:text-purple-400 text-xs sm:text-sm ml-1">
-                            lượt kiểm duyệt
+                            {t("subscription.addon.validationRequests")}
                           </span>
                         </div>
                       </div>
@@ -223,12 +225,12 @@ function AddonPackagesPage() {
 
                   {/* Note */}
                   <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 text-center mb-3 sm:mb-4">
-                    Lượt mua thêm có hiệu lực theo chu kỳ gói hiện tại của bạn
+                    {t("subscription.addon.validityNote")}
                   </p>
 
                   {/* Buy Button */}
                   <Button className="w-full" onClick={() => handleBuyPackage(pkg)}>
-                    Mua ngay
+                    {t("subscription.addon.buyNow")}
                   </Button>
                 </div>
               </div>
@@ -245,14 +247,14 @@ function AddonPackagesPage() {
           setSelectedPackage(null);
           setQrData(null);
         }}
-        title="Quét mã QR để thanh toán"
+        title={t("subscription.payment.qrTitle")}
         size="small"
       >
         <div className="text-center">
           {generatingQr ? (
             <div className="py-6">
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600 mx-auto mb-3"></div>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">Đang tạo mã QR...</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">{t("subscription.payment.generatingQR")}</p>
             </div>
           ) : qrData ? (
             <>
@@ -260,7 +262,7 @@ function AddonPackagesPage() {
               <div className="bg-white p-3 rounded-xl inline-block mb-4">
                 <img
                   src={qrData.qrCodeUrl || qrData.qrUrl || qrData.qrDataUrl}
-                  alt="QR Code thanh toán"
+                  alt="QR Code"
                   className="w-44 h-44 mx-auto"
                   onError={(e) => {
                     e.target.onerror = null;
@@ -271,14 +273,14 @@ function AddonPackagesPage() {
 
               {/* Payment Info */}
               <div className="text-left mb-4">
-                <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Thông tin thanh toán</h3>
+                <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">{t("subscription.payment.paymentInfo")}</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500 dark:text-gray-400">Gói:</span>
+                    <span className="text-gray-500 dark:text-gray-400">{t("subscription.payment.package")}</span>
                     <span className="font-medium text-gray-900 dark:text-gray-100">{selectedPackage?.packageName}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500 dark:text-gray-400">Số tiền:</span>
+                    <span className="text-gray-500 dark:text-gray-400">{t("subscription.payment.amount")}</span>
                     <span className="font-bold text-primary-600 dark:text-primary-400">
                       {formatPrice(qrData.amount || selectedPackage?.price)}
                     </span>
@@ -289,8 +291,8 @@ function AddonPackagesPage() {
               {/* Instructions */}
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-left mb-4">
                 <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
-                  <li>• Vui lòng quét mã QR bằng ứng dụng ngân hàng</li>
-                  <li>• Sau khi thanh toán thành công, hệ thống sẽ tự động kích hoạt gói của bạn</li>
+                  <li>• {t("subscription.payment.scanInstructions")}</li>
+                  <li>• {t("subscription.payment.autoActivation")}</li>
                 </ul>
               </div>
 
@@ -301,10 +303,10 @@ function AddonPackagesPage() {
                   className="flex-1"
                   onClick={() => {
                     setQrModalOpen(false);
-                    toast.showSuccess("Vui lòng chờ hệ thống xác nhận thanh toán");
+                    toast.showSuccess(t("subscription.payment.waitConfirmation"));
                   }}
                 >
-                  Đã thanh toán
+                  {t("subscription.payment.alreadyPaid")}
                 </Button>
                 <Button 
                   className="flex-1"
@@ -314,13 +316,13 @@ function AddonPackagesPage() {
                     setQrData(null);
                   }}
                 >
-                  Đóng
+                  {t("subscription.payment.close")}
                 </Button>
               </div>
             </>
           ) : (
             <div className="py-6">
-              <p className="text-red-600 dark:text-red-400 text-sm">Không thể tạo mã QR. Vui lòng thử lại.</p>
+              <p className="text-red-600 dark:text-red-400 text-sm">{t("subscription.payment.qrError")}</p>
             </div>
           )}
         </div>

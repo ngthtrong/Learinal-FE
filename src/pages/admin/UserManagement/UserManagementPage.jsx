@@ -125,7 +125,7 @@ function UserManagementPage() {
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total, pageSize]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -151,7 +151,7 @@ function UserManagementPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <Input
@@ -168,7 +168,7 @@ function UserManagementPage() {
             <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Vai trò</label>
               <select
-                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={role}
                 onChange={(e) => {
                   setPage(1);
@@ -185,7 +185,7 @@ function UserManagementPage() {
             <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Trạng thái</label>
               <select
-                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={status}
                 onChange={(e) => {
                   setPage(1);
@@ -214,7 +214,7 @@ function UserManagementPage() {
         </div>
 
         {/* Content */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
           {loading ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
           ) : error ? (
@@ -227,9 +227,9 @@ function UserManagementPage() {
           ) : (
             <>
               {/* Mobile Cards */}
-              <div className="block md:hidden divide-y divide-gray-200 dark:divide-gray-700">
+              <div className="block md:hidden divide-y divide-gray-200 dark:divide-slate-700">
                 {users.map((u) => (
-                  <div key={u.id || u._id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <div key={u.id || u._id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm truncate">
@@ -248,7 +248,7 @@ function UserManagementPage() {
                           Learner: { label: "Learner", className: "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" },
                           Expert: { label: "Expert", className: "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" },
                           Admin: { label: "Admin", className: "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" },
-                        }[role] || { label: role, className: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300" };
+                        }[role] || { label: role, className: "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300" };
                         return (
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${meta.className}`}>
                             {meta.label}
@@ -273,8 +273,8 @@ function UserManagementPage() {
               </div>
               {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-900">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Tên
@@ -294,9 +294,9 @@ function UserManagementPage() {
                     <th className="px-3 sm:px-6 py-3" />
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                   {users.map((u) => (
-                    <tr key={u.id || u._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <tr key={u.id || u._id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                       <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                           {u.fullName || u.name || "(Không tên)"}
@@ -313,7 +313,7 @@ function UserManagementPage() {
                             Learner: { label: "Learner", className: "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" },
                             Expert: { label: "Expert", className: "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" },
                             Admin: { label: "Admin", className: "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" },
-                          }[role] || { label: role, className: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300" };
+                          }[role] || { label: role, className: "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300" };
                           return (
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${meta.className}`}
@@ -333,7 +333,7 @@ function UserManagementPage() {
                             Khóa
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
                             {u.status || "-"}
                           </span>
                         )}
@@ -364,7 +364,7 @@ function UserManagementPage() {
           </div>
           <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-end">
             <select
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+              className="px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 text-sm"
               value={pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
@@ -413,14 +413,14 @@ function UserManagementPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-                <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300">
+                <div className="px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-700 dark:text-gray-300">
                   {selectedUser.email}
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vai trò</label>
                 <select
-                  className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   value={editRole}
                   onChange={(e) => setEditRole(e.target.value)}
                 >
@@ -439,7 +439,7 @@ function UserManagementPage() {
                 <button
                   type="button"
                   className={`relative w-12 h-6 rounded-full transition-colors ${
-                    editActive ? "bg-primary-600 dark:bg-primary-500" : "bg-gray-300 dark:bg-gray-600"
+                    editActive ? "bg-primary-600 dark:bg-primary-500" : "bg-gray-300 dark:bg-slate-600"
                   }`}
                   onClick={() => setEditActive((v) => !v)}
                   aria-label="Toggle active"

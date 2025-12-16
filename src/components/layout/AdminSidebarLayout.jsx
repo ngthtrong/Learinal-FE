@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, Navigate } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import DashboardIcon from "@/components/icons/DashboardIcon";
 import ChartIcon from "@/components/icons/ChartIcon";
 import UsersIcon from "@/components/icons/UsersIcon";
@@ -16,6 +17,7 @@ import CoinsIcon from "@/components/icons/CoinsIcon";
  */
 const AdminSidebarLayout = ({ children }) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const role = user?.role;
 
   // Hooks luôn được gọi trước bất kỳ return nào để tuân thủ rules of hooks
@@ -79,35 +81,35 @@ const AdminSidebarLayout = ({ children }) => {
   }, []);
 
   const items = [
-    { key: "admin_dashboard", label: "Tổng Quan", to: "/admin", icon: DashboardIcon },
-    { key: "admin_users", label: "Người Dùng", to: "/admin/users", icon: UsersIcon },
+    { key: "admin_dashboard", label: t('adminSidebar.dashboard'), to: "/admin", icon: DashboardIcon },
+    { key: "admin_users", label: t('adminSidebar.users'), to: "/admin/users", icon: UsersIcon },
     {
       key: "admin_subscription_purchases",
-      label: "Quản Lý Gói Người Dùng",
+      label: t('adminSidebar.subscriptionPurchases'),
       to: "/admin/subscription-purchases",
       icon: ManagePackagesIcon,
     },
     {
       key: "admin_plans",
-      label: "Gói Nâng Cấp",
+      label: t('adminSidebar.subscriptionPlans'),
       to: "/admin/subscription-plans",
       icon: SubscriptionsIcon,
     },
     {
       key: "admin_addon_packages",
-      label: "Gói Mua Thêm",
+      label: t('adminSidebar.addonPackages'),
       to: "/admin/addon-packages",
       icon: SubscriptionsIcon,
     },
     {
       key: "admin_commission",
-      label: "Hoa Hồng",
+      label: t('adminSidebar.commissions'),
       to: "/admin/commission-records",
       icon: CoinsIcon,
     },
     {
       key: "admin_bank_accounts",
-      label: "Tài Khoản Ngân Hàng",
+      label: t('adminSidebar.bankAccounts'),
       to: "/admin/bank-accounts",
       icon: ({ size = 20, stroke = 2 }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round">
@@ -118,13 +120,13 @@ const AdminSidebarLayout = ({ children }) => {
     },
     {
       key: "admin_financials",
-      label: "Thống Kê",
+      label: t('adminSidebar.financials'),
       to: "/admin/financials",
       icon: ChartIcon,
     },
     {
       key: "admin_content_flags",
-      label: "Báo Cáo",
+      label: t('adminSidebar.contentFlags'),
       to: "/admin/content-flags",
       icon: ({ size = 20, stroke = 2 }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round">
@@ -147,7 +149,7 @@ const AdminSidebarLayout = ({ children }) => {
         ref={sideNavRef}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`hidden md:block fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 z-40 overflow-y-auto ${
+        className={`hidden md:block fixed left-0 top-0 h-screen backdrop-blur-[10px] bg-white/70 dark:bg-slate-900/70 border-r border-white/30 dark:border-white/5 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-16 lg:w-20" : "w-56 lg:w-64"
         }`}
       >
@@ -197,7 +199,7 @@ const AdminSidebarLayout = ({ children }) => {
             }
           }}
           aria-label={collapsed ? "Expand admin sidebar" : "Collapse admin sidebar"}
-          title={collapsed ? "Mở rộng" : "Thu gọn"}
+          title={collapsed ? t('sidebar.expand') : t('sidebar.collapse')}
         >
           {collapsed ? "⟩" : "⟨"}
         </button>
@@ -250,7 +252,7 @@ const AdminSidebarLayout = ({ children }) => {
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                 </svg>
-                <span className="text-[9px] font-medium">Thêm</span>
+                <span className="text-[9px] font-medium">{t('sidebar.more')}</span>
               </button>
               
               {/* Popup Menu */}

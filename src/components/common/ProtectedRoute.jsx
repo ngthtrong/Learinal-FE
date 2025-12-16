@@ -6,9 +6,11 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import { useLanguage } from "@contexts/LanguageContext";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
+  const { t } = useLanguage();
 
   if (loading) {
     return (
@@ -22,7 +24,7 @@ const ProtectedRoute = ({ children }) => {
           color: "#6b7280",
         }}
       >
-        Đang tải...
+        {t("components.protectedRoute.loading")}
       </div>
     );
   }

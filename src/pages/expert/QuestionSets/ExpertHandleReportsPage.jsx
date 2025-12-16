@@ -7,11 +7,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button, Input, useToast } from "@/components/common";
 import questionSetsService from "@/services/api/questionSets.service";
 import contentFlagsService from "@/services/api/contentFlags.service";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function ExpertHandleReportsPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { showSuccess, showError } = useToast();
+  const { t } = useLanguage();
   
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
@@ -41,7 +43,7 @@ function ExpertHandleReportsPage() {
       setQuestions(set.questions || []);
     } catch (err) {
       console.error("Failed to fetch question set:", err);
-      showError("Không thể tải bộ đề");
+      showError(t("expertPages.handleReports.loadError"));
       navigate("/expert/question-sets");
     } finally {
       setLoading(false);
@@ -60,12 +62,12 @@ function ExpertHandleReportsPage() {
 
   const handleExpertRespond = async (flagId) => {
     if (!expertResponse.trim()) {
-      showError("Vui lòng nhập phản hồi");
+      showError(t("expertPages.handleReports.enterResponseError"));
       return;
     }
 
     if (expertResponse.length > 1000) {
-      showError("Phản hồi không được vượt quá 1000 ký tự");
+      showError(t("expertPages.handleReports.responseMaxLengthError"));
       return;
     }
 
@@ -74,7 +76,7 @@ function ExpertHandleReportsPage() {
       await contentFlagsService.expertRespond(flagId, {
         response: expertResponse.trim(),
       });
-      showSuccess("Đã gửi phản hồi thành công");
+      showSuccess(t("expertPages.handleReports.responseSuccess"));
       setExpertResponse("");
       setRespondingToFlag(null);
       
@@ -86,12 +88,12 @@ function ExpertHandleReportsPage() {
       const allResponded = (updatedFlags || []).every(f => f.status === 'ExpertResponded');
       if (allResponded && updatedFlags.length > 0) {
         setTimeout(() => {
-          showSuccess("Đã xử lý xong tất cả báo cáo");
+          showSuccess(t("expertPages.handleReports.allReportsHandled"));
           navigate("/expert/question-sets");
         }, 1500);
       }
     } catch (err) {
-      const message = err.response?.data?.message || "Không thể gửi phản hồi";
+      const message = err.response?.data?.message || t("expertPages.handleReports.sendResponseError");
       showError(message);
     } finally {
       setSubmittingResponse(false);
@@ -125,7 +127,7 @@ function ExpertHandleReportsPage() {
 
   const removeQuestion = (index) => {
     if (questions.length === 1) {
-      showError("Phải có ít nhất 1 câu hỏi");
+      showError(t("expertPages.handleReports.atLeastOneQuestion"));
       return;
     }
     setQuestions(prev => prev.filter((_, i) => i !== index));
@@ -142,24 +144,24 @@ function ExpertHandleReportsPage() {
 
   const validateForm = () => {
     if (!title.trim()) {
-      showError("Vui lòng nhập tiêu đề bộ đề");
+      showError(t("expertPages.handleReports.titleRequired"));
       return false;
     }
 
     for (let i = 0; i < questions.length; i++) {
       const q = questions[i];
       if (!q.questionText.trim()) {
-        showError(`Câu hỏi ${i + 1}: Chưa nhập nội dung câu hỏi`);
+        showError(t("expertPages.handleReports.questionTextRequired", { num: i + 1 }));
         return false;
       }
 
       if (q.options.some(opt => !opt.trim())) {
-        showError(`Câu hỏi ${i + 1}: Tất cả các đáp án phải được điền`);
+        showError(t("expertPages.handleReports.allOptionsRequired", { num: i + 1 }));
         return false;
       }
 
       if (q.correctAnswerIndex < 0 || q.correctAnswerIndex >= q.options.length) {
-        showError(`Câu hỏi ${i + 1}: Đáp án đúng không hợp lệ`);
+        showError(t("expertPages.handleReports.invalidCorrectAnswer", { num: i + 1 }));
         return false;
       }
     }
@@ -177,11 +179,11 @@ function ExpertHandleReportsPage() {
         description: description.trim(),
         questions,
       });
-      showSuccess("Đã lưu thay đổi thành công");
+      showSuccess(t("expertPages.handleReports.saveSuccess"));
       // Stay on page to continue working
     } catch (err) {
       console.error("Failed to save:", err);
-      const message = err.response?.data?.message || "Không thể lưu thay đổi";
+      const message = err.response?.data?.message || t("expertPages.handleReports.saveError");
       showError(message);
     } finally {
       setSaving(false);
@@ -204,14 +206,14 @@ function ExpertHandleReportsPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Đang tải...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t("expertPages.handleReports.loading")}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
@@ -220,13 +222,13 @@ function ExpertHandleReportsPage() {
             onClick={() => navigate("/expert/question-sets")}
             className="mb-4"
           >
-            ← Quay lại
+            {t("expertPages.handleReports.goBack")}
           </Button>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Xử lý báo cáo và chỉnh sửa bộ đề
+            {t("expertPages.handleReports.pageTitle")}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Xem các báo cáo từ người dùng, sửa lỗi và gửi phản hồi
+            {t("expertPages.handleReports.pageSubtitle")}
           </p>
         </div>
 
@@ -238,11 +240,11 @@ function ExpertHandleReportsPage() {
                 <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
               <h2 className="text-xl font-bold text-orange-900 dark:text-orange-100">
-                Báo cáo từ Admin ({expertFlags.length})
+                {t("expertPages.handleReports.reportsFromAdmin", { count: expertFlags.length })}
               </h2>
             </div>
             <p className="text-sm text-orange-800 dark:text-orange-200 mb-4">
-              Admin đã gửi yêu cầu xem xét các báo cáo sau. Vui lòng kiểm tra, sửa lỗi (nếu cần), và gửi phản hồi.
+              {t("expertPages.handleReports.adminInstruction")}
             </p>
 
             <div className="space-y-4">
@@ -251,7 +253,7 @@ function ExpertHandleReportsPage() {
                 const hasResponded = flag.status === 'ExpertResponded';
 
                 return (
-                  <div key={flag.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
+                  <div key={flag.id} className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-orange-200 dark:border-orange-700">
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -259,7 +261,7 @@ function ExpertHandleReportsPage() {
                             ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                             : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
                         }`}>
-                          {hasResponded ? 'Đã phản hồi' : 'Chờ xử lý'}
+                          {hasResponded ? t("expertPages.handleReports.responded") : t("expertPages.handleReports.pending")}
                         </span>
                       </div>
                     </div>
@@ -271,7 +273,7 @@ function ExpertHandleReportsPage() {
                           <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                         </svg>
                         <div className="flex-1">
-                          <p className="font-bold text-red-900 dark:text-red-200">Loại báo cáo: {flag.reason}</p>
+                          <p className="font-bold text-red-900 dark:text-red-200">{t("expertPages.handleReports.reportType")}: {flag.reason}</p>
                           {flag.description && (
                             <p className="text-sm text-red-800 dark:text-red-300 mt-1 whitespace-pre-line">
                               {flag.description}
@@ -279,7 +281,7 @@ function ExpertHandleReportsPage() {
                           )}
                           {flag.reportedBy && (
                             <p className="text-xs text-red-700 dark:text-red-400 mt-2">
-                              Báo cáo bởi: <span className="font-medium">{flag.reportedBy.fullName}</span> ({flag.reportedBy.email})
+                              {t("expertPages.handleReports.reportedBy")}: <span className="font-medium">{flag.reportedBy.fullName}</span> ({flag.reportedBy.email})
                             </p>
                           )}
                         </div>
@@ -289,7 +291,7 @@ function ExpertHandleReportsPage() {
                     {/* Admin Note */}
                     {flag.adminNote && (
                       <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-3">
-                        <p className="text-xs font-bold text-amber-900 dark:text-amber-200 mb-1">Ghi chú từ Admin:</p>
+                        <p className="text-xs font-bold text-amber-900 dark:text-amber-200 mb-1">{t("expertPages.handleReports.adminNote")}</p>
                         <p className="text-sm text-amber-800 dark:text-amber-300 whitespace-pre-line">
                           {flag.adminNote}
                         </p>
@@ -306,13 +308,13 @@ function ExpertHandleReportsPage() {
                             </svg>
                             <div className="flex-1">
                               <p className="text-xs font-bold text-blue-900 dark:text-blue-300 mb-2">
-                                Phản hồi của bạn:
+                                {t("expertPages.handleReports.yourResponse")}
                               </p>
                               <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-line">
                                 {flag.expertResponse}
                               </p>
                               <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
-                                Gửi lúc: {formatDate(flag.expertRespondedAt)}
+                                {t("expertPages.handleReports.sentAt")} {formatDate(flag.expertRespondedAt)}
                               </p>
                             </div>
                           </div>
@@ -329,23 +331,23 @@ function ExpertHandleReportsPage() {
                             variant="primary"
                             onClick={() => setRespondingToFlag(flag.id)}
                           >
-                            Gửi phản hồi
+                            {t("expertPages.handleReports.sendResponse")}
                           </Button>
                         ) : (
-                          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                          <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-4">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                              Phản hồi của bạn <span className="text-red-500">*</span>
+                              {t("expertPages.handleReports.yourResponseLabel")} <span className="text-red-500">*</span>
                             </label>
                             <textarea
                               value={expertResponse}
                               onChange={(e) => setExpertResponse(e.target.value)}
-                              placeholder="Mô tả những gì bạn đã kiểm tra/sửa chữa..."
+                              placeholder={t("expertPages.handleReports.responsePlaceholder")}
                               rows={4}
                               maxLength={1000}
-                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-gray-100"
+                              className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-800 dark:text-gray-100"
                             />
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                              {expertResponse.length}/1000 ký tự
+                              {t("expertPages.handleReports.charCount", { count: expertResponse.length })}
                             </p>
                             <div className="flex gap-2 mt-3">
                               <Button
@@ -353,7 +355,7 @@ function ExpertHandleReportsPage() {
                                 onClick={() => handleExpertRespond(flag.id)}
                                 disabled={submittingResponse}
                               >
-                                {submittingResponse ? "Đang gửi..." : "Gửi phản hồi"}
+                                {submittingResponse ? t("expertPages.handleReports.sending") : t("expertPages.handleReports.sendResponse")}
                               </Button>
                               <Button
                                 variant="secondary"
@@ -363,7 +365,7 @@ function ExpertHandleReportsPage() {
                                 }}
                                 disabled={submittingResponse}
                               >
-                                Hủy
+                                {t("expertPages.handleReports.cancel")}
                               </Button>
                             </div>
                           </div>
@@ -378,34 +380,34 @@ function ExpertHandleReportsPage() {
         )}
 
         {/* Question Set Edit Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-            Chỉnh sửa bộ đề
+            {t("expertPages.handleReports.editQuestionSet")}
           </h2>
 
           {/* Title */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Tiêu đề <span className="text-red-500">*</span>
+              {t("expertPages.handleReports.titleLabel")} <span className="text-red-500">*</span>
             </label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Nhập tiêu đề bộ đề"
+              placeholder={t("expertPages.handleReports.titlePlaceholder")}
             />
           </div>
 
           {/* Description */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Mô tả
+              {t("expertPages.handleReports.descriptionLabel")}
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Nhập mô tả bộ đề"
+              placeholder={t("expertPages.handleReports.descriptionPlaceholder")}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-700 dark:text-gray-100"
             />
           </div>
 
@@ -413,9 +415,9 @@ function ExpertHandleReportsPage() {
           <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Câu hỏi ({questions.length})
+                {t("expertPages.handleReports.questionsLabel", { count: questions.length })}
               </label>
-              <Button onClick={addQuestion}>+ Thêm câu hỏi</Button>
+              <Button onClick={addQuestion}>{t("expertPages.handleReports.addQuestion")}</Button>
             </div>
 
             <div className="space-y-6">
@@ -423,7 +425,7 @@ function ExpertHandleReportsPage() {
                 <div key={qIndex} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                      Câu {qIndex + 1}
+                      {t("expertPages.handleReports.questionNum", { num: qIndex + 1 })}
                     </h3>
                     <div className="flex gap-2">
                       <Button
@@ -431,14 +433,14 @@ function ExpertHandleReportsPage() {
                         variant="secondary"
                         onClick={() => duplicateQuestion(qIndex)}
                       >
-                        Nhân bản
+                        {t("expertPages.handleReports.duplicate")}
                       </Button>
                       <Button
                         size="small"
                         variant="danger"
                         onClick={() => removeQuestion(qIndex)}
                       >
-                        Xóa
+                        {t("expertPages.handleReports.delete")}
                       </Button>
                     </div>
                   </div>
@@ -446,21 +448,21 @@ function ExpertHandleReportsPage() {
                   {/* Question Text */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Nội dung câu hỏi <span className="text-red-500">*</span>
+                      {t("expertPages.handleReports.questionTextLabel")} <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       value={question.questionText}
                       onChange={(e) => handleQuestionChange(qIndex, 'questionText', e.target.value)}
-                      placeholder="Nhập nội dung câu hỏi"
+                      placeholder={t("expertPages.handleReports.questionTextPlaceholder")}
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-700 dark:text-gray-100"
                     />
                   </div>
 
                   {/* Options */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Đáp án <span className="text-red-500">*</span>
+                      {t("expertPages.handleReports.optionsLabel")} <span className="text-red-500">*</span>
                     </label>
                     {question.options.map((option, oIndex) => (
                       <div key={oIndex} className="flex items-center gap-2 mb-2">
@@ -473,7 +475,7 @@ function ExpertHandleReportsPage() {
                         <Input
                           value={option}
                           onChange={(e) => handleOptionChange(qIndex, oIndex, e.target.value)}
-                          placeholder={`Đáp án ${oIndex + 1}`}
+                          placeholder={t("expertPages.handleReports.optionPlaceholder", { num: oIndex + 1 })}
                         />
                       </div>
                     ))}
@@ -482,30 +484,30 @@ function ExpertHandleReportsPage() {
                   {/* Difficulty */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Độ khó
+                      {t("expertPages.handleReports.difficultyLabel")}
                     </label>
                     <select
                       value={question.difficultyLevel}
                       onChange={(e) => handleQuestionChange(qIndex, 'difficultyLevel', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-700 dark:text-gray-100"
                     >
-                      <option value="Easy">Dễ</option>
-                      <option value="Medium">Trung bình</option>
-                      <option value="Hard">Khó</option>
+                      <option value="Easy">{t("expertPages.handleReports.easy")}</option>
+                      <option value="Medium">{t("expertPages.handleReports.medium")}</option>
+                      <option value="Hard">{t("expertPages.handleReports.hard")}</option>
                     </select>
                   </div>
 
                   {/* Explanation */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Giải thích
+                      {t("expertPages.handleReports.explanationLabel")}
                     </label>
                     <textarea
                       value={question.explanation || ""}
                       onChange={(e) => handleQuestionChange(qIndex, 'explanation', e.target.value)}
-                      placeholder="Giải thích đáp án đúng (tùy chọn)"
+                      placeholder={t("expertPages.handleReports.explanationPlaceholder")}
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-slate-700 dark:text-gray-100"
                     />
                   </div>
                 </div>
@@ -519,13 +521,13 @@ function ExpertHandleReportsPage() {
               onClick={handleSave}
               disabled={saving}
             >
-              {saving ? "Đang lưu..." : "Lưu thay đổi"}
+              {saving ? t("expertPages.handleReports.saving") : t("expertPages.handleReports.saveChanges")}
             </Button>
             <Button
               variant="secondary"
               onClick={() => navigate("/expert/question-sets")}
             >
-              Hủy
+              {t("expertPages.handleReports.cancel")}
             </Button>
           </div>
         </div>

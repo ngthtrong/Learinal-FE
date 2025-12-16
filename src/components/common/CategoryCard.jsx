@@ -5,12 +5,13 @@ const CategoryCard = ({ title, subtitle, cta, onClick, Icon }) => {
     <div
       className="
         group relative overflow-hidden
-        bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900
-        rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-md sm:shadow-lg hover:shadow-xl
+        bg-white dark:bg-slate-800
+        rounded-xl sm:rounded-2xl p-4 sm:p-6 
+        hover:shadow-2xl shadow-sm
         transition-all duration-300 cursor-pointer
-        border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500
+        border border-transparent dark:border-slate-700 hover:border-primary-500 dark:hover:border-primary-500
         flex flex-col
-        hover:scale-[1.02] transform
+        hover:-translate-y-2 transform
         focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
         min-h-[100px] sm:min-h-[140px]
       "
@@ -25,7 +26,7 @@ const CategoryCard = ({ title, subtitle, cta, onClick, Icon }) => {
       <div className="pointer-events-none absolute -top-6 -right-6 w-16 sm:w-24 h-16 sm:h-24 bg-primary-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity" />
 
       <div className="mb-2 sm:mb-4">
-        <div className="w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center rounded-lg sm:rounded-xl bg-primary-500/20 text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform">
+        <div className="w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center rounded-lg sm:rounded-xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 group-hover:scale-110 transition-transform">
           {Icon ? <Icon size={20} className="sm:w-7 sm:h-7" strokeWidth={2} /> : <span className="text-xl sm:text-3xl">📄</span>}
         </div>
       </div>

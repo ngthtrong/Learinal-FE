@@ -7,11 +7,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button, useToast } from "@/components/common";
 import questionSetsService from "@/services/api/questionSets.service";
 import { formatDate } from "@/utils/formatters";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function ExpertQuestionSetDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { showError, showSuccess } = useToast();
+  const { t } = useLanguage();
   
   const [loading, setLoading] = useState(true);
   const [questionSet, setQuestionSet] = useState(null);
@@ -20,7 +22,7 @@ function ExpertQuestionSetDetailPage() {
   useEffect(() => {
     console.log("ExpertQuestionSetDetailPage - id from params:", id);
     if (!id || id === 'undefined') {
-      showError("ID bộ đề không hợp lệ");
+      showError(t("expertPages.questionSetDetail.invalidId"));
       navigate("/expert/question-sets");
       return;
     }
@@ -38,7 +40,7 @@ function ExpertQuestionSetDetailPage() {
       setQuestionSet(set);
     } catch (err) {
       console.error("Failed to fetch question set:", err);
-      showError("Không thể tải bộ đề");
+      showError(t("expertPages.questionSetDetail.loadError"));
       navigate("/expert/question-sets");
     } finally {
       setLoading(false);
@@ -55,27 +57,27 @@ function ExpertQuestionSetDetailPage() {
   const handlePublish = async () => {
     try {
       await questionSetsService.updateSet(id, { status: "Public" });
-      showSuccess("Đã công khai bộ đề cho learner Premium");
+      showSuccess(t("expertPages.questionSetDetail.publishSuccess"));
       fetchQuestionSet();
     } catch (err) {
-      showError(err?.response?.data?.message || "Không thể công khai bộ đề");
+      showError(err?.response?.data?.message || t("expertPages.questionSetDetail.publishError"));
     }
   };
 
   const handleUnpublish = async () => {
     try {
       await questionSetsService.updateSet(id, { status: "Draft" });
-      showSuccess("Đã chuyển về trạng thái Draft");
+      showSuccess(t("expertPages.questionSetDetail.unpublishSuccess"));
       fetchQuestionSet();
     } catch (err) {
-      showError(err?.response?.data?.message || "Không thể thay đổi trạng thái");
+      showError(err?.response?.data?.message || t("expertPages.questionSetDetail.unpublishError"));
     }
   };
 
   const handleStartQuiz = () => {
     console.log("Starting quiz from detail page, id:", id);
     if (!id || id === 'undefined') {
-      showError("ID bộ đề không hợp lệ");
+      showError(t("expertPages.questionSetDetail.invalidId"));
       return;
     }
     navigate(`/expert/quiz/start/${id}`);
@@ -83,10 +85,10 @@ function ExpertQuestionSetDetailPage() {
 
   const getStatusBadge = (status) => {
     const badges = {
-      Draft: { bg: "bg-slate-100", text: "text-slate-700", label: "Bản nháp" },
-      Public: { bg: "bg-green-100", text: "text-green-700", label: "Công khai (Premium)" },
-      Published: { bg: "bg-blue-100", text: "text-blue-700", label: "Đã xuất bản" },
-      Validated: { bg: "bg-emerald-100", text: "text-emerald-700", label: "Đã xác thực" },
+      Draft: { bg: "bg-slate-100", text: "text-slate-700", label: t("expertPages.questionSetDetail.statusDraft") },
+      Public: { bg: "bg-green-100", text: "text-green-700", label: t("expertPages.questionSetDetail.statusPublic") },
+      Published: { bg: "bg-blue-100", text: "text-blue-700", label: t("expertPages.questionSetDetail.statusPublished") },
+      Validated: { bg: "bg-emerald-100", text: "text-emerald-700", label: t("expertPages.questionSetDetail.statusValidated") },
     };
     const badge = badges[status] || { bg: "bg-gray-100", text: "text-gray-700", label: status };
     return (
@@ -99,25 +101,25 @@ function ExpertQuestionSetDetailPage() {
   const getDifficultyBadge = (level) => {
     // Bloom's Taxonomy (6 levels) + Old mappings
     const badges = {
-      Easy: { bg: "bg-green-100", text: "text-green-700", label: "Dễ" },
-      Medium: { bg: "bg-yellow-100", text: "text-yellow-700", label: "Trung bình" },
-      Hard: { bg: "bg-red-100", text: "text-red-700", label: "Khó" },
-      "Ghi nhớ": { bg: "bg-green-100", text: "text-green-700", label: "Ghi nhớ" },
-      "Hiểu": { bg: "bg-blue-100", text: "text-blue-700", label: "Hiểu" },
-      "Áp dụng": { bg: "bg-cyan-100", text: "text-cyan-700", label: "Áp dụng" },
-      "Phân tích": { bg: "bg-yellow-100", text: "text-yellow-700", label: "Phân tích" },
-      "Đánh giá": { bg: "bg-orange-100", text: "text-orange-700", label: "Đánh giá" },
-      "Sáng tạo": { bg: "bg-red-100", text: "text-red-700", label: "Sáng tạo" },
-      Remember: { bg: "bg-green-100", text: "text-green-700", label: "Ghi nhớ" },
-      Understand: { bg: "bg-blue-100", text: "text-blue-700", label: "Hiểu" },
-      Apply: { bg: "bg-cyan-100", text: "text-cyan-700", label: "Áp dụng" },
-      Analyze: { bg: "bg-yellow-100", text: "text-yellow-700", label: "Phân tích" },
-      Evaluate: { bg: "bg-orange-100", text: "text-orange-700", label: "Đánh giá" },
-      Create: { bg: "bg-red-100", text: "text-red-700", label: "Sáng tạo" },
+      Easy: { bg: "bg-green-100", text: "text-green-700", label: t("expertPages.questionSetDetail.difficultyEasy") },
+      Medium: { bg: "bg-yellow-100", text: "text-yellow-700", label: t("expertPages.questionSetDetail.difficultyMedium") },
+      Hard: { bg: "bg-red-100", text: "text-red-700", label: t("expertPages.questionSetDetail.difficultyHard") },
+      "Ghi nhớ": { bg: "bg-green-100", text: "text-green-700", label: t("expertPages.questionSetDetail.difficultyRemember") },
+      "Hiểu": { bg: "bg-blue-100", text: "text-blue-700", label: t("expertPages.questionSetDetail.difficultyUnderstand") },
+      "Áp dụng": { bg: "bg-cyan-100", text: "text-cyan-700", label: t("expertPages.questionSetDetail.difficultyApply") },
+      "Phân tích": { bg: "bg-yellow-100", text: "text-yellow-700", label: t("expertPages.questionSetDetail.difficultyAnalyze") },
+      "Đánh giá": { bg: "bg-orange-100", text: "text-orange-700", label: t("expertPages.questionSetDetail.difficultyEvaluate") },
+      "Sáng tạo": { bg: "bg-red-100", text: "text-red-700", label: t("expertPages.questionSetDetail.difficultyCreate") },
+      Remember: { bg: "bg-green-100", text: "text-green-700", label: t("expertPages.questionSetDetail.difficultyRemember") },
+      Understand: { bg: "bg-blue-100", text: "text-blue-700", label: t("expertPages.questionSetDetail.difficultyUnderstand") },
+      Apply: { bg: "bg-cyan-100", text: "text-cyan-700", label: t("expertPages.questionSetDetail.difficultyApply") },
+      Analyze: { bg: "bg-yellow-100", text: "text-yellow-700", label: t("expertPages.questionSetDetail.difficultyAnalyze") },
+      Evaluate: { bg: "bg-orange-100", text: "text-orange-700", label: t("expertPages.questionSetDetail.difficultyEvaluate") },
+      Create: { bg: "bg-red-100", text: "text-red-700", label: t("expertPages.questionSetDetail.difficultyCreate") },
       // Old mappings
-      "Biết": { bg: "bg-green-100", text: "text-green-700", label: "Ghi nhớ" },
-      "Vận dụng": { bg: "bg-cyan-100", text: "text-cyan-700", label: "Áp dụng" },
-      "Vận dụng cao": { bg: "bg-yellow-100", text: "text-yellow-700", label: "Phân tích" },
+      "Biết": { bg: "bg-green-100", text: "text-green-700", label: t("expertPages.questionSetDetail.difficultyRemember") },
+      "Vận dụng": { bg: "bg-cyan-100", text: "text-cyan-700", label: t("expertPages.questionSetDetail.difficultyApply") },
+      "Vận dụng cao": { bg: "bg-yellow-100", text: "text-yellow-700", label: t("expertPages.questionSetDetail.difficultyAnalyze") },
     };
     const badge = badges[level] || { bg: "bg-gray-100", text: "text-gray-700", label: level };
     return (
@@ -129,10 +131,10 @@ function ExpertQuestionSetDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-6 sm:py-8">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="inline-block w-10 h-10 sm:w-12 sm:h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-4"></div>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Đang tải...</p>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t("expertPages.questionSetDetail.loading")}</p>
         </div>
       </div>
     );
@@ -141,12 +143,12 @@ function ExpertQuestionSetDetailPage() {
   if (!questionSet) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 py-6 sm:py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-4 sm:mb-6">
           <Button variant="secondary" onClick={() => navigate("/expert/question-sets")} className="w-full sm:w-auto">
-            ← Quay lại
+            {t("expertPages.questionSetDetail.goBack")}
           </Button>
         </div>
 
@@ -157,12 +159,12 @@ function ExpertQuestionSetDetailPage() {
               <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
               <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
             </svg>
-            <span className="text-sm sm:text-base font-semibold">Bộ đề của Expert</span>
+            <span className="text-sm sm:text-base font-semibold">{t("expertPages.questionSetDetail.expertBadge")}</span>
           </div>
         </div>
 
         {/* Question Set Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-b-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-b-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 mb-4">
             <div className="flex-1 w-full">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">{questionSet.title}</h1>
@@ -171,14 +173,14 @@ function ExpertQuestionSetDetailPage() {
               )}
               <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 <span>📅 {formatDate(questionSet.createdAt)}</span>
-                <span>📝 {questionSet.questionCount || questionSet.questions?.length || 0} câu hỏi</span>
+                <span>📝 {t("expertPages.questionSetDetail.questionCountLabel", { count: questionSet.questionCount || questionSet.questions?.length || 0 })}</span>
               </div>
             </div>
             <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2">
               {getStatusBadge(questionSet.status)}
               {questionSet.isShared && (
                 <span className="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
-                  ✓ Đã chia sẻ
+                  {t("expertPages.questionSetDetail.shared")}
                 </span>
               )}
             </div>
@@ -187,14 +189,14 @@ function ExpertQuestionSetDetailPage() {
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button onClick={handleStartQuiz} className="w-full sm:w-auto">
-              Làm bài thử
+              {t("expertPages.questionSetDetail.tryQuiz")}
             </Button>
             <Button
               variant="secondary"
               onClick={() => navigate(`/expert/question-sets/${id}/edit`)}
               className="w-full sm:w-auto"
             >
-              Chỉnh sửa
+              {t("expertPages.questionSetDetail.editBtn")}
             </Button>
             {questionSet.status === "Draft" && (
               <Button
@@ -202,7 +204,7 @@ function ExpertQuestionSetDetailPage() {
                 onClick={handlePublish}
                 className="w-full sm:w-auto"
               >
-                Công khai (Premium)
+                {t("expertPages.questionSetDetail.publishBtn")}
               </Button>
             )}
             {questionSet.status === "Public" && (
@@ -211,16 +213,16 @@ function ExpertQuestionSetDetailPage() {
                 onClick={handleUnpublish}
                 className="w-full sm:w-auto"
               >
-                Chuyển về Draft
+                {t("expertPages.questionSetDetail.unpublishBtn")}
               </Button>
             )}
           </div>
         </div>
 
         {/* Questions List */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6">
           <h2 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
-            Danh sách câu hỏi ({questionSet.questions?.length || 0})
+            {t("expertPages.questionSetDetail.questionsList", { count: questionSet.questions?.length || 0 })}
           </h2>
 
           <div className="space-y-4">
@@ -229,7 +231,7 @@ function ExpertQuestionSetDetailPage() {
                 {/* Question Header */}
                 <div
                   onClick={() => toggleQuestion(index)}
-                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 dark:bg-gray-900 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 dark:bg-slate-900 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
                 >
                   <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                     <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 font-semibold text-xs sm:text-sm flex-shrink-0">
@@ -268,17 +270,17 @@ function ExpertQuestionSetDetailPage() {
                           className={`flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg border ${
                             optIdx === q.correctAnswerIndex
                               ? "bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700"
-                              : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                              : "bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700"
                           }`}
                         >
-                          <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium text-xs sm:text-sm flex-shrink-0 mt-0.5">
+                          <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium text-xs sm:text-sm flex-shrink-0 mt-0.5">
                             {String.fromCharCode(65 + optIdx)}
                           </span>
                           <span className={`text-xs sm:text-sm flex-1 ${optIdx === q.correctAnswerIndex ? "text-green-700 dark:text-green-400 font-medium" : "text-gray-700 dark:text-gray-300"}`}>
                             {opt}
                           </span>
                           {optIdx === q.correctAnswerIndex && (
-                            <span className="text-green-600 dark:text-green-400 font-medium text-xs sm:text-sm whitespace-nowrap">✓ Đáp án đúng</span>
+                            <span className="text-green-600 dark:text-green-400 font-medium text-xs sm:text-sm whitespace-nowrap">{t("expertPages.questionSetDetail.correctAnswerLabel")}</span>
                           )}
                         </div>
                       ))}
@@ -287,7 +289,7 @@ function ExpertQuestionSetDetailPage() {
                     {/* Explanation */}
                     {q.explanation && (
                       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4">
-                        <p className="text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">💡 Giải thích:</p>
+                        <p className="text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">{t("expertPages.questionSetDetail.explanation")}</p>
                         <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-400">{q.explanation}</p>
                       </div>
                     )}

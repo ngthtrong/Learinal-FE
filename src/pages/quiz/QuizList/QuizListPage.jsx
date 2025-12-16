@@ -8,10 +8,12 @@ import { getErrorMessage } from "@/utils/errorHandler";
 import { CreateQuizModal } from "@/components/questionSets";
 import { Footer } from "@/components/layout";
 import QuizIcon from "@/components/icons/QuizIcon";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function QuizListPage() {
   const navigate = useNavigate();
   const toast = useToast();
+  const { t } = useLanguage();
   const [questionSets, setQuestionSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -55,7 +57,7 @@ function QuizListPage() {
     const questionSet = questionSets.find((qs) => qs.id === id);
     if (!questionSet) return;
 
-    if (!window.confirm(`Bạn có chắc chắn muốn xóa bộ đề "${questionSet.title}"?`)) {
+    if (!window.confirm(t("quizPages.list.deleteConfirm", { name: questionSet.title }))) {
       return;
     }
 
@@ -63,7 +65,7 @@ function QuizListPage() {
       setDeleting(id);
       await questionSetsService.deleteSet(id);
       setQuestionSets(questionSets.filter((qs) => qs.id !== id));
-      toast.showSuccess("Xóa bộ đề thi thành công!");
+      toast.showSuccess(t("quizPages.list.deleteSuccess"));
     } catch (err) {
       const message = getErrorMessage(err);
       toast.showError(message);
@@ -79,17 +81,17 @@ function QuizListPage() {
     try {
       if (questionSet.isShared) {
         // Unshare
-        if (!window.confirm(`Bạn có chắc chắn muốn ngừng chia sẻ bộ đề "${questionSet.title}"?`)) {
+        if (!window.confirm(t("quizPages.list.unshareConfirm", { name: questionSet.title }))) {
           return;
         }
         await questionSetsService.unshareSet(id);
         setQuestionSets(questionSets.map((qs) => (qs.id === id ? { ...qs, isShared: false } : qs)));
-        toast.showSuccess("Ngừng chia sẻ bộ đề thành công!");
+        toast.showSuccess(t("quizPages.list.unshareSuccess"));
       } else {
         // Share
         await questionSetsService.shareSet(id);
         setQuestionSets(questionSets.map((qs) => (qs.id === id ? { ...qs, isShared: true } : qs)));
-        toast.showSuccess("Chia sẻ bộ đề thành công!");
+        toast.showSuccess(t("quizPages.list.shareSuccess"));
       }
     } catch (err) {
       const message = getErrorMessage(err);
@@ -102,7 +104,7 @@ function QuizListPage() {
       setGenerating(true);
       await questionSetsService.generateQuestionSet(data);
       toast.showSuccess(
-        `Đã gửi yêu cầu tạo đề thi "${data.title}"! Hệ thống đang xử lý, bạn sẽ nhận được thông báo khi hoàn tất.`
+        t("quizPages.list.generateRequest", { title: data.title })
       );
       setIsCreateModalOpen(false);
       // Refresh list
@@ -125,10 +127,10 @@ function QuizListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2 sm:gap-3">
@@ -136,14 +138,14 @@ function QuizListPage() {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 8h8M8 12h8"></path><path d="M16 2v20"></path></svg>
                 </div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">
-                  Bộ đề thi của tôi
+                  {t("quizPages.list.pageTitle")}
                 </h1>
               </div>
               <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
-                Quản lý tất cả bộ đề thi và câu hỏi của bạn
+                {t("quizPages.list.pageSubtitle")}
               </p>
             </div>
-            <Button onClick={() => setIsCreateModalOpen(true)} className="w-full sm:w-auto">+ Tạo bộ đề mới</Button>
+            <Button onClick={() => setIsCreateModalOpen(true)} className="w-full sm:w-auto">{t("quizPages.list.createNew")}</Button>
           </div>
         </div>
       </div>
@@ -151,46 +153,46 @@ function QuizListPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         {/* Sort & Filter Controls */}
         {questionSets.length > 0 && !loading && (
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6 bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6 bg-white dark:bg-slate-800 rounded-lg p-3 sm:p-4 shadow-sm border border-gray-200 dark:border-slate-700">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Sắp xếp:</span>
+              <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">{t("quizPages.list.sortBy")}</span>
               <button
                 className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   sortBy === "updatedAt"
                     ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
                 onClick={() => handleSortChange("updatedAt")}
               >
-                <span className="hidden sm:inline">Mới cập nhật</span>
-                <span className="sm:hidden">Cập nhật</span>
+                <span className="hidden sm:inline">{t("quizPages.list.recentlyUpdated")}</span>
+                <span className="sm:hidden">{t("quizPages.list.updated")}</span>
                 {sortBy === "updatedAt" && (order === "asc" ? " ↑" : " ↓")}
               </button>
               <button
                 className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   sortBy === "title"
                     ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
                 onClick={() => handleSortChange("title")}
               >
-                Tên A-Z {sortBy === "title" && (order === "asc" ? "↑" : "↓")}
+                {t("quizPages.list.nameAZ")} {sortBy === "title" && (order === "asc" ? "↑" : "↓")}
               </button>
               <button
                 className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                   sortBy === "createdAt"
                     ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                 }`}
                 onClick={() => handleSortChange("createdAt")}
               >
-                <span className="hidden sm:inline">Mới tạo</span>
-                <span className="sm:hidden">Tạo</span>
+                <span className="hidden sm:inline">{t("quizPages.list.recentlyCreated")}</span>
+                <span className="sm:hidden">{t("quizPages.list.created")}</span>
                 {sortBy === "createdAt" && (order === "asc" ? " ↑" : " ↓")}
               </button>
             </div>
             <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">
-              {questionSets.length} bộ đề
+              {t("quizPages.list.setCount", { count: questionSets.length })}
             </div>
           </div>
         )}
@@ -201,14 +203,14 @@ function QuizListPage() {
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <div
                 key={n}
-                className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm animate-pulse"
+                className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm animate-pulse"
               >
-                <div className="h-5 sm:h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3 sm:mb-4"></div>
+                <div className="h-5 sm:h-6 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-3 sm:mb-4"></div>
                 <div className="space-y-2 mb-3 sm:mb-4">
-                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-slate-700 rounded w-2/3"></div>
                 </div>
-                <div className="h-8 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-8 sm:h-10 bg-gray-200 dark:bg-slate-700 rounded"></div>
               </div>
             ))}
           </div>
@@ -216,17 +218,17 @@ function QuizListPage() {
 
         {/* Empty State */}
         {!loading && questionSets.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-10 sm:py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col items-center justify-center py-10 sm:py-16 px-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
             <div className="w-16 h-16 sm:w-24 sm:h-24 bg-primary-100 dark:bg-primary-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6">
               <QuizIcon size={32} strokeWidth={2} className="sm:w-12 sm:h-12 text-primary-600 dark:text-primary-400" />
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 text-center">
-              Chưa có bộ đề thi nào
+              {t("quizPages.list.emptyTitle")}
             </h2>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center mb-4 sm:mb-6 max-w-md">
-              Bắt đầu bằng cách tạo bộ đề thi đầu tiên từ môn học của bạn
+              {t("quizPages.list.emptyDescription")}
             </p>
-            <Button onClick={() => setIsCreateModalOpen(true)} className="w-full sm:w-auto">+ Tạo bộ đề đầu tiên</Button>
+            <Button onClick={() => setIsCreateModalOpen(true)} className="w-full sm:w-auto">{t("quizPages.list.createFirst")}</Button>
           </div>
         )}
 
@@ -249,10 +251,10 @@ function QuizListPage() {
             {totalPages > 1 && (
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mt-6 sm:mt-8">
                 <Button variant="secondary" disabled={page === 1} onClick={() => setPage(page - 1)} className="w-full sm:w-auto text-sm sm:text-base">
-                  ← Trang trước
+                  {t("quizPages.list.prevPage")}
                 </Button>
                 <div className="flex items-center gap-2 text-sm sm:text-base text-gray-700 dark:text-gray-300 order-first sm:order-none">
-                  <span className="font-medium">Trang {page}</span>
+                  <span className="font-medium">{t("quizPages.list.page", { page })}</span>
                   <span>/</span>
                   <span>{totalPages}</span>
                 </div>
@@ -262,7 +264,7 @@ function QuizListPage() {
                   onClick={() => setPage(page + 1)}
                   className="w-full sm:w-auto text-sm sm:text-base"
                 >
-                  Trang sau →
+                  {t("quizPages.list.nextPage")}
                 </Button>
               </div>
             )}

@@ -8,9 +8,11 @@ import { useParams, useNavigate } from "react-router";
 import Button from "@/components/common/Button";
 import Modal from "@/components/common/Modal";
 import { questionSetsService, subjectsService } from "@/services/api";
+import { useLanguage } from "@/contexts/LanguageContext";
 function QuestionSetCreatorPage() {
   const { subjectId } = useParams();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   // State
   const [subject, setSubject] = useState(null);
@@ -43,7 +45,7 @@ function QuestionSetCreatorPage() {
           setSelectedTopics(data.tableOfContents.map((topic) => topic.id || topic.title));
         }
       } catch (err) {
-        setError("Không thể tải thông tin môn học");
+        setError(t("quizPages.creator.errors.loadSubject"));
         console.error(err);
       } finally {
         setLoading(false);
@@ -75,12 +77,12 @@ function QuestionSetCreatorPage() {
   const handleGenerate = async () => {
     // Validation
     if (selectedTopics.length === 0) {
-      setError("Vui lòng chọn ít nhất một chương/mục");
+      setError(t("quizPages.creator.errors.selectTopic"));
       return;
     }
 
     if (totalDifficultyPercentage !== 100) {
-      setError("Tổng phân bổ mức độ khó phải bằng 100%");
+      setError(t("quizPages.creator.errors.difficultyTotal"));
       return;
     }
 
@@ -99,7 +101,7 @@ function QuestionSetCreatorPage() {
       // Start polling for job status
       pollJobStatus(result.jobId);
     } catch (err) {
-      setError(err.response?.data?.message || "Không thể tạo bộ câu hỏi");
+      setError(err.response?.data?.message || t("quizPages.creator.errors.generate"));
       setGenerating(false);
     }
   };
@@ -118,12 +120,12 @@ function QuestionSetCreatorPage() {
             setShowSuccessModal(true);
           } else if (status.status === "failed") {
             clearInterval(pollInterval);
-            setError(status.error || "Không thể tạo bộ câu hỏi");
+            setError(status.error || t("quizPages.creator.errors.generate"));
             setGenerating(false);
           }
         } catch {
           clearInterval(pollInterval);
-          setError("Lỗi khi kiểm tra trạng thái");
+          setError(t("quizPages.creator.errors.checkStatus"));
           setGenerating(false);
         }
       }, 2000); // Poll every 2 seconds
@@ -132,7 +134,7 @@ function QuestionSetCreatorPage() {
       setTimeout(() => {
         clearInterval(pollInterval);
         if (generating) {
-          setError("Quá thời gian chờ. Vui lòng thử lại sau.");
+          setError(t("quizPages.creator.errors.timeout"));
           setGenerating(false);
         }
       }, 300000);
@@ -149,7 +151,7 @@ function QuestionSetCreatorPage() {
     return (
       <div className="question-set-creator-page loading">
         <div className="spinner"></div>
-        <p>Đang tải thông tin môn học...</p>
+        <p>{t("quizPages.creator.loading")}</p>
       </div>
     );
   }
@@ -157,8 +159,8 @@ function QuestionSetCreatorPage() {
   if (!subject) {
     return (
       <div className="question-set-creator-page error">
-        <p>Không tìm thấy môn học</p>
-        <Button onClick={() => navigate(-1)}>Quay lại</Button>
+        <p>{t("quizPages.creator.errors.notFound")}</p>
+        <Button onClick={() => navigate(-1)}>{t("quizPages.creator.goBack")}</Button>
       </div>
     );
   }
@@ -170,9 +172,9 @@ function QuestionSetCreatorPage() {
           <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary-100 dark:bg-primary-900/30">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><path d="M9 11H3v2h6m-6 7h6v-2H3m15 2h3v-2h-3M21 3v12h-6V3m-2 0h2v2h-2m2 10h2v-2h-2M9 3h2v2H9m0 4h2v2H9z"></path></svg>
           </div>
-          Tạo bộ câu hỏi - {subject.name}
+          {t("quizPages.creator.pageTitle", { subjectName: subject.name })}
         </h1>
-        <p className="subtitle">Sử dụng AI để tự động sinh câu hỏi từ tài liệu</p>
+        <p className="subtitle">{t("quizPages.creator.subtitle")}</p>
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -180,7 +182,7 @@ function QuestionSetCreatorPage() {
       <div className="creator-form">
         {/* Topic Selection */}
         <section className="form-section">
-          <h2>1. Chọn nội dung</h2>
+          <h2>{t("quizPages.creator.selectContent")}</h2>
           <div className="topics-list">
             {subject.tableOfContents && subject.tableOfContents.length > 0 ? (
               subject.tableOfContents.map((topic, index) => (
@@ -191,12 +193,12 @@ function QuestionSetCreatorPage() {
                     onChange={() => handleTopicToggle(topic.id || topic.title)}
                     disabled={generating}
                   />
-                  <span className="topic-label">{topic.title || `Chương ${index + 1}`}</span>
+                  <span className="topic-label">{topic.title || t("quizPages.creator.chapterLabel", { index: index + 1 })}</span>
                 </label>
               ))
             ) : (
               <p className="no-topics">
-                Chưa có mục lục. Vui lòng tạo mục lục trước khi tạo câu hỏi.
+                {t("quizPages.creator.noToc")}
               </p>
             )}
           </div>
@@ -204,7 +206,7 @@ function QuestionSetCreatorPage() {
 
         {/* Number of Questions */}
         <section className="form-section">
-          <h2>2. Số lượng câu hỏi: {numQuestions}</h2>
+          <h2>{t("quizPages.creator.numQuestions", { num: numQuestions })}</h2>
           <div className="slider-container">
             <input
               type="range"
@@ -226,15 +228,15 @@ function QuestionSetCreatorPage() {
 
         {/* Difficulty Distribution - Bloom's Taxonomy (6 levels) */}
         <section className="form-section">
-          <h2>3. Phân bổ mức độ khó (Bloom's Taxonomy)</h2>
+          <h2>{t("quizPages.creator.difficultyTitle")}</h2>
           <div className="difficulty-controls">
             {[
-              { key: "remember", label: "Ghi nhớ" },
-              { key: "understand", label: "Hiểu" },
-              { key: "apply", label: "Áp dụng" },
-              { key: "analyze", label: "Phân tích" },
-              { key: "evaluate", label: "Đánh giá" },
-              { key: "create", label: "Sáng tạo" },
+              { key: "remember", label: t("quizPages.creator.difficulty.remember") },
+              { key: "understand", label: t("quizPages.creator.difficulty.understand") },
+              { key: "apply", label: t("quizPages.creator.difficulty.apply") },
+              { key: "analyze", label: t("quizPages.creator.difficulty.analyze") },
+              { key: "evaluate", label: t("quizPages.creator.difficulty.evaluate") },
+              { key: "create", label: t("quizPages.creator.difficulty.create") },
             ].map(({ key, label }) => (
               <div key={key} className="difficulty-row">
                 <label className="difficulty-label">{label}</label>
@@ -256,7 +258,7 @@ function QuestionSetCreatorPage() {
               </div>
             ))}
             <div className="difficulty-total">
-              <span>Tổng:</span>
+              <span>{t("quizPages.creator.total")}:</span>
               <span className={totalDifficultyPercentage === 100 ? "valid" : "invalid"}>
                 {totalDifficultyPercentage}%
               </span>
@@ -267,24 +269,24 @@ function QuestionSetCreatorPage() {
         {/* Quota Info */}
         <div className="quota-info flex items-center gap-2">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line><circle cx="12" cy="12" r="5"></circle></svg>
-          Quota: Còn 3/5 đề tháng này (miễn phí)
+          {t("quizPages.creator.quotaInfo")}
         </div>
 
         {/* Action Buttons */}
         <div className="form-actions">
           <Button variant="secondary" onClick={() => navigate(-1)} disabled={generating}>
-            Hủy
+            {t("quizPages.creator.cancel")}
           </Button>
           <Button onClick={handleGenerate} disabled={generating} loading={generating}>
             {generating ? (
               <span className="inline-flex items-center gap-2">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
-                Đang tạo...
+                {t("quizPages.creator.generating")}
               </span>
             ) : (
               <span className="inline-flex items-center gap-2">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="10" width="20" height="12" rx="2" ry="2"></rect><path d="M22 12V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v6"></path></svg>
-                Tạo đề
+                {t("quizPages.creator.createSet")}
               </span>
             )}
           </Button>
@@ -293,7 +295,7 @@ function QuestionSetCreatorPage() {
 
       {/* Generating Modal */}
       {generating && (
-        <Modal isOpen={true} onClose={() => {}} title="Đang tạo bộ câu hỏi">
+        <Modal isOpen={true} onClose={() => {}} title={t("quizPages.creator.generatingModal.title")}>
           <div className="generating-modal">
             <div className="progress-animation">
               <div className="spinner large"></div>
@@ -301,36 +303,36 @@ function QuestionSetCreatorPage() {
             <ul className="generation-steps">
               <li className="completed flex items-center gap-2">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Phân tích nội dung
+                {t("quizPages.creator.generatingModal.step1")}
               </li>
               <li className="completed flex items-center gap-2">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Tạo câu hỏi mức Biết
+                {t("quizPages.creator.generatingModal.step2")}
               </li>
               <li className="active flex items-center gap-2">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
-                Tạo câu hỏi mức Hiểu
+                {t("quizPages.creator.generatingModal.step3")}
               </li>
               <li className="flex items-center gap-2">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
-                Tạo câu hỏi mức Vận dụng
+                {t("quizPages.creator.generatingModal.step4")}
               </li>
             </ul>
-            <p className="estimate-time">Ước tính còn: 15 giây</p>
+            <p className="estimate-time">{t("quizPages.creator.generatingModal.estimateTime")}</p>
           </div>
         </Modal>
       )}
 
       {/* Success Modal */}
       {showSuccessModal && (
-        <Modal isOpen={true} onClose={() => setShowSuccessModal(false)} title="Tạo thành công!">
+        <Modal isOpen={true} onClose={() => setShowSuccessModal(false)} title={t("quizPages.creator.successModal.title")}>
           <div className="success-modal">
-            <p>Bộ câu hỏi đã được tạo thành công với {numQuestions} câu.</p>
+            <p>{t("quizPages.creator.successModal.message", { numQuestions })}</p>
             <div className="modal-actions">
               <Button variant="secondary" onClick={() => setShowSuccessModal(false)}>
-                Đóng
+                {t("quizPages.creator.successModal.close")}
               </Button>
-              <Button onClick={handleViewSet}>Xem bộ câu hỏi</Button>
+              <Button onClick={handleViewSet}>{t("quizPages.creator.successModal.viewSet")}</Button>
             </div>
           </div>
         </Modal>

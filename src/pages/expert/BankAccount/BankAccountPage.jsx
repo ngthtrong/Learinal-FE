@@ -3,9 +3,11 @@ import { bankAccountsService, banksService } from "../../../services/api";
 import Button from "../../../components/common/Button";
 import Input from "../../../components/common/Input";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
 
 const BankAccountPage = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [banks, setBanks] = useState([]);
   const [bankAccount, setBankAccount] = useState(null);
@@ -56,7 +58,7 @@ const BankAccountPage = () => {
     setSuccess("");
 
     if (!formData.accountHolderName || !formData.accountNumber || !formData.bankCode) {
-      setError("Vui lòng điền đầy đủ thông tin");
+      setError(t("expertPages.bankAccount.validation.required"));
       return;
     }
 
@@ -67,10 +69,10 @@ const BankAccountPage = () => {
         ...formData,
         bankName: selectedBank?.name || "",
       });
-      setSuccess("Liên kết tài khoản ngân hàng thành công. Vui lòng chờ Admin xác minh.");
+      setSuccess(t("expertPages.bankAccount.success"));
       fetchBankAccount();
     } catch (err) {
-      setError(err.message || "Có lỗi xảy ra khi liên kết tài khoản ngân hàng");
+      setError(err.message || t("expertPages.bankAccount.error"));
     } finally {
       setLoading(false);
     }
@@ -80,17 +82,17 @@ const BankAccountPage = () => {
     const badges = {
       Pending: (
         <span className="px-3 py-1 rounded-full text-sm font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
-          Đang chờ xác minh
+          {t("expertPages.bankAccount.status.pending")}
         </span>
       ),
       Verified: (
         <span className="px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
-          Đã xác minh
+          {t("expertPages.bankAccount.status.verified")}
         </span>
       ),
       Rejected: (
         <span className="px-3 py-1 rounded-full text-sm font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">
-          Bị từ chối
+          {t("expertPages.bankAccount.status.rejected")}
         </span>
       ),
     };
@@ -98,47 +100,47 @@ const BankAccountPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8 px-4">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Tài khoản ngân hàng
+            {t("expertPages.bankAccount.pageTitle")}
           </h1>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-            Liên kết tài khoản ngân hàng để nhận thanh toán hoa hồng
+            {t("expertPages.bankAccount.pageSubtitle")}
           </p>
 
           {bankAccount && (
             <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                  Trạng thái tài khoản
+                  {t("expertPages.bankAccount.accountStatus")}
                 </h3>
                 {getStatusBadge(bankAccount.status)}
               </div>
               
               <div className="grid grid-cols-1 gap-3 text-sm">
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">Chủ tài khoản:</span>
+                  <span className="text-gray-600 dark:text-gray-400">{t("expertPages.bankAccount.accountHolder")}:</span>
                   <span className="ml-2 font-medium text-gray-900 dark:text-white">
                     {bankAccount.accountHolderName}
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">Số tài khoản:</span>
+                  <span className="text-gray-600 dark:text-gray-400">{t("expertPages.bankAccount.accountNumber")}:</span>
                   <span className="ml-2 font-medium text-gray-900 dark:text-white">
                     {bankAccount.accountNumber}
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">Ngân hàng:</span>
+                  <span className="text-gray-600 dark:text-gray-400">{t("expertPages.bankAccount.bankName")}:</span>
                   <span className="ml-2 font-medium text-gray-900 dark:text-white">
                     {bankAccount.bankName}
                   </span>
                 </div>
                 {bankAccount.status === "Rejected" && bankAccount.rejectionReason && (
                   <div className="mt-2 p-3 bg-red-50 dark:bg-red-900/20 rounded">
-                    <span className="text-red-700 dark:text-red-400 font-medium">Lý do từ chối:</span>
+                    <span className="text-red-700 dark:text-red-400 font-medium">{t("expertPages.bankAccount.rejectionReason")}:</span>
                     <p className="text-red-600 dark:text-red-300 mt-1">{bankAccount.rejectionReason}</p>
                   </div>
                 )}
@@ -161,7 +163,7 @@ const BankAccountPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Tên chủ tài khoản *
+                {t("expertPages.bankAccount.form.holderLabel")}
               </label>
               <Input
                 type="text"
@@ -169,14 +171,14 @@ const BankAccountPage = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, accountHolderName: e.target.value })
                 }
-                placeholder="Nguyễn Văn A"
+                placeholder={t("expertPages.bankAccount.form.holderPlaceholder")}
                 disabled={loading}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Số tài khoản *
+                {t("expertPages.bankAccount.form.numberLabel")}
               </label>
               <Input
                 type="text"
@@ -184,22 +186,22 @@ const BankAccountPage = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, accountNumber: e.target.value })
                 }
-                placeholder="0123456789"
+                placeholder={t("expertPages.bankAccount.form.numberPlaceholder")}
                 disabled={loading}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Ngân hàng *
+                {t("expertPages.bankAccount.form.bankLabel")}
               </label>
               <select
                 value={formData.bankCode}
                 onChange={(e) => setFormData({ ...formData, bankCode: e.target.value })}
                 disabled={loading}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
-                <option value="">Chọn ngân hàng</option>
+                <option value="">{t("expertPages.bankAccount.selectBank")}</option>
                 {banks.map((bank) => (
                   <option key={bank.code} value={bank.code}>
                     {bank.shortName} - {bank.name}
@@ -210,20 +212,20 @@ const BankAccountPage = () => {
 
             <div className="flex gap-3 pt-4">
               <Button type="submit" disabled={loading}>
-                {loading ? "Đang xử lý..." : bankAccount ? "Cập nhật" : "Liên kết"}
+                {loading ? t("expertPages.common.processing") : bankAccount ? t("expertPages.bankAccount.form.update") : t("expertPages.bankAccount.form.submit")}
               </Button>
             </div>
           </form>
 
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+          <div className="mt-6 p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              📌 Lưu ý
+              {t("expertPages.bankAccount.notes.title")}
             </h3>
             <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-              <li>• Tài khoản ngân hàng phải đúng với tên chuyên gia đã đăng ký</li>
-              <li>• Admin sẽ xác minh thông tin trước khi cho phép thanh toán</li>
-              <li>• Hoa hồng chỉ được thanh toán khi đạt tối thiểu 2,000đ</li>
-              <li>• Nếu bị từ chối, vui lòng cập nhật lại thông tin chính xác</li>
+              <li>• {t("expertPages.bankAccount.notes.item1")}</li>
+              <li>• {t("expertPages.bankAccount.notes.item2")}</li>
+              <li>• {t("expertPages.bankAccount.notes.item3")}</li>
+              <li>• {t("expertPages.bankAccount.notes.item4")}</li>
             </ul>
           </div>
         </div>

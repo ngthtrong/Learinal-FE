@@ -6,11 +6,13 @@ import { useToast, PremiumRequiredModal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { Footer } from "@/components/layout";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const PublicSetsPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [questionSets, setQuestionSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -102,18 +104,18 @@ const PublicSetsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><path d="M12 2c1.5 0 2.92.69 3.82 1.97l1.38 2.16c.5.78 1.3 1.3 2.21 1.46l1.96.31c.95.15 1.73.86 2 1.8l.5 1.81c.22.8.77 1.48 1.5 1.85l1.3.66c.74.37 1.25 1.08 1.37 1.88l.25 1.65c.08.51.33.97.7 1.28l.96.82c.6.5.95 1.23.95 2 0 .77-.35 1.5-.95 2l-.96.82c-.37.31-.62.77-.7 1.28l-.25 1.65c-.12.8-.63 1.51-1.37 1.88l-1.3.66c-.73.37-1.28 1.05-1.5 1.85l-.5 1.81c-.27.94-1.05 1.65-2 1.8l-1.96.31c-.91.16-1.71.68-2.21 1.46l-1.38 2.16c-.9 1.28-2.32 1.97-3.82 1.97s-2.92-.69-3.82-1.97l-1.38-2.16c-.5-.78-1.3-1.3-2.21-1.46l-1.96-.31c-.95-.15-1.73-.86-2-1.8l-.5-1.81c-.22-.8-.77-1.48-1.5-1.85l-1.3-.66c-.74-.37-1.25-1.08-1.37-1.88l-.25-1.65c-.08-.51-.33-.97-.7-1.28l-.96-.82c-.6-.5-.95-1.23-.95-2 0-.77.35-1.5.95-2l.96-.82c.37-.31.62-.77.7-1.28l.25-1.65c.12-.8.63-1.51 1.37-1.88l1.3-.66c.73-.37 1.28-1.05 1.5-1.85l.5-1.81c.27-.94 1.05-1.65 2-1.8l1.96-.31c.91-.16 1.71-.68 2.21-1.46l1.38-2.16C9.08 2.69 10.5 2 12 2z"></path><path d="M2.5 12h19"></path></svg>
             </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Bộ Đề Chung</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("publicSets.pageTitle")}</h1>
           </div>
           <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 ml-0 sm:ml-13">
-            Khám phá và làm thử các bộ đề thi được chia sẻ công khai từ cộng đồng
+            {t("publicSets.pageSubtitle")}
           </p>
 
           {/* Tabs */}
@@ -132,7 +134,7 @@ const PublicSetsPage = () => {
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                   </svg>
-                  Tất cả
+                  {t("publicSets.tabAll")}
                 </span>
               </button>
               <button
@@ -150,9 +152,9 @@ const PublicSetsPage = () => {
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                   </svg>
-                  Đề Expert
+                  {t("publicSets.tabExpert")}
                   <span className="ml-1 px-1.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                    Premium
+                    {t("publicSets.premium")}
                   </span>
                 </span>
               </button>
@@ -170,7 +172,7 @@ const PublicSetsPage = () => {
                     <polyline points="16 6 12 2 8 6"></polyline>
                     <line x1="12" y1="2" x2="12" y2="15"></line>
                   </svg>
-                  Người dùng chia sẻ
+                  {t("publicSets.tabUserShared")}
                 </span>
               </button>
             </nav>
@@ -185,14 +187,14 @@ const PublicSetsPage = () => {
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <div
                 key={n}
-                className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm animate-pulse"
+                className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm animate-pulse"
               >
-                <div className="h-5 sm:h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3 sm:mb-4"></div>
+                <div className="h-5 sm:h-6 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-3 sm:mb-4"></div>
                 <div className="space-y-2 mb-3 sm:mb-4">
-                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 dark:bg-slate-700 rounded w-2/3"></div>
                 </div>
-                <div className="h-9 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-9 sm:h-10 bg-gray-200 dark:bg-slate-700 rounded"></div>
               </div>
             ))}
           </div>
@@ -200,15 +202,15 @@ const PublicSetsPage = () => {
 
         {/* Empty State */}
         {!loading && questionSets.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-10 sm:py-16 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col items-center justify-center py-10 sm:py-16 px-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-primary-100 dark:bg-primary-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400"><circle cx="12" cy="12" r="10"></circle><path d="M12 2c1.5 0 2.92.69 3.82 1.97l1.38 2.16c.5.78 1.3 1.3 2.21 1.46l1.96.31c.95.15 1.73.86 2 1.8l.5 1.81c.22.8.77 1.48 1.5 1.85l1.3.66c.74.37 1.25 1.08 1.37 1.88l.25 1.65c.08.51.33.97.7 1.28l.96.82c.6.5.95 1.23.95 2 0 .77-.35 1.5-.95 2l-.96.82c-.37.31-.62.77-.7 1.28l-.25 1.65c-.12.8-.63 1.51-1.37 1.88l-1.3.66c-.73.37-1.28 1.05-1.5 1.85l-.5 1.81c-.27.94-1.05 1.65-2 1.8l-1.96.31c-.91.16-1.71.68-2.21 1.46l-1.38 2.16c-.9 1.28-2.32 1.97-3.82 1.97s-2.92-.69-3.82-1.97l-1.38-2.16c-.5-.78-1.3-1.3-2.21-1.46l-1.96-.31c-.95-.15-1.73-.86-2-1.8l-.5-1.81c-.22-.8-.77-1.48-1.5-1.85l-1.3-.66c-.74-.37-1.25-1.08-1.37-1.88l-.25-1.65c-.08-.51-.33-.97-.7-1.28l-.96-.82c-.6-.5-.95-1.23-.95-2 0-.77.35-1.5.95-2l.96-.82c.37-.31.62-.77.7-1.28l.25-1.65c.12-.8.63-1.51 1.37-1.88l1.3-.66c.73-.37 1.28-1.05 1.5-1.85l.5-1.81c.27-.94 1.05-1.65 2-1.8l1.96-.31c.91-.16 1.71-.68 2.21-1.46l1.38-2.16C9.08 2.69 10.5 2 12 2z"></path><path d="M2.5 12h19"></path></svg>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 text-center">
-              Chưa có bộ đề công khai nào
+              {t("publicSets.noSets")}
             </h2>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center mb-4 sm:mb-6 max-w-md">
-              Hiện tại chưa có bộ đề nào được chia sẻ công khai. Hãy quay lại sau!
+              {t("publicSets.noSetsDesc")}
             </p>
           </div>
         )}
@@ -229,7 +231,7 @@ const PublicSetsPage = () => {
                   ? new Date(questionSet.createdAt).toLocaleDateString("vi-VN")
                   : "";
                 const creatorName =
-                  questionSet.creatorName || questionSet.creator?.name || "Ẩn danh";
+                  questionSet.creatorName || questionSet.creator?.name || t("publicSets.anonymous");
                 const creatorRole = questionSet.creatorRole || "Learner";
                 const subjectName = questionSet.subject?.name || "";
                 const isExpertSet = creatorRole === "Expert";
@@ -246,7 +248,7 @@ const PublicSetsPage = () => {
                     className={`group relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br border shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer ${
                       isExpertSet
                         ? "from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border-amber-300 dark:border-amber-700 hover:border-amber-500 dark:hover:border-amber-500"
-                        : "from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500"
+                        : "from-white to-gray-50 dark:from-slate-800 dark:to-slate-900 border-gray-200 dark:border-slate-700 hover:border-primary-500 dark:hover:border-primary-500"
                     }`}
                     onClick={() => handleViewDetail(questionSet.id, creatorRole)}
                   >
@@ -308,7 +310,7 @@ const PublicSetsPage = () => {
                     {/* Creator & Subject info */}
                     <div className="text-sm text-gray-700 dark:text-gray-400 mb-3 space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">Tạo bởi:</span>
+                        <span className="font-medium">{t("publicSets.createdBy")}</span>
                         <span className="flex items-center gap-1">
                           {creatorName}
                           {isExpertSet && (
@@ -320,7 +322,7 @@ const PublicSetsPage = () => {
                       </div>
                       {subjectName && (
                         <div>
-                          <span className="font-medium">Môn học:</span> {subjectName}
+                          <span className="font-medium">{t("publicSets.subject")}</span> {subjectName}
                         </div>
                       )}
                     </div>
@@ -329,21 +331,21 @@ const PublicSetsPage = () => {
                     <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2 items-center">
                       {questionCount > 0 && (
                         <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 text-xs font-medium rounded-full bg-primary-500/20 text-primary-700 dark:text-primary-300 border border-primary-500/30">
-                          {questionCount} câu hỏi
+                          {questionCount} {t("publicSets.questions")}
                         </span>
                       )}
                       {difficulty && (
                         <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30">
                           {difficulty === "Easy"
-                            ? "Dễ"
+                            ? t("publicSets.difficultyEasy")
                             : difficulty === "Hard"
-                            ? "Khó"
-                            : "Trung bình"}
+                            ? t("publicSets.difficultyHard")
+                            : t("publicSets.difficultyMedium")}
                         </span>
                       )}
                       <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-green-500/20 text-green-700 dark:text-green-300 border border-green-500/30 inline-flex items-center gap-1">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path><path d="M2 12h20"></path></svg>
-                        Chung
+                        {t("publicSets.public")}
                       </span>
                     </div>
 
@@ -354,10 +356,10 @@ const PublicSetsPage = () => {
                           e.stopPropagation();
                           handleViewDetail(questionSet.id, creatorRole);
                         }}
-                        className="w-1/2 px-3 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-500 transition-all shadow-sm inline-flex items-center justify-center gap-1.5"
+                        className="w-1/2 px-3 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 hover:border-primary-500 dark:hover:border-primary-500 transition-all shadow-sm inline-flex items-center justify-center gap-1.5"
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        Xem chi tiết
+                        {t("publicSets.viewDetails")}
                       </button>
                       <button
                         onClick={(e) => {
@@ -375,12 +377,12 @@ const PublicSetsPage = () => {
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                             </svg>
-                            Premium
+                            {t("publicSets.premium")}
                           </>
                         ) : (
                           <>
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            Làm thử
+                            {t("publicSets.tryNow")}
                           </>
                         )}
                       </button>
@@ -397,10 +399,10 @@ const PublicSetsPage = () => {
             {totalPages > 1 && (
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-6 sm:mt-8">
                 <Button variant="secondary" disabled={page === 1} onClick={() => setPage(page - 1)} className="w-full sm:w-auto">
-                  ← Trang trước
+                  {t("publicSets.prevPage")}
                 </Button>
                 <div className="flex items-center gap-2 text-sm sm:text-base text-gray-700 dark:text-gray-300">
-                  <span className="font-medium">Trang {page}</span>
+                  <span className="font-medium">{t("publicSets.page")} {page}</span>
                   <span>/</span>
                   <span>{totalPages}</span>
                 </div>
@@ -410,7 +412,7 @@ const PublicSetsPage = () => {
                   onClick={() => setPage(page + 1)}
                   className="w-full sm:w-auto"
                 >
-                  Trang sau →
+                  {t("publicSets.nextPage")}
                 </Button>
               </div>
             )}

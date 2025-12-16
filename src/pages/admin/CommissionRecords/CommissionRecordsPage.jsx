@@ -1,12 +1,8 @@
-/**
- * Commission Records Page
- * Admin: xem mọi bản ghi + đánh dấu trả
- * Expert: xem bản ghi của mình + summary earnings với Hybrid Model breakdown
- */
 import { useEffect, useMemo, useState } from "react";
 import { Button, Input, Modal, useToast } from "@/components/common";
 import { commissionRecordsService, paymentBatchesService } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import CoinsIcon from "@/components/icons/CoinsIcon";
 import DashboardIcon from "@/components/icons/DashboardIcon";
 
@@ -15,6 +11,7 @@ const PAGE_SIZES = [10, 20, 50];
 function CommissionRecordsPage() {
   const toast = useToast();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const role = user?.role;
 
   const [records, setRecords] = useState([]);
@@ -122,7 +119,7 @@ function CommissionRecordsPage() {
       }
     } catch (e) {
       console.error(e);
-      setError(e?.response?.data?.message || "Không thể tải danh sách hoa hồng");
+      setError(e?.response?.data?.message || (role === "Expert" ? t("expertPages.commissions.loadError") : "Không thể tải danh sách hoa hồng"));
     } finally {
       setLoading(false);
     }
@@ -255,16 +252,16 @@ function CommissionRecordsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Hoa hồng</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{role === "Expert" ? t("expertPages.commissions.pageTitle") : "Hoa hồng"}</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">
               {role === "Admin"
                 ? "Quản lý và xác nhận thanh toán hoa hồng cho chuyên gia."
-                : "Theo dõi thu nhập từ các lần xác thực."}
+                : t("expertPages.commissions.pageSubtitle")}
             </p>
           </div>
           <div className="flex gap-2">
@@ -275,20 +272,20 @@ function CommissionRecordsPage() {
                 fetchData();
               }}
             >
-              Làm mới
+              {role === "Expert" ? t("expertPages.commissions.refresh") : "Làm mới"}
             </Button>
           </div>
         </div>
 
         {/* Filters + Summary */}
         <div className="mb-6 space-y-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="md:col-span-2">
                 <Input
-                  label={role === "Admin" ? "Tìm theo tên hoặc ExpertId" : "Tìm kiếm"}
+                  label={role === "Admin" ? "Tìm theo tên hoặc ExpertId" : t("expertPages.commissions.statusLabel")}
                   placeholder={
-                    role === "Admin" ? "Nhập tên chuyên gia hoặc ExpertId..." : "Tìm kiếm..."
+                    role === "Admin" ? "Nhập tên chuyên gia hoặc ExpertId..." : t("expertPages.commissions.searchPlaceholder")
                   }
                   value={search}
                   onChange={(e) => {
@@ -299,18 +296,18 @@ function CommissionRecordsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Trạng thái</label>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">{role === "Expert" ? t("expertPages.commissions.statusLabel") : "Trạng thái"}</label>
                 <select
-                  className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   value={status}
                   onChange={(e) => {
                     setStatus(e.target.value);
                     setPage(1);
                   }}
                 >
-                  <option value="">Tất cả</option>
-                  <option value="Pending">Chờ</option>
-                  <option value="Paid">Đã trả</option>
+                  <option value="">{role === "Expert" ? t("expertPages.commissions.statusAll") : "Tất cả"}</option>
+                  <option value="Pending">{role === "Expert" ? t("expertPages.commissions.statusPending") : "Chờ"}</option>
+                  <option value="Paid">{role === "Expert" ? t("expertPages.commissions.statusPaid") : "Đã trả"}</option>
                 </select>
               </div>
             </div>
@@ -325,7 +322,7 @@ function CommissionRecordsPage() {
                   fetchData();
                 }}
               >
-                Đặt lại
+                {role === "Expert" ? t("expertPages.commissions.reset") : "Đặt lại"}
               </Button>
               <Button
                 className="w-full sm:w-auto"
@@ -334,21 +331,21 @@ function CommissionRecordsPage() {
                   fetchData();
                 }}
               >
-                Áp dụng
+                {role === "Expert" ? t("expertPages.commissions.apply") : "Áp dụng"}
               </Button>
             </div>
           </div>
           {role === "Expert" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
-                <div className="text-xs text-gray-500 dark:text-gray-400">Đã nhận</div>
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4">
+                <div className="text-xs text-gray-500 dark:text-gray-400">{t("expertPages.commissions.totalEarned")}</div>
                 <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
                   {formatCurrency(summary?.totalEarned || 0)}
                 </div>
               </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4">
                 <div className="flex items-center justify-between">
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Đang chờ</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{t("expertPages.commissions.totalPending")}</div>
                   <button
                     onClick={() => setPaymentInfoOpen(true)}
                     className="text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 transition"
@@ -368,25 +365,25 @@ function CommissionRecordsPage() {
         </div>
 
         {/* Table container */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
           {loading ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{role === "Expert" ? t("expertPages.commissions.loading") : "Đang tải..."}</div>
           ) : error ? (
             <div className="py-16 text-center">
               <div className="text-5xl mb-3">⚠️</div>
               <div className="text-error-600 dark:text-error-400 font-medium">{error}</div>
             </div>
           ) : records.length === 0 ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Không có bản ghi hoa hồng</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{role === "Expert" ? t("expertPages.commissions.noRecords") : "Không có bản ghi hoa hồng"}</div>
           ) : (
             <>
               {role === "Admin" ? (
                 /* Admin View: Expert Summary List */
-                <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                <div className="divide-y divide-gray-200 dark:divide-slate-700">
                   {expertSummaries.map((expert) => (
                     <div
                       key={expert.expertId}
-                      className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition"
+                      className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition"
                     >
                       <div className="flex items-center justify-between">
                         <div 
@@ -442,16 +439,16 @@ function CommissionRecordsPage() {
                 /* Expert View: Original Table */
                 <>
               {/* Mobile Cards View */}
-              <div className="block md:hidden divide-y divide-gray-200 dark:divide-gray-700">
+              <div className="block md:hidden divide-y divide-gray-200 dark:divide-slate-700">
                 {records.map((r) => (
-                  <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50">
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
-                          {r.expertName || r.expertId || "(Không rõ)"}
+                          {r.expertName || r.expertId || t("expertPages.commissions.unknown")}
                         </div>
                         <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                          📚 {r.metadata?.questionSetTitle || "(Không rõ)"}
+                          📚 {r.metadata?.questionSetTitle || t("expertPages.commissions.unknown")}
                         </div>
                         <div className="flex items-center gap-2 mt-1">
                           {r.type === "Published" ? (
@@ -465,11 +462,11 @@ function CommissionRecordsPage() {
                           ) : null}
                           {r.status === "Paid" ? (
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
-                              Đã trả
+                              {t("expertPages.commissions.statusPaid")}
                             </span>
                           ) : r.status === "Pending" ? (
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400">
-                              Chờ
+                              {t("expertPages.commissions.statusPending")}
                             </span>
                           ) : null}
                         </div>
@@ -493,41 +490,41 @@ function CommissionRecordsPage() {
               </div>
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-900">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Chuyên gia
+                      {t("expertPages.commissions.table.expert")}
                     </th>
                     <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Bộ đề
+                      {t("expertPages.commissions.table.questionSet")}
                     </th>
                     <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Loại
+                      {t("expertPages.commissions.table.type")}
                     </th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Tổng
+                      {t("expertPages.commissions.table.total")}
                     </th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Trạng thái
+                      {t("expertPages.commissions.table.status")}
                     </th>
                     <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Tạo lúc
+                      {t("expertPages.commissions.table.createdAt")}
                     </th>
                     <th className="px-3 sm:px-6 py-3" />
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                   {records.map((r) => (
-                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                       <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
-                          {r.expertName || r.expertId || "(Không rõ)"}
+                          {r.expertName || r.expertId || t("expertPages.commissions.unknown")}
                         </div>
                       </td>
                       <td className="hidden lg:table-cell px-6 py-4">
-                        <div className="text-sm text-gray-700 dark:text-gray-300 max-w-xs truncate" title={r.metadata?.questionSetTitle || "(Không rõ)"}>
-                          {r.metadata?.questionSetTitle || "(Không rõ)"}
+                        <div className="text-sm text-gray-700 dark:text-gray-300 max-w-xs truncate" title={r.metadata?.questionSetTitle || t("expertPages.commissions.unknown")}>
+                          {r.metadata?.questionSetTitle || t("expertPages.commissions.unknown")}
                         </div>
                       </td>
                       <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
@@ -551,14 +548,14 @@ function CommissionRecordsPage() {
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         {r.status === "Paid" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
-                            Đã trả
+                            {t("expertPages.commissions.statusPaid")}
                           </span>
                         ) : r.status === "Pending" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400">
-                            Chờ
+                            {t("expertPages.commissions.statusPending")}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
                             {r.status || "-"}
                           </span>
                         )}
@@ -596,11 +593,11 @@ function CommissionRecordsPage() {
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
           <div className="text-sm text-gray-600 dark:text-gray-400">
-            Hiển thị {records.length} / {total} bản ghi
+            {role === "Expert" ? t("expertPages.commissions.pagination.showing", { current: records.length, total }) : `Hiển thị ${records.length} / ${total} bản ghi`}
           </div>
           <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-end">
             <select
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+              className="px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 text-sm"
               value={pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
@@ -619,7 +616,7 @@ function CommissionRecordsPage() {
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
             >
-              Trước
+              {role === "Expert" ? t("expertPages.commissions.pagination.prev") : "Trước"}
             </Button>
             <div className="text-sm text-gray-700 dark:text-gray-300">
               {page}/{totalPages}
@@ -630,7 +627,7 @@ function CommissionRecordsPage() {
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
             >
-              Sau
+              {role === "Expert" ? t("expertPages.commissions.pagination.next") : "Sau"}
             </Button>
           </div>
         </div>
@@ -668,8 +665,8 @@ function CommissionRecordsPage() {
         <Modal
           isOpen={paymentInfoOpen}
           onClose={() => setPaymentInfoOpen(false)}
-          title="📅 Lịch thanh toán hoa hồng"
-          confirmText="Đã hiểu"
+          title={t("expertPages.commissions.paymentInfo.title")}
+          confirmText={t("expertPages.commissions.paymentInfo.understood")}
           onConfirm={() => setPaymentInfoOpen(false)}
           hideCancel
         >
@@ -683,11 +680,9 @@ function CommissionRecordsPage() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-sm font-semibold text-amber-900 dark:text-amber-200 mb-2">
-                    Chu kỳ thanh toán
+                    {t("expertPages.commissions.paymentInfo.cycleTitle")}
                   </h3>
-                  <p className="text-sm text-amber-800 dark:text-amber-300">
-                    Hoa hồng sẽ được Admin thanh toán vào <strong>đầu mỗi tháng</strong> (ngày 1-5).
-                  </p>
+                  <p className="text-sm text-amber-800 dark:text-amber-300" dangerouslySetInnerHTML={{ __html: t("expertPages.commissions.paymentInfo.cycleDesc") }} />
                 </div>
               </div>
             </div>
@@ -698,9 +693,9 @@ function CommissionRecordsPage() {
                   <span className="text-xs font-bold text-blue-600 dark:text-blue-400">1</span>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">Tích lũy hoa hồng</h4>
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">{t("expertPages.commissions.paymentInfo.step1Title")}</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Mọi giao dịch trong tháng sẽ có trạng thái <span className="px-2 py-0.5 rounded-full bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400 text-xs font-medium">Đang chờ</span>
+                    {t("expertPages.commissions.paymentInfo.step1Desc")} <span className="px-2 py-0.5 rounded-full bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400 text-xs font-medium">{t("expertPages.commissions.statusPending")}</span>
                   </p>
                 </div>
               </div>
@@ -710,9 +705,9 @@ function CommissionRecordsPage() {
                   <span className="text-xs font-bold text-green-600 dark:text-green-400">2</span>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">Xử lý thanh toán</h4>
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">{t("expertPages.commissions.paymentInfo.step2Title")}</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Admin sẽ xử lý thanh toán vào đầu tháng sau (1-5 hàng tháng)
+                    {t("expertPages.commissions.paymentInfo.step2Desc")}
                   </p>
                 </div>
               </div>
@@ -722,18 +717,16 @@ function CommissionRecordsPage() {
                   <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">3</span>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">Nhận tiền</h4>
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">{t("expertPages.commissions.paymentInfo.step3Title")}</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Sau khi thanh toán, trạng thái chuyển sang <span className="px-2 py-0.5 rounded-full bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 text-xs font-medium">Đã trả</span>
+                    {t("expertPages.commissions.paymentInfo.step3Desc")} <span className="px-2 py-0.5 rounded-full bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 text-xs font-medium">{t("expertPages.commissions.statusPaid")}</span>
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
-              <p className="text-xs text-blue-800 dark:text-blue-300">
-                💡 <strong>Lưu ý:</strong> Nếu có thắc mắc về thanh toán, vui lòng liên hệ Admin để được hỗ trợ.
-              </p>
+              <p className="text-xs text-blue-800 dark:text-blue-300" dangerouslySetInnerHTML={{ __html: t("expertPages.commissions.paymentInfo.note") }} />
             </div>
           </div>
         </Modal>
@@ -784,7 +777,7 @@ function CommissionRecordsPage() {
           )}
 
           {/* Records List */}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          <div className="border-t border-gray-200 dark:border-slate-700 pt-4">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
               Danh sách giao dịch ({expertRecords.length})
             </h3>
@@ -796,7 +789,7 @@ function CommissionRecordsPage() {
             ) : (
               <div className="max-h-96 overflow-y-auto space-y-2">
                     {expertRecords.map((r) => (
-                      <div key={r.id} className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg flex items-center justify-between">
+                      <div key={r.id} className="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-between">
                         <div className="flex-1">
                           <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                             📚 {r.metadata?.questionSetTitle || "(Không rõ)"}
@@ -849,7 +842,7 @@ function CommissionRecordsPage() {
           {paymentBatch && (
             <div className="space-y-6">
               {/* Bank Account Info */}
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+              <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                   Thông tin tài khoản nhận
                 </h3>

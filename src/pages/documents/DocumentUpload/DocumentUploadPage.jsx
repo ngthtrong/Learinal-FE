@@ -8,6 +8,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import documentsService from "@/services/api/documents.service";
 import subjectsService from "@/services/api/subjects.service";
 import Button from "@/components/common/Button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const UPLOAD_CONSTRAINTS = {
   maxFileSize: 20 * 1024 * 1024, // 20MB
@@ -17,6 +18,7 @@ const UPLOAD_CONSTRAINTS = {
 
 function DocumentUploadPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const preselectedSubjectId = searchParams.get("subjectId");
   const fileInputRef = useRef(null);
@@ -57,7 +59,13 @@ function DocumentUploadPage() {
         const excess = selectedFiles.length - documentLimit.remaining;
         setLimitWarning({
           type: "exceed",
-          message: `Bạn đang chọn ${selectedFiles.length} file nhưng chỉ còn ${documentLimit.remaining} slot trống (đang có ${documentLimit.currentCount}/${documentLimit.maxAllowed} tài liệu). Vui lòng xóa ${excess} file hoặc nâng cấp gói đăng ký.`,
+          message: t("documents.upload.limitWarningExceed", {
+            selected: selectedFiles.length,
+            remaining: documentLimit.remaining,
+            current: documentLimit.currentCount,
+            max: documentLimit.maxAllowed,
+            excess
+          }),
           excess,
           remaining: documentLimit.remaining,
         });
@@ -79,7 +87,10 @@ function DocumentUploadPage() {
       if (!limit.isUnlimited && !limit.canUpload) {
         setLimitWarning({
           type: "full",
-          message: `Môn học này đã đạt giới hạn tài liệu (${limit.currentCount}/${limit.maxAllowed}). Vui lòng xóa bớt tài liệu hoặc nâng cấp gói đăng ký để tải lên thêm.`,
+          message: t("documents.upload.limitWarningFull", {
+            current: limit.currentCount,
+            max: limit.maxAllowed
+          }),
           remaining: 0,
         });
       } else {
@@ -98,27 +109,27 @@ function DocumentUploadPage() {
       setSubjects(data.items || []);
     } catch (err) {
       const _ignore = err;
-      setError("Không thể tải danh sách môn học");
+      setError(t("documents.upload.loadSubjectsError"));
     }
   };
 
   const validateFile = useCallback((file) => {
     const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
     if (!UPLOAD_CONSTRAINTS.allowedExtensions.includes(ext)) {
-      return `File "${file.name}": Chỉ chấp nhận file .pdf, .docx, .txt`;
+      return t("documents.upload.fileTypeError", { name: file.name });
     }
     if (file.size > UPLOAD_CONSTRAINTS.maxFileSize) {
-      return `File "${file.name}": Kích thước tối đa là 20MB`;
+      return t("documents.upload.fileSizeError", { name: file.name });
     }
     return null;
-  }, []);
+  }, [t]);
 
   const handleFilesSelect = useCallback((files) => {
     const fileArray = Array.from(files);
     
     // Check max files limit
     if (selectedFiles.length + fileArray.length > UPLOAD_CONSTRAINTS.maxFiles) {
-      setError(`Chỉ được tải lên tối đa ${UPLOAD_CONSTRAINTS.maxFiles} file cùng lúc.`);
+      setError(t("documents.upload.maxFilesError", { max: UPLOAD_CONSTRAINTS.maxFiles }));
       return;
     }
 
@@ -129,7 +140,7 @@ function DocumentUploadPage() {
       // Check for duplicates
       const isDuplicate = selectedFiles.some((f) => f.name === file.name && f.size === file.size);
       if (isDuplicate) {
-        errors.push(`File "${file.name}" đã được chọn.`);
+        errors.push(t("documents.upload.duplicateError", { name: file.name }));
         return;
       }
 
@@ -195,23 +206,27 @@ function DocumentUploadPage() {
     e.preventDefault();
 
     if (selectedFiles.length === 0) {
-      setError("Vui lòng chọn ít nhất một file");
+      setError(t("documents.upload.selectFileRequired"));
       return;
     }
 
     if (!selectedSubject) {
-      setError("Vui lòng chọn môn học");
+      setError(t("documents.upload.selectSubjectRequired"));
       return;
     }
 
     // Check document limit before upload
     if (limitWarning && limitWarning.type === "full") {
-      setError("Không thể tải lên - môn học đã đạt giới hạn tài liệu. Vui lòng xóa bớt tài liệu hoặc nâng cấp gói đăng ký.");
+      setError(t("documents.upload.limitFullError"));
       return;
     }
 
     if (limitWarning && limitWarning.type === "exceed") {
-      setError(`Không thể tải lên - số file đang chọn (${selectedFiles.length}) vượt quá số slot còn trống (${limitWarning.remaining}). Vui lòng xóa bớt ${limitWarning.excess} file.`);
+      setError(t("documents.upload.limitExceedError", {
+        selected: selectedFiles.length,
+        remaining: limitWarning.remaining,
+        excess: limitWarning.excess
+      }));
       return;
     }
 
@@ -252,7 +267,7 @@ function DocumentUploadPage() {
         }, 2000);
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Không thể tải lên tài liệu");
+      setError(err.response?.data?.message || t("documents.upload.uploadError"));
     } finally {
       setUploading(false);
     }
@@ -284,14 +299,14 @@ function DocumentUploadPage() {
   const isComplete = uploadResults.successful.length > 0 || uploadResults.failed.length > 0;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-        <div className="bg-white shadow-sm border border-gray-200 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <div className="space-y-2">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">📄 Tải lên tài liệu</h1>
-            <p className="text-base sm:text-lg text-gray-600">
-              Tải lên nhiều tài liệu cùng lúc để hệ thống tự động trích xuất nội dung và tạo tóm tắt
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("documents.upload.pageTitle")}</h1>
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
+              {t("documents.upload.pageSubtitle")}
             </p>
           </div>
         </div>
@@ -307,13 +322,13 @@ function DocumentUploadPage() {
                   <span className="text-2xl sm:text-4xl">✅</span>
                   <div>
                     <h3 className="text-sm sm:text-lg font-bold text-success-900">
-                      Tải lên thành công {uploadResults.successful.length} file!
+                      {t("documents.upload.uploadSuccess", { count: uploadResults.successful.length })}
                     </h3>
-                    <p className="text-xs sm:text-base text-success-700">Tài liệu đang được xử lý...</p>
+                    <p className="text-xs sm:text-base text-success-700">{t("documents.upload.uploadProcessing")}</p>
                   </div>
                 </div>
                 {uploadResults.failed.length === 0 && (
-                  <p className="text-xs sm:text-sm text-success-600">Đang chuyển hướng...</p>
+                  <p className="text-xs sm:text-sm text-success-600">{t("documents.upload.redirecting")}</p>
                 )}
               </div>
             )}
@@ -323,7 +338,7 @@ function DocumentUploadPage() {
                   <span className="text-2xl sm:text-4xl">❌</span>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm sm:text-lg font-bold text-error-900 mb-1 sm:mb-2">
-                      Thất bại {uploadResults.failed.length} file
+                      {t("documents.upload.uploadFailed", { count: uploadResults.failed.length })}
                     </h3>
                     <ul className="space-y-0.5 sm:space-y-1 text-xs sm:text-sm text-error-700">
                       {uploadResults.failed.map((item, idx) => (
@@ -342,7 +357,7 @@ function DocumentUploadPage() {
                 }}
                 className="text-sm"
               >
-                Tải lên file khác
+                {t("documents.upload.uploadOther")}
               </Button>
             )}
           </div>
@@ -352,8 +367,8 @@ function DocumentUploadPage() {
           <form onSubmit={handleUpload} className="space-y-6">
             {/* Subject Selection */}
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                Chọn môn học <span className="text-error-600">*</span>
+              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {t("documents.upload.selectSubject")} <span className="text-error-600">*</span>
               </label>
               <select
                 id="subject"
@@ -361,9 +376,9 @@ function DocumentUploadPage() {
                 onChange={(e) => setSelectedSubject(e.target.value)}
                 required
                 disabled={uploading}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-100 dark:disabled:bg-slate-700 disabled:cursor-not-allowed bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
               >
-                <option value="">-- Chọn môn học --</option>
+                <option value="">{t("documents.upload.selectSubjectPlaceholder")}</option>
                 {subjects.map((subject) => (
                   <option key={subject.id} value={subject.id}>
                     {subject.subjectName}
@@ -380,7 +395,7 @@ function DocumentUploadPage() {
                         <rect x="3" y="3" width="18" height="18" rx="2" />
                         <path d="M8 14V17 M12 11V17 M16 8V17" />
                       </svg>
-                      Không giới hạn số tài liệu cho môn học này
+                      {t("documents.upload.unlimitedDocs")}
                     </p>
                   ) : (
                     <p className={`text-sm inline-flex items-center gap-1.5 ${documentLimit.remaining <= 2 ? "text-warning-600" : "text-gray-500"}`}>
@@ -388,16 +403,16 @@ function DocumentUploadPage() {
                         <rect x="3" y="3" width="18" height="18" rx="2" />
                         <path d="M8 14V17 M12 11V17 M16 8V17" />
                       </svg>
-                      Đang có {documentLimit.currentCount}/{documentLimit.maxAllowed} tài liệu 
+                      {t("documents.upload.docsCount", { current: documentLimit.currentCount, max: documentLimit.maxAllowed })}
                       {documentLimit.remaining > 0 
-                        ? ` (còn ${documentLimit.remaining} slot trống)`
-                        : " (đã đầy)"}
+                        ? ` (${t("documents.upload.slotsRemaining", { remaining: documentLimit.remaining })})`
+                        : ` (${t("documents.upload.slotsFull")})`}
                     </p>
                   )}
                 </div>
               )}
               {checkingLimit && (
-                <p className="mt-2 text-sm text-gray-400">Đang kiểm tra giới hạn...</p>
+                <p className="mt-2 text-sm text-gray-400">{t("documents.upload.checkingLimit")}</p>
               )}
             </div>
 
@@ -427,7 +442,7 @@ function DocumentUploadPage() {
                     <h4 className={`text-sm sm:text-base font-semibold mb-1 ${
                       limitWarning.type === "full" ? "text-error-800" : "text-warning-800"
                     }`}>
-                      {limitWarning.type === "full" ? "Đã đạt giới hạn tài liệu" : "Vượt quá giới hạn cho phép"}
+                      {limitWarning.type === "full" ? t("documents.upload.limitReached") : t("documents.upload.limitExceeded")}
                     </h4>
                     <p className={`text-xs sm:text-sm ${
                       limitWarning.type === "full" ? "text-error-700" : "text-warning-700"
@@ -437,7 +452,7 @@ function DocumentUploadPage() {
                     <div className="mt-3 flex flex-wrap gap-2">
                       {limitWarning.type === "exceed" && limitWarning.excess > 0 && (
                         <span className="text-xs px-2 py-1 bg-warning-100 text-warning-800 rounded-full">
-                          Cần xóa {limitWarning.excess} file
+                          {t("documents.upload.needRemove", { count: limitWarning.excess })}
                         </span>
                       )}
                       <button
@@ -448,7 +463,7 @@ function DocumentUploadPage() {
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M12 19V5M5 12l7-7 7 7" />
                         </svg>
-                        Nâng cấp gói
+                        {t("documents.upload.upgradePlan")}
                       </button>
                     </div>
                   </div>
@@ -458,14 +473,14 @@ function DocumentUploadPage() {
 
             {/* File Upload - Drag & Drop */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Chọn file <span className="text-error-600">*</span>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {t("documents.upload.selectFile")} <span className="text-error-600">*</span>
               </label>
               <div
                 className={`relative border-2 border-dashed rounded-xl p-3 sm:p-6 lg:p-8 text-center transition-all cursor-pointer ${
                   dragActive
-                    ? "border-primary-500 bg-primary-50"
-                    : "border-gray-300 hover:border-primary-500 hover:bg-primary-50"
+                    ? "border-primary-500 bg-primary-50 dark:bg-primary-900/20"
+                    : "border-gray-300 dark:border-slate-600 hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20"
                 } ${uploading ? "pointer-events-none opacity-60" : ""}`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -485,12 +500,12 @@ function DocumentUploadPage() {
                 />
                 <div className="flex flex-col items-center">
                   <span className="text-3xl sm:text-5xl mb-2 sm:mb-4">📁</span>
-                  <p className="text-sm sm:text-lg font-medium text-gray-700 mb-1 sm:mb-2">
-                    {dragActive ? "Thả file vào đây" : "Kéo thả hoặc click"}
+                  <p className="text-sm sm:text-lg font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                    {dragActive ? t("documents.upload.dropHere") : t("documents.upload.dragDrop")}
                   </p>
-                  <p className="text-[10px] sm:text-sm text-gray-500">
-                    <span className="hidden sm:inline">Hỗ trợ: PDF, DOCX, TXT | Tối đa: 20MB/file | Tối đa {UPLOAD_CONSTRAINTS.maxFiles} file</span>
-                    <span className="sm:hidden">PDF, DOCX, TXT • 20MB • {UPLOAD_CONSTRAINTS.maxFiles} file</span>
+                  <p className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400">
+                    <span className="hidden sm:inline">{t("documents.upload.supportedFormats", { maxFiles: UPLOAD_CONSTRAINTS.maxFiles })}</span>
+                    <span className="sm:hidden">{t("documents.upload.supportedFormatsShort", { maxFiles: UPLOAD_CONSTRAINTS.maxFiles })}</span>
                   </p>
                 </div>
               </div>
@@ -500,8 +515,8 @@ function DocumentUploadPage() {
             {selectedFiles.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">
-                    Đã chọn {selectedFiles.length} file
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {t("documents.upload.selectedFiles", { count: selectedFiles.length })}
                   </span>
                   {!uploading && selectedFiles.length > 1 && (
                     <button
@@ -509,7 +524,7 @@ function DocumentUploadPage() {
                       className="text-sm text-error-600 hover:text-error-700"
                       onClick={handleClearAll}
                     >
-                      Xóa tất cả
+                      {t("documents.upload.clearAll")}
                     </button>
                   )}
                 </div>
@@ -518,7 +533,7 @@ function DocumentUploadPage() {
                 {uploading && (
                   <div className="bg-primary-50 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-primary-700">Đang tải lên...</span>
+                      <span className="text-sm font-medium text-primary-700">{t("documents.upload.uploading")}</span>
                       <span className="text-sm font-medium text-primary-700">{overallProgress}%</span>
                     </div>
                     <div className="h-2 bg-primary-200 rounded-full overflow-hidden">
@@ -535,12 +550,12 @@ function DocumentUploadPage() {
                   {selectedFiles.map((file, index) => (
                     <div
                       key={`${file.name}-${index}`}
-                      className="flex items-center gap-2 sm:gap-4 bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200"
+                      className="flex items-center gap-2 sm:gap-4 bg-gray-50 dark:bg-slate-800 rounded-lg p-2 sm:p-3 border border-gray-200 dark:border-slate-700"
                     >
                       <div className="text-2xl sm:text-3xl flex-shrink-0">{getFileIcon(file.name)}</div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm sm:text-base font-medium text-gray-900 truncate">{file.name}</p>
-                        <p className="text-xs sm:text-sm text-gray-500">{formatFileSize(file.size)}</p>
+                        <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-gray-100 truncate">{file.name}</p>
+                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{formatFileSize(file.size)}</p>
                       </div>
                       {uploading && uploadProgress[index] !== undefined && (
                         <span className="text-sm font-medium text-primary-600">{uploadProgress[index]}%</span>
@@ -576,7 +591,7 @@ function DocumentUploadPage() {
                 disabled={uploading}
                 className="px-3 sm:px-4 text-sm"
               >
-                Hủy
+                {t("documents.upload.cancel")}
               </Button>
               <Button
                 type="submit"
@@ -585,8 +600,8 @@ function DocumentUploadPage() {
                 className="px-3 sm:px-4 text-sm"
               >
                 {uploading 
-                  ? "Tải lên..." 
-                  : `Tải lên${selectedFiles.length > 0 ? ` (${selectedFiles.length})` : ""}`
+                  ? t("documents.upload.uploading")
+                  : `${t("documents.upload.uploadBtn")}${selectedFiles.length > 0 ? ` (${selectedFiles.length})` : ""}`
                 }
               </Button>
             </div>
@@ -595,38 +610,38 @@ function DocumentUploadPage() {
 
         {/* Info Section */}
         <div className="mt-4 sm:mt-8 bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-6">
-          <h3 className="text-sm sm:text-lg font-bold text-blue-900 mb-2 sm:mb-4">📌 Lưu ý</h3>
+          <h3 className="text-sm sm:text-lg font-bold text-blue-900 mb-2 sm:mb-4">{t("documents.upload.notes.title")}</h3>
           <ul className="space-y-1 sm:space-y-2 text-xs sm:text-base text-blue-800">
             <li className="flex items-start gap-2">
               <span className="mt-1">•</span>
-              <span>Chỉ chấp nhận file định dạng: PDF, DOCX, TXT</span>
+              <span>{t("documents.upload.notes.format")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1">•</span>
-              <span>Kích thước file tối đa: 20MB mỗi file</span>
+              <span>{t("documents.upload.notes.maxSize")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1">•</span>
-              <span>Có thể tải lên tối đa {UPLOAD_CONSTRAINTS.maxFiles} file cùng lúc</span>
+              <span>{t("documents.upload.notes.maxFiles", { max: UPLOAD_CONSTRAINTS.maxFiles })}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1">•</span>
-              <span>Số tài liệu mỗi môn học phụ thuộc vào gói đăng ký của bạn</span>
+              <span>{t("documents.upload.notes.limitByPlan")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1">•</span>
-              <span>Hệ thống sẽ tự động trích xuất nội dung từ tài liệu</span>
+              <span>{t("documents.upload.notes.autoExtract")}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1">•</span>
-              <span>Sau khi upload, tài liệu sẽ được xử lý và tạo tóm tắt tự động</span>
+              <span>{t("documents.upload.notes.autoSummary")}</span>
             </li>
           </ul>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+      <footer className="mt-16 py-8 border-t border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-gray-600 dark:text-gray-400 text-sm">
             © 2025 Learinal. All rights reserved.

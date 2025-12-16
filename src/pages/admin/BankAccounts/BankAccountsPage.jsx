@@ -107,9 +107,9 @@ const BankAccountsPage = () => {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -129,7 +129,7 @@ const BankAccountsPage = () => {
                 setStatusFilter(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
+              className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
             >
               <option value="">Tất cả trạng thái</option>
               <option value="Pending">Chờ xác minh</option>
@@ -147,7 +147,7 @@ const BankAccountsPage = () => {
             <>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50 dark:bg-gray-700/50">
+                  <thead className="bg-gray-50 dark:bg-slate-700/50">
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                         Chuyên gia
@@ -172,9 +172,9 @@ const BankAccountsPage = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
                     {accounts.map((account) => (
-                      <tr key={account._id || account.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                      <tr key={account._id || account.id} className="hover:bg-gray-50 dark:hover:bg-slate-700/30">
                         <td className="px-4 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
                             {account.expertId?.name || account.expertId?.email || "N/A"}
@@ -286,7 +286,7 @@ const BankAccountsPage = () => {
               onChange={(e) => setRejectionReason(e.target.value)}
               placeholder="Nhập lý do từ chối..."
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 resize-none"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 resize-none"
             />
           </div>
         </div>

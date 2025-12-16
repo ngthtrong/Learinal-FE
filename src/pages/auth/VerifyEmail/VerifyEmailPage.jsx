@@ -7,12 +7,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Button } from "@components/common";
+import { useLanguage } from "@contexts/LanguageContext";
 import { authService } from "@services/api";
 import logo from "@/assets/images/logo/learinal-logo.png";
 
 const VerifyEmailPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { t } = useLanguage();
 
   const [status, setStatus] = useState("pending"); // pending | success | error
   const [message, setMessage] = useState("");
@@ -67,7 +69,7 @@ const VerifyEmailPage = () => {
 
     if (!token) {
       setStatus("error");
-      setMessage("Thiếu token. Vui lòng mở lại liên kết trong email.");
+      setMessage(t("auth.verifyEmailPage.missingToken"));
       setLoading(false);
       return;
     }
@@ -75,17 +77,17 @@ const VerifyEmailPage = () => {
       try {
         await authService.verifyEmail(token);
         setStatus("success");
-        setMessage("Xác thực email thành công. Đang chuyển đến trang đăng nhập...");
+        setMessage(t("auth.verifyEmailPage.successMessage"));
         setTimeout(() => navigate("/login", { replace: true }), 2000);
       } catch (err) {
-        const msg = err?.response?.data?.message || "Không thể xác thực email. Vui lòng thử lại.";
+        const msg = err?.response?.data?.message || t("auth.verifyEmailPage.verifyFailed");
         setStatus("error");
         setMessage(msg);
       } finally {
         setLoading(false);
       }
     })();
-  }, [navigate, searchParams]);
+  }, [navigate, searchParams, t]);
 
   // Countdown timer for resend button
   useEffect(() => {
@@ -99,18 +101,18 @@ const VerifyEmailPage = () => {
 
   const handleResendEmail = async () => {
     if (!email) {
-      setMessage("Không tìm thấy email. Vui lòng đăng ký lại.");
+      setMessage(t("auth.verifyEmailPage.emailNotFound"));
       return;
     }
 
     setResending(true);
     try {
       await authService.resendVerification(email);
-      setMessage("Email xác thực đã được gửi lại. Vui lòng kiểm tra hộp thư.");
+      setMessage(t("auth.verifyEmailPage.resendSuccess"));
       setStatus("info");
       setResendCooldown(60); // 60 seconds cooldown
     } catch (err) {
-      const msg = err?.response?.data?.message || "Không thể gửi lại email. Vui lòng thử lại.";
+      const msg = err?.response?.data?.message || t("auth.verifyEmailPage.resendFailed");
       setMessage(msg);
     } finally {
       setResending(false);
@@ -130,14 +132,14 @@ const VerifyEmailPage = () => {
           </header>
 
           <div className="text-center mb-4 sm:mb-6">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Xác thực email</h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Vui lòng chờ trong giây lát...</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("auth.verifyEmailPage.title")}</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t("auth.verifyEmailPage.subtitle")}</p>
           </div>
 
           <div className="space-y-4">
             {loading && (
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-center text-blue-700 dark:text-blue-400">
-                Đang xử lý xác thực...
+                {t("auth.verifyEmailPage.processing")}
               </div>
             )}
 
@@ -161,7 +163,7 @@ const VerifyEmailPage = () => {
 
             {!loading && status === "error" && email && (
               <div className="text-center space-y-3 pt-4">
-                <p className="text-gray-600 dark:text-gray-400">Không nhận được email?</p>
+                <p className="text-gray-600 dark:text-gray-400">{t("auth.verifyEmailPage.notReceived")}</p>
                 <Button
                   onClick={handleResendEmail}
                   variant="outline"
@@ -169,7 +171,7 @@ const VerifyEmailPage = () => {
                   loading={resending}
                   className="w-full"
                 >
-                  {resendCooldown > 0 ? `Gửi lại (${resendCooldown}s)` : "Gửi lại email xác thực"}
+                  {resendCooldown > 0 ? t("auth.verifyEmailPage.resendCountdown", { seconds: resendCooldown }) : t("auth.verifyEmailPage.resendButton")}
                 </Button>
               </div>
             )}
@@ -177,7 +179,7 @@ const VerifyEmailPage = () => {
             {!loading && status === "error" && (
               <div className="pt-4">
                 <Button as={Link} to="/login" variant="primary" className="w-full">
-                  Về trang đăng nhập
+                  {t("auth.verifyEmailPage.backToLogin")}
                 </Button>
               </div>
             )}

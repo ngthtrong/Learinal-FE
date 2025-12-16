@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, Navigate } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import DashboardIcon from "@/components/icons/DashboardIcon";
 import CoinsIcon from "@/components/icons/CoinsIcon";
 import ShieldCheckIcon from "@/components/icons/ShieldCheckIcon";
 
 const ExpertSidebarLayout = ({ children }) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const role = user?.role;
 
   const [collapsed, setCollapsed] = useState(() => {
@@ -49,10 +51,10 @@ const ExpertSidebarLayout = ({ children }) => {
   }, []);
 
   const items = [
-    { key: "expert_dashboard", label: "Tổng quan", to: "/expert", icon: DashboardIcon },
+    { key: "expert_dashboard", label: t('expertSidebar.dashboard'), to: "/expert", icon: DashboardIcon },
     {
       key: "expert_question_sets",
-      label: "Bộ đề của tôi",
+      label: t('expertSidebar.myQuestionSets'),
       to: "/expert/question-sets",
       icon: () => (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -62,13 +64,13 @@ const ExpertSidebarLayout = ({ children }) => {
     },
     {
       key: "expert_commission",
-      label: "Hoa hồng",
+      label: t('expertSidebar.commissions'),
       to: "/expert/commission-records",
       icon: CoinsIcon,
     },
     {
       key: "expert_bank_account",
-      label: "Tài khoản Ngân Hàng",
+      label: t('expertSidebar.bankAccount'),
       to: "/expert/bank-account",
       icon: ({ size = 20, stroke = 2 }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round">
@@ -79,7 +81,7 @@ const ExpertSidebarLayout = ({ children }) => {
     },
     {
       key: "expert_validations",
-      label: "Kiểm duyệt",
+      label: t('expertSidebar.validations'),
       to: "/expert/validation-requests",
       icon: ShieldCheckIcon,
     },
@@ -96,7 +98,7 @@ const ExpertSidebarLayout = ({ children }) => {
         ref={sideNavRef}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`hidden md:block fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 z-40 overflow-y-auto ${
+        className={`hidden md:block fixed left-0 top-0 h-screen backdrop-blur-[10px] bg-white/70 dark:bg-slate-900/70 border-r border-white/30 dark:border-white/5 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-16 lg:w-20" : "w-56 lg:w-64"
         }`}
       >
@@ -146,7 +148,7 @@ const ExpertSidebarLayout = ({ children }) => {
             }
           }}
           aria-label={collapsed ? "Expand expert sidebar" : "Collapse expert sidebar"}
-          title={collapsed ? "Mở rộng" : "Thu gọn"}
+          title={collapsed ? t('sidebar.expand') : t('sidebar.collapse')}
         >
           {collapsed ? "⟩" : "⟨"}
         </button>

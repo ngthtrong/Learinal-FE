@@ -6,6 +6,7 @@
 import PropTypes from "prop-types";
 import Button from "@/components/common/Button";
 import { formatDate } from "@/utils/formatters";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const DOCUMENT_STATUS = {
   UPLOADING: "Uploading",
@@ -14,14 +15,16 @@ const DOCUMENT_STATUS = {
   ERROR: "Error",
 };
 
-const STATUS_CONFIG = {
-  Uploading: { label: "Đang tải lên...", color: "#3b82f6", icon: "⏫" },
-  Processing: { label: "Đang xử lý...", color: "#f59e0b", icon: "⚙️" },
-  Completed: { label: "Hoàn tất", color: "#22c55e", icon: "✓" },
-  Error: { label: "Lỗi", color: "#ef4444", icon: "✕" },
-};
-
 function DocumentCard({ document, onView, onDelete, onGenerateSummary }) {
+  const { t } = useLanguage();
+  
+  const STATUS_CONFIG = {
+    Uploading: { label: t("components.documentCard.statusUploading"), color: "#3b82f6", icon: "⏫" },
+    Processing: { label: t("components.documentCard.statusProcessing"), color: "#f59e0b", icon: "⚙️" },
+    Completed: { label: t("components.documentCard.statusCompleted"), color: "#22c55e", icon: "✓" },
+    Error: { label: t("components.documentCard.statusError"), color: "#ef4444", icon: "✕" },
+  };
+  
   const statusConfig = STATUS_CONFIG[document.status] || STATUS_CONFIG.Completed;
 
   const formatFileSize = (sizeMB) => {
@@ -106,7 +109,7 @@ function DocumentCard({ document, onView, onDelete, onGenerateSummary }) {
                   onGenerateSummary();
                 }}
               >
-                🤖 Tạo tóm tắt
+                {t("components.documentCard.generateSummary")}
               </Button>
             )}
 
@@ -117,7 +120,7 @@ function DocumentCard({ document, onView, onDelete, onGenerateSummary }) {
                   e.stopPropagation();
                   onDelete();
                 }}
-                aria-label="Xóa tài liệu"
+                aria-label={t("components.documentCard.deleteDocument")}
               >
                 🗑️
               </button>

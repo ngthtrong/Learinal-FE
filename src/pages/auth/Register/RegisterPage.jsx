@@ -6,6 +6,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import { useLanguage } from "@contexts/LanguageContext";
 import { Button, Input, PasswordStrengthIndicator, useToast } from "@components/common";
 import { isValidEmail, isValidPassword, getErrorMessage } from "@utils";
 import logo from "@/assets/images/logo/learinal-logo.png";
@@ -13,6 +14,7 @@ import logo from "@/assets/images/logo/learinal-logo.png";
 const RegisterPage = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
+  const { t } = useLanguage();
   const toast = useToast();
 
   const [formData, setFormData] = useState({
@@ -77,27 +79,27 @@ const RegisterPage = () => {
     const newErrors = {};
 
     if (!formData.fullName) {
-      newErrors.fullName = "Họ tên là bắt buộc";
+      newErrors.fullName = t("auth.registerPage.fullNameRequired");
     } else if (formData.fullName.length < 2) {
-      newErrors.fullName = "Họ tên phải có ít nhất 2 ký tự";
+      newErrors.fullName = t("auth.registerPage.fullNameMinLength");
     }
 
     if (!formData.email) {
-      newErrors.email = "Email là bắt buộc";
+      newErrors.email = t("auth.registerPage.emailRequired");
     } else if (!isValidEmail(formData.email)) {
-      newErrors.email = "Email không hợp lệ";
+      newErrors.email = t("auth.registerPage.emailInvalid");
     }
 
     if (!formData.password) {
-      newErrors.password = "Mật khẩu là bắt buộc";
+      newErrors.password = t("auth.registerPage.passwordRequired");
     } else if (!isValidPassword(formData.password)) {
-      newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số";
+      newErrors.password = t("auth.registerPage.passwordInvalid");
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu";
+      newErrors.confirmPassword = t("auth.registerPage.confirmPasswordRequired");
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Mật khẩu không khớp";
+      newErrors.confirmPassword = t("auth.registerPage.passwordMismatch");
     }
 
     return newErrors;
@@ -120,12 +122,12 @@ const RegisterPage = () => {
       const result = await register(userData);
 
       if (result.success) {
-        toast.showSuccess("Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
+        toast.showSuccess(t("auth.registerPage.registerSuccess"));
         setTimeout(() => {
           navigate("/login");
         }, 3000);
       } else {
-        toast.showError(result.error || "Đăng ký thất bại");
+        toast.showError(result.error || t("auth.registerPage.registerFailed"));
       }
     } catch (err) {
       const errorMsg = getErrorMessage(err);
@@ -151,31 +153,31 @@ const RegisterPage = () => {
 
           {/* Page Header */}
           <div className="text-center mb-4 sm:mb-6">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Đăng ký</h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Đăng ký để bắt đầu sử dụng Learinal</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("auth.registerPage.title")}</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t("auth.registerPage.subtitle")}</p>
           </div>
 
           {/* Register Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Họ và tên"
+              label={t("auth.registerPage.fullNameLabel")}
               type="text"
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
               error={errors.fullName}
-              placeholder="Nguyễn Văn A"
+              placeholder={t("auth.registerPage.fullNamePlaceholder")}
               required
             />
 
             <Input
-              label="Email"
+              label={t("auth.registerPage.emailLabel")}
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               error={errors.email}
-              placeholder="your@email.com"
+              placeholder={t("auth.registerPage.emailPlaceholder")}
               required
             />
 
@@ -183,26 +185,26 @@ const RegisterPage = () => {
 
             <div>
               <Input
-                label="Mật khẩu"
+                label={t("auth.registerPage.passwordLabel")}
                 type="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
                 error={errors.password}
-                placeholder="••••••••"
+                placeholder={t("auth.registerPage.passwordPlaceholder")}
                 required
               />
               <PasswordStrengthIndicator password={formData.password} />
             </div>
 
             <Input
-              label="Xác nhận mật khẩu"
+              label={t("auth.registerPage.confirmPasswordLabel")}
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               error={errors.confirmPassword}
-              placeholder="••••••••"
+              placeholder={t("auth.registerPage.passwordPlaceholder")}
               required
             />
 
@@ -213,13 +215,13 @@ const RegisterPage = () => {
               loading={loading}
               className="w-full mt-6"
             >
-              Đăng ký
+              {t("auth.registerPage.registerButton")}
             </Button>
 
             <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
-              Đã có tài khoản?{" "}
+              {t("auth.registerPage.hasAccount")}{" "}
               <Link to="/login" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
-                Đăng nhập ngay
+                {t("auth.registerPage.loginNow")}
               </Link>
             </p>
           </form>

@@ -162,7 +162,7 @@ function AdminSubscriptionPlansPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
@@ -180,12 +180,12 @@ function AdminSubscriptionPlansPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 mb-4">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 p-4 mb-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Trạng thái</label>
               <select
-                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
@@ -197,7 +197,7 @@ function AdminSubscriptionPlansPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 overflow-hidden">
           {loading ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
           ) : error ? (
@@ -210,9 +210,9 @@ function AdminSubscriptionPlansPage() {
           ) : (
             <>
               {/* Mobile Cards */}
-              <div className="block sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+              <div className="block sm:hidden divide-y divide-gray-200 dark:divide-slate-700">
                 {plans.map((p) => (
-                  <div key={p.id || p._id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <div key={p.id || p._id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{p.planName}</div>
@@ -237,7 +237,7 @@ function AdminSubscriptionPlansPage() {
                           Đang hoạt động
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
                           Tạm dừng
                         </span>
                       )}
@@ -247,8 +247,8 @@ function AdminSubscriptionPlansPage() {
               </div>
               {/* Desktop Table */}
               <div className="hidden sm:block overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-700">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Tên gói
@@ -265,9 +265,9 @@ function AdminSubscriptionPlansPage() {
                     <th className="px-3 sm:px-6 py-3" />
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                   {plans.map((p) => (
-                    <tr key={p.id || p._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <tr key={p.id || p._id} className="hover:bg-gray-50 dark:hover:bg-slate-700/50">
                       <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">{p.planName}</div>
                         {p.description && (
@@ -289,7 +289,7 @@ function AdminSubscriptionPlansPage() {
                             Đang hoạt động
                           </span>
                         ) : p.status === "Inactive" ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
                             Tạm dừng
                           </span>
                         ) : (
@@ -341,7 +341,7 @@ function AdminSubscriptionPlansPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Chu kỳ</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={form.billingCycle}
                 onChange={(e) => setForm({ ...form, billingCycle: e.target.value })}
               >
@@ -358,7 +358,7 @@ function AdminSubscriptionPlansPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Trạng thái</label>
               <select
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value })}
               >
@@ -370,7 +370,7 @@ function AdminSubscriptionPlansPage() {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                 Quyền lợi gói đăng ký
               </label>
-              <div className="space-y-4 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
+              <div className="space-y-4 bg-gray-50 dark:bg-slate-700/50 p-4 rounded-lg">
                 {/* maxMonthlyTestGenerations */}
                 <Input
                   label={formatEntitlementLabel("maxMonthlyTestGenerations")}

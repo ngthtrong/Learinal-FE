@@ -11,12 +11,14 @@ import Button from "@/components/common/Button";
 import { useToast, Modal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { useActiveQuiz } from "@/contexts/ActiveQuizContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 function QuizTakingPage() {
   const { attemptId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const toast = useToast();
   const { startQuizTimer, clearActiveQuiz, timeRemaining: contextTimeRemaining, isActiveQuiz } = useActiveQuiz();
+  const { t } = useLanguage();
 
   // Settings from QuizStartPage (initial values, may be updated from attempt data)
   const {
@@ -111,7 +113,7 @@ function QuizTakingPage() {
 
     const handlePopState = (e) => {
       e.preventDefault();
-      toast.showWarning("Bạn đã nộp bài, không thể quay lại!");
+      toast.showWarning(t("quizPages.taking.navWarning"));
       // Push forward to result page
       window.history.pushState(null, "", window.location.href);
       navigate(`/quiz/result/${attemptId}`, { replace: true });
@@ -131,7 +133,7 @@ function QuizTakingPage() {
 
     const handlePopState = (e) => {
       e.preventDefault();
-      toast.showWarning("Bạn đã nộp bài, không thể quay lại!");
+      toast.showWarning(t("quizPages.taking.navWarning"));
       // Push forward to result page
       window.history.pushState(null, "", window.location.href);
       navigate(`/quiz/result/${attemptId}`, { replace: true });
@@ -154,7 +156,7 @@ function QuizTakingPage() {
       
       // ✅ Check if attempt is already completed - prevent re-taking
       if (attempt.isCompleted) {
-        toast.showWarning("Bài thi này đã được nộp. Chuyển đến trang kết quả...");
+        toast.showWarning(t("quizPages.taking.alreadySubmitted"));
         setTimeout(() => {
           navigate(`/quiz/result/${attemptId}`, { replace: true });
         }, 1500);
@@ -179,7 +181,7 @@ function QuizTakingPage() {
 
         if (remaining <= 0) {
           // Time already expired - auto submit
-          toast.showWarning("Thời gian làm bài đã hết! Đang tự động nộp bài...");
+          toast.showWarning(t("quizPages.taking.timeExpired"));
           setTimerEnabled(true);
           setLocalTimeRemaining(0);
           // Let the timer effect handle auto-submit
@@ -223,7 +225,7 @@ function QuizTakingPage() {
 
   const loadQuestions = (qSet) => {
     if (!qSet || !qSet.questions) {
-      toast.showError("Không tìm thấy câu hỏi");
+      toast.showError(t("quizPages.taking.noQuestions"));
       return;
     }
 
@@ -243,7 +245,7 @@ function QuizTakingPage() {
     if (autoSubmitRef.current) return;
     autoSubmitRef.current = true;
 
-    toast.showInfo("Hết thời gian! Đang tự động nộp bài...");
+    toast.showInfo(t("quizPages.taking.autoSubmit"));
 
     try {
       setSubmitting(true);
@@ -353,7 +355,7 @@ function QuizTakingPage() {
       setHasSubmitted(true);
 
       if (!isAutoSubmit) {
-        toast.showSuccess("Nộp bài thành công!");
+        toast.showSuccess(t("quizPages.taking.submitSuccess"));
       }
 
       // Navigate to result page (replace history to prevent back navigation)
@@ -383,7 +385,7 @@ function QuizTakingPage() {
       <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="inline-block w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
-          <p className="text-gray-600 dark:text-gray-400">Đang tải bài thi...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t("quizPages.taking.loading")}</p>
         </div>
       </div>
     );
@@ -391,10 +393,10 @@ function QuizTakingPage() {
 
   if (!questionSet || questions.length === 0) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Không có câu hỏi</h2>
-          <Button onClick={() => navigate("/question-sets")}>← Quay lại</Button>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("quizPages.taking.noQuestionsTitle")}</h2>
+          <Button onClick={() => navigate("/question-sets")}>← {t("quizPages.taking.goBack")}</Button>
         </div>
       </div>
     );
@@ -405,9 +407,9 @@ function QuizTakingPage() {
   const isWarningTime = timerEnabled && timeRemaining !== null && timeRemaining <= 60;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 dark:from-gray-900 dark:to-gray-900 pb-24">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 pb-24">
       {/* Header - Fixed */}
-      <div className="sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+      <div className="sticky top-0 z-40 bg-white dark:bg-slate-800 shadow-sm border-b border-gray-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
             <div className="flex-1 w-full sm:w-auto">
@@ -416,11 +418,11 @@ function QuizTakingPage() {
               </h1>
               <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 <span className="flex items-center gap-1">
-                  <span className="font-medium">Tổng số câu:</span> {questions.length}
+                  <span className="font-medium">{t("quizPages.taking.totalQuestions")}:</span> {questions.length}
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
-                  <span className="font-medium">Đã trả lời:</span>
+                  <span className="font-medium">{t("quizPages.taking.answeredLabel")}:</span>
                   <span className="text-primary-600 font-bold">
                     {answeredCount}/{questions.length}
                   </span>
@@ -443,14 +445,14 @@ function QuizTakingPage() {
         </div>
 
         {/* Progress Bar */}
-        <div className="relative h-2 bg-gray-200 dark:bg-gray-700">
+        <div className="relative h-2 bg-gray-200 dark:bg-slate-700">
           <div
             className="absolute top-0 left-0 h-full bg-linear-to-r from-primary-500 to-secondary-500 transition-all duration-300"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-0.5 rounded shadow-sm">
-          {answeredCount}/{questions.length} câu ({Math.round(progress)}%)
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-slate-700 px-2 py-0.5 rounded shadow-sm">
+          {answeredCount}/{questions.length} {t("quizPages.taking.questionsLabel")} ({Math.round(progress)}%)
         </div>
       </div>
 
@@ -469,17 +471,17 @@ function QuizTakingPage() {
               return (
                 <div
                   key={`question-${questionKey}`}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-4 sm:p-6 scroll-mt-32"
+                  className="bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 p-4 sm:p-6 scroll-mt-32"
                   id={`question-${qIndex}`}
                 >
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-base sm:text-lg font-bold text-primary-600 dark:text-primary-400">
-                      Câu hỏi {qIndex + 1}
+                      {t("quizPages.taking.questionLabel")} {qIndex + 1}
                     </span>
                     {userAnswers[questionKey] !== undefined && (
                       <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 rounded-full text-xs sm:text-sm font-medium">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Đã trả lời
+                        {t("quizPages.taking.answered")}
                       </span>
                     )}
                   </div>
@@ -496,7 +498,7 @@ function QuizTakingPage() {
                           className={`flex items-start gap-4 p-4 rounded-lg border-2 transition-all cursor-pointer hover:shadow-sm ${
                             isSelected
                               ? "border-primary-500 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20"
-                              : "border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-500 bg-white dark:bg-gray-800"
+                              : "border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-500 bg-white dark:bg-slate-800"
                           }`}
                           onClick={() => handleAnswerSelect(questionKey, optIndex)}
                         >
@@ -533,9 +535,9 @@ function QuizTakingPage() {
 
           {/* Question Navigator Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-36 bg-white dark:bg-gray-800 rounded-xl shadow-medium border border-gray-200 dark:border-gray-700 p-6">
+            <div className="sticky top-36 bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 p-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
-                Danh sách câu hỏi
+                {t("quizPages.taking.questionList")}
               </h3>
               <div className="grid grid-cols-5 gap-2 mb-6">
                 {questions.map((q, index) => {
@@ -554,7 +556,7 @@ function QuizTakingPage() {
                       className={`w-full aspect-square flex items-center justify-center rounded-lg font-bold text-sm transition-all ${
                         isAnswered
                           ? "bg-success-500 dark:bg-green-600 text-white hover:bg-success-600 dark:hover:bg-green-700 shadow-sm"
-                          : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600"
+                          : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600"
                       }`}
                     >
                       {index + 1}
@@ -563,13 +565,13 @@ function QuizTakingPage() {
                 })}
               </div>
 
-              <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-slate-700">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Đã làm:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">{t("quizPages.taking.doneLabel")}:</span>
                   <span className="text-lg font-bold text-success-600 dark:text-green-400">{answeredCount}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Chưa làm:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">{t("quizPages.taking.remainingLabel")}:</span>
                   <span className="text-lg font-bold text-gray-500 dark:text-gray-400">
                     {questions.length - answeredCount}
                   </span>
@@ -581,7 +583,7 @@ function QuizTakingPage() {
       </div>
 
       {/* Submit Button - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Button
             variant="primary"
@@ -592,7 +594,7 @@ function QuizTakingPage() {
           >
             <span className="inline-flex items-center gap-2">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-              Nộp bài ({answeredCount}/{questions.length})
+              {t("quizPages.taking.submitQuiz")} ({answeredCount}/{questions.length})
             </span>
           </Button>
         </div>
@@ -602,13 +604,12 @@ function QuizTakingPage() {
       <Modal
         isOpen={showSubmitModal}
         onClose={() => setShowSubmitModal(false)}
-        title="Xác nhận nộp bài"
+        title={t("quizPages.taking.submitModal.title")}
       >
         <div className="space-y-6">
           <div className="text-center">
             <p className="text-gray-700 dark:text-gray-300 text-lg">
-              Bạn đã trả lời <strong className="text-primary-600 dark:text-primary-400">{answeredCount}</strong> /{" "}
-              <strong className="dark:text-gray-100">{questions.length}</strong> câu hỏi.
+              {t("quizPages.taking.submitModal.answeredCount", { answered: answeredCount, total: questions.length })}
             </p>
           </div>
           {answeredCount < questions.length && (
@@ -616,15 +617,14 @@ function QuizTakingPage() {
               <p className="text-warning-800 dark:text-yellow-300 flex items-start gap-2">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                 <span>
-                  Còn <strong>{questions.length - answeredCount}</strong> câu chưa trả lời. Bạn có
-                  chắc muốn nộp bài không?
+                  {t("quizPages.taking.submitModal.warning", { count: questions.length - answeredCount })}
                 </span>
               </p>
             </div>
           )}
           <div className="flex items-center justify-end gap-3 pt-4">
             <Button variant="secondary" onClick={() => setShowSubmitModal(false)}>
-              Hủy
+              {t("quizPages.taking.submitModal.cancel")}
             </Button>
             <Button
               variant="primary"
@@ -634,7 +634,7 @@ function QuizTakingPage() {
               }}
               loading={submitting}
             >
-              Nộp bài
+              {t("quizPages.taking.submitModal.submit")}
             </Button>
           </div>
         </div>

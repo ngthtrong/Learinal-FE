@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import HomeIcon from "@/components/icons/HomeIcon";
 import QuizIcon from "@/components/icons/QuizIcon";
 import GlobeIcon from "@/components/icons/GlobeIcon";
@@ -9,6 +10,7 @@ import DocumentIcon from "@/components/icons/DocumentIcon";
 
 const SidebarLayout = ({ children }) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const role = user?.role || "Learner";
   const [collapsed, setCollapsed] = useState(() => {
     try {
@@ -69,35 +71,35 @@ const SidebarLayout = ({ children }) => {
   const items = [
     {
       key: "home",
-      label: "Trang chủ",
+      label: t('sidebar.home'),
       to: "/home",
       icon: HomeIcon,
       roles: ["Learner", "Expert", "Admin"],
     },
     {
       key: "subjects",
-      label: "Môn học",
+      label: t('sidebar.subjects'),
       to: "/subjects",
       icon: SubjectsIcon,
       roles: ["Learner", "Expert", "Admin"],
     },
     {
       key: "documents",
-      label: "Tài liệu",
+      label: t('sidebar.documents'),
       to: "/documents",
       icon: DocumentIcon,
       roles: ["Learner", "Expert", "Admin"],
     },
     {
       key: "quiz",
-      label: "Bộ đề thi",
+      label: t('sidebar.questionSets'),
       to: "/quiz",
       icon: QuizIcon,
       roles: ["Learner", "Expert", "Admin"],
     },
     {
       key: "public",
-      label: "Bộ Đề Chung",
+      label: t('sidebar.publicSets'),
       to: "/public",
       icon: GlobeIcon,
       roles: ["Learner", "Expert", "Admin"],
@@ -114,7 +116,7 @@ const SidebarLayout = ({ children }) => {
         ref={sideNavRef}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`hidden md:block fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 z-40 overflow-y-auto ${
+        className={`hidden md:block fixed left-0 top-0 h-screen backdrop-blur-[10px] bg-white/70 dark:bg-slate-900/70 border-r border-white/30 dark:border-white/5 transition-all duration-300 z-40 overflow-y-auto ${
           collapsed ? "w-16 lg:w-20" : "w-56 lg:w-64"
         }`}
       >
@@ -122,7 +124,7 @@ const SidebarLayout = ({ children }) => {
         <div
           className={`flex items-center ${
             collapsed ? "justify-center" : "px-4 lg:px-6"
-          } h-14 lg:h-16 border-b border-gray-200 dark:border-gray-700`}
+          } h-14 lg:h-16 border-b border-white/30 dark:border-white/5`}
         >
           {collapsed ? (
             <span className="text-xl lg:text-2xl font-bold text-primary-600 dark:text-primary-400">L</span>
@@ -176,7 +178,7 @@ const SidebarLayout = ({ children }) => {
             }
           }}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Mở rộng" : "Thu gọn"}
+          title={collapsed ? t('sidebar.expand') : t('sidebar.collapse')}
         >
           {collapsed ? "⟩" : "⟨"}
         </button>

@@ -5,20 +5,27 @@
 
 import React, { useEffect } from "react";
 import { Button } from "@/components/common";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Modal = ({
   isOpen,
   onClose,
   title,
   children,
-  confirmText = "Xác nhận",
-  cancelText = "Hủy",
+  confirmText,
+  cancelText,
   onConfirm,
   variant = "default", // default | danger | warning
   size = "medium", // small | medium | large
   loading = false,
   showCloseButton = true, // New prop to control close button visibility
 }) => {
+  const { t } = useLanguage();
+
+  // Use translations as defaults if not provided
+  const resolvedConfirmText = confirmText ?? t("components.modal.confirm");
+  const resolvedCancelText = cancelText ?? t("components.modal.cancel");
+
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e) => {
@@ -79,7 +86,7 @@ const Modal = ({
               <button
                 className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={onClose}
-                aria-label="Close"
+                aria-label={t("components.modal.close")}
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -99,14 +106,14 @@ const Modal = ({
         {onConfirm && (
           <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 rounded-b-2xl">
             <Button variant="secondary" onClick={onClose} disabled={loading}>
-              {cancelText}
+              {resolvedCancelText}
             </Button>
             <Button
               variant={variant === "danger" ? "danger" : "primary"}
               onClick={onConfirm}
               loading={loading}
             >
-              {confirmText}
+              {resolvedConfirmText}
             </Button>
           </div>
         )}

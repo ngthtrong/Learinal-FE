@@ -56,13 +56,13 @@ function SubscriptionPurchasesPage() {
 
   const statusMeta = {
     Active: { label: "Hoạt động", className: "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" },
-    Expired: { label: "Hết hạn", className: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400" },
+    Expired: { label: "Hết hạn", className: "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400" },
     Cancelled: { label: "Đã hủy", className: "bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400" },
     PendingPayment: { label: "Chờ thanh toán", className: "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" },
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
@@ -86,7 +86,7 @@ function SubscriptionPurchasesPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div className="md:col-span-2">
               <Input
@@ -105,7 +105,7 @@ function SubscriptionPurchasesPage() {
                 Số dòng / trang
               </label>
               <select
-                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={pageSize}
                 onChange={(e) => {
                   setPageSize(Number(e.target.value));
@@ -145,7 +145,7 @@ function SubscriptionPurchasesPage() {
         </div>
 
         {/* Table */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
           {loading ? (
             <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
           ) : error ? (
@@ -158,9 +158,9 @@ function SubscriptionPurchasesPage() {
           ) : (
             <>
               {/* Mobile Cards */}
-              <div className="block md:hidden divide-y divide-gray-200 dark:divide-gray-700">
+              <div className="block md:hidden divide-y divide-gray-200 dark:divide-slate-700">
                 {items.map((r) => (
-                  <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
@@ -180,7 +180,7 @@ function SubscriptionPurchasesPage() {
                       {(() => {
                         const meta = statusMeta[r.status] || {
                           label: r.status || "—",
-                          className: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
+                          className: "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400",
                         };
                         return (
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${meta.className}`}>
@@ -199,8 +199,8 @@ function SubscriptionPurchasesPage() {
               </div>
               {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-900">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Người dùng
@@ -225,9 +225,9 @@ function SubscriptionPurchasesPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                   {items.map((r) => (
-                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                       <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                           {r.userName || "(N/A)"}
@@ -255,7 +255,7 @@ function SubscriptionPurchasesPage() {
                         {(() => {
                           const meta = statusMeta[r.status] || {
                             label: r.status || "—",
-                            className: "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400",
+                            className: "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400",
                           };
                           return (
                             <span

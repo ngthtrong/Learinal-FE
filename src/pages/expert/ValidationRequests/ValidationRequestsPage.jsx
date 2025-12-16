@@ -6,10 +6,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Button, Input, Modal } from "@/components/common";
 import { validationRequestsService } from "@/services/api";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const PAGE_SIZES = [10, 20, 50];
 
 function ValidationRequestsPage() {
+  const { t } = useLanguage();
   const [items, setItems] = useState([]);
   const available = useMemo(() => items.filter(r => r.status === 'PendingAssignment'), [items]);
   const mineActive = useMemo(() => items.filter(r => r.status === 'Assigned'), [items]);
@@ -52,7 +54,7 @@ function ValidationRequestsPage() {
       setTotal(data?.meta?.total || list.length);
     } catch (e) {
       console.error(e);
-      setError(e?.response?.data?.message || "Không thể tải yêu cầu kiểm duyệt");
+      setError(e?.response?.data?.message || t("expertPages.validationRequests.loadError"));
     } finally {
       setLoading(false);
     }
@@ -94,12 +96,12 @@ function ValidationRequestsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Yêu cầu kiểm duyệt</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">Xử lý các bộ câu hỏi được gán cho bạn.</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{t("expertPages.validationRequests.pageTitle")}</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">{t("expertPages.validationRequests.pageSubtitle")}</p>
           </div>
           <div className="flex gap-2 w-full sm:w-auto">
             <Button
@@ -110,17 +112,17 @@ function ValidationRequestsPage() {
               }}
               className="w-full sm:w-auto"
             >
-              Làm mới
+              {t("expertPages.common.refresh")}
             </Button>
           </div>
         </div>
 
-        <div className="mb-6 bg-white dark:bg-gray-800 rounded-xl shadow-medium p-4 flex flex-col sm:flex-row gap-4 sm:items-end">
+        <div className="mb-6 bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 flex flex-col sm:flex-row gap-4 sm:items-end">
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <Input
-                label="Tìm kiếm"
-                placeholder="Nhập từ khóa..."
+                label={t("expertPages.common.search")}
+                placeholder={t("expertPages.common.searchPlaceholder")}
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -130,20 +132,20 @@ function ValidationRequestsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Trạng thái</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">{t("expertPages.common.status")}</label>
               <select
-                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={status}
                 onChange={(e) => {
                   setStatus(e.target.value);
                   setPage(1);
                 }}
               >
-                <option value="">Tất cả</option>
-                <option value="PendingAssignment">Chờ gán</option>
-                <option value="Assigned">Đã gán</option>
-                <option value="RevisionRequested">Yêu cầu xem lại</option>
-                <option value="Completed">Hoàn thành</option>
+                <option value="">{t("expertPages.validationRequests.status.all")}</option>
+                <option value="PendingAssignment">{t("expertPages.validationRequests.status.pendingAssignment")}</option>
+                <option value="Assigned">{t("expertPages.validationRequests.status.assigned")}</option>
+                <option value="RevisionRequested">{t("expertPages.validationRequests.status.revisionRequested")}</option>
+                <option value="Completed">{t("expertPages.validationRequests.status.completed")}</option>
                 {/* Removed Rejected status: decision stored separately */}
               </select>
             </div>
@@ -158,7 +160,7 @@ function ValidationRequestsPage() {
                 fetchData();
               }}
             >
-              Đặt lại
+              {t("expertPages.common.reset")}
             </Button>
             <Button
               onClick={() => {
@@ -166,26 +168,26 @@ function ValidationRequestsPage() {
                 fetchData();
               }}
             >
-              Áp dụng
+              {t("expertPages.common.apply")}
             </Button>
           </div>
         </div>
 
         <div className="space-y-8">
           {/* Available requests */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
-            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Yêu cầu chờ nhận</h2>
-              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{available.length} yêu cầu</span>
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">{t("expertPages.validationRequests.sections.pending")}</h2>
+              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{t("expertPages.validationRequests.counts.requests", { count: available.length })}</span>
             </div>
             {loading ? (
-              <div className="py-10 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+              <div className="py-10 text-center text-gray-600 dark:text-gray-400">{t("expertPages.common.loading")}</div>
             ) : error ? (
               <div className="py-10 text-center">
                 <div className="text-error-600 dark:text-error-400 font-medium">{error}</div>
               </div>
             ) : available.length === 0 ? (
-              <div className="py-10 text-center text-gray-500 dark:text-gray-400">Không có yêu cầu chờ nhận</div>
+              <div className="py-10 text-center text-gray-500 dark:text-gray-400">{t("expertPages.validationRequests.empty.pending")}</div>
             ) : (
               <>
                 {/* Mobile Cards */}
@@ -193,7 +195,7 @@ function ValidationRequestsPage() {
                   {available.map((r) => (
                     <div key={r.id || r._id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Chờ gán</span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">{t("expertPages.validationRequests.status.pendingAssignment")}</span>
                         <span className="text-xs text-gray-500 dark:text-gray-400">
                           {(() => { try { return new Date(r.createdAt).toLocaleDateString("vi-VN"); } catch { return "-"; } })()}
                         </span>
@@ -205,7 +207,7 @@ function ValidationRequestsPage() {
                         👤 {r.learnerName || r.creatorName || r.userName || r.userId || "—"}
                       </p>
                       <Button size="small" onClick={async () => { await validationRequestsService.claim(r.id); fetchData(); }} className="w-full">
-                        Nhận xử lý
+                        {t("expertPages.validationRequests.actions.claim")}
                       </Button>
                     </div>
                   ))}
@@ -213,18 +215,18 @@ function ValidationRequestsPage() {
                 {/* Desktop Table */}
                 <div className="hidden sm:block overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-900">
+                  <thead className="bg-gray-50 dark:bg-slate-900">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Bộ câu hỏi</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Người tạo</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Trạng thái</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tạo lúc</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.questionSet")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.creator")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.status")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.createdAt")}</th>
                       <th className="px-6 py-3" />
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                     {available.map((r) => (
-                      <tr key={r.id || r._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <tr key={r.id || r._id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                       <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-gray-900 dark:text-gray-100">{r.questionSetTitle || r.questionSetName || r.questionSetId || "—"}</div>
                       </td>
@@ -232,7 +234,7 @@ function ValidationRequestsPage() {
                           {r.learnerName || r.creatorName || r.userName || r.userId || "—"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">Chờ gán</span>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">{t("expertPages.validationRequests.status.pendingAssignment")}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {(() => {
@@ -244,7 +246,7 @@ function ValidationRequestsPage() {
                         })()}
                       </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                          <Button size="small" onClick={async () => { await validationRequestsService.claim(r.id); fetchData(); }}>Nhận xử lý</Button>
+                          <Button size="small" onClick={async () => { await validationRequestsService.claim(r.id); fetchData(); }}>{t("expertPages.validationRequests.actions.claim")}</Button>
                         </td>
                       </tr>
                     ))}
@@ -255,23 +257,23 @@ function ValidationRequestsPage() {
             )}
           </div>
           {/* My claimed requests */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
-            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Yêu cầu của tôi</h2>
-              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{mineActive.length} yêu cầu đang xử lý</span>
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">{t("expertPages.validationRequests.sections.mine")}</h2>
+              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{t("expertPages.validationRequests.counts.processing", { count: mineActive.length })}</span>
             </div>
             {loading ? (
-              <div className="py-10 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+              <div className="py-10 text-center text-gray-600 dark:text-gray-400">{t("expertPages.common.loading")}</div>
             ) : mineActive.length === 0 ? (
-              <div className="py-10 text-center text-gray-500 dark:text-gray-400">Chưa có yêu cầu nào được nhận</div>
+              <div className="py-10 text-center text-gray-500 dark:text-gray-400">{t("expertPages.validationRequests.empty.mine")}</div>
             ) : (
               <>
                 {/* Mobile Cards */}
-                <div className="block sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                <div className="block sm:hidden divide-y divide-gray-200 dark:divide-slate-700">
                   {mineActive.map(r => (
-                    <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400">Đang xử lý</span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400">{t("expertPages.validationRequests.status.processing")}</span>
                         <span className="text-xs text-gray-500 dark:text-gray-400">
                           {r.claimedAt ? new Date(r.claimedAt).toLocaleDateString('vi-VN') : '—'}
                         </span>
@@ -279,39 +281,39 @@ function ValidationRequestsPage() {
                       <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1 text-sm">{r.questionSetTitle || '—'}</h3>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">👤 {r.learnerName || '—'}</p>
                       <div className="flex gap-2">
-                        <Button size="small" variant="secondary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)} className="flex-1">Chi tiết</Button>
-                        <Button size="small" onClick={() => openComplete(r)} className="flex-1">Hoàn thành</Button>
+                        <Button size="small" variant="secondary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)} className="flex-1">{t("expertPages.common.details")}</Button>
+                        <Button size="small" onClick={() => openComplete(r)} className="flex-1">{t("expertPages.common.complete")}</Button>
                       </div>
                     </div>
                   ))}
                 </div>
                 {/* Desktop Table */}
                 <div className="hidden sm:block overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-900">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                  <thead className="bg-gray-50 dark:bg-slate-900">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Bộ câu hỏi</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Người tạo</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Trạng thái</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nhận lúc</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.questionSet")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.creator")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.status")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.claimedAt")}</th>
                       <th className="px-6 py-3" />
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                     {mineActive.map(r => (
-                      <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-gray-900 dark:text-gray-100">{r.questionSetTitle || '—'}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{r.learnerName || '—'}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400">Đang xử lý</span>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400">{t("expertPages.validationRequests.status.processing")}</span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{r.claimedAt ? new Date(r.claimedAt).toLocaleString('vi-VN') : '—'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                           <div className="flex gap-2 justify-end">
-                            <Button size="small" variant="secondary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)}>Chi tiết</Button>
-                            <Button size="small" onClick={() => openComplete(r)}>Hoàn thành</Button>
+                            <Button size="small" variant="secondary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)}>{t("expertPages.common.details")}</Button>
+                            <Button size="small" onClick={() => openComplete(r)}>{t("expertPages.common.complete")}</Button>
                           </div>
                         </td>
                       </tr>
@@ -323,23 +325,23 @@ function ValidationRequestsPage() {
             )}
           </div>
           {/* Revision Requested */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
-            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Yêu cầu xem lại</h2>
-              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{revisionRequested.length} yêu cầu</span>
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">{t("expertPages.validationRequests.sections.revision")}</h2>
+              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{t("expertPages.validationRequests.counts.requests", { count: revisionRequested.length })}</span>
             </div>
             {loading ? (
-              <div className="py-10 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+              <div className="py-10 text-center text-gray-600 dark:text-gray-400">{t("expertPages.common.loading")}</div>
             ) : revisionRequested.length === 0 ? (
-              <div className="py-10 text-center text-gray-500 dark:text-gray-400">Không có yêu cầu xem lại nào</div>
+              <div className="py-10 text-center text-gray-500 dark:text-gray-400">{t("expertPages.validationRequests.empty.revision")}</div>
             ) : (
               <>
                 {/* Mobile Cards */}
-                <div className="block sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                <div className="block sm:hidden divide-y divide-gray-200 dark:divide-slate-700">
                   {revisionRequested.map(r => (
-                    <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400">Yêu cầu xem lại</span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400">{t("expertPages.validationRequests.status.revisionRequested")}</span>
                         <span className="text-xs text-gray-500 dark:text-gray-400">
                           {r.revisionRequestTime ? new Date(r.revisionRequestTime).toLocaleDateString('vi-VN') : '—'}
                         </span>
@@ -350,26 +352,26 @@ function ValidationRequestsPage() {
                         <p className="text-xs text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">💬 {r.learnerResponse}</p>
                       )}
                       <Button size="small" variant="primary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)} className="w-full">
-                        Xem lại ngay
+                        {t("expertPages.validationRequests.actions.reviewNow")}
                       </Button>
                     </div>
                   ))}
                 </div>
                 {/* Desktop Table */}
                 <div className="hidden sm:block overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-900">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                  <thead className="bg-gray-50 dark:bg-slate-900">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Bộ câu hỏi</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Người tạo</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Phản hồi</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Yêu cầu lúc</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.questionSet")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.creator")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.learnerResponse")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.requestedAt")}</th>
                       <th className="px-6 py-3" />
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                     {revisionRequested.map(r => (
-                      <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                         <td className="px-6 py-4">
                           <div className="font-medium text-gray-900 dark:text-gray-100">{r.questionSetTitle || '—'}</div>
                         </td>
@@ -384,7 +386,7 @@ function ValidationRequestsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                           <Button size="small" variant="primary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)}>
-                            Xem lại ngay
+                            {t("expertPages.validationRequests.actions.reviewNow")}
                           </Button>
                         </td>
                       </tr>
@@ -396,28 +398,28 @@ function ValidationRequestsPage() {
             )}
           </div>
           {/* My history requests */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-medium overflow-hidden">
-            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Lịch sử kiểm duyệt</h2>
-              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{mineHistory.length} đã hoàn tất</span>
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">{t("expertPages.validationRequests.sections.history")}</h2>
+              <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{t("expertPages.validationRequests.counts.completed", { count: mineHistory.length })}</span>
             </div>
             {loading ? (
-              <div className="py-10 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+              <div className="py-10 text-center text-gray-600 dark:text-gray-400">{t("expertPages.common.loading")}</div>
             ) : mineHistory.length === 0 ? (
-              <div className="py-10 text-center text-gray-500 dark:text-gray-400">Chưa có kiểm duyệt nào hoàn tất</div>
+              <div className="py-10 text-center text-gray-500 dark:text-gray-400">{t("expertPages.validationRequests.empty.history")}</div>
             ) : (
               <>
                 {/* Mobile Cards */}
-                <div className="block sm:hidden divide-y divide-gray-200 dark:divide-gray-700">
+                <div className="block sm:hidden divide-y divide-gray-200 dark:divide-slate-700">
                   {mineHistory.map(r => (
-                    <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <div key={r.id} className="p-4 hover:bg-gray-50 dark:hover:bg-slate-700/50">
                       <div className="flex items-center justify-between mb-2">
                         {r.decision === 'Approved' ? (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">Phê duyệt</span>
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">{t("expertPages.validationRequests.status.approved")}</span>
                         ) : r.decision === 'Rejected' ? (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">Từ chối</span>
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">{t("expertPages.validationRequests.status.rejected")}</span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">—</span>
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400">—</span>
                         )}
                         <span className="text-xs text-gray-500 dark:text-gray-400">
                           {r.completionTime ? new Date(r.completionTime).toLocaleDateString('vi-VN') : '—'}
@@ -426,44 +428,44 @@ function ValidationRequestsPage() {
                       <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1 text-sm">{r.questionSetTitle || '—'}</h3>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">👤 {r.learnerName || '—'}</p>
                       <Button size="small" variant="secondary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)} className="w-full">
-                        Xem lại
+                        {t("expertPages.validationRequests.actions.viewDetail")}
                       </Button>
                     </div>
                   ))}
                 </div>
                 {/* Desktop Table */}
                 <div className="hidden sm:block overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-900">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                  <thead className="bg-gray-50 dark:bg-slate-900">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Bộ câu hỏi</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Người tạo</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kết quả</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Hoàn thành</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.questionSet")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.creator")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.result")}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t("expertPages.validationRequests.table.completedAt")}</th>
                       <th className="px-6 py-3" />
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700">
                     {mineHistory.map(r => (
-                      <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-gray-900 dark:text-gray-100">{r.questionSetTitle || '—'}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{r.learnerName || '—'}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {r.decision === 'Approved' && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">Phê duyệt</span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">{t("expertPages.validationRequests.status.approved")}</span>
                           )}
                           {r.decision === 'Rejected' && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">Từ chối</span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">{t("expertPages.validationRequests.status.rejected")}</span>
                           )}
                           {!r.decision && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">—</span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400">—</span>
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{r.completionTime ? new Date(r.completionTime).toLocaleString('vi-VN') : '—'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                          <Button size="small" variant="secondary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)}>Xem lại</Button>
+                          <Button size="small" variant="secondary" onClick={() => navigate(`/expert/validation-requests/${r.id}`)}>{t("expertPages.validationRequests.actions.viewDetail")}</Button>
                         </td>
                       </tr>
                     ))}
@@ -476,10 +478,10 @@ function ValidationRequestsPage() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
-          <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Hiển thị {items.length} / {total} yêu cầu</div>
+          <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t("expertPages.validationRequests.pagination.showing", { current: items.length, total: total })}</div>
           <div className="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-end">
             <select
-              className="px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-xs sm:text-sm"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 text-xs sm:text-sm"
               value={pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
@@ -487,7 +489,7 @@ function ValidationRequestsPage() {
               }}
             >
               {PAGE_SIZES.map((n) => (
-                <option key={n} value={n}>{n}/trang</option>
+                <option key={n} value={n}>{t("expertPages.validationRequests.pagination.perPage", { count: n })}</option>
               ))}
             </select>
             <Button
@@ -496,7 +498,7 @@ function ValidationRequestsPage() {
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
             >
-              Trước
+              {t("expertPages.validationRequests.pagination.prev")}
             </Button>
             <div className="text-sm text-gray-700 dark:text-gray-300">{page}/{totalPages}</div>
             <Button
@@ -505,7 +507,7 @@ function ValidationRequestsPage() {
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
             >
-              Sau
+              {t("expertPages.validationRequests.pagination.next")}
             </Button>
           </div>
         </div>
@@ -513,38 +515,38 @@ function ValidationRequestsPage() {
         <Modal
           isOpen={completeOpen}
           onClose={closeComplete}
-          title="Hoàn thành kiểm duyệt"
-          confirmText="Xác nhận"
-          cancelText="Hủy"
+          title={t("expertPages.validationRequests.completeModal.title")}
+          confirmText={t("expertPages.validationRequests.completeModal.confirm")}
+          cancelText={t("expertPages.validationRequests.completeModal.cancel")}
           onConfirm={submitComplete}
           loading={saving}
         >
           {selectedRequest && (
             <div className="space-y-4">
               <div className="text-sm text-gray-700 dark:text-gray-300">
-                Hoàn thành request <span className="font-medium">#{selectedRequest.id || selectedRequest._id}</span>
+                {t("expertPages.validationRequests.completeModal.completing")} <span className="font-medium">#{selectedRequest.id || selectedRequest._id}</span>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quyết định</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("expertPages.validationRequests.completeModal.decision")}</label>
                 <select
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   value={decision}
                   onChange={(e) => setDecision(e.target.value)}
                 >
-                  <option value="Approved">Phê duyệt</option>
-                  <option value="Rejected">Từ chối</option>
+                  <option value="Approved">{t("expertPages.validationRequests.completeModal.approved")}</option>
+                  <option value="Rejected">{t("expertPages.validationRequests.completeModal.rejected")}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Phản hồi (tùy chọn)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("expertPages.validationRequests.completeModal.feedback")}</label>
                 <textarea
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm resize-y min-h-[100px]"
-                  placeholder="Nhận xét của bạn..."
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm resize-y min-h-[100px]"
+                  placeholder={t("expertPages.validationRequests.completeModal.feedbackPlaceholder")}
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                 />
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Sau khi xác nhận, trạng thái sẽ cập nhật và thông báo được gửi tới người tạo.</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{t("expertPages.validationRequests.completeModal.note")}</p>
             </div>
           )}
         </Modal>
