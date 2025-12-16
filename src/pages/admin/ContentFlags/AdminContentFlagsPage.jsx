@@ -5,10 +5,12 @@ import Button from "@/components/common/Button";
 import { useToast } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { formatDate } from "@/utils/formatters";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const AdminContentFlagsPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const { t, language } = useLanguage();
   const [flags, setFlags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -58,12 +60,12 @@ const AdminContentFlagsPage = () => {
     };
     
     const labels = {
-      Pending: "Chờ xử lý",
-      UnderReview: "Đang xem xét",
-      SentToExpert: "Đã gửi Expert",
-      ExpertResponded: "Expert đã trả lời",
-      Resolved: "Đã giải quyết",
-      Dismissed: "Đã từ chối",
+      Pending: t("admin.contentFlags.statusPending"),
+      UnderReview: t("admin.contentFlags.statusUnderReview"),
+      SentToExpert: t("admin.contentFlags.statusSentToExpert"),
+      ExpertResponded: t("admin.contentFlags.statusExpertResponded"),
+      Resolved: t("admin.contentFlags.statusResolved"),
+      Dismissed: t("admin.contentFlags.statusDismissed"),
     };
 
     return (
@@ -75,12 +77,12 @@ const AdminContentFlagsPage = () => {
 
   const getReasonLabel = (reason) => {
     const labels = {
-      Inaccurate: "Sai lệch",
-      Inappropriate: "Không phù hợp",
-      Spam: "Spam",
-      Offensive: "Xúc phạm",
-      Copyright: "Bản quyền",
-      Other: "Khác",
+      Inaccurate: t("admin.contentFlags.reasons.inaccurate"),
+      Inappropriate: t("admin.contentFlags.reasons.inappropriate"),
+      Spam: t("admin.contentFlags.reasons.spam"),
+      Offensive: t("admin.contentFlags.reasons.offensive"),
+      Copyright: t("admin.contentFlags.reasons.copyright"),
+      Other: t("admin.contentFlags.reasons.other"),
     };
     return labels[reason] || reason;
   };
@@ -91,10 +93,10 @@ const AdminContentFlagsPage = () => {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Quản lý Báo cáo Nội dung
+            {t("admin.contentFlags.pageTitle")}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Xem xét và xử lý các báo cáo từ người dùng
+            {t("admin.contentFlags.pageSubtitle")}
           </p>
         </div>
 
@@ -102,7 +104,7 @@ const AdminContentFlagsPage = () => {
         <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-4 mb-6">
           <div className="flex flex-wrap items-center gap-4">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Trạng thái:
+              {t("admin.common.status")}:
             </label>
             <select
               value={statusFilter}
@@ -112,12 +114,12 @@ const AdminContentFlagsPage = () => {
               }}
               className="px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
             >
-              <option value="all">Tất cả</option>
-              <option value="Pending">Chờ xử lý</option>
-              <option value="SentToExpert">Đã gửi Expert</option>
-              <option value="ExpertResponded">Expert đã trả lời</option>
-              <option value="Resolved">Đã giải quyết</option>
-              <option value="Dismissed">Đã từ chối</option>
+              <option value="all">{t("admin.common.all")}</option>
+              <option value="Pending">{t("admin.contentFlags.statusPending")}</option>
+              <option value="SentToExpert">{t("admin.contentFlags.statusSentToExpert")}</option>
+              <option value="ExpertResponded">{t("admin.contentFlags.statusExpertResponded")}</option>
+              <option value="Resolved">{t("admin.contentFlags.statusResolved")}</option>
+              <option value="Dismissed">{t("admin.contentFlags.statusDismissed")}</option>
             </select>
           </div>
         </div>
@@ -126,7 +128,7 @@ const AdminContentFlagsPage = () => {
         {loading && (
           <div className="text-center py-12">
             <div className="inline-block w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-            <p className="text-gray-600 dark:text-gray-400 mt-4">Đang tải...</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-4">{t("admin.common.loading")}</p>
           </div>
         )}
 
@@ -138,7 +140,7 @@ const AdminContentFlagsPage = () => {
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
             </div>
-            <p className="text-gray-600 dark:text-gray-400">Không có báo cáo nào</p>
+            <p className="text-gray-600 dark:text-gray-400">{t("admin.contentFlags.noFlags")}</p>
           </div>
         )}
 
@@ -166,7 +168,7 @@ const AdminContentFlagsPage = () => {
                     
                     <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                       <span>
-                        Người báo cáo: <strong>{flag.reportedBy?.fullName || "N/A"}</strong>
+                        {t("admin.contentFlags.reporter")}: <strong>{flag.reportedBy?.fullName || "N/A"}</strong>
                       </span>
                       <span>•</span>
                       <span>{formatDate(flag.createdAt)}</span>
@@ -194,14 +196,14 @@ const AdminContentFlagsPage = () => {
                             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
                           </svg>
-                          Xem bộ đề
+                          {t("admin.contentFlags.viewQuestionSet")}
                         </span>
                       </Button>
                     </div>
                   </div>
                   
                   <Button variant="secondary" size="small">
-                    Xem chi tiết →
+                    {t("admin.contentFlags.viewDetail")} →
                   </Button>
                 </div>
               </div>
@@ -217,17 +219,17 @@ const AdminContentFlagsPage = () => {
               disabled={page === 1}
               onClick={() => setPage(page - 1)}
             >
-              ← Trang trước
+              ← {t("admin.common.prev")}
             </Button>
             <span className="text-gray-700 dark:text-gray-300">
-              Trang {page} / {totalPages}
+              {t("admin.common.pageOf", { current: page, total: totalPages })}
             </span>
             <Button
               variant="secondary"
               disabled={page === totalPages}
               onClick={() => setPage(page + 1)}
             >
-              Trang sau →
+              {t("admin.common.next")} →
             </Button>
           </div>
         )}

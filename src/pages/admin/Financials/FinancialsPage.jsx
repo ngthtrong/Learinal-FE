@@ -5,6 +5,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/common";
 import { adminService } from "@/services/api";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -31,6 +32,7 @@ ChartJS.register(
 );
 
 function FinancialsPage() {
+  const { t, language } = useLanguage();
   const currentYear = new Date().getFullYear();
   const [filterMode, setFilterMode] = useState("year"); // "year" or "dateRange"
   const [year, setYear] = useState(currentYear);
@@ -51,7 +53,7 @@ function FinancialsPage() {
         params.year = year;
       } else {
         if (!startDate || !endDate) {
-          setError("Vui lòng chọn đầy đủ ngày bắt đầu và kết thúc");
+          setError(t("admin.financials.selectDateRange"));
           setLoading(false);
           return;
         }
@@ -63,7 +65,7 @@ function FinancialsPage() {
       setData(res);
     } catch (e) {
       console.error(e);
-      setError(e?.response?.data?.message || "Không thể tải dữ liệu tài chính");
+      setError(e?.response?.data?.message || t("admin.financials.cannotLoadData"));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -89,16 +91,16 @@ function FinancialsPage() {
       return `${m.day}/${m.month}`;
     }
     if (m.year) {
-      return `Tháng ${m.month}/${m.year}`;
+      return language === "vi" ? `Tháng ${m.month}/${m.year}` : `${m.month}/${m.year}`;
     }
-    return `Tháng ${m.month}`;
+    return language === "vi" ? `Tháng ${m.month}` : `Month ${m.month}`;
   };
 
   const getPeriodLabel = () => {
     if (groupBy === 'day') {
-      return 'ngày';
+      return t("admin.financials.day");
     }
-    return 'tháng';
+    return t("admin.financials.month");
   };
 
   const yearsOptions = useMemo(() => {
@@ -112,9 +114,9 @@ function FinancialsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 mb-6">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Thống kê</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{t("admin.financials.title")}</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">
-              Doanh thu theo gói, chi hoa hồng chuyên gia và lợi nhuận ròng.
+              {t("admin.financials.subtitle")}
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
@@ -128,7 +130,7 @@ function FinancialsPage() {
                 }`}
                 onClick={() => setFilterMode("year")}
               >
-                Theo năm
+                {t("admin.financials.byYear")}
               </button>
               <button
                 className={`flex-1 sm:flex-none px-3 py-1.5 rounded text-sm font-medium transition-colors ${
@@ -138,7 +140,7 @@ function FinancialsPage() {
                 }`}
                 onClick={() => setFilterMode("dateRange")}
               >
-                Theo khoảng
+                {t("admin.financials.byRange")}
               </button>
             </div>
 
@@ -179,7 +181,7 @@ function FinancialsPage() {
                   disabled={!startDate || !endDate || refreshing}
                   className="w-full sm:w-auto"
                 >
-                  Áp dụng
+                  {t("admin.common.apply")}
                 </Button>
               </>
             )}
@@ -192,7 +194,7 @@ function FinancialsPage() {
               disabled={refreshing}
               className="w-full sm:w-auto"
             >
-              {refreshing ? "Đang làm mới..." : "Làm mới"}
+              {refreshing ? t("admin.dashboardPage.refreshing") : t("admin.common.refresh")}
             </Button>
           </div>
         </div>
@@ -206,19 +208,19 @@ function FinancialsPage() {
         {/* Summary cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-slate-700">
-            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Doanh thu gói</div>
+            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">{t("admin.financials.subscriptionRevenue")}</div>
             <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
               {loading ? "—" : formatCurrency(totals.subscriptionRevenue)}
             </div>
           </div>
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-slate-700">
-            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Chi hoa hồng</div>
+            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">{t("admin.financials.commissionExpense")}</div>
             <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
               {loading ? "—" : formatCurrency(totals.commissionsPaid)}
             </div>
           </div>
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 sm:p-5 border border-gray-100 dark:border-slate-700">
-            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">Lợi nhuận ròng</div>
+            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">{t("admin.financials.netProfit")}</div>
             <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
               {loading ? "—" : formatCurrency(totals.net)}
             </div>
@@ -229,13 +231,13 @@ function FinancialsPage() {
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden mb-6 sm:mb-8">
           <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <h2 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-100">
-              Chi tiết theo {getPeriodLabel()} {filterMode === "year" ? year : "(khoảng đã chọn)"}
+              {t("admin.financials.detailBy", { period: getPeriodLabel() })} {filterMode === "year" ? year : t("admin.financials.selectedRange")}
             </h2>
           </div>
           {loading ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{t("admin.common.loading")}</div>
           ) : months.length === 0 ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Không có dữ liệu</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{t("admin.common.noData")}</div>
           ) : (
             <>
               {/* Mobile Cards */}
@@ -249,19 +251,19 @@ function FinancialsPage() {
                       </div>
                       <div className="grid grid-cols-3 gap-2 text-sm">
                         <div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">Doanh thu</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{t("admin.financials.revenue")}</div>
                           <div className="text-gray-700 dark:text-gray-300">
                             {hasTx ? formatCurrency(m.subscriptionRevenue) : "—"}
                           </div>
                         </div>
                         <div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">Hoa hồng</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{t("admin.financials.commission")}</div>
                           <div className="text-gray-700 dark:text-gray-300">
                             {hasTx ? formatCurrency(m.commissionsPaid) : "—"}
                           </div>
                         </div>
                         <div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">Lợi nhuận</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{t("admin.financials.profit")}</div>
                           <div className="font-medium text-gray-900 dark:text-gray-100">
                             {hasTx ? formatCurrency(m.net) : "—"}
                           </div>
@@ -277,16 +279,16 @@ function FinancialsPage() {
                 <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      {groupBy === 'day' ? 'Ngày' : 'Tháng'}
+                      {groupBy === 'day' ? t("admin.financials.day") : t("admin.financials.month")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Doanh thu gói
+                      {t("admin.financials.subscriptionRevenue")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Chi hoa hồng
+                      {t("admin.financials.commissionExpense")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Lợi nhuận ròng
+                      {t("admin.financials.netProfit")}
                     </th>
                   </tr>
                 </thead>
@@ -322,20 +324,20 @@ function FinancialsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Bar Chart - Revenue vs Commission */}
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6">
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Doanh thu & Hoa hồng</h2>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t("admin.financials.revenueAndCommission")}</h2>
               <Bar
                 data={{
                   labels: months.map((m) => formatMonthLabel(m)),
                   datasets: [
                     {
-                      label: "Doanh thu gói",
+                      label: t("admin.financials.subscriptionRevenue"),
                       data: months.map((m) => m.subscriptionRevenue / 1000000), // Convert to millions
                       backgroundColor: "rgba(59, 130, 246, 0.8)",
                       borderColor: "rgba(59, 130, 246, 1)",
                       borderWidth: 1,
                     },
                     {
-                      label: "Chi hoa hồng",
+                      label: t("admin.financials.commissionExpense"),
                       data: months.map((m) => m.commissionsPaid / 1000000),
                       backgroundColor: "rgba(245, 158, 11, 0.8)",
                       borderColor: "rgba(245, 158, 11, 1)",
@@ -382,13 +384,13 @@ function FinancialsPage() {
 
             {/* Line Chart - Net Profit Trend */}
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-6">
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Xu hướng lợi nhuận ròng</h2>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t("admin.financials.netProfitTrend")}</h2>
               <Line
                 data={{
                   labels: months.map((m) => formatMonthLabel(m)),
                   datasets: [
                     {
-                      label: "Lợi nhuận ròng",
+                      label: t("admin.financials.netProfit"),
                       data: months.map((m) => m.net / 1000000),
                       borderColor: "rgba(16, 185, 129, 1)",
                       backgroundColor: "rgba(16, 185, 129, 0.1)",

@@ -31,7 +31,6 @@ import {
   QuizListPage,
   PublicSetsPage,
   ProfileViewPage,
-  ProfileEditPage,
   NotificationListPage,
   SubjectListPage,
   SubjectDetailPage,
@@ -203,18 +202,6 @@ function App() {
                   <TopbarLayout>
                     <RoleBasedSidebarLayout>
                       <ProfileViewPage />
-                    </RoleBasedSidebarLayout>
-                  </TopbarLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile/edit"
-              element={
-                <ProtectedRoute>
-                  <TopbarLayout>
-                    <RoleBasedSidebarLayout>
-                      <ProfileEditPage />
                     </RoleBasedSidebarLayout>
                   </TopbarLayout>
                 </ProtectedRoute>

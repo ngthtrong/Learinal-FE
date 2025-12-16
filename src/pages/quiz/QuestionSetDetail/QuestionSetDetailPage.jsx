@@ -1302,9 +1302,12 @@ function QuestionSetDetailPage() {
         <PremiumRequiredModal
           onClose={() => {
             setShowPremiumModal(false);
-            navigate("/quiz");
+            navigate("/public"); // Quay về trang /public khi bấm Hủy
           }}
-          onUpgrade={() => navigate("/subscriptions/plans")}
+          onUpgrade={() => {
+            setShowPremiumModal(false);
+            navigate("/subscriptions/plans");
+          }}
         />
       )}
 

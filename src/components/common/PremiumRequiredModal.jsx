@@ -22,11 +22,10 @@ const PremiumRequiredModal = ({ onClose, onUpgrade, title }) => {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        {/* Background overlay */}
+        {/* Background overlay - Cannot close by clicking outside */}
         <div 
           className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" 
           aria-hidden="true"
-          onClick={onClose}
         ></div>
 
         {/* Center modal */}
@@ -64,7 +63,10 @@ const PremiumRequiredModal = ({ onClose, onUpgrade, title }) => {
 
             <div className="text-center mb-6">
               <p className="text-gray-600 dark:text-gray-400 text-base leading-relaxed">
-                <strong className="text-gray-900 dark:text-gray-100">{displayTitle}</strong> {t("components.premiumRequiredModal.contentDescription")}
+                {t("components.premiumRequiredModal.contentDescription")}
+              </p>
+              <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">
+                {t("components.premiumRequiredModal.basicNotAllowed")}
               </p>
             </div>
 

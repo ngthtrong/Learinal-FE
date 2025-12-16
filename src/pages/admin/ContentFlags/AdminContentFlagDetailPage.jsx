@@ -6,11 +6,13 @@ import Button from "@/components/common/Button";
 import { useToast } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { formatDate } from "@/utils/formatters";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const AdminContentFlagDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
+  const { t } = useLanguage();
   const [flag, setFlag] = useState(null);
   const [questionSet, setQuestionSet] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -58,7 +60,7 @@ const AdminContentFlagDetailPage = () => {
 
   const handleSendToExpert = async () => {
     if (!adminNote.trim()) {
-      toast.showError("Vui lòng nhập ghi chú cho Expert");
+      toast.showError(t("admin.contentFlagDetail.enterNoteForExpert"));
       return;
     }
 
@@ -69,7 +71,7 @@ const AdminContentFlagDetailPage = () => {
         adminNote: adminNote.trim(),
       });
       
-      toast.showSuccess("Đã gửi yêu cầu cho Expert");
+      toast.showSuccess(t("admin.contentFlagDetail.sentToExpertSuccess"));
       fetchFlag();
       setAdminNote("");
     } catch (err) {
@@ -82,7 +84,7 @@ const AdminContentFlagDetailPage = () => {
 
   const handleDismiss = async () => {
     if (!adminNote.trim()) {
-      toast.showError("Vui lòng nhập lý do từ chối");
+      toast.showError(t("admin.contentFlagDetail.enterDismissReason"));
       return;
     }
 
@@ -93,7 +95,7 @@ const AdminContentFlagDetailPage = () => {
         adminNote: adminNote.trim(),
       });
       
-      toast.showSuccess("Đã từ chối báo cáo");
+      toast.showSuccess(t("admin.contentFlagDetail.dismissSuccess"));
       fetchFlag();
       setAdminNote("");
     } catch (err) {
@@ -111,7 +113,7 @@ const AdminContentFlagDetailPage = () => {
         resolutionNote: resolutionNote.trim(),
       });
       
-      toast.showSuccess("Đã đánh dấu là đã giải quyết");
+      toast.showSuccess(t("admin.contentFlagDetail.resolveSuccess"));
       setShowResolveModal(false);
       fetchFlag();
       setResolutionNote("");
@@ -128,7 +130,7 @@ const AdminContentFlagDetailPage = () => {
       <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-          <p className="text-gray-600 dark:text-gray-400 mt-4">Đang tải...</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-4">{t("admin.common.loading")}</p>
         </div>
       </div>
     );
@@ -153,7 +155,7 @@ const AdminContentFlagDetailPage = () => {
         {/* Header */}
         <div className="mb-6">
           <Button variant="secondary" onClick={() => navigate("/admin/content-flags")}>
-            ← Quay lại danh sách
+            ← {t("admin.contentFlagDetail.backToList")}
           </Button>
         </div>
 
@@ -161,7 +163,7 @@ const AdminContentFlagDetailPage = () => {
         <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6 mb-6">
           <div className="flex items-start justify-between mb-4">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              Chi tiết báo cáo #{flag.id.slice(-8)}
+              {t("admin.contentFlagDetail.title", { id: flag.id.slice(-8) })}
             </h1>
             <span className={`px-4 py-2 rounded-full text-sm font-medium ${getStatusBadge(flag.status)}`}>
               {flag.status}
@@ -170,30 +172,30 @@ const AdminContentFlagDetailPage = () => {
 
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Người báo cáo:</label>
+              <label className="text-sm font-medium text-gray-600 dark:text-gray-400">{t("admin.contentFlags.reporter")}:</label>
               <p className="text-gray-900 dark:text-gray-100 mt-1">
                 {flag.reportedBy?.fullName} ({flag.reportedBy?.email})
               </p>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Lý do:</label>
+              <label className="text-sm font-medium text-gray-600 dark:text-gray-400">{t("admin.contentFlags.reason")}:</label>
               <p className="text-gray-900 dark:text-gray-100 mt-1">{flag.reason}</p>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Mô tả:</label>
+              <label className="text-sm font-medium text-gray-600 dark:text-gray-400">{t("admin.contentFlagDetail.description")}:</label>
               <p className="text-gray-900 dark:text-gray-100 mt-1 whitespace-pre-wrap">{flag.description}</p>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Ngày báo cáo:</label>
+              <label className="text-sm font-medium text-gray-600 dark:text-gray-400">{t("admin.contentFlagDetail.reportDate")}:</label>
               <p className="text-gray-900 dark:text-gray-100 mt-1">{formatDate(flag.createdAt)}</p>
             </div>
 
             {flag.assignedExpert && (
               <div>
-                <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Expert được giao:</label>
+                <label className="text-sm font-medium text-gray-600 dark:text-gray-400">{t("admin.contentFlagDetail.assignedExpert")}:</label>
                 <p className="text-gray-900 dark:text-gray-100 mt-1">
                   {flag.assignedExpert.fullName} ({flag.assignedExpert.email})
                 </p>
@@ -202,14 +204,14 @@ const AdminContentFlagDetailPage = () => {
 
             {flag.adminNote && (
               <div>
-                <label className="text-sm font-medium text-gray-600 dark:text-gray-400">Ghi chú Admin:</label>
+                <label className="text-sm font-medium text-gray-600 dark:text-gray-400">{t("admin.contentFlags.adminNote")}:</label>
                 <p className="text-gray-900 dark:text-gray-100 mt-1 whitespace-pre-wrap">{flag.adminNote}</p>
               </div>
             )}
 
             {flag.expertResponse && (
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                <label className="text-sm font-medium text-blue-900 dark:text-blue-300">Phản hồi từ Expert:</label>
+                <label className="text-sm font-medium text-blue-900 dark:text-blue-300">{t("admin.contentFlagDetail.expertResponse")}:</label>
                 <p className="text-blue-800 dark:text-blue-200 mt-2 whitespace-pre-wrap">{flag.expertResponse}</p>
                 {flag.expertRespondedAt && (
                   <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
@@ -221,7 +223,7 @@ const AdminContentFlagDetailPage = () => {
 
             {flag.resolutionNote && (
               <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                <label className="text-sm font-medium text-green-900 dark:text-green-300">Kết luận:</label>
+                <label className="text-sm font-medium text-green-900 dark:text-green-300">{t("admin.contentFlagDetail.conclusion")}:</label>
                 <p className="text-green-800 dark:text-green-200 mt-2 whitespace-pre-wrap">{flag.resolutionNote}</p>
               </div>
             )}
@@ -235,13 +237,13 @@ const AdminContentFlagDetailPage = () => {
               <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
               <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
             </svg>
-            Nội dung bộ đề
+            {t("admin.contentFlagDetail.questionSetContent")}
           </h2>
 
           {loadingQuestions ? (
             <div className="text-center py-8">
               <div className="inline-block w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-              <p className="text-gray-600 dark:text-gray-400 mt-4">Đang tải câu hỏi...</p>
+              <p className="text-gray-600 dark:text-gray-400 mt-4">{t("admin.contentFlagDetail.loadingQuestions")}</p>
             </div>
           ) : questionSet ? (
             <>
@@ -253,9 +255,9 @@ const AdminContentFlagDetailPage = () => {
                   <p className="text-sm text-gray-600 dark:text-gray-400">{questionSet.description}</p>
                 )}
                 <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  <span>Tổng số câu: <strong>{questionSet.questions?.length || 0}</strong></span>
+                  <span>{t("admin.contentFlagDetail.totalQuestions")}: <strong>{questionSet.questions?.length || 0}</strong></span>
                   <span>•</span>
-                  <span>Thời gian: <strong>{questionSet.timeLimit || 0} phút</strong></span>
+                  <span>{t("admin.contentFlagDetail.timeLimit")}: <strong>{questionSet.timeLimit || 0} {t("admin.contentFlagDetail.minutes")}</strong></span>
                 </div>
               </div>
 
@@ -306,7 +308,7 @@ const AdminContentFlagDetailPage = () => {
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                           <polyline points="20 6 9 17 4 12"></polyline>
                                         </svg>
-                                        ĐÚNG
+                                        {t("admin.contentFlagDetail.correct")}
                                       </div>
                                     )}
                                   </div>
@@ -319,7 +321,7 @@ const AdminContentFlagDetailPage = () => {
                           {question.explanation && (
                             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-200 dark:border-blue-800">
                               <p className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-1">
-                                💡 Giải thích:
+                                💡 {t("admin.contentFlagDetail.explanation")}:
                               </p>
                               <p className="text-sm text-blue-800 dark:text-blue-200">
                                 {question.explanation}
@@ -333,13 +335,13 @@ const AdminContentFlagDetailPage = () => {
                 </div>
               ) : (
                 <p className="text-center text-gray-500 dark:text-gray-400 py-8">
-                  Bộ đề chưa có câu hỏi
+                  {t("admin.contentFlagDetail.noQuestions")}
                 </p>
               )}
             </>
           ) : (
             <p className="text-center text-gray-500 dark:text-gray-400 py-8">
-              Không thể tải nội dung bộ đề
+              {t("admin.contentFlagDetail.cannotLoadContent")}
             </p>
           )}
         </div>
@@ -348,17 +350,17 @@ const AdminContentFlagDetailPage = () => {
         {flag.status === "Pending" && (
           <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-              Xử lý báo cáo
+              {t("admin.contentFlagDetail.processReport")}
             </h2>
             
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Ghi chú
+                {t("admin.contentFlagDetail.note")}
               </label>
               <textarea
                 value={adminNote}
                 onChange={(e) => setAdminNote(e.target.value)}
-                placeholder="Nhập ghi chú cho quyết định của bạn..."
+                placeholder={t("admin.contentFlagDetail.notePlaceholder")}
                 rows={4}
                 maxLength={1000}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 resize-none"
@@ -375,7 +377,7 @@ const AdminContentFlagDetailPage = () => {
                 disabled={processing || !adminNote.trim()}
                 className="flex-1"
               >
-                {processing ? "Đang xử lý..." : "Gửi cho Expert"}
+                {processing ? t("admin.common.processing") : t("admin.contentFlagDetail.sendToExpert")}
               </Button>
               <Button
                 variant="secondary"
@@ -383,7 +385,7 @@ const AdminContentFlagDetailPage = () => {
                 disabled={processing || !adminNote.trim()}
                 className="flex-1 text-red-600 border-red-300 hover:bg-red-50"
               >
-                {processing ? "Đang xử lý..." : "Từ chối"}
+                {processing ? t("admin.common.processing") : t("admin.contentFlags.dismiss")}
               </Button>
             </div>
           </div>
@@ -392,7 +394,7 @@ const AdminContentFlagDetailPage = () => {
         {(flag.status === "ExpertResponded" || flag.status === "SentToExpert") && (
           <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-              Đánh dấu là đã giải quyết
+              {t("admin.contentFlagDetail.markAsResolved")}
             </h2>
             
             {!showResolveModal ? (
@@ -400,18 +402,18 @@ const AdminContentFlagDetailPage = () => {
                 variant="primary"
                 onClick={() => setShowResolveModal(true)}
               >
-                Đánh dấu đã giải quyết
+                {t("admin.contentFlagDetail.markResolvedBtn")}
               </Button>
             ) : (
               <div>
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Ghi chú kết luận (tuỳ chọn)
+                    {t("admin.contentFlagDetail.resolutionNoteLabel")}
                   </label>
                   <textarea
                     value={resolutionNote}
                     onChange={(e) => setResolutionNote(e.target.value)}
-                    placeholder="Nhập kết luận về việc giải quyết..."
+                    placeholder={t("admin.contentFlagDetail.resolutionNotePlaceholder")}
                     rows={3}
                     maxLength={1000}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 resize-none"
@@ -424,14 +426,14 @@ const AdminContentFlagDetailPage = () => {
                     onClick={handleResolve}
                     disabled={processing}
                   >
-                    {processing ? "Đang xử lý..." : "Xác nhận"}
+                    {processing ? t("admin.common.processing") : t("admin.common.confirm")}
                   </Button>
                   <Button
                     variant="secondary"
                     onClick={() => setShowResolveModal(false)}
                     disabled={processing}
                   >
-                    Hủy
+                    {t("admin.common.cancel")}
                   </Button>
                 </div>
               </div>

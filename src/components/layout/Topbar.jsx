@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Modal, ThemeToggle } from "@/components/common";
+import { Modal, ThemeToggle, LanguageToggle } from "@/components/common";
 import { NotificationBell } from "@/components/notifications";
 import { APP_CONFIG } from "@/config/app.config";
 import logoLight from "@/assets/images/logo/learinal-logo.png";
@@ -250,6 +250,9 @@ const Topbar = ({ theme: themeProp = "light" }) => {
           {/* Notification Bell */}
           <NotificationBell />
 
+          {/* Language Toggle */}
+          <LanguageToggle />
+
           {/* Theme Toggle */}
           <ThemeToggle />
 
@@ -280,10 +283,7 @@ const Topbar = ({ theme: themeProp = "light" }) => {
                     <button
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                       role="menuitem"
-                      onClick={() => {
-                        setMenuOpen(false);
-                        navigate("/profile/edit");
-                      }}
+                      href="localhost:5173/settings"
                     >
                       {t('topbar.settings')}
                     </button>
