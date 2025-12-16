@@ -68,23 +68,22 @@ const Modal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in min-h-screen"
       onClick={handleOverlayClick}
     >
       <div
         className={`
         relative w-full ${sizeStyles[size] || sizeStyles.medium}
         bg-white dark:bg-gray-800 rounded-2xl shadow-large
-        animate-slide-up
         max-h-[90vh] flex flex-col
       `}
       >
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+          <div className="flex items-center justify-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 text-center">{title}</h3>
             {showCloseButton && (
               <button
-                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="absolute right-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                 onClick={onClose}
                 aria-label={t("components.modal.close")}
               >
@@ -101,10 +100,10 @@ const Modal = ({
           </div>
         )}
 
-        <div className="px-6 py-4 overflow-y-auto flex-1">{children}</div>
+        <div className="px-6 py-4 overflow-y-auto flex-1 text-center">{children}</div>
 
         {onConfirm && (
-          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 rounded-b-2xl">
+          <div className="flex items-center justify-center gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 rounded-b-2xl">
             <Button variant="secondary" onClick={onClose} disabled={loading}>
               {resolvedCancelText}
             </Button>

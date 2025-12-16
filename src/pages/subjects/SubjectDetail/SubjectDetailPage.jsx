@@ -46,6 +46,10 @@ function SubjectDetailPage() {
   const [deleting, setDeleting] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(null);
+  const [deleteDocModal, setDeleteDocModal] = useState(null); // { id, name }
+  const [deleteQuizModal, setDeleteQuizModal] = useState(null); // { id, title }
+  const [deletingDoc, setDeletingDoc] = useState(false);
+  const [deletingQuiz, setDeletingQuiz] = useState(false);
 
   useEffect(() => {
     console.log("=== SUBJECT DETAIL PAGE MOUNTED ===");
@@ -236,34 +240,46 @@ function SubjectDetailPage() {
   };
 
   const handleDeleteDocument = async (documentId, documentName) => {
-    if (!window.confirm(t("subjectDetail.deleteDocConfirm", { name: documentName }))) {
-      return;
-    }
+    setDeleteDocModal({ id: documentId, name: documentName });
+  };
 
+  const confirmDeleteDocument = async () => {
+    if (!deleteDocModal) return;
+    
     try {
-      await documentsService.deleteDocument(documentId);
+      setDeletingDoc(true);
+      await documentsService.deleteDocument(deleteDocModal.id);
       toast.showSuccess(t("subjectDetail.deleteDocSuccess"));
+      setDeleteDocModal(null);
       // Refresh documents list
       fetchDocuments();
     } catch (err) {
       const message = getErrorMessage(err);
       toast.showError(message);
+    } finally {
+      setDeletingDoc(false);
     }
   };
 
   const handleDeleteQuestionSet = async (questionSetId, questionSetTitle) => {
-    if (!window.confirm(t("subjectDetail.deleteQuizConfirm", { name: questionSetTitle }))) {
-      return;
-    }
+    setDeleteQuizModal({ id: questionSetId, title: questionSetTitle });
+  };
 
+  const confirmDeleteQuestionSet = async () => {
+    if (!deleteQuizModal) return;
+    
     try {
-      await questionSetsService.deleteSet(questionSetId);
+      setDeletingQuiz(true);
+      await questionSetsService.deleteSet(deleteQuizModal.id);
       toast.showSuccess(t("subjectDetail.deleteQuizSuccess"));
+      setDeleteQuizModal(null);
       // Refresh question sets list
       fetchQuestionSets();
     } catch (err) {
       const message = getErrorMessage(err);
       toast.showError(message);
+    } finally {
+      setDeletingQuiz(false);
     }
   };
 
@@ -728,6 +744,38 @@ function SubjectDetailPage() {
         onGenerate={handleGenerateQuiz}
         loading={generating}
       />
+
+      {/* Delete Document Confirmation Modal */}
+      <Modal
+        isOpen={!!deleteDocModal}
+        onClose={() => setDeleteDocModal(null)}
+        title={t("subjectDetail.deleteDocModalTitle")}
+        confirmText={t("subjectDetail.confirmDelete")}
+        cancelText={t("subjectDetail.cancel")}
+        onConfirm={confirmDeleteDocument}
+        variant="danger"
+        loading={deletingDoc}
+      >
+        <p className="text-gray-700 dark:text-gray-300">
+          {t("subjectDetail.deleteDocConfirm", { name: deleteDocModal?.name })}
+        </p>
+      </Modal>
+
+      {/* Delete Quiz Confirmation Modal */}
+      <Modal
+        isOpen={!!deleteQuizModal}
+        onClose={() => setDeleteQuizModal(null)}
+        title={t("subjectDetail.deleteQuizModalTitle")}
+        confirmText={t("subjectDetail.confirmDelete")}
+        cancelText={t("subjectDetail.cancel")}
+        onConfirm={confirmDeleteQuestionSet}
+        variant="danger"
+        loading={deletingQuiz}
+      >
+        <p className="text-gray-700 dark:text-gray-300">
+          {t("subjectDetail.deleteQuizConfirm", { name: deleteQuizModal?.title })}
+        </p>
+      </Modal>
 
       {/* Footer */}
       <Footer />

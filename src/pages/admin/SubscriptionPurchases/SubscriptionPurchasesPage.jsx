@@ -5,10 +5,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Input } from "@/components/common";
 import { adminService } from "@/services/api";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const PAGE_SIZES = [10, 20, 50];
 
 function SubscriptionPurchasesPage() {
+  const { t, language } = useLanguage();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -36,7 +38,7 @@ function SubscriptionPurchasesPage() {
       setTotal(data?.meta?.total || 0);
     } catch (e) {
       console.error(e);
-      setError(e?.response?.data?.message || "Không thể tải danh sách gói người dùng");
+      setError(e?.response?.data?.message || t("admin.subscriptionPurchases.loadError"));
     } finally {
       setLoading(false);
     }
@@ -55,10 +57,10 @@ function SubscriptionPurchasesPage() {
   };
 
   const statusMeta = {
-    Active: { label: "Hoạt động", className: "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" },
-    Expired: { label: "Hết hạn", className: "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400" },
-    Cancelled: { label: "Đã hủy", className: "bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400" },
-    PendingPayment: { label: "Chờ thanh toán", className: "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" },
+    Active: { label: t("admin.subscriptionPurchases.statusActive"), className: "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" },
+    Expired: { label: t("admin.subscriptionPurchases.statusExpired"), className: "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400" },
+    Cancelled: { label: t("admin.subscriptionPurchases.statusCancelled"), className: "bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400" },
+    PendingPayment: { label: t("admin.subscriptionPurchases.statusPending"), className: "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" },
   };
 
   return (
@@ -67,9 +69,9 @@ function SubscriptionPurchasesPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý gói</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{t("admin.subscriptionPurchases.pageTitle")}</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">
-              Theo dõi các gói người dùng đang sở hữu hoặc đã hết hạn.
+              {t("admin.subscriptionPurchases.pageSubtitle")}
             </p>
           </div>
           <div className="flex gap-2">
@@ -80,7 +82,7 @@ function SubscriptionPurchasesPage() {
                 fetchData();
               }}
             >
-              Làm mới
+              {t("admin.common.refresh")}
             </Button>
           </div>
         </div>
@@ -90,8 +92,8 @@ function SubscriptionPurchasesPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div className="md:col-span-2">
               <Input
-                label="Tìm theo tên hoặc tên gói"
-                placeholder="Nhập từ khóa..."
+                label={t("admin.subscriptionPurchases.searchLabel")}
+                placeholder={t("admin.subscriptionPurchases.searchPlaceholder")}
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -102,7 +104,7 @@ function SubscriptionPurchasesPage() {
             </div>
             <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
-                Số dòng / trang
+                {t("admin.common.perPage")}
               </label>
               <select
                 className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
@@ -130,7 +132,7 @@ function SubscriptionPurchasesPage() {
                 fetchData();
               }}
             >
-              Đặt lại
+              {t("admin.common.reset")}
             </Button>
             <Button
               className="w-full sm:w-auto"
@@ -139,7 +141,7 @@ function SubscriptionPurchasesPage() {
                 fetchData();
               }}
             >
-              Áp dụng
+              {t("admin.common.apply")}
             </Button>
           </div>
         </div>
@@ -147,14 +149,14 @@ function SubscriptionPurchasesPage() {
         {/* Table */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
           {loading ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{t("admin.common.loading")}</div>
           ) : error ? (
             <div className="py-16 text-center">
               <div className="text-5xl mb-3">⚠️</div>
               <div className="text-error-600 dark:text-error-400 font-medium">{error}</div>
             </div>
           ) : items.length === 0 ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Chưa có dữ liệu gói</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{t("admin.subscriptionPurchases.noPurchases")}</div>
           ) : (
             <>
               {/* Mobile Cards */}
@@ -167,7 +169,7 @@ function SubscriptionPurchasesPage() {
                           {r.userName || "(N/A)"}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                          {r.planName || "—"} • {r.billingCycle === "Monthly" ? "Tháng" : r.billingCycle === "Yearly" ? "Năm" : "—"}
+                          {r.planName || "—"} • {r.billingCycle === "Monthly" ? t("admin.subscriptionPurchases.monthly") : r.billingCycle === "Yearly" ? t("admin.subscriptionPurchases.yearly") : "—"}
                         </div>
                       </div>
                       <div className="text-right">
@@ -203,25 +205,25 @@ function SubscriptionPurchasesPage() {
                 <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Người dùng
+                      {t("admin.subscriptionPurchases.userName")}
                     </th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Gói
+                      {t("admin.subscriptionPurchases.planName")}
                     </th>
                     <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Chu kỳ
+                      {t("admin.subscriptionPurchases.cycle")}
                     </th>
                     <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Giá
+                      {t("admin.subscriptionPurchases.price")}
                     </th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Trạng thái
+                      {t("admin.common.status")}
                     </th>
                     <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Bắt đầu
+                      {t("admin.subscriptionPurchases.startDate")}
                     </th>
                     <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Kết thúc
+                      {t("admin.subscriptionPurchases.endDate")}
                     </th>
                   </tr>
                 </thead>
@@ -243,9 +245,9 @@ function SubscriptionPurchasesPage() {
                       </td>
                       <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
                         {r.billingCycle === "Monthly"
-                          ? "Tháng"
+                          ? t("admin.subscriptionPurchases.monthly")
                           : r.billingCycle === "Yearly"
-                          ? "Năm"
+                          ? t("admin.subscriptionPurchases.yearly")
                           : "—"}
                       </td>
                       <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
@@ -300,7 +302,7 @@ function SubscriptionPurchasesPage() {
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
           <div className="text-sm text-gray-600 dark:text-gray-400">
-            Hiển thị {items.length} / {total} bản ghi
+            {t("admin.subscriptionPurchases.showingPurchases", { count: items.length, total })}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -309,10 +311,10 @@ function SubscriptionPurchasesPage() {
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
             >
-              Trước
+              {t("admin.common.prev")}
             </Button>
             <div className="text-sm text-gray-700 dark:text-gray-300">
-              Trang {page} / {totalPages}
+              {t("admin.common.pageOf", { page, totalPages })}
             </div>
             <Button
               variant="secondary"
@@ -320,7 +322,7 @@ function SubscriptionPurchasesPage() {
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
             >
-              Sau
+              {t("admin.common.next")}
             </Button>
           </div>
         </div>

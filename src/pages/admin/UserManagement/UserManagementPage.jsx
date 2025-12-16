@@ -5,22 +5,24 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Input, Modal, useToast } from "@/components/common";
 import { adminService } from "@/services/api";
-
-const ROLE_OPTIONS = [
-  { value: "", label: "Tất cả vai trò" },
-  { value: "Learner", label: "Learner" },
-  { value: "Expert", label: "Expert" },
-  { value: "Admin", label: "Admin" },
-];
-
-const STATUS_OPTIONS = [
-  { value: "", label: "Tất cả trạng thái" },
-  { value: "Active", label: "Hoạt động" },
-  { value: "Banned", label: "Khóa" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function UserManagementPage() {
   const toast = useToast();
+  const { t } = useLanguage();
+
+  const ROLE_OPTIONS = [
+    { value: "", label: t("admin.userManagement.allRoles") },
+    { value: "Learner", label: "Learner" },
+    { value: "Expert", label: "Expert" },
+    { value: "Admin", label: "Admin" },
+  ];
+
+  const STATUS_OPTIONS = [
+    { value: "", label: t("admin.userManagement.allStatus") },
+    { value: "Active", label: t("admin.common.active") },
+    { value: "Banned", label: t("admin.common.banned") },
+  ];
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -59,7 +61,7 @@ function UserManagementPage() {
       setTotal(data?.pagination?.total ?? items.length);
     } catch (err) {
       console.error(err);
-      setError(err?.response?.data?.message || "Không thể tải danh sách người dùng");
+      setError(err?.response?.data?.message || t("admin.userManagement.loadError"));
     } finally {
       setLoading(false);
     }
@@ -103,12 +105,12 @@ function UserManagementPage() {
         }
       }
 
-      toast.showSuccess("Cập nhật người dùng thành công");
+      toast.showSuccess(t("admin.userManagement.updateSuccess"));
       closeEdit();
       fetchUsers();
     } catch (err) {
       console.error(err);
-      toast.showError(err?.response?.data?.message || "Cập nhật thất bại");
+      toast.showError(err?.response?.data?.message || t("admin.userManagement.updateError"));
     } finally {
       setSaving(false);
     }
@@ -130,8 +132,8 @@ function UserManagementPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý người dùng</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">Tìm kiếm, lọc theo vai trò và trạng thái.</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{t("admin.userManagement.pageTitle")}</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">{t("admin.userManagement.pageSubtitle")}</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <Button
@@ -144,9 +146,9 @@ function UserManagementPage() {
                 setPage(1);
               }}
             >
-              Đặt lại
+              {t("admin.common.reset")}
             </Button>
-            <Button className="w-full sm:w-auto" onClick={fetchUsers}>Làm mới</Button>
+            <Button className="w-full sm:w-auto" onClick={fetchUsers}>{t("admin.common.refresh")}</Button>
           </div>
         </div>
 
@@ -155,8 +157,8 @@ function UserManagementPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <Input
-                label="Tìm kiếm"
-                placeholder="Tên, email..."
+                label={t("admin.common.search")}
+                placeholder={t("admin.userManagement.searchPlaceholder")}
                 value={q}
                 onChange={(e) => {
                   setPage(1);
@@ -166,7 +168,7 @@ function UserManagementPage() {
               />
             </div>
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Vai trò</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">{t("admin.userManagement.role")}</label>
               <select
                 className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={role}
@@ -183,7 +185,7 @@ function UserManagementPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Trạng thái</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">{t("admin.common.status")}</label>
               <select
                 className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={status}
@@ -207,7 +209,7 @@ function UserManagementPage() {
                   fetchUsers();
                 }}
               >
-                Áp dụng
+                {t("admin.common.apply")}
               </Button>
             </div>
           </div>
@@ -216,14 +218,14 @@ function UserManagementPage() {
         {/* Content */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
           {loading ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{t("admin.common.loading")}</div>
           ) : error ? (
             <div className="py-16 text-center">
               <div className="text-5xl mb-3">⚠️</div>
               <div className="text-error-600 dark:text-error-400 font-medium">{error}</div>
             </div>
           ) : users.length === 0 ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Không có người dùng</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{t("admin.userManagement.noUsers")}</div>
           ) : (
             <>
               {/* Mobile Cards */}
@@ -233,12 +235,12 @@ function UserManagementPage() {
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm truncate">
-                          {u.fullName || u.name || "(Không tên)"}
+                          {u.fullName || u.name || t("admin.common.noName")}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{u.email}</div>
                       </div>
                       <Button variant="secondary" size="small" onClick={() => openEdit(u)}>
-                        Sửa
+                        {t("admin.common.edit")}
                       </Button>
                     </div>
                     <div className="flex flex-wrap items-center gap-2 mt-2">
@@ -257,11 +259,11 @@ function UserManagementPage() {
                       })()}
                       {u.status === "Active" ? (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
-                          Hoạt động
+                          {t("admin.common.active")}
                         </span>
                       ) : u.status === "Banned" ? (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-error-100 dark:bg-error-900/30 text-error-700 dark:text-error-400">
-                          Khóa
+                          {t("admin.common.banned")}
                         </span>
                       ) : null}
                       <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -277,19 +279,19 @@ function UserManagementPage() {
                 <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Tên
+                      {t("admin.userManagement.name")}
                     </th>
                     <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Email
+                      {t("admin.userManagement.email")}
                     </th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Vai trò
+                      {t("admin.userManagement.role")}
                     </th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Trạng thái
+                      {t("admin.common.status")}
                     </th>
                     <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Tạo lúc
+                      {t("admin.userManagement.createdAt")}
                     </th>
                     <th className="px-3 sm:px-6 py-3" />
                   </tr>
@@ -299,7 +301,7 @@ function UserManagementPage() {
                     <tr key={u.id || u._id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                       <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">
-                          {u.fullName || u.name || "(Không tên)"}
+                          {u.fullName || u.name || t("admin.common.noName")}
                         </div>
                         <div className="md:hidden text-xs text-gray-500 dark:text-gray-400 mt-1">{u.email}</div>
                       </td>
@@ -326,11 +328,11 @@ function UserManagementPage() {
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         {u.status === "Active" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
-                            Hoạt động
+                            {t("admin.common.active")}
                           </span>
                         ) : u.status === "Banned" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-error-100 dark:bg-error-900/30 text-error-700 dark:text-error-400">
-                            Khóa
+                            {t("admin.common.banned")}
                           </span>
                         ) : (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
@@ -344,7 +346,7 @@ function UserManagementPage() {
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm">
                         <div className="flex gap-1 sm:gap-2 justify-end">
                           <Button variant="secondary" size="small" onClick={() => openEdit(u)}>
-                            Sửa
+                            {t("admin.common.edit")}
                           </Button>
                         </div>
                       </td>
@@ -360,7 +362,7 @@ function UserManagementPage() {
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
           <div className="text-sm text-gray-600 dark:text-gray-400">
-            Hiển thị {users.length} / {total} người dùng
+            {t("admin.userManagement.showingUsers", { count: users.length, total })}
           </div>
           <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-end">
             <select
@@ -373,7 +375,7 @@ function UserManagementPage() {
             >
               {[10, 20, 50].map((n) => (
                 <option key={n} value={n}>
-                  {n}/trang
+                  {t("admin.common.perPage", { n })}
                 </option>
               ))}
             </select>
@@ -383,10 +385,10 @@ function UserManagementPage() {
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
             >
-              Trước
+              {t("admin.common.prev")}
             </Button>
             <div className="text-sm text-gray-700 dark:text-gray-300">
-              {page}/{totalPages}
+              {t("admin.common.pageOf", { page, total: totalPages })}
             </div>
             <Button
               variant="secondary"
@@ -394,7 +396,7 @@ function UserManagementPage() {
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
             >
-              Sau
+              {t("admin.common.next")}
             </Button>
           </div>
         </div>
@@ -403,22 +405,22 @@ function UserManagementPage() {
         <Modal
           isOpen={editOpen}
           onClose={closeEdit}
-          title="Chỉnh sửa người dùng"
+          title={t("admin.userManagement.editModalTitle")}
           onConfirm={saveEdit}
-          confirmText="Lưu"
-          cancelText="Hủy"
+          confirmText={t("admin.common.save")}
+          cancelText={t("admin.common.cancel")}
           loading={saving}
         >
           {selectedUser && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t("admin.userManagement.email")}</label>
                 <div className="px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-700 dark:text-gray-300">
                   {selectedUser.email}
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Vai trò</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("admin.userManagement.role")}</label>
                 <select
                   className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   value={editRole}
@@ -433,8 +435,8 @@ function UserManagementPage() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Trạng thái</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Bật để kích hoạt, tắt để khóa</div>
+                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("admin.common.status")}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{t("admin.userManagement.statusToggleHint")}</div>
                 </div>
                 <button
                   type="button"

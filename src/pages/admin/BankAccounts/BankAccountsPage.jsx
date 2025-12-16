@@ -3,8 +3,10 @@ import { bankAccountsService } from "../../../services/api";
 import Button from "../../../components/common/Button";
 import Modal from "../../../components/common/Modal";
 import Input from "../../../components/common/Input";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const BankAccountsPage = () => {
+  const { t, language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [total, setTotal] = useState(0);
@@ -39,17 +41,17 @@ const BankAccountsPage = () => {
   };
 
   const handleVerify = async (account) => {
-    if (!window.confirm(`Xác nhận xác minh tài khoản ngân hàng của ${account.expertId?.name}?`)) {
+    if (!window.confirm(t("admin.bankAccounts.confirmVerify", { name: account.expertId?.name }))) {
       return;
     }
 
     try {
       setActionLoading(true);
       await bankAccountsService.verifyBankAccount(account._id || account.id);
-      alert("Xác minh tài khoản ngân hàng thành công");
+      alert(t("admin.bankAccounts.verifySuccess"));
       fetchAccounts();
     } catch (err) {
-      alert(err.message || "Có lỗi xảy ra khi xác minh tài khoản");
+      alert(err.message || t("admin.bankAccounts.verifyError"));
     } finally {
       setActionLoading(false);
     }
@@ -63,7 +65,7 @@ const BankAccountsPage = () => {
 
   const handleReject = async () => {
     if (!rejectionReason.trim()) {
-      alert("Vui lòng nhập lý do từ chối");
+      alert(t("admin.bankAccounts.enterReason"));
       return;
     }
 
@@ -73,11 +75,11 @@ const BankAccountsPage = () => {
         selectedAccount._id || selectedAccount.id,
         rejectionReason
       );
-      alert("Từ chối tài khoản ngân hàng thành công");
+      alert(t("admin.bankAccounts.rejectSuccess"));
       setRejectModalOpen(false);
       fetchAccounts();
     } catch (err) {
-      alert(err.message || "Có lỗi xảy ra khi từ chối tài khoản");
+      alert(err.message || t("admin.bankAccounts.rejectError"));
     } finally {
       setActionLoading(false);
     }
@@ -87,17 +89,17 @@ const BankAccountsPage = () => {
     const badges = {
       Pending: (
         <span className="px-2 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
-          Chờ xác minh
+          {t("admin.bankAccounts.statusPending")}
         </span>
       ),
       Verified: (
         <span className="px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
-          Đã xác minh
+          {t("admin.bankAccounts.statusVerified")}
         </span>
       ),
       Rejected: (
         <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400">
-          Bị từ chối
+          {t("admin.bankAccounts.statusRejected")}
         </span>
       ),
     };
@@ -113,10 +115,10 @@ const BankAccountsPage = () => {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Quản lý tài khoản ngân hàng
+                {t("admin.bankAccounts.pageTitle")}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Xác minh tài khoản ngân hàng của chuyên gia
+                {t("admin.bankAccounts.pageSubtitle")}
               </p>
             </div>
           </div>
@@ -131,18 +133,18 @@ const BankAccountsPage = () => {
               }}
               className="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
             >
-              <option value="">Tất cả trạng thái</option>
-              <option value="Pending">Chờ xác minh</option>
-              <option value="Verified">Đã xác minh</option>
-              <option value="Rejected">Bị từ chối</option>
+              <option value="">{t("admin.bankAccounts.allStatus")}</option>
+              <option value="Pending">{t("admin.bankAccounts.statusPending")}</option>
+              <option value="Verified">{t("admin.bankAccounts.statusVerified")}</option>
+              <option value="Rejected">{t("admin.bankAccounts.statusRejected")}</option>
             </select>
           </div>
 
           {/* Table */}
           {loading ? (
-            <div className="py-12 text-center text-gray-500">Đang tải...</div>
+            <div className="py-12 text-center text-gray-500">{t("admin.common.loading")}</div>
           ) : accounts.length === 0 ? (
-            <div className="py-12 text-center text-gray-500">Không có dữ liệu</div>
+            <div className="py-12 text-center text-gray-500">{t("admin.common.noData")}</div>
           ) : (
             <>
               <div className="overflow-x-auto">
@@ -150,25 +152,25 @@ const BankAccountsPage = () => {
                   <thead className="bg-gray-50 dark:bg-slate-700/50">
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                        Chuyên gia
+                        {t("admin.bankAccounts.expert")}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                        Chủ tài khoản
+                        {t("admin.bankAccounts.accountHolder")}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                        Số tài khoản
+                        {t("admin.bankAccounts.accountNumber")}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                        Ngân hàng
+                        {t("admin.bankAccounts.bankName")}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                        Trạng thái
+                        {t("admin.common.status")}
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                        Ngày tạo
+                        {t("admin.bankAccounts.createdAt")}
                       </th>
                       <th className="px-4 py-3 text-center text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                        Hành động
+                        {t("admin.bankAccounts.actions")}
                       </th>
                     </tr>
                   </thead>
@@ -198,7 +200,7 @@ const BankAccountsPage = () => {
                           {getStatusBadge(account.status)}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          {new Date(account.createdAt).toLocaleDateString("vi-VN")}
+                          {new Date(account.createdAt).toLocaleDateString(language === "vi" ? "vi-VN" : "en-US")}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-center">
                           {account.status === "Pending" && (
@@ -209,7 +211,7 @@ const BankAccountsPage = () => {
                                 onClick={() => handleVerify(account)}
                                 disabled={actionLoading}
                               >
-                                Xác minh
+                                {t("admin.bankAccounts.verify")}
                               </Button>
                               <Button
                                 size="small"
@@ -217,7 +219,7 @@ const BankAccountsPage = () => {
                                 onClick={() => openRejectModal(account)}
                                 disabled={actionLoading}
                               >
-                                Từ chối
+                                {t("admin.bankAccounts.reject")}
                               </Button>
                             </div>
                           )}
@@ -237,7 +239,7 @@ const BankAccountsPage = () => {
               {totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6">
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Trang {page} / {totalPages} ({total} tài khoản)
+                    {t("admin.common.pageOf", { current: page, total: totalPages })} ({total} {t("admin.bankAccounts.accounts")})
                   </div>
                   <div className="flex gap-2">
                     <Button
@@ -245,14 +247,14 @@ const BankAccountsPage = () => {
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
                       disabled={page === 1}
                     >
-                      Trước
+                      {t("admin.common.prev")}
                     </Button>
                     <Button
                       size="small"
                       onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
                     >
-                      Sau
+                      {t("admin.common.next")}
                     </Button>
                   </div>
                 </div>
@@ -266,25 +268,24 @@ const BankAccountsPage = () => {
       <Modal
         isOpen={rejectModalOpen}
         onClose={() => setRejectModalOpen(false)}
-        title="Từ chối tài khoản ngân hàng"
+        title={t("admin.bankAccounts.rejectModalTitle")}
         onConfirm={handleReject}
-        confirmText="Từ chối"
+        confirmText={t("admin.bankAccounts.reject")}
         confirmVariant="danger"
         loading={actionLoading}
       >
         <div className="space-y-4">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Bạn đang từ chối tài khoản ngân hàng của{" "}
-            <strong>{selectedAccount?.expertId?.name}</strong>
+            {t("admin.bankAccounts.rejectModalDesc", { name: selectedAccount?.expertId?.name })}
           </p>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Lý do từ chối *
+              {t("admin.bankAccounts.rejectReasonLabel")} *
             </label>
             <textarea
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
-              placeholder="Nhập lý do từ chối..."
+              placeholder={t("admin.bankAccounts.rejectReasonPlaceholder")}
               rows={4}
               className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 resize-none"
             />

@@ -15,6 +15,7 @@ export { default as ErrorBoundary } from "./ErrorBoundary";
 export { default as AdminRoute } from "./AdminRoute";
 export { default as ExpertRoute } from "./ExpertRoute";
 export { default as ThemeToggle } from "./ThemeToggle";
+export { default as LanguageToggle } from "./LanguageToggle";
 export { default as PremiumRequiredModal } from "./PremiumRequiredModal";
 export { default as ReportContentModal } from "./ReportContentModal";
 export { default as BackToTop } from "./BackToTop";
