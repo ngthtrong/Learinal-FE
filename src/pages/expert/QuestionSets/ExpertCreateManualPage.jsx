@@ -6,10 +6,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, useToast } from "@/components/common";
 import questionSetsService from "@/services/api/questionSets.service";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function ExpertCreateManualPage() {
   const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
+  const { t } = useLanguage();
   
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -51,7 +53,7 @@ function ExpertCreateManualPage() {
 
   const removeQuestion = (index) => {
     if (questions.length === 1) {
-      showError("Phải có ít nhất 1 câu hỏi");
+      showError(t("expertPages.createManual.errors.addQuestion"));
       return;
     }
     setQuestions(prev => prev.filter((_, i) => i !== index));
@@ -68,25 +70,25 @@ function ExpertCreateManualPage() {
 
   const validateForm = () => {
     if (!title.trim()) {
-      showError("Vui lòng nhập tiêu đề bộ đề");
+      showError(t("expertPages.createManual.errors.enterTitle"));
       return false;
     }
 
     for (let i = 0; i < questions.length; i++) {
       const q = questions[i];
       if (!q.questionText.trim()) {
-        showError(`Câu hỏi ${i + 1}: Chưa nhập nội dung câu hỏi`);
+        showError(t("expertPages.createManual.errors.questionEmpty", { num: i + 1 }));
         return false;
       }
       
       const filledOptions = q.options.filter(opt => opt.trim());
       if (filledOptions.length < 2) {
-        showError(`Câu hỏi ${i + 1}: Phải có ít nhất 2 đáp án`);
+        showError(t("expertPages.createManual.errors.minOptions", { num: i + 1 }));
         return false;
       }
 
       if (!q.options[q.correctAnswerIndex]?.trim()) {
-        showError(`Câu hỏi ${i + 1}: Đáp án đúng không được để trống`);
+        showError(t("expertPages.createManual.errors.correctEmpty", { num: i + 1 }));
         return false;
       }
     }
@@ -131,11 +133,11 @@ function ExpertCreateManualPage() {
       const response = await questionSetsService.createQuestionSet(payload);
       const setId = response?.data?.id || response?.id;
       
-      showSuccess("Đã lưu bộ đề thành công!");
+      showSuccess(t("expertPages.createManual.success.saved"));
       navigate("/expert/question-sets");
     } catch (err) {
       console.error("Save failed:", err);
-      showError(err?.response?.data?.message || "Lưu bộ đề thất bại");
+      showError(err?.response?.data?.message || t("expertPages.createManual.errors.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -147,23 +149,23 @@ function ExpertCreateManualPage() {
         {/* Header */}
         <div className="mb-6">
           <Button variant="secondary" onClick={() => navigate("/expert/question-sets")} className="w-full sm:w-auto">
-            ← Quay lại
+            {t("expertPages.common.goBack")}
           </Button>
         </div>
 
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Tạo bộ đề thủ công
+            {t("expertPages.createManual.pageTitle")}
           </h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-6 sm:mb-8">
-            Tự tạo từng câu hỏi cho bộ đề của bạn
+            {t("expertPages.createManual.pageSubtitle")}
           </p>
 
           {/* Basic Info */}
           <div className="space-y-6 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
             <Input
-              label="Tiêu đề bộ đề"
-              placeholder="Nhập tiêu đề..."
+              label={t("expertPages.createManual.titleLabel")}
+              placeholder={t("expertPages.createManual.titlePlaceholder")}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -171,12 +173,12 @@ function ExpertCreateManualPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Mô tả
+                {t("expertPages.createManual.descriptionLabel")}
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Mô tả ngắn về bộ đề..."
+                placeholder={t("expertPages.createManual.descriptionPlaceholder")}
                 rows="3"
                 className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
@@ -186,7 +188,7 @@ function ExpertCreateManualPage() {
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
-                Câu hỏi ({questions.length})
+                {t("expertPages.createManual.questionsTitle", { count: questions.length })}
               </h2>
               <Button size="small" onClick={addQuestion} className="w-full sm:w-auto">
                 <span className="inline-flex items-center gap-1.5">
@@ -194,7 +196,7 @@ function ExpertCreateManualPage() {
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                   </svg>
-                  Thêm câu hỏi
+                  {t("expertPages.createManual.addQuestion")}
                 </span>
               </Button>
             </div>
@@ -204,7 +206,7 @@ function ExpertCreateManualPage() {
                 {/* Question Header */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
                   <span className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    Câu #{qIdx + 1}
+                    {t("expertPages.createManual.questionLabel", { num: qIdx + 1 })}
                   </span>
                   <div className="flex items-center gap-2 w-full sm:w-auto">
                     <select
@@ -212,14 +214,14 @@ function ExpertCreateManualPage() {
                       onChange={(e) => handleQuestionChange(qIdx, "difficultyLevel", e.target.value)}
                       className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 flex-1 sm:flex-none"
                     >
-                      <option value="Easy">Dễ</option>
-                      <option value="Medium">Trung bình</option>
-                      <option value="Hard">Khó</option>
+                      <option value="Easy">{t("expertPages.createByUpload.difficulty.easy")}</option>
+                      <option value="Medium">{t("expertPages.createByUpload.difficulty.medium")}</option>
+                      <option value="Hard">{t("expertPages.createByUpload.difficulty.hard")}</option>
                     </select>
                     <button
                       onClick={() => duplicateQuestion(qIdx)}
                       className="p-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400"
-                      title="Nhân bản câu hỏi"
+                      title={t("expertPages.createManual.duplicateQuestion")}
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -229,7 +231,7 @@ function ExpertCreateManualPage() {
                     <button
                       onClick={() => removeQuestion(qIdx)}
                       className="p-2 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                      title="Xóa câu hỏi"
+                      title={t("expertPages.createManual.removeQuestion")}
                       disabled={questions.length === 1}
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -243,12 +245,12 @@ function ExpertCreateManualPage() {
                 {/* Question Text */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Nội dung câu hỏi <span className="text-red-500">*</span>
+                    {t("expertPages.createManual.questionContent")} <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     value={q.questionText}
                     onChange={(e) => handleQuestionChange(qIdx, "questionText", e.target.value)}
-                    placeholder="Nhập nội dung câu hỏi..."
+                    placeholder={t("expertPages.createManual.questionPlaceholder")}
                     rows="3"
                     className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
@@ -257,8 +259,8 @@ function ExpertCreateManualPage() {
                 {/* Options */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Đáp án <span className="text-red-500">*</span>
-                    <span className="hidden sm:inline ml-2 text-xs text-gray-500">(Click radio để chọn đáp án đúng)</span>
+                    {t("expertPages.createManual.optionsLabel")} <span className="text-red-500">*</span>
+                    <span className="hidden sm:inline ml-2 text-xs text-gray-500">({t("expertPages.createManual.selectCorrectHint")})</span>
                   </label>
                   <div className="space-y-2">
                     {q.options.map((opt, oIdx) => (
@@ -281,7 +283,7 @@ function ExpertCreateManualPage() {
                           type="text"
                           value={opt}
                           onChange={(e) => handleOptionChange(qIdx, oIdx, e.target.value)}
-                          placeholder={`Đáp án ${String.fromCharCode(65 + oIdx)}`}
+                          placeholder={t("expertPages.createManual.optionLabel", { letter: String.fromCharCode(65 + oIdx) })}
                           className="flex-1 min-w-0 px-3 sm:px-4 py-1.5 sm:py-2 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                         />
                       </div>
@@ -292,12 +294,12 @@ function ExpertCreateManualPage() {
                 {/* Explanation */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Giải thích (tùy chọn)
+                    {t("expertPages.createManual.explanation")}
                   </label>
                   <textarea
                     value={q.explanation}
                     onChange={(e) => handleQuestionChange(qIdx, "explanation", e.target.value)}
-                    placeholder="Giải thích đáp án đúng..."
+                    placeholder={t("expertPages.createManual.explanationPlaceholder")}
                     rows="2"
                     className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
@@ -314,7 +316,7 @@ function ExpertCreateManualPage() {
               disabled={saving}
               className="w-full sm:w-auto order-2 sm:order-1"
             >
-              Hủy
+              {t("expertPages.common.cancel")}
             </Button>
             <Button
               onClick={handleSave}
@@ -333,10 +335,10 @@ function ExpertCreateManualPage() {
                     <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
                     <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
                   </svg>
-                  Đang lưu...
+                  {t("expertPages.createManual.saving")}
                 </span>
               ) : (
-                "Lưu bộ đề"
+                t("expertPages.createManual.save")
               )}
             </Button>
           </div>

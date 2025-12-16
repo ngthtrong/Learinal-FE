@@ -7,8 +7,10 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import subjectsService from "@/services/api/subjects.service";
 import Button from "@/components/common/Button";
+import { useLanguage } from "@/contexts/LanguageContext";
 function DocumentListPage() {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
   const [searchParams] = useSearchParams();
   const subjectId = searchParams.get("subjectId");
 
@@ -30,7 +32,7 @@ function DocumentListPage() {
       // Hiển thị thông báo và cho phép upload
       setDocuments([]);
     } catch (err) {
-      setError(err.response?.data?.message || "Không thể tải thông tin môn học");
+      setError(err.response?.data?.message || t("documents.loadError"));
     } finally {
       setLoading(false);
     }
@@ -40,7 +42,7 @@ function DocumentListPage() {
     if (subjectId) {
       fetchSubjectAndDocuments();
     } else {
-      setError("Vui lòng chọn môn học");
+      setError(t("documents.upload.selectSubjectRequired"));
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,10 +59,10 @@ function DocumentListPage() {
 
   const getStatusBadge = (status) => {
     const statusMap = {
-      Uploading: { text: "Đang tải lên", className: "status-uploading" },
-      Processing: { text: "Đang xử lý", className: "status-processing" },
-      Completed: { text: "Hoàn tất", className: "status-completed" },
-      Error: { text: "Lỗi", className: "status-error" },
+      Uploading: { text: t("documents.status.uploading"), className: "status-uploading" },
+      Processing: { text: t("documents.status.processing"), className: "status-processing" },
+      Completed: { text: t("documents.status.completed"), className: "status-completed" },
+      Error: { text: t("documents.status.error"), className: "status-error" },
     };
     return statusMap[status] || { text: status, className: "" };
   };
@@ -87,7 +89,7 @@ function DocumentListPage() {
       <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-          <p className="text-gray-600 dark:text-gray-400">Đang tải...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t("documents.loading")}</p>
         </div>
       </div>
     );
@@ -101,7 +103,7 @@ function DocumentListPage() {
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-error-600 dark:text-error-400"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
           </div>
           <p className="text-error-600 text-lg font-medium">{error}</p>
-          <Button onClick={() => navigate("/subjects")}>Quay lại môn học</Button>
+          <Button onClick={() => navigate("/subjects")}>{t("documents.list.backToSubjects")}</Button>
         </div>
       </div>
     );
@@ -115,7 +117,7 @@ function DocumentListPage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
               <Button variant="secondary" onClick={() => navigate("/subjects")} className="w-full sm:w-auto">
-                ← Quay lại
+                {t("documents.list.back")}
               </Button>
               <div className="space-y-2">
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
@@ -129,7 +131,7 @@ function DocumentListPage() {
                 )}
               </div>
             </div>
-            <Button onClick={handleUploadDocument} className="w-full sm:w-auto">+ Tải lên tài liệu</Button>
+            <Button onClick={handleUploadDocument} className="w-full sm:w-auto">{t("documents.list.uploadDocument")}</Button>
           </div>
         </div>
       </div>
@@ -143,12 +145,12 @@ function DocumentListPage() {
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-primary-600 dark:text-primary-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path><path d="M8 7h6"></path><path d="M8 11h8"></path></svg>
             </div>
             <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-              Chưa có tài liệu nào
+              {t("documents.list.emptyTitle")}
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Tải lên tài liệu đầu tiên để bắt đầu học tập
+              {t("documents.list.emptyDescription")}
             </p>
-            <Button onClick={handleUploadDocument}>Tải lên tài liệu</Button>
+            <Button onClick={handleUploadDocument}>{t("documents.upload.uploadBtn")}</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -192,7 +194,7 @@ function DocumentListPage() {
                       </span>
                     </div>
                     <p className="text-xs text-gray-600 dark:text-gray-500 mb-3">
-                      {new Date(doc.uploadedAt).toLocaleDateString("vi-VN")}
+                      {new Date(doc.uploadedAt).toLocaleDateString(language === "vi" ? "vi-VN" : "en-US")}
                     </p>
                   </div>
                   <div className="mt-4">
@@ -203,7 +205,7 @@ function DocumentListPage() {
                       disabled={doc.status !== "Completed"}
                       className="w-full"
                     >
-                      Chi tiết
+                      {t("documents.list.viewDetail")}
                     </Button>
                   </div>
 

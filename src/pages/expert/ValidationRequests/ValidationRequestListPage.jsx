@@ -6,8 +6,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { validationRequestsService } from "@/services/api";
 import Button from "@/components/common/Button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function ValidationRequestListPage() {
+  const { t } = useLanguage();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -28,7 +30,7 @@ function ValidationRequestListPage() {
       setRequests(res.items || []);
     } catch (err) {
       console.error("Failed to load requests", err);
-      setError("Không thể tải danh sách yêu cầu");
+      setError(t("expertPages.validationRequests.loadError"));
     } finally {
       setLoading(false);
     }
@@ -38,7 +40,7 @@ function ValidationRequestListPage() {
     <div className="min-h-screen bg-gray-100 dark:bg-slate-900 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Yêu cầu kiểm duyệt</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{t("expertPages.validationRequests.pageTitle")}</h1>
           <div className="flex flex-wrap gap-2 w-full sm:w-auto">
             <button
               onClick={() => setFilter("Assigned")}
@@ -47,7 +49,7 @@ function ValidationRequestListPage() {
                   : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700"
               }`}
             >
-              Chờ duyệt
+              {t("expertPages.validationRequests.filters.assigned")}
             </button>
             <button
               onClick={() => setFilter("RevisionRequested")}
@@ -56,7 +58,7 @@ function ValidationRequestListPage() {
                   : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700"
               }`}
             >
-              Xem lại
+              {t("expertPages.validationRequests.filters.revisionRequested")}
             </button>
             <button
               onClick={() => setFilter("Completed")}
@@ -65,7 +67,7 @@ function ValidationRequestListPage() {
                   : "bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700"
               }`}
             >
-              Đã duyệt
+              {t("expertPages.validationRequests.filters.completed")}
             </button>
           </div>
         </div>
@@ -80,14 +82,14 @@ function ValidationRequestListPage() {
           {loading ? (
             <div className="p-6 sm:p-8 text-center text-gray-500 dark:text-gray-400">
               <div className="inline-block w-8 h-8 sm:w-10 sm:h-10 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-3"></div>
-              <p className="text-sm sm:text-base">Đang tải...</p>
+              <p className="text-sm sm:text-base">{t("expertPages.validationRequests.loading")}</p>
             </div>
           ) : requests.length === 0 ? (
             <div className="p-8 sm:p-12 text-center">
               <div className="text-3xl sm:text-4xl mb-3">📭</div>
-              <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100">Không có yêu cầu nào</h3>
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100">{t("expertPages.validationRequests.empty.title")}</h3>
               <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">
-                Hiện tại bạn không có yêu cầu kiểm duyệt nào ở trạng thái này.
+                {t("expertPages.validationRequests.empty.description")}
               </p>
             </div>
           ) : (
@@ -111,17 +113,17 @@ function ValidationRequestListPage() {
                         }`}
                       >
                         {req.status === "Assigned"
-                          ? "Chờ duyệt"
+                          ? t("expertPages.validationRequests.status.assigned")
                           : req.status === "RevisionRequested"
-                          ? "Xem lại"
+                          ? t("expertPages.validationRequests.status.revisionRequested")
                           : req.status === "Completed"
-                          ? "Đã duyệt"
+                          ? t("expertPages.validationRequests.status.completed")
                           : req.status}
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">ID: {req.id.slice(-6)}</span>
                     </div>
                     <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">
-                      {req.questionSetTitle || "Bộ câu hỏi không tên"}
+                      {req.questionSetTitle || t("expertPages.validationRequests.untitledQuestionSet")}
                     </h3>
                     <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1">
                       <span>👤 {req.requesterName}</span>
@@ -136,7 +138,7 @@ function ValidationRequestListPage() {
                         variant={req.status === "Assigned" || req.status === "RevisionRequested" ? "primary" : "outline"}
                         className="w-full sm:w-auto text-sm"
                       >
-                        {req.status === "Assigned" ? "Kiểm duyệt" : req.status === "RevisionRequested" ? "Xem lại" : "Chi tiết"}
+                        {req.status === "Assigned" ? t("expertPages.validationRequests.actions.validate") : req.status === "RevisionRequested" ? t("expertPages.validationRequests.actions.review") : t("expertPages.validationRequests.actions.viewDetail")}
                       </Button>
                     </Link>
                   </div>

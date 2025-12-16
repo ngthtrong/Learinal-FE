@@ -6,11 +6,13 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../contexts/NotificationContext";
+import { useLanguage } from "../../contexts/LanguageContext";
 import NotificationDropdown from "./NotificationDropdown";
 
 function NotificationBell() {
   const navigate = useNavigate();
   const { unreadCount, connected } = useNotifications();
+  const { t } = useLanguage();
   const [showDropdown, setShowDropdown] = useState(false);
   const bellRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -53,7 +55,7 @@ function NotificationBell() {
         ref={bellRef}
         onClick={handleBellClick}
         className="relative p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
-        aria-label="Notifications"
+        aria-label={t("components.notifications.title")}
       >
         {/* Bell Icon */}
         <svg

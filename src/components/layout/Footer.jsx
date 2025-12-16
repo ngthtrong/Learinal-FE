@@ -5,9 +5,11 @@
 
 import { Link } from "react-router-dom";
 import logo from "@/assets/images/logo/learinal-logo.png";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function Footer() {
   const currentYear = new Date().getFullYear();
+  const { t, language, setLanguage, supportedLocales } = useLanguage();
 
   const socialLinks = [
     {
@@ -118,21 +120,21 @@ function Footer() {
 
   const footerLinks = {
     product: [
-      { name: "Trang chủ", href: "/home" },
-      { name: "Bộ câu hỏi", href: "/quiz" },
-      { name: "Môn học", href: "/subjects" },
-      { name: "Tài liệu", href: "/documents" },
+      { name: t('footer.home'), href: "/home" },
+      { name: t('footer.questionSets'), href: "/quiz" },
+      { name: t('footer.subjects'), href: "/subjects" },
+      { name: t('footer.documents'), href: "/documents" },
     ],
     support: [
-      { name: "Trợ giúp", href: "#" },
-      { name: "Liên hệ", href: "#" },
-      { name: "FAQ", href: "#" },
-      { name: "Hướng dẫn sử dụng", href: "#" },
+      { name: t('footer.help'), href: "#" },
+      { name: t('footer.contact'), href: "#" },
+      { name: t('footer.faq'), href: "#" },
+      { name: t('footer.userGuide'), href: "#" },
     ],
     legal: [
-      { name: "Điều khoản sử dụng", href: "#" },
-      { name: "Chính sách bảo mật", href: "#" },
-      { name: "Chính sách cookie", href: "#" },
+      { name: t('footer.terms'), href: "#" },
+      { name: t('footer.privacy'), href: "#" },
+      { name: t('footer.cookies'), href: "#" },
     ],
   };
 
@@ -153,8 +155,7 @@ function Footer() {
               </span>
             </div>
             <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-4 sm:mb-6 leading-relaxed">
-              Nền tảng học tập trực tuyến hàng đầu, cung cấp các bộ câu hỏi và
-              tài liệu chất lượng cao cho người học.
+              {t('footer.description')}
             </p>
             <div className="flex items-center flex-wrap gap-3 sm:gap-4">
               {socialLinks.map((social) => (
@@ -176,7 +177,7 @@ function Footer() {
           {/* Product Links */}
           <div>
             <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-2 sm:mb-4">
-              Sản phẩm
+              {t('footer.product')}
             </h3>
             <ul className="space-y-2 sm:space-y-3">
               {footerLinks.product.map((link) => (
@@ -195,7 +196,7 @@ function Footer() {
           {/* Support Links */}
           <div>
             <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-2 sm:mb-4">
-              Hỗ trợ
+              {t('footer.support')}
             </h3>
             <ul className="space-y-2 sm:space-y-3">
               {footerLinks.support.map((link) => (
@@ -215,7 +216,7 @@ function Footer() {
           {/* Legal Links */}
           <div>
             <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-2 sm:mb-4">
-              Pháp lý
+              {t('footer.legal')}
             </h3>
             <ul className="space-y-2 sm:space-y-3">
               {footerLinks.legal.map((link) => (
@@ -237,23 +238,22 @@ function Footer() {
         <div className="pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-700">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
             <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm text-center sm:text-left">
-              © {currentYear} Learinal. All rights reserved.
+              {t('footer.copyright', { year: currentYear })}
             </p>
             <div className="flex items-center gap-4 sm:gap-6">
-              <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
-                className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-xs sm:text-sm transition-colors duration-200"
-              >
-                Tiếng Việt
-              </a>
-              <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
-                className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-xs sm:text-sm transition-colors duration-200"
-              >
-                English
-              </a>
+              {supportedLocales.map((locale) => (
+                <button
+                  key={locale.code}
+                  onClick={() => setLanguage(locale.code)}
+                  className={`text-xs sm:text-sm transition-colors duration-200 ${
+                    language === locale.code
+                      ? 'text-primary-600 dark:text-primary-400 font-semibold'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
+                  }`}
+                >
+                  {locale.flag} {locale.name}
+                </button>
+              ))}
             </div>
           </div>
         </div>

@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { contentFlagsService } from "@/services/api";
 import Button from "@/components/common/Button";
 import { useToast } from "@/components/common";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { formatDate } from "@/utils/formatters";
 
 const MyReportsPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const { t } = useLanguage();
   const [flags, setFlags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -47,29 +49,29 @@ const MyReportsPage = () => {
   const getStatusInfo = (status) => {
     const statusMap = {
       Pending: {
-        label: "Đang chờ xử lý",
+        label: t("myReports.status.pending"),
         badge: "bg-yellow-100 text-yellow-700",
-        description: "Admin đang xem xét báo cáo của bạn",
+        description: t("myReports.status.pendingDesc"),
       },
       SentToExpert: {
-        label: "Đã gửi cho Expert",
+        label: t("myReports.status.sentToExpert"),
         badge: "bg-purple-100 text-purple-700",
-        description: "Admin đã chuyển báo cáo cho Expert xử lý",
+        description: t("myReports.status.sentToExpertDesc"),
       },
       ExpertResponded: {
-        label: "Expert đã phản hồi",
+        label: t("myReports.status.expertResponded"),
         badge: "bg-indigo-100 text-indigo-700",
-        description: "Expert đã gửi phản hồi, Admin đang xem xét",
+        description: t("myReports.status.expertRespondedDesc"),
       },
       Resolved: {
-        label: "Đã giải quyết",
+        label: t("myReports.status.resolved"),
         badge: "bg-green-100 text-green-700",
-        description: "Vấn đề đã được xử lý hoàn tất",
+        description: t("myReports.status.resolvedDesc"),
       },
       Dismissed: {
-        label: "Đã từ chối",
+        label: t("myReports.status.dismissed"),
         badge: "bg-gray-100 text-gray-700",
-        description: "Admin đã xem xét và từ chối báo cáo",
+        description: t("myReports.status.dismissedDesc"),
       },
     };
     return statusMap[status] || statusMap.Pending;
@@ -81,10 +83,10 @@ const MyReportsPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Báo cáo của tôi
+            {t("myReports.pageTitle")}
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Theo dõi trạng thái các báo cáo nội dung bạn đã gửi
+            {t("myReports.pageSubtitle")}
           </p>
         </div>
 
@@ -105,14 +107,14 @@ const MyReportsPage = () => {
               />
             </svg>
             <div className="text-sm text-blue-900 dark:text-blue-300">
-              <p className="font-medium mb-1">Quy trình xử lý báo cáo:</p>
+              <p className="font-medium mb-1">{t("myReports.processTitle")}</p>
               <ol className="list-decimal list-inside space-y-1 ml-2">
-                <li>Admin xem xét báo cáo của bạn</li>
-                <li>Nếu hợp lệ, Admin sẽ gửi cho Expert xử lý</li>
-                <li>Expert sửa chữa vấn đề và gửi phản hồi</li>
-                <li>Admin xác nhận và đánh dấu là đã giải quyết</li>
+                <li>{t("myReports.processStep1")}</li>
+                <li>{t("myReports.processStep2")}</li>
+                <li>{t("myReports.processStep3")}</li>
+                <li>{t("myReports.processStep4")}</li>
               </ol>
-              <p className="mt-2">Bạn sẽ nhận được thông báo tại mỗi bước.</p>
+              <p className="mt-2">{t("myReports.processNotification")}</p>
             </div>
           </div>
         </div>
@@ -121,7 +123,7 @@ const MyReportsPage = () => {
         <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-4 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Trạng thái:
+              {t("myReports.filterLabel")}
             </label>
             <select
               value={statusFilter}
@@ -131,12 +133,12 @@ const MyReportsPage = () => {
               }}
               className="px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
             >
-              <option value="All">Tất cả</option>
-              <option value="Pending">Đang chờ xử lý</option>
-              <option value="SentToExpert">Đã gửi cho Expert</option>
-              <option value="ExpertResponded">Expert đã phản hồi</option>
-              <option value="Resolved">Đã giải quyết</option>
-              <option value="Dismissed">Đã từ chối</option>
+              <option value="All">{t("myReports.filterAll")}</option>
+              <option value="Pending">{t("myReports.status.pending")}</option>
+              <option value="SentToExpert">{t("myReports.status.sentToExpert")}</option>
+              <option value="ExpertResponded">{t("myReports.status.expertResponded")}</option>
+              <option value="Resolved">{t("myReports.status.resolved")}</option>
+              <option value="Dismissed">{t("myReports.status.dismissed")}</option>
             </select>
           </div>
         </div>
@@ -171,10 +173,10 @@ const MyReportsPage = () => {
               />
             </svg>
             <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-              Chưa có báo cáo nào
+              {t("myReports.emptyTitle")}
             </h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Bạn chưa gửi báo cáo nội dung nào.
+              {t("myReports.emptyDescription")}
             </p>
           </div>
         ) : (
@@ -190,7 +192,7 @@ const MyReportsPage = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                          Báo cáo #{flag.id.slice(-8)}
+                          {t("myReports.reportId")} #{flag.id.slice(-8)}
                         </h3>
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusInfo.badge}`}>
                           {statusInfo.label}
@@ -201,14 +203,14 @@ const MyReportsPage = () => {
                         {statusInfo.description}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-500">
-                        Ngày gửi: {formatDate(flag.createdAt)}
+                        {t("myReports.dateSubmitted")}: {formatDate(flag.createdAt)}
                       </p>
                     </div>
                   </div>
 
                   <div className="mb-3">
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Lý do: {flag.reason}
+                      {t("myReports.reason")}: {flag.reason}
                     </p>
                     <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                       {flag.description}
@@ -218,7 +220,7 @@ const MyReportsPage = () => {
                   {flag.adminNote && (
                     <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 mb-3">
                       <p className="text-xs font-medium text-amber-900 dark:text-amber-300 mb-1">
-                        Ghi chú từ Admin:
+                        {t("myReports.adminNote")}:
                       </p>
                       <p className="text-sm text-amber-800 dark:text-amber-200">
                         {flag.adminNote}
@@ -229,7 +231,7 @@ const MyReportsPage = () => {
                   {flag.expertResponse && (
                     <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mb-3">
                       <p className="text-xs font-medium text-blue-900 dark:text-blue-300 mb-1">
-                        Phản hồi từ Expert:
+                        {t("myReports.expertResponse")}:
                       </p>
                       <p className="text-sm text-blue-800 dark:text-blue-200">
                         {flag.expertResponse}
@@ -240,7 +242,7 @@ const MyReportsPage = () => {
                   {flag.resolutionNote && (
                     <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 mb-3">
                       <p className="text-xs font-medium text-green-900 dark:text-green-300 mb-1">
-                        Kết luận:
+                        {t("myReports.conclusion")}:
                       </p>
                       <p className="text-sm text-green-800 dark:text-green-200">
                         {flag.resolutionNote}
@@ -253,7 +255,7 @@ const MyReportsPage = () => {
                       variant="secondary"
                       onClick={() => navigate(`/question-sets/${flag.contentId}`)}
                     >
-                      Xem bộ đề
+                      {t("myReports.viewQuestionSet")}
                     </Button>
                   </div>
                 </div>
@@ -270,17 +272,17 @@ const MyReportsPage = () => {
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
             >
-              Trang trước
+              {t("myReports.prevPage")}
             </Button>
             <span className="text-sm text-gray-600 dark:text-gray-400">
-              Trang {page} / {totalPages}
+              {t("myReports.pageInfo", { current: page, total: totalPages })}
             </span>
             <Button
               variant="secondary"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
             >
-              Trang sau
+              {t("myReports.nextPage")}
             </Button>
           </div>
         )}

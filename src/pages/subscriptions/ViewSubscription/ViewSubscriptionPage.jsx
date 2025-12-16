@@ -7,9 +7,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import subscriptionsService from "@/services/api/subscriptions.service";
 import Button from "@/components/common/Button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function ViewSubscriptionPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -62,16 +64,9 @@ function ViewSubscriptionPage() {
   ];
 
   const formatEntitlementLabel = (key) => {
-    const labels = {
-      maxSubjects: "Số môn học",
-      maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
-      maxValidationRequests: "Số yêu cầu kiểm duyệt",
-      maxDocumentsPerSubject: "Số tài liệu/môn học",
-      // maxTotalDocuments: "Tổng số tài liệu", // Removed - now unlimited
-      priorityProcessing: "Xử lý ưu tiên",
-      canShare: "Cho phép chia sẻ",
-    };
-    return labels[key] || key;
+    const labelKey = `subscription.entitlementLabels.${key}`;
+    const translated = t(labelKey);
+    return translated !== labelKey ? translated : key;
   };
 
   // Hàm sắp xếp entitlements theo thứ tự cố định
@@ -84,16 +79,16 @@ function ViewSubscriptionPage() {
 
   const formatEntitlementValue = (value) => {
     if (typeof value === "boolean") {
-      return value ? "Có" : "Không";
+      return value ? t("common.yes") : t("common.no");
     }
     if (typeof value === "object" && value !== null) {
       if (typeof value === "boolean") {
-        return value ? "Có" : "Không";
+        return value ? t("common.yes") : t("common.no");
       }
       return JSON.stringify(value);
     }
     if (value === -1) {
-      return "Không giới hạn";
+      return t("subscription.mySubscription.unlimited");
     }
     return value;
   };
@@ -159,7 +154,7 @@ function ViewSubscriptionPage() {
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Đang tải danh sách gói đăng ký...</p>
+              <p className="text-gray-600 dark:text-gray-400">{t("subscription.viewPlans.loading")}</p>
             </div>
           </div>
         </div>
@@ -188,9 +183,9 @@ function ViewSubscriptionPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-6">
           <div className="text-center space-y-2">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">Các gói đăng ký</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("subscription.viewPlans.pageTitle")}</h1>
             <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
-              Xem tất cả các gói đăng ký hiện có trong hệ thống
+              {t("subscription.viewPlans.pageSubtitle")}
             </p>
           </div>
         </div>
@@ -208,8 +203,8 @@ function ViewSubscriptionPage() {
                 </svg>
               </div>
             </div>
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Chưa có gói đăng ký nào</h2>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center">Hiện tại chưa có gói đăng ký nào được kích hoạt.</p>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("subscription.viewPlans.noPlans")}</h2>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center">{t("subscription.viewPlans.noPlansDesc")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 pt-4">
@@ -227,7 +222,7 @@ function ViewSubscriptionPage() {
                   {isPro && (
                     <div className="absolute -top-2 sm:-top-3 left-1/2 -translate-x-1/2 z-10">
                       <span className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-2 sm:px-4 py-0.5 sm:py-1.5 rounded-full text-[10px] sm:text-sm font-bold shadow-md whitespace-nowrap">
-                        Phổ biến nhất
+                        {t("subscription.viewPlans.mostPopular")}
                       </span>
                     </div>
                   )}
@@ -243,7 +238,7 @@ function ViewSubscriptionPage() {
                           {formatPrice(plan.price)}
                         </span>
                         <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg">
-                          /{plan.billingCycle === "Monthly" ? "tháng" : "năm"}
+                          /{plan.billingCycle === "Monthly" ? t("subscription.viewPlans.month") : t("subscription.viewPlans.year")}
                         </span>
                       </div>
                     </div>
@@ -257,7 +252,7 @@ function ViewSubscriptionPage() {
                     {plan.entitlements && (
                       <div className="mb-4 sm:mb-6 space-y-2 sm:space-y-3">
                         <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-center mb-2 sm:mb-4 text-sm sm:text-base">
-                          Quyền lợi:
+                          {t("subscription.viewPlans.entitlements")}
                         </h4>
                         <ul className="space-y-1.5 sm:space-y-2.5">
                           {getSortedEntitlements(plan.entitlements).map(([key, value]) => (
@@ -277,7 +272,7 @@ function ViewSubscriptionPage() {
 
                     <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
                       <div className="flex items-center justify-between text-xs sm:text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Trạng thái:</span>
+                        <span className="text-gray-600 dark:text-gray-400">{t("subscription.status.label")}</span>
                         <span
                           className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold ${
                             plan.status === "Active"
@@ -285,7 +280,7 @@ function ViewSubscriptionPage() {
                               : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400"
                           }`}
                         >
-                          {plan.status === "Active" ? "Đang hoạt động" : "Không hoạt động"}
+                          {plan.status === "Active" ? t("subscription.viewPlans.active") : t("subscription.viewPlans.inactive")}
                         </span>
                       </div>
                     </div>

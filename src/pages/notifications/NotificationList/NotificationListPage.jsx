@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../../contexts/NotificationContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { formatDateTime, formatDistanceToNow } from "../../../utils/dateFormat";
 import { Footer } from "@/components/layout";
 
 function NotificationListPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { notifications, loading, fetchNotifications, markAsRead, markAllAsRead, deleteNotification } = useNotifications();
   const [filter, setFilter] = useState("all"); // all, unread, read
 
@@ -46,7 +48,7 @@ function NotificationListPage() {
 
   const handleDelete = async (e, notificationId) => {
     e.stopPropagation();
-    if (confirm("Bạn có chắc muốn xóa thông báo này?")) {
+    if (confirm(t("notifications.deleteConfirm"))) {
       await deleteNotification(notificationId);
     }
   };
@@ -67,7 +69,7 @@ function NotificationListPage() {
         {/* Header */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium p-4 sm:p-6 mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Thông báo</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{t("notifications.pageTitle")}</h1>
             
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
               {/* Filter Tabs */}
@@ -80,7 +82,7 @@ function NotificationListPage() {
                       : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                   }`}
                 >
-                  Tất cả
+                  {t("notifications.filterAll")}
                 </button>
                 <button
                   onClick={() => setFilter("unread")}
@@ -90,7 +92,7 @@ function NotificationListPage() {
                       : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                   }`}
                 >
-                  Chưa đọc
+                  {t("notifications.filterUnread")}
                 </button>
                 <button
                   onClick={() => setFilter("read")}
@@ -100,7 +102,7 @@ function NotificationListPage() {
                       : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600"
                   }`}
                 >
-                  Đã đọc
+                  {t("notifications.filterRead")}
                 </button>
               </div>
 
@@ -110,7 +112,7 @@ function NotificationListPage() {
                   onClick={markAllAsRead}
                   className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
                 >
-                  Đánh dấu tất cả đã đọc
+                  {t("notifications.markAllRead")}
                 </button>
               )}
             </div>
@@ -134,10 +136,10 @@ function NotificationListPage() {
               </div>
               <p className="text-gray-500 dark:text-gray-400 text-base sm:text-lg">
                 {filter === "unread"
-                  ? "Không có thông báo chưa đọc"
+                  ? t("notifications.emptyUnread")
                   : filter === "read"
-                  ? "Không có thông báo đã đọc"
-                  : "Bạn chưa có thông báo nào"}
+                  ? t("notifications.emptyRead")
+                  : t("notifications.emptyAll")}
               </p>
             </div>
           )}
@@ -213,7 +215,7 @@ function NotificationListPage() {
                           <button
                             onClick={(e) => handleDelete(e, notification.id)}
                             className="flex-shrink-0 p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                            title="Xóa thông báo"
+                            title={t("notifications.deleteTitle")}
                           >
                             <svg
                               className="w-5 h-5"

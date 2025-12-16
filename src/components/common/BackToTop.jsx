@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@contexts/LanguageContext';
 
 /**
  * BackToTop Button Component
  * Shows a floating button to scroll back to top when user scrolls down
  */
 function BackToTop() {
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
 
   // Show button when page is scrolled down
@@ -38,8 +40,8 @@ function BackToTop() {
         <button
           onClick={scrollToTop}
           className="fixed bottom-8 right-8 z-50 p-3 rounded-full bg-primary-600 hover:bg-primary-700 text-white shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:bg-primary-500 dark:hover:bg-primary-600"
-          aria-label="Back to top"
-          title="Quay lên đầu trang"
+          aria-label={t("components.backToTop.ariaLabel")}
+          title={t("components.backToTop.title")}
         >
           <svg
             width="24"

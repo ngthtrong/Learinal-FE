@@ -6,6 +6,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import { useLanguage } from "@contexts/LanguageContext";
 import { Button, Input, useToast } from "@components/common";
 import { getErrorMessage } from "@utils/errorHandler";
 // Theme is now global via <html data-theme>; no per-page state
@@ -16,6 +17,7 @@ import logo from "@/assets/images/logo/learinal-logo.png";
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t } = useLanguage();
   const toast = useToast();
 
   const [formData, setFormData] = useState({
@@ -88,13 +90,13 @@ const LoginPage = () => {
     const newErrors = {};
 
     if (!formData.email) {
-      newErrors.email = "Email là bắt buộc";
+      newErrors.email = t("auth.loginPage.emailRequired");
     } else if (!isValidEmail(formData.email)) {
-      newErrors.email = "Email không hợp lệ";
+      newErrors.email = t("auth.loginPage.emailInvalid");
     }
 
     if (!formData.password) {
-      newErrors.password = "Mật khẩu là bắt buộc";
+      newErrors.password = t("auth.loginPage.passwordRequired");
     }
 
     return newErrors;
@@ -122,7 +124,7 @@ const LoginPage = () => {
           localStorage.removeItem("rememberedEmail");
         }
 
-        toast.showSuccess("Đăng nhập thành công!");
+        toast.showSuccess(t("auth.loginSuccess"));
         const role = result.user?.role;
         let next = "/dashboard";
         if (role === "Learner") next = "/home";
@@ -130,7 +132,7 @@ const LoginPage = () => {
         else if (role === "Expert") next = "/expert";
         navigate(next, { replace: true });
       } else {
-        toast.showError(result.error || "Đăng nhập thất bại");
+        toast.showError(result.error || t("auth.loginPage.loginFailed"));
       }
     } catch (err) {
       const errorMsg = getErrorMessage(err);
@@ -148,7 +150,7 @@ const LoginPage = () => {
       const result = await oauthService.initiateGoogleLogin();
 
       if (!result.success) {
-        toast.showError(result.error || "Không thể kết nối với Google");
+        toast.showError(result.error || t("auth.loginPage.googleConnectError"));
         setGoogleLoading(false);
       }
       // If successful, redirect happens via OAuth
@@ -175,31 +177,31 @@ const LoginPage = () => {
 
           {/* Page Header */}
           <div className="text-center mb-4 sm:mb-6">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Đăng nhập</h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Truy cập tài khoản Learinal của bạn</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("auth.loginPage.title")}</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t("auth.loginPage.subtitle")}</p>
           </div>
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Email"
+              label={t("auth.loginPage.emailLabel")}
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               error={errors.email}
-              placeholder="your@email.com"
+              placeholder={t("auth.loginPage.emailPlaceholder")}
               required
             />
 
             <Input
-              label="Mật khẩu"
+              label={t("auth.loginPage.passwordLabel")}
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               error={errors.password}
-              placeholder="••••••••"
+              placeholder={t("auth.loginPage.passwordPlaceholder")}
               required
             />
 
@@ -213,14 +215,14 @@ const LoginPage = () => {
                   onChange={handleChange}
                   className="w-4 h-4 text-primary-600 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500 dark:bg-gray-700"
                 />
-                <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">Ghi nhớ đăng nhập</span>
+                <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">{t("auth.loginPage.rememberMe")}</span>
               </label>
 
               <Link
                 to="/forgot-password"
                 className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
-                Quên mật khẩu?
+                {t("auth.loginPage.forgotPassword")}
               </Link>
             </div>
 
@@ -232,7 +234,7 @@ const LoginPage = () => {
               loading={loading}
               className="w-full"
             >
-              Đăng nhập
+              {t("auth.loginPage.loginButton")}
             </Button>
 
             {/* Divider */}
@@ -241,7 +243,7 @@ const LoginPage = () => {
                 <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">hoặc</span>
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">{t("auth.loginPage.orDivider")}</span>
               </div>
             </div>
 
@@ -262,14 +264,14 @@ const LoginPage = () => {
                   className="w-5 h-5 mr-2"
                 />
               )}
-              Đăng nhập với Google
+              {t("auth.loginPage.googleLogin")}
             </Button>
 
             {/* Signup Link */}
             <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
-              Chưa có tài khoản?{" "}
+              {t("auth.loginPage.noAccount")}{" "}
               <Link to="/register" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
-                Đăng ký ngay
+                {t("auth.loginPage.registerNow")}
               </Link>
             </p>
           </form>

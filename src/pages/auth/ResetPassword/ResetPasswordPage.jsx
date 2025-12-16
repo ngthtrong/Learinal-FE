@@ -6,6 +6,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Button, Input, PasswordStrengthIndicator, useToast } from "@components/common";
+import { useLanguage } from "@contexts/LanguageContext";
 import { isValidPassword, getErrorMessage } from "@utils";
 import { authService } from "@services/api";
 import logo from "@/assets/images/logo/learinal-logo.png";
@@ -14,6 +15,7 @@ const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToast();
+  const { t } = useLanguage();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -60,29 +62,29 @@ const ResetPasswordPage = () => {
 
     const token = searchParams.get("token");
     if (!token) {
-      const msg = "Thiếu token. Vui lòng mở lại liên kết trong email.";
+      const msg = t("auth.resetPasswordPage.missingToken");
       setError(msg);
       toast.showError(msg);
       return;
     }
 
     if (!password) {
-      setError("Mật khẩu là bắt buộc");
+      setError(t("auth.resetPasswordPage.passwordRequired"));
       return;
     }
     if (!isValidPassword(password)) {
-      setError("Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số");
+      setError(t("auth.resetPasswordPage.passwordInvalid"));
       return;
     }
     if (!confirmPassword || password !== confirmPassword) {
-      setError("Xác nhận mật khẩu không khớp");
+      setError(t("auth.resetPasswordPage.confirmPasswordMismatch"));
       return;
     }
 
     setLoading(true);
     try {
       await authService.resetPassword(token, password);
-      toast.showSuccess("Đặt lại mật khẩu thành công!");
+      toast.showSuccess(t("auth.resetPasswordPage.successToast"));
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       const errorMsg = getErrorMessage(err);
@@ -106,8 +108,8 @@ const ResetPasswordPage = () => {
           </header>
 
           <div className="text-center mb-4 sm:mb-6">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Đặt lại mật khẩu</h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Nhập mật khẩu mới của bạn</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("auth.resetPasswordPage.title")}</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t("auth.resetPasswordPage.subtitle")}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -119,24 +121,24 @@ const ResetPasswordPage = () => {
 
             <div>
               <Input
-                label="Mật khẩu mới"
+                label={t("auth.resetPasswordPage.newPasswordLabel")}
                 type="password"
                 name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder={t("auth.resetPasswordPage.passwordPlaceholder")}
                 required
               />
               <PasswordStrengthIndicator password={password} />
             </div>
 
             <Input
-              label="Xác nhận mật khẩu"
+              label={t("auth.resetPasswordPage.confirmPasswordLabel")}
               type="password"
               name="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder={t("auth.resetPasswordPage.passwordPlaceholder")}
               required
             />
 
@@ -147,13 +149,13 @@ const ResetPasswordPage = () => {
               loading={loading}
               className="w-full"
             >
-              Cập nhật mật khẩu
+              {t("auth.resetPasswordPage.updateButton")}
             </Button>
 
             <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
-              Quay lại{" "}
+              {t("auth.resetPasswordPage.backToLogin")}{" "}
               <Link to="/login" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
-                Đăng nhập
+                {t("auth.resetPasswordPage.loginLink")}
               </Link>
             </p>
           </form>

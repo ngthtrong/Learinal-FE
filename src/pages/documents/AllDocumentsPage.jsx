@@ -4,9 +4,11 @@ import Button from "@/components/common/Button";
 import { documentsService, subjectsService } from "@/services/api";
 import {Footer} from "@/components/layout";
 import DocumentIcon from "@/components/icons/DocumentIcon";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function AllDocumentsPage() {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
 
   // State
   const [documents, setDocuments] = useState([]);
@@ -73,7 +75,7 @@ function AllDocumentsPage() {
 
         setDocuments(Array.from(docMap.values()));
       } catch (err) {
-        setError(err.response?.data?.message || "Không thể tải danh sách tài liệu");
+        setError(err.response?.data?.message || t("documents.loadError"));
       } finally {
         setLoading(false);
       }
@@ -84,7 +86,7 @@ function AllDocumentsPage() {
 
   // Handle delete document
   const handleDeleteDocument = async (documentId) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa tài liệu này?")) {
+    if (!window.confirm(t("documents.deleteConfirm"))) {
       return;
     }
 
@@ -92,14 +94,14 @@ function AllDocumentsPage() {
       await documentsService.deleteDocument(documentId);
       setDocuments((prev) => prev.filter((doc) => (doc.id || doc._id) !== documentId));
     } catch (err) {
-      alert(err.response?.data?.message || "Không thể xóa tài liệu");
+      alert(err.response?.data?.message || t("documents.deleteError"));
     }
   };
 
   // Format date
   const formatDate = (dateString) => {
     if (!dateString) return "";
-    return new Date(dateString).toLocaleDateString("vi-VN");
+    return new Date(dateString).toLocaleDateString(language === "vi" ? "vi-VN" : "en-US");
   };
 
   if (loading) {
@@ -109,7 +111,7 @@ function AllDocumentsPage() {
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Đang tải tài liệu...</p>
+              <p className="text-gray-600 dark:text-gray-400">{t("documents.loading")}</p>
             </div>
           </div>
         </div>
@@ -128,13 +130,13 @@ function AllDocumentsPage() {
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-6 sm:h-6 text-primary-600 dark:text-primary-400"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
                 </div>
-                Tài liệu của tôi
+                {t("documents.pageTitle")}
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
-                Quản lý tất cả tài liệu học tập ({documents.length} tài liệu)
+                {t("documents.pageSubtitle")} ({t("documents.documentsCount", { count: documents.length })})
               </p>
             </div>
-            <Button onClick={() => navigate("/subjects")} className="w-full sm:w-auto">Chọn môn học để upload</Button>
+            <Button onClick={() => navigate("/subjects")} className="w-full sm:w-auto">{t("documents.selectSubjectToUpload")}</Button>
           </div>
         </div>
       </div>
@@ -152,11 +154,11 @@ function AllDocumentsPage() {
             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-primary-100 dark:bg-primary-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mb-4 sm:mb-6">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-primary-600 dark:text-primary-400"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 text-center">Chưa có tài liệu nào</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 text-center">{t("documents.emptyTitle")}</h2>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 text-center mb-4 sm:mb-6 max-w-md">
-              Upload tài liệu đầu tiên để bắt đầu học tập. Chọn môn học để upload tài liệu.
+              {t("documents.emptyDescription")}
             </p>
-            <Button onClick={() => navigate("/subjects")}>Đến trang môn học</Button>
+            <Button onClick={() => navigate("/subjects")}>{t("documents.goToSubjects")}</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -176,10 +178,10 @@ function AllDocumentsPage() {
               };
 
               const statusText = {
-                Uploading: "Đang tải lên",
-                Processing: "Đang xử lý",
-                Completed: "Hoàn tất",
-                Error: "Lỗi",
+                Uploading: t("documents.status.uploading"),
+                Processing: t("documents.status.processing"),
+                Completed: t("documents.status.completed"),
+                Error: t("documents.status.error"),
               };
 
               const statusIcons = {
@@ -224,7 +226,7 @@ function AllDocumentsPage() {
                   {subjectName && (
                     <div className="text-sm text-gray-700 dark:text-gray-400 mb-3 flex items-center gap-1.5">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
-                      <span className="font-medium">Môn học:</span> {subjectName}
+                      <span className="font-medium">{t("documents.subjectLabel")}:</span> {subjectName}
                     </div>
                   )}
 
@@ -250,7 +252,7 @@ function AllDocumentsPage() {
                       className="flex-1 px-3 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 hover:border-primary-500 dark:hover:border-primary-500 transition-all shadow-sm inline-flex items-center justify-center gap-1.5"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                      Xem chi tiết
+                      {t("documents.viewDetail")}
                     </button>
                     <button
                       onClick={(e) => {

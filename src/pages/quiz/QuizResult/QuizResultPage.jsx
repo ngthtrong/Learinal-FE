@@ -4,6 +4,7 @@ import Button from "@/components/common/Button";
 import { quizAttemptsService, questionSetsService } from "@/services/api";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { Footer } from "@/components/layout";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Difficulty weights for scoring - Bloom's Taxonomy (6 levels)
 const DIFFICULTY_WEIGHTS = {
@@ -50,6 +51,7 @@ const DIFFICULTY_CONFIG = {
 function QuizResultPage() {
   const { attemptId } = useParams();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   // State
   const [attempt, setAttempt] = useState(null);
@@ -360,7 +362,7 @@ function QuizResultPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-slate-900">
         <div className="w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-600 dark:text-gray-400 font-medium">Đang tải kết quả...</p>
+        <p className="text-gray-600 dark:text-gray-400 font-medium">{t("quizPages.result.loading")}</p>
       </div>
     );
   }
@@ -380,13 +382,13 @@ function QuizResultPage() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Đã xảy ra lỗi
+            {t("quizPages.result.error")}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            {error || "Không tìm thấy kết quả bài thi"}
+            {error || t("quizPages.result.notFound")}
           </p>
           <Button onClick={() => navigate("/quiz")} className="w-full justify-center">
-            Quay lại
+            {t("quizPages.result.goBack")}
           </Button>
         </div>
       </div>
@@ -421,13 +423,13 @@ function QuizResultPage() {
         {/* Header */}
         <div className="mb-4 sm:mb-6 lg:mb-8">
           <h1 className="text-lg sm:text-xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-1 sm:mb-2">
-            Kết quả bài thi
+            {t("quizPages.result.pageTitle")}
           </h1>
           <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
             {questionSet?.title ||
               attempt?.questionSet?.title ||
               attempt?.questionSet?.name ||
-              "Chi tiết kết quả"}
+              t("quizPages.result.detailResult")}
           </p>
         </div>
 
@@ -465,7 +467,7 @@ function QuizResultPage() {
                       / {stats.total}
                     </span>
                     <span className="text-[10px] sm:text-xs lg:text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mt-0.5 sm:mt-1">
-                      Câu đúng
+                      {t("quizPages.result.correctCount")}
                     </span>
                   </div>
                 </div>
@@ -473,21 +475,21 @@ function QuizResultPage() {
                 <div className="text-center space-y-1 sm:space-y-2">
                   <div>
                     <div className="text-[10px] sm:text-xs font-medium text-gray-400 dark:text-gray-500">
-                      Tỷ lệ chính xác
+                      {t("quizPages.result.accuracyRate")}
                     </div>
                     <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100">
                       {scorePercentage}%
                     </div>
                   </div>
                   <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
-                    (Điểm trọng số: {formattedScore}/{stats.maxWeightedScore} = {weightedPercentage}%)
+                    ({t("quizPages.result.weightedScore")}: {formattedScore}/{stats.maxWeightedScore} = {weightedPercentage}%)
                   </div>
                 </div>
               </div>
 
               {/* Difficulty breakdown */}
               <div className="mb-4 sm:mb-6 p-2 sm:p-3 bg-gray-50 dark:bg-slate-700/30 rounded-lg">
-                <div className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 sm:mb-2">Phân bổ theo độ khó</div>
+                <div className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5 sm:mb-2">{t("quizPages.result.difficultyBreakdown")}</div>
                 <div className="space-y-1.5 sm:space-y-2">
                   {Object.entries(stats.difficultyStats).map(([level, data]) => {
                     if (data.total === 0) return null;
@@ -497,7 +499,7 @@ function QuizResultPage() {
                       <div key={level} className="flex items-center justify-between text-xs">
                         <div className="flex items-center gap-1.5">
                           <div className={`w-2 h-2 rounded-full ${config.dotColor || 'bg-gray-400'}`}></div>
-                          <span className="text-gray-600 dark:text-gray-400">{level}</span>
+                          <span className="text-gray-600 dark:text-gray-400">{t(`quizPages.result.difficulty.${level}`) || level}</span>
                           <span className="text-gray-400 dark:text-gray-500">(×{weight})</span>
                         </div>
                         <span className="font-medium text-gray-700 dark:text-gray-300">
@@ -511,7 +513,7 @@ function QuizResultPage() {
 
               <div className="space-y-2 sm:space-y-4 mb-4 sm:mb-8">
                 <div className="flex justify-between items-center p-2 sm:p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
-                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Tổng số câu</span>
+                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t("quizPages.result.stats.total")}</span>
                   <span className="font-bold text-sm sm:text-base text-gray-900 dark:text-gray-100">{stats.total}</span>
                 </div>
                 <div className="flex justify-between items-center p-2 sm:p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800">
@@ -529,7 +531,7 @@ function QuizResultPage() {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    Đúng
+                    {t("quizPages.result.stats.correct")}
                   </span>
                   <span className="font-bold text-sm sm:text-base text-green-700 dark:text-green-400">{stats.correct}</span>
                 </div>
@@ -548,7 +550,7 @@ function QuizResultPage() {
                         d="M6 18L18 6M6 6l12 12"
                       />
                     </svg>
-                    Sai
+                    {t("quizPages.result.stats.incorrect")}
                   </span>
                   <span className="font-bold text-sm sm:text-base text-red-700 dark:text-red-400">{stats.incorrect}</span>
                 </div>
@@ -567,7 +569,7 @@ function QuizResultPage() {
                         d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                       />
                     </svg>
-                    Chưa làm
+                    {t("quizPages.result.stats.unanswered")}
                   </span>
                   <span className="font-bold text-sm sm:text-base text-gray-700 dark:text-gray-300">
                     {stats.unanswered}
@@ -593,14 +595,14 @@ function QuizResultPage() {
                       d="M4 4v5h.051M20.418 9c-.775-4.256-4.499-7.5-8.918-7.5-5.25 0-9.5 4.25-9.5 9.5 0 2.79 1.213 5.308 3.118 7.05M20 20v-5h-.051M3.582 15c.775 4.256 4.499 7.5 8.918 7.5 5.25 0 9.5-4.25 9.5-9.5 0-2.79-1.213-5.308-3.118-7.05"
                     />
                   </svg>
-                  Làm lại bài thi
+                  {t("quizPages.result.retryQuiz")}
                 </Button>
                 <Button
                   variant="secondary"
                   onClick={() => navigate("/home")}
                   className="w-full justify-center py-2 sm:py-3 text-sm sm:text-base"
                 >
-                  Về trang chủ
+                  {t("quizPages.result.goHome")}
                 </Button>
               </div>
             </div>
@@ -618,7 +620,7 @@ function QuizResultPage() {
                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
               >
-                Tất cả ({stats.total})
+                {t("quizPages.result.filter.all")} ({stats.total})
               </button>
               <button
                 onClick={() => setFilter("correct")}
@@ -628,7 +630,7 @@ function QuizResultPage() {
                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
               >
-                Đúng ({stats.correct})
+                {t("quizPages.result.filter.correct")} ({stats.correct})
               </button>
               <button
                 onClick={() => setFilter("incorrect")}
@@ -638,7 +640,7 @@ function QuizResultPage() {
                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
               >
-                Sai ({stats.incorrect})
+                {t("quizPages.result.filter.incorrect")} ({stats.incorrect})
               </button>
             </div>
 
@@ -662,7 +664,7 @@ function QuizResultPage() {
                     </svg>
                   </div>
                   <p className="text-gray-500 dark:text-gray-400 text-lg">
-                    Không có câu hỏi nào trong mục này
+                    {t("quizPages.result.noQuestions")}
                   </p>
                 </div>
               ) : (
@@ -682,7 +684,7 @@ function QuizResultPage() {
                     question?.questionText ||
                     question?.content ||
                     answer?.questionText ||
-                    "Không tìm thấy nội dung câu hỏi";
+                    t("quizPages.result.questionNotFound");
                   const options = question?.options || answer?.options || [];
                   
                   // Get difficulty info
@@ -694,7 +696,7 @@ function QuizResultPage() {
                   let cardBorderClass = "border-gray-100 dark:border-gray-700";
                   let badgeClass = "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300";
                   let badgeIcon = null;
-                  let badgeText = "Chưa trả lời";
+                  let badgeText = t("quizPages.result.unanswered");
 
                   if (isCorrect) {
                     cardBorderClass = "border-green-200 dark:border-green-800 ring-1 ring-green-50 dark:ring-green-900/30";
@@ -714,7 +716,7 @@ function QuizResultPage() {
                         />
                       </svg>
                     );
-                    badgeText = `Đúng (+${difficultyWeight} điểm)`;
+                    badgeText = t("quizPages.result.correctPoints", { points: difficultyWeight });
                   } else if (!isUnanswered) {
                     cardBorderClass = "border-red-200 dark:border-red-800 ring-1 ring-red-50 dark:ring-red-900/30";
                     badgeClass = "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300";
@@ -733,7 +735,7 @@ function QuizResultPage() {
                         />
                       </svg>
                     );
-                    badgeText = "Sai";
+                    badgeText = t("quizPages.result.incorrect");
                   }
 
                   return (
@@ -838,12 +840,12 @@ function QuizResultPage() {
 
                               {isCorrectAnswer && (
                                 <span className="absolute right-4 text-xs font-medium text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/40 px-2 py-1 rounded">
-                                  Đáp án đúng
+                                  {t("quizPages.result.correctAnswer")}
                                 </span>
                               )}
                               {isUserAnswer && !isCorrect && (
                                 <span className="absolute right-4 text-xs font-medium text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/40 px-2 py-1 rounded">
-                                  Bạn chọn
+                                  {t("quizPages.result.yourChoice")}
                                 </span>
                               )}
                             </div>
@@ -872,7 +874,7 @@ function QuizResultPage() {
                             </div>
                             <div>
                               <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wide mb-1">
-                                Giải thích
+                                {t("quizPages.result.explanation")}
                               </h4>
                               <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                                 {answer?.explanation || question?.explanation}

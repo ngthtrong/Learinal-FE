@@ -9,8 +9,10 @@ import questionSetsService from "@/services/api/questionSets.service";
 import contentFlagsService from "@/services/api/contentFlags.service";
 import { useToast } from "@/components/common";
 import { formatDate } from "@/utils/formatters";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function ExpertQuestionSetsPage() {
+  const { t } = useLanguage();
   const [questionSets, setQuestionSets] = useState([]);
   const [flagsMap, setFlagsMap] = useState({}); // Map of setId -> flags array
   const [loading, setLoading] = useState(true);
@@ -50,7 +52,7 @@ function ExpertQuestionSetsPage() {
       }
     } catch (err) {
       console.error("Failed to fetch question sets:", err);
-      showError("Không thể tải danh sách bộ đề");
+      showError(t("expertPages.questionSets.loadError"));
     } finally {
       setLoading(false);
     }
@@ -59,39 +61,39 @@ function ExpertQuestionSetsPage() {
   const handleShare = async (setId, currentIsShared) => {
     try {
       await questionSetsService.toggleShare(setId, !currentIsShared);
-      showSuccess(currentIsShared ? "Đã hủy chia sẻ" : "Đã chia sẻ bộ đề");
+      showSuccess(currentIsShared ? t("expertPages.questionSets.actions.unshared") : t("expertPages.questionSets.actions.shared"));
       fetchQuestionSets();
     } catch (err) {
       console.error("Failed to toggle share:", err);
-      showError(err?.response?.data?.message || "Không thể thay đổi trạng thái chia sẻ");
+      showError(err?.response?.data?.message || t("expertPages.questionSets.shareError"));
     }
   };
 
   const handleDelete = async (setId, setTitle) => {
     const confirmed = window.confirm(
-      `Bạn có chắc chắn muốn xóa bộ đề "${setTitle}"?\n\nHành động này không thể hoàn tác!`
+      t("expertPages.questionSets.deleteConfirm", { title: setTitle })
     );
     
     if (!confirmed) return;
 
     try {
       await questionSetsService.deleteSet(setId);
-      showSuccess("Đã xóa bộ đề thành công");
+      showSuccess(t("expertPages.questionSets.deleteSuccess"));
       fetchQuestionSets();
     } catch (err) {
       console.error("Failed to delete question set:", err);
-      showError(err?.response?.data?.message || "Không thể xóa bộ đề");
+      showError(err?.response?.data?.message || t("expertPages.questionSets.deleteError"));
     }
   };
 
   const getStatusBadge = (status) => {
     const badges = {
-      Draft: { bg: "bg-slate-100 dark:bg-slate-900/30", text: "text-slate-700 dark:text-slate-300", label: "Bản nháp" },
-      Public: { bg: "bg-green-100 dark:bg-green-900/30", text: "text-green-700 dark:text-green-300", label: "Công khai (Premium)" },
-      Processing: { bg: "bg-sky-100 dark:bg-sky-900/30", text: "text-sky-700 dark:text-sky-300", label: "Đang xử lý" },
-      PendingValidation: { bg: "bg-yellow-100 dark:bg-yellow-900/30", text: "text-yellow-700 dark:text-yellow-300", label: "Chờ kiểm duyệt" },
-      Validated: { bg: "bg-emerald-100 dark:bg-emerald-900/30", text: "text-emerald-700 dark:text-emerald-300", label: "Đã xác thực" },
-      Published: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-700 dark:text-blue-300", label: "Đã xuất bản" },
+      Draft: { bg: "bg-slate-100 dark:bg-slate-900/30", text: "text-slate-700 dark:text-slate-300", label: t("expertPages.questionSets.status.draft") },
+      Public: { bg: "bg-green-100 dark:bg-green-900/30", text: "text-green-700 dark:text-green-300", label: t("expertPages.questionSets.status.public") },
+      Processing: { bg: "bg-sky-100 dark:bg-sky-900/30", text: "text-sky-700 dark:text-sky-300", label: t("expertPages.questionSets.status.processing") },
+      PendingValidation: { bg: "bg-yellow-100 dark:bg-yellow-900/30", text: "text-yellow-700 dark:text-yellow-300", label: t("expertPages.questionSets.status.pendingValidation") },
+      Validated: { bg: "bg-emerald-100 dark:bg-emerald-900/30", text: "text-emerald-700 dark:text-emerald-300", label: t("expertPages.questionSets.status.validated") },
+      Published: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-700 dark:text-blue-300", label: t("expertPages.questionSets.status.published") },
     };
     const badge = badges[status] || { bg: "bg-gray-100", text: "text-gray-700", label: status };
     return (
@@ -107,8 +109,8 @@ function ExpertQuestionSetsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Bộ đề của tôi</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">Tạo và quản lý bộ câu hỏi của bạn</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{t("expertPages.questionSets.pageTitle")}</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">{t("expertPages.questionSets.pageSubtitle")}</p>
           </div>
           <Button
             variant="primary"
@@ -120,7 +122,7 @@ function ExpertQuestionSetsPage() {
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
               </svg>
-              Tạo bộ đề mới
+              {t("expertPages.questionSets.createNew")}
             </span>
           </Button>
         </div>
@@ -130,7 +132,7 @@ function ExpertQuestionSetsPage() {
           {loading ? (
             <div className="p-12 text-center">
               <div className="inline-block w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Đang tải...</p>
+              <p className="text-gray-600 dark:text-gray-400">{t("expertPages.common.loading")}</p>
             </div>
           ) : questionSets.length === 0 ? (
             <div className="p-12 text-center">
@@ -139,10 +141,10 @@ function ExpertQuestionSetsPage() {
                   <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
                 </svg>
               </div>
-              <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Chưa có bộ đề nào</h3>
-              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-6">Tạo bộ đề đầu tiên của bạn ngay!</p>
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">{t("expertPages.questionSets.empty.title")}</h3>
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-6">{t("expertPages.questionSets.empty.description")}</p>
               <Button onClick={() => navigate("/expert/question-sets/create-manual")} className="w-full sm:w-auto">
-                Tạo bộ đề mới
+                {t("expertPages.questionSets.createNew")}
               </Button>
             </div>
           ) : (
@@ -163,7 +165,7 @@ function ExpertQuestionSetsPage() {
                       {getStatusBadge(set.status)}
                     </div>
                     <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                      <span>📝 {set.questionCount || set.questions?.length || 0} câu</span>
+                      <span>📝 {set.questionCount || set.questions?.length || 0} {t("expertPages.questionSets.table.questions")}</span>
                       <span>📅 {formatDate(set.createdAt)}</span>
                     </div>
                     <div className="flex gap-2">
@@ -173,21 +175,21 @@ function ExpertQuestionSetsPage() {
                         onClick={() => navigate(`/expert/question-sets/${set.id || set._id}`)}
                         className="flex-1"
                       >
-                        Xem
+                        {t("expertPages.common.view")}
                       </Button>
                       <Button
                         size="small"
                         onClick={() => navigate(`/expert/question-sets/${set.id || set._id}/edit`)}
                         className="flex-1"
                       >
-                        Sửa
+                        {t("expertPages.common.edit")}
                       </Button>
                       <Button
                         size="small"
                         variant="danger"
                         onClick={() => handleDelete(set.id || set._id, set.title)}
                       >
-                        Xóa
+                        {t("expertPages.common.delete")}
                       </Button>
                     </div>
                   </div>
@@ -199,19 +201,19 @@ function ExpertQuestionSetsPage() {
                 <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Tiêu đề
+                      {t("expertPages.questionSets.table.title")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Số câu hỏi
+                      {t("expertPages.questionSets.table.questionCount")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Trạng thái
+                      {t("expertPages.questionSets.table.status")}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Ngày tạo
+                      {t("expertPages.questionSets.table.createdAt")}
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Hành động
+                      {t("expertPages.common.actions")}
                     </th>
                   </tr>
                 </thead>
@@ -231,7 +233,7 @@ function ExpertQuestionSetsPage() {
                               <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                               </svg>
-                              {flags.length} báo cáo
+                              {t("expertPages.questionSets.reports", { count: flags.length })}
                             </span>
                           )}
                         </div>
@@ -259,7 +261,7 @@ function ExpertQuestionSetsPage() {
                               onClick={() => navigate(`/expert/question-sets/${set.id || set._id}/handle-reports`)}
                               className="bg-orange-600 hover:bg-orange-700 border-orange-600"
                             >
-                              Xử lý báo cáo
+                              {t("expertPages.questionSets.actions.handleReports")}
                             </Button>
                           )}
                           <Button
@@ -267,20 +269,20 @@ function ExpertQuestionSetsPage() {
                             variant="secondary"
                             onClick={() => navigate(`/expert/question-sets/${set.id || set._id}`)}
                           >
-                            Xem
+                            {t("expertPages.common.view")}
                           </Button>
                           <Button
                             size="small"
                             onClick={() => navigate(`/expert/question-sets/${set.id || set._id}/edit`)}
                           >
-                            Chỉnh sửa
+                            {t("expertPages.common.edit")}
                           </Button>
                           <Button
                             size="small"
                             variant="danger"
                             onClick={() => handleDelete(set.id || set._id, set.title)}
                           >
-                            Xóa
+                            {t("expertPages.common.delete")}
                           </Button>
                         </div>
                       </td>
