@@ -9,7 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 function Footer() {
   const currentYear = new Date().getFullYear();
-  const { t, language, setLanguage, supportedLocales } = useLanguage();
+  const { t } = useLanguage();
 
   const socialLinks = [
     {
@@ -236,25 +236,10 @@ function Footer() {
 
         {/* Bottom Section */}
         <div className="pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
-            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm text-center">
               {t('footer.copyright', { year: currentYear })}
             </p>
-            <div className="flex items-center gap-4 sm:gap-6">
-              {supportedLocales.map((locale) => (
-                <button
-                  key={locale.code}
-                  onClick={() => setLanguage(locale.code)}
-                  className={`text-xs sm:text-sm transition-colors duration-200 ${
-                    language === locale.code
-                      ? 'text-primary-600 dark:text-primary-400 font-semibold'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
-                  }`}
-                >
-                  {locale.flag} {locale.name}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
       </div>

@@ -63,12 +63,10 @@ const PremiumRequiredModal = ({ onClose, onUpgrade, title }) => {
 
             <div className="text-center mb-6">
               <p className="text-gray-600 dark:text-gray-400 text-base leading-relaxed">
-                Nội dung được tạo bởi các chuyên gia <strong className="text-gray-900 dark:text-gray-100">(Expert)</strong> 
-                và chỉ dành cho thành viên <strong className="text-amber-600 dark:text-amber-400">Premium</strong> hoặc <strong className="text-amber-600 dark:text-amber-400">Unlimited</strong>.
+                {t("components.premiumRequiredModal.contentDescription")}
               </p>
               <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">
-                Gói Basic không được phép truy cập nội dung này.
-                <strong className="text-gray-900 dark:text-gray-100">{displayTitle}</strong> {t("components.premiumRequiredModal.contentDescription")}
+                {t("components.premiumRequiredModal.basicNotAllowed")}
               </p>
             </div>
 
@@ -82,7 +80,6 @@ const PremiumRequiredModal = ({ onClose, onUpgrade, title }) => {
                   <svg className="w-5 h-5 text-green-600 dark:text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                   </svg>
-                  <span>Truy cập <strong>tất cả bộ đề từ chuyên gia (Expert)</strong></span>
                   <span>{t("components.premiumRequiredModal.benefit1")}</span>
                 </li>
                 <li className="flex items-start gap-2">
@@ -95,14 +92,12 @@ const PremiumRequiredModal = ({ onClose, onUpgrade, title }) => {
                   <svg className="w-5 h-5 text-green-600 dark:text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                   </svg>
-                  <span><strong>100+ bài thi/tháng</strong> (Basic chỉ 60 bài)</span>
                   <span>{t("components.premiumRequiredModal.benefit3")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <svg className="w-5 h-5 text-green-600 dark:text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                   </svg>
-                  <span>Xử lý ưu tiên & hỗ trợ chuyên gia</span>
                   <span>{t("components.premiumRequiredModal.benefit4")}</span>
                 </li>
               </ul>
@@ -127,7 +122,6 @@ const PremiumRequiredModal = ({ onClose, onUpgrade, title }) => {
                 variant="secondary"
                 className="flex-1"
               >
-                Hủy
                 {t("components.premiumRequiredModal.cancelButton")}
               </Button>
             </div>

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import questionSetsService from "@/services/api/questionSets.service";
 import Button from "@/components/common/Button";
 import { QuizCard } from "@/components/quiz";
-import { useToast } from "@/components/common";
+import { useToast, Modal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { CreateQuizModal } from "@/components/questionSets";
 import { Footer } from "@/components/layout";
@@ -23,6 +23,8 @@ function QuizListPage() {
   const [deleting, setDeleting] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(null); // { id, name }
+  const [unshareModal, setUnshareModal] = useState(null); // { id, name }
 
   useEffect(() => {
     fetchQuestionSets();
@@ -53,19 +55,20 @@ function QuizListPage() {
     }
   };
 
-  const handleDeleteQuestionSet = async (id) => {
+  const handleDeleteQuestionSet = (id) => {
     const questionSet = questionSets.find((qs) => qs.id === id);
     if (!questionSet) return;
+    setDeleteModal({ id, name: questionSet.title });
+  };
 
-    if (!window.confirm(t("quizPages.list.deleteConfirm", { name: questionSet.title }))) {
-      return;
-    }
-
+  const confirmDeleteQuestionSet = async () => {
+    if (!deleteModal) return;
     try {
-      setDeleting(id);
-      await questionSetsService.deleteSet(id);
-      setQuestionSets(questionSets.filter((qs) => qs.id !== id));
+      setDeleting(deleteModal.id);
+      await questionSetsService.deleteSet(deleteModal.id);
+      setQuestionSets(questionSets.filter((qs) => qs.id !== deleteModal.id));
       toast.showSuccess(t("quizPages.list.deleteSuccess"));
+      setDeleteModal(null);
     } catch (err) {
       const message = getErrorMessage(err);
       toast.showError(message);
@@ -80,19 +83,27 @@ function QuizListPage() {
 
     try {
       if (questionSet.isShared) {
-        // Unshare
-        if (!window.confirm(t("quizPages.list.unshareConfirm", { name: questionSet.title }))) {
-          return;
-        }
-        await questionSetsService.unshareSet(id);
-        setQuestionSets(questionSets.map((qs) => (qs.id === id ? { ...qs, isShared: false } : qs)));
-        toast.showSuccess(t("quizPages.list.unshareSuccess"));
+        // Mở modal xác nhận unshare
+        setUnshareModal({ id, name: questionSet.title });
       } else {
-        // Share
+        // Share trực tiếp
         await questionSetsService.shareSet(id);
         setQuestionSets(questionSets.map((qs) => (qs.id === id ? { ...qs, isShared: true } : qs)));
         toast.showSuccess(t("quizPages.list.shareSuccess"));
       }
+    } catch (err) {
+      const message = getErrorMessage(err);
+      toast.showError(message);
+    }
+  };
+
+  const confirmUnshareQuestionSet = async () => {
+    if (!unshareModal) return;
+    try {
+      await questionSetsService.unshareSet(unshareModal.id);
+      setQuestionSets(questionSets.map((qs) => (qs.id === unshareModal.id ? { ...qs, isShared: false } : qs)));
+      toast.showSuccess(t("quizPages.list.unshareSuccess"));
+      setUnshareModal(null);
     } catch (err) {
       const message = getErrorMessage(err);
       toast.showError(message);
@@ -279,6 +290,37 @@ function QuizListPage() {
         onGenerate={handleGenerateQuiz}
         loading={generating}
       />
+
+      {/* Delete Quiz Modal */}
+      <Modal
+        isOpen={!!deleteModal}
+        onClose={() => setDeleteModal(null)}
+        title={t("quizPages.list.deleteModalTitle")}
+        confirmText={t("quizPages.list.confirmDelete")}
+        cancelText={t("quizPages.list.cancel")}
+        onConfirm={confirmDeleteQuestionSet}
+        variant="danger"
+        loading={!!deleting}
+      >
+        <p className="text-gray-600 dark:text-gray-400">
+          {t("quizPages.list.deleteConfirm", { name: deleteModal?.name })}
+        </p>
+      </Modal>
+
+      {/* Unshare Quiz Modal */}
+      <Modal
+        isOpen={!!unshareModal}
+        onClose={() => setUnshareModal(null)}
+        title={t("quizPages.list.unshareModalTitle")}
+        confirmText={t("quizPages.list.confirmUnshare")}
+        cancelText={t("quizPages.list.cancel")}
+        onConfirm={confirmUnshareQuestionSet}
+        variant="danger"
+      >
+        <p className="text-gray-600 dark:text-gray-400">
+          {t("quizPages.list.unshareConfirm", { name: unshareModal?.name })}
+        </p>
+      </Modal>
 
       {/* Footer */}
       <Footer />

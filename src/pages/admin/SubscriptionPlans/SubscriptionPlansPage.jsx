@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Input, Modal, useToast } from "@/components/common";
 import subscriptionsService from "@/services/api/subscriptions.service";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const DEFAULT_ENTITLEMENTS = {
   maxMonthlyTestGenerations: 50,
@@ -17,6 +18,7 @@ const DEFAULT_ENTITLEMENTS = {
 
 function AdminSubscriptionPlansPage() {
   const toast = useToast();
+  const { t } = useLanguage();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -37,13 +39,12 @@ function AdminSubscriptionPlansPage() {
 
   const formatEntitlementLabel = (key) => {
     const labels = {
-      maxSubjects: "Số môn học",
-      maxMonthlyTestGenerations: "Số lần tạo đề/tháng",
-      maxValidationRequests: "Số yêu cầu kiểm duyệt",
-      priorityProcessing: "Xử lý ưu tiên",
-      canShare: "Cho phép chia sẻ",
-      maxDocumentsPerSubject: "Số tài liệu/môn học",
-      // maxTotalDocuments: "Tổng số tài liệu", // Removed - now unlimited
+      maxSubjects: t("admin.subscriptionPlans.maxSubjects"),
+      maxMonthlyTestGenerations: t("admin.subscriptionPlans.maxMonthlyTestGenerations"),
+      maxValidationRequests: t("admin.subscriptionPlans.maxValidationRequests"),
+      priorityProcessing: t("admin.subscriptionPlans.priorityProcessing"),
+      canShare: t("admin.subscriptionPlans.canShare"),
+      maxDocumentsPerSubject: t("admin.subscriptionPlans.maxDocumentsPerSubject"),
     };
     return labels[key] || key;
   };
@@ -58,7 +59,7 @@ function AdminSubscriptionPlansPage() {
       setPlans(list);
     } catch (e) {
       console.error(e);
-      setError(e?.response?.data?.message || "Không thể tải gói nâng cấp");
+      setError(e?.response?.data?.message || t("admin.subscriptionPlans.loadError"));
     } finally {
       setLoading(false);
     }
@@ -111,26 +112,26 @@ function AdminSubscriptionPlansPage() {
         entitlements: form.entitlements,
       };
       if (!payload.planName) {
-        toast.showError("Tên gói không được để trống");
+        toast.showError(t("admin.subscriptionPlans.nameRequired"));
         return;
       }
 
       if (editing?.id) {
         await subscriptionsService.updatePlan(editing.id, payload);
-        toast.showSuccess("Cập nhật gói thành công");
+        toast.showSuccess(t("admin.subscriptionPlans.updateSuccess"));
       } else if (editing?._id) {
         await subscriptionsService.updatePlan(editing._id, payload);
-        toast.showSuccess("Cập nhật gói thành công");
+        toast.showSuccess(t("admin.subscriptionPlans.updateSuccess"));
       } else {
         await subscriptionsService.createPlan(payload);
-        toast.showSuccess("Tạo gói mới thành công");
+        toast.showSuccess(t("admin.subscriptionPlans.createSuccess"));
       }
       setModalOpen(false);
       setEditing(null);
       await fetchPlans();
     } catch (e) {
       console.error(e);
-      toast.showError(e?.response?.data?.message || "Lưu gói thất bại");
+      toast.showError(e?.response?.data?.message || t("admin.subscriptionPlans.saveError"));
     } finally {
       setSaving(false);
     }
@@ -142,12 +143,12 @@ function AdminSubscriptionPlansPage() {
       setSaving(true);
       const id = confirmDelete.id || confirmDelete._id;
       await subscriptionsService.deletePlan(id);
-      toast.showSuccess("Đã lưu trữ gói");
+      toast.showSuccess(t("admin.subscriptionPlans.archiveSuccess"));
       setConfirmDelete(null);
       await fetchPlans();
     } catch (e) {
       console.error(e);
-      toast.showError(e?.response?.data?.message || "Xóa/Lưu trữ gói thất bại");
+      toast.showError(e?.response?.data?.message || t("admin.subscriptionPlans.archiveError"));
     } finally {
       setSaving(false);
     }
@@ -166,16 +167,16 @@ function AdminSubscriptionPlansPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">Quản lý gói nâng cấp</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{t("admin.subscriptionPlans.pageTitle")}</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">
-              Tạo, chỉnh sửa, kích hoạt/vô hiệu hóa các gói nâng cấp.
+              {t("admin.subscriptionPlans.pageSubtitle")}
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <Button variant="secondary" className="w-full sm:w-auto" onClick={fetchPlans}>
-              Làm mới
+              {t("admin.common.refresh")}
             </Button>
-            <Button className="w-full sm:w-auto" onClick={openCreate}>Thêm gói</Button>
+            <Button className="w-full sm:w-auto" onClick={openCreate}>{t("admin.subscriptionPlans.addPlan")}</Button>
           </div>
         </div>
 
@@ -183,15 +184,15 @@ function AdminSubscriptionPlansPage() {
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 p-4 mb-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Trạng thái</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">{t("admin.common.status")}</label>
               <select
                 className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
-                <option value="">Tất cả</option>
-                <option value="Active">Đang hoạt động</option>
-                <option value="Inactive">Tạm dừng</option>
+                <option value="">{t("admin.common.all")}</option>
+                <option value="Active">{t("admin.common.active")}</option>
+                <option value="Inactive">{t("admin.common.inactive")}</option>
               </select>
             </div>
           </div>
@@ -199,14 +200,14 @@ function AdminSubscriptionPlansPage() {
 
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 overflow-hidden">
           {loading ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Đang tải...</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{t("admin.common.loading")}</div>
           ) : error ? (
             <div className="py-16 text-center">
               <div className="text-5xl mb-3">⚠️</div>
               <div className="text-error-600 dark:text-red-400 font-medium">{error}</div>
             </div>
           ) : plans.length === 0 ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">Chưa có gói nào</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{t("admin.subscriptionPlans.noPlan")}</div>
           ) : (
             <>
               {/* Mobile Cards */}
@@ -230,15 +231,15 @@ function AdminSubscriptionPlansPage() {
                         {formatPrice(p.price)}
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {p.billingCycle === "Monthly" ? "Tháng" : "Năm"}
+                        {p.billingCycle === "Monthly" ? t("admin.subscriptionPlans.monthly") : t("admin.subscriptionPlans.yearly")}
                       </span>
                       {p.status === "Active" ? (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
-                          Đang hoạt động
+                          {t("admin.common.active")}
                         </span>
                       ) : (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
-                          Tạm dừng
+                          {t("admin.common.inactive")}
                         </span>
                       )}
                     </div>
@@ -251,16 +252,16 @@ function AdminSubscriptionPlansPage() {
                 <thead className="bg-gray-50 dark:bg-slate-900">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Tên gói
+                      {t("admin.subscriptionPlans.planName")}
                     </th>
                     <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Chu kỳ
+                      {t("admin.subscriptionPlans.billingCycle")}
                     </th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Giá
+                      {t("admin.subscriptionPlans.price")}
                     </th>
                     <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Trạng thái
+                      {t("admin.common.status")}
                     </th>
                     <th className="px-3 sm:px-6 py-3" />
                   </tr>
@@ -274,11 +275,11 @@ function AdminSubscriptionPlansPage() {
                           <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{p.description}</div>
                         )}
                         <div className="sm:hidden text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          {p.billingCycle === "Monthly" ? "Tháng" : "Năm"}
+                          {p.billingCycle === "Monthly" ? t("admin.subscriptionPlans.monthly") : t("admin.subscriptionPlans.yearly")}
                         </div>
                       </td>
                       <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-gray-700 dark:text-gray-300">
-                        {p.billingCycle === "Monthly" ? "Tháng" : "Năm"}
+                        {p.billingCycle === "Monthly" ? t("admin.subscriptionPlans.monthly") : t("admin.subscriptionPlans.yearly")}
                       </td>
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                         {formatPrice(p.price)}
@@ -286,11 +287,11 @@ function AdminSubscriptionPlansPage() {
                       <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap">
                         {p.status === "Active" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-green-900/30 text-success-700 dark:text-green-300">
-                            Đang hoạt động
+                            {t("admin.common.active")}
                           </span>
                         ) : p.status === "Inactive" ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
-                            Tạm dừng
+                            {t("admin.common.inactive")}
                           </span>
                         ) : (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-100 dark:bg-yellow-900/30 text-warning-700 dark:text-yellow-300">
@@ -301,11 +302,11 @@ function AdminSubscriptionPlansPage() {
                       <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right">
                         <div className="flex gap-1 sm:gap-2 justify-end">
                           <Button size="small" variant="secondary" onClick={() => openEdit(p)}>
-                            <span className="hidden sm:inline">Sửa</span>
+                            <span className="hidden sm:inline">{t("admin.common.edit")}</span>
                             <span className="sm:hidden">✏️</span>
                           </Button>
                           <Button size="small" variant="danger" onClick={() => setConfirmDelete(p)}>
-                            <span className="hidden sm:inline">Xóa</span>
+                            <span className="hidden sm:inline">{t("admin.common.delete")}</span>
                             <span className="sm:hidden">🗑️</span>
                           </Button>
                         </div>
@@ -323,52 +324,52 @@ function AdminSubscriptionPlansPage() {
         <Modal
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
-          title={editing ? "Chỉnh sửa gói" : "Thêm gói"}
+          title={editing ? t("admin.subscriptionPlans.editPlan") : t("admin.subscriptionPlans.addNewPlan")}
         >
           <div className="space-y-4">
             <Input
-              label="Tên gói"
+              label={t("admin.subscriptionPlans.planName")}
               value={form.planName}
               onChange={(e) => setForm({ ...form, planName: e.target.value })}
-              placeholder="Ví dụ: Basic, Pro, Premium"
+              placeholder={t("admin.subscriptionPlans.planNamePlaceholder")}
             />
             <Input
-              label="Mô tả"
+              label={t("admin.subscriptionPlans.description")}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              placeholder="Mô tả ngắn về gói"
+              placeholder={t("admin.subscriptionPlans.descriptionPlaceholder")}
             />
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Chu kỳ</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("admin.subscriptionPlans.billingCycle")}</label>
               <select
                 className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={form.billingCycle}
                 onChange={(e) => setForm({ ...form, billingCycle: e.target.value })}
               >
-                <option value="Monthly">Tháng</option>
-                <option value="Yearly">Năm</option>
+                <option value="Monthly">{t("admin.subscriptionPlans.monthly")}</option>
+                <option value="Yearly">{t("admin.subscriptionPlans.yearly")}</option>
               </select>
             </div>
             <Input
-              label="Giá (VND)"
+              label={t("admin.subscriptionPlans.priceVND")}
               type="number"
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
             />
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Trạng thái</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("admin.common.status")}</label>
               <select
                 className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value })}
               >
-                <option value="Active">Đang hoạt động</option>
-                <option value="Inactive">Tạm dừng</option>
+                <option value="Active">{t("admin.common.active")}</option>
+                <option value="Inactive">{t("admin.common.inactive")}</option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
-                Quyền lợi gói đăng ký
+                {t("admin.subscriptionPlans.entitlements")}
               </label>
               <div className="space-y-4 bg-gray-50 dark:bg-slate-700/50 p-4 rounded-lg">
                 {/* maxMonthlyTestGenerations */}
@@ -501,10 +502,10 @@ function AdminSubscriptionPlansPage() {
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" onClick={() => setModalOpen(false)} disabled={saving}>
-                Hủy
+                {t("admin.common.cancel")}
               </Button>
               <Button onClick={handleSave} disabled={saving}>
-                {saving ? "Đang lưu..." : "Lưu"}
+                {saving ? t("admin.common.loading") : t("admin.common.save")}
               </Button>
             </div>
           </div>
@@ -514,16 +515,16 @@ function AdminSubscriptionPlansPage() {
         <Modal
           isOpen={!!confirmDelete}
           onClose={() => setConfirmDelete(null)}
-          title="Xóa/Lưu trữ gói?"
+          title={t("admin.subscriptionPlans.confirmArchiveTitle")}
         >
           <div className="space-y-4">
-            <p className="dark:text-gray-300">Bạn có chắc muốn xóa/lưu trữ gói "{confirmDelete?.planName}"?</p>
+            <p className="dark:text-gray-300">{t("admin.subscriptionPlans.confirmArchiveMessage", { name: confirmDelete?.planName })}</p>
             <div className="flex justify-end gap-2">
               <Button variant="secondary" onClick={() => setConfirmDelete(null)} disabled={saving}>
-                Hủy
+                {t("admin.common.cancel")}
               </Button>
               <Button variant="danger" onClick={confirmArchive} disabled={saving}>
-                {saving ? "Đang xử lý..." : "Xác nhận"}
+                {saving ? t("admin.common.loading") : t("admin.subscriptionPlans.confirmArchive")}
               </Button>
             </div>
           </div>

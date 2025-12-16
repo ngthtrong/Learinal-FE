@@ -257,10 +257,10 @@ function CommissionRecordsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{role === "Expert" ? t("expertPages.commissions.pageTitle") : "Hoa hồng"}</h1>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">{role === "Expert" ? t("expertPages.commissions.pageTitle") : t("admin.commissionRecords.pageTitle")}</h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs sm:text-sm">
               {role === "Admin"
-                ? "Quản lý và xác nhận thanh toán hoa hồng cho chuyên gia."
+                ? t("admin.commissionRecords.pageSubtitle")
                 : t("expertPages.commissions.pageSubtitle")}
             </p>
           </div>
@@ -272,7 +272,7 @@ function CommissionRecordsPage() {
                 fetchData();
               }}
             >
-              {role === "Expert" ? t("expertPages.commissions.refresh") : "Làm mới"}
+              {role === "Expert" ? t("expertPages.commissions.refresh") : t("admin.common.refresh")}
             </Button>
           </div>
         </div>
@@ -283,9 +283,9 @@ function CommissionRecordsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="md:col-span-2">
                 <Input
-                  label={role === "Admin" ? "Tìm theo tên hoặc ExpertId" : t("expertPages.commissions.statusLabel")}
+                  label={role === "Admin" ? t("admin.commissionRecords.searchLabel") : t("expertPages.commissions.statusLabel")}
                   placeholder={
-                    role === "Admin" ? "Nhập tên chuyên gia hoặc ExpertId..." : t("expertPages.commissions.searchPlaceholder")
+                    role === "Admin" ? t("admin.commissionRecords.searchPlaceholder") : t("expertPages.commissions.searchPlaceholder")
                   }
                   value={search}
                   onChange={(e) => {
@@ -296,7 +296,7 @@ function CommissionRecordsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">{role === "Expert" ? t("expertPages.commissions.statusLabel") : "Trạng thái"}</label>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">{role === "Expert" ? t("expertPages.commissions.statusLabel") : t("admin.common.status")}</label>
                 <select
                   className="w-full px-2 sm:px-4 py-2 sm:py-3 text-sm border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   value={status}
@@ -305,9 +305,9 @@ function CommissionRecordsPage() {
                     setPage(1);
                   }}
                 >
-                  <option value="">{role === "Expert" ? t("expertPages.commissions.statusAll") : "Tất cả"}</option>
-                  <option value="Pending">{role === "Expert" ? t("expertPages.commissions.statusPending") : "Chờ"}</option>
-                  <option value="Paid">{role === "Expert" ? t("expertPages.commissions.statusPaid") : "Đã trả"}</option>
+                  <option value="">{role === "Expert" ? t("expertPages.commissions.statusAll") : t("admin.common.all")}</option>
+                  <option value="Pending">{role === "Expert" ? t("expertPages.commissions.statusPending") : t("admin.commissionRecords.statusPending")}</option>
+                  <option value="Paid">{role === "Expert" ? t("expertPages.commissions.statusPaid") : t("admin.commissionRecords.statusPaid")}</option>
                 </select>
               </div>
             </div>
@@ -322,7 +322,7 @@ function CommissionRecordsPage() {
                   fetchData();
                 }}
               >
-                {role === "Expert" ? t("expertPages.commissions.reset") : "Đặt lại"}
+                {role === "Expert" ? t("expertPages.commissions.reset") : t("admin.common.reset")}
               </Button>
               <Button
                 className="w-full sm:w-auto"
@@ -331,7 +331,7 @@ function CommissionRecordsPage() {
                   fetchData();
                 }}
               >
-                {role === "Expert" ? t("expertPages.commissions.apply") : "Áp dụng"}
+                {role === "Expert" ? t("expertPages.commissions.apply") : t("admin.common.apply")}
               </Button>
             </div>
           </div>
@@ -367,14 +367,14 @@ function CommissionRecordsPage() {
         {/* Table container */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-medium overflow-hidden">
           {loading ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{role === "Expert" ? t("expertPages.commissions.loading") : "Đang tải..."}</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{role === "Expert" ? t("expertPages.commissions.loading") : t("admin.common.loading")}</div>
           ) : error ? (
             <div className="py-16 text-center">
               <div className="text-5xl mb-3">⚠️</div>
               <div className="text-error-600 dark:text-error-400 font-medium">{error}</div>
             </div>
           ) : records.length === 0 ? (
-            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{role === "Expert" ? t("expertPages.commissions.noRecords") : "Không có bản ghi hoa hồng"}</div>
+            <div className="py-16 text-center text-gray-600 dark:text-gray-400">{role === "Expert" ? t("expertPages.commissions.noRecords") : t("admin.commissionRecords.noRecords")}</div>
           ) : (
             <>
               {role === "Admin" ? (
@@ -394,18 +394,18 @@ function CommissionRecordsPage() {
                             {expert.expertName}
                           </h3>
                           <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-                            {expert.recordCount} giao dịch
+                            {t("admin.commissionRecords.transactionCount", { count: expert.recordCount })}
                           </p>
                         </div>
                         <div className="flex items-center gap-4 sm:gap-6">
                           <div className="text-right">
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Đã nhận</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">{t("admin.commissionRecords.received")}</div>
                             <div className="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-400">
                               {formatCurrency(expert.totalEarned)}
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Đang chờ</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">{t("admin.commissionRecords.pending")}</div>
                             <div className="text-base sm:text-lg font-bold text-amber-600 dark:text-amber-400">
                               {formatCurrency(expert.totalPending)}
                             </div>
@@ -419,7 +419,7 @@ function CommissionRecordsPage() {
                               }}
                               disabled={creatingBatch}
                             >
-                              Thanh toán
+                              {t("admin.commissionRecords.pay")}
                             </Button>
                           )}
                           <div 
@@ -482,7 +482,7 @@ function CommissionRecordsPage() {
                     </div>
                     {role === "Admin" && r.status === "Pending" && (
                       <Button size="small" onClick={() => openMarkPaid(r)} className="w-full mt-2">
-                        Đánh dấu đã trả
+                        {t("admin.commissionRecords.markAsPaid")}
                       </Button>
                     )}
                   </div>
@@ -573,7 +573,7 @@ function CommissionRecordsPage() {
                         <div className="flex gap-1 sm:gap-2 justify-end">
                           {role === "Admin" && r.status === "Pending" && (
                             <Button size="small" onClick={() => openMarkPaid(r)}>
-                              <span className="hidden sm:inline">Đánh dấu trả</span>
+                              <span className="hidden sm:inline">{t("admin.commissionRecords.markAsPaid")}</span>
                               <span className="sm:hidden">✓</span>
                             </Button>
                           )}
@@ -593,7 +593,7 @@ function CommissionRecordsPage() {
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
           <div className="text-sm text-gray-600 dark:text-gray-400">
-            {role === "Expert" ? t("expertPages.commissions.pagination.showing", { current: records.length, total }) : `Hiển thị ${records.length} / ${total} bản ghi`}
+            {role === "Expert" ? t("expertPages.commissions.pagination.showing", { current: records.length, total }) : t("admin.commissionRecords.showingRecords", { current: records.length, total })}
           </div>
           <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-end">
             <select
@@ -616,7 +616,7 @@ function CommissionRecordsPage() {
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
             >
-              {role === "Expert" ? t("expertPages.commissions.pagination.prev") : "Trước"}
+              {role === "Expert" ? t("expertPages.commissions.pagination.prev") : t("admin.common.prev")}
             </Button>
             <div className="text-sm text-gray-700 dark:text-gray-300">
               {page}/{totalPages}
@@ -627,7 +627,7 @@ function CommissionRecordsPage() {
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
             >
-              {role === "Expert" ? t("expertPages.commissions.pagination.next") : "Sau"}
+              {role === "Expert" ? t("expertPages.commissions.pagination.next") : t("admin.common.next")}
             </Button>
           </div>
         </div>
@@ -636,26 +636,25 @@ function CommissionRecordsPage() {
         <Modal
           isOpen={markOpen}
           onClose={closeMarkPaid}
-          title="Xác nhận thanh toán"
-          confirmText="Xác nhận"
-          cancelText="Hủy"
+          title={t("admin.commissionRecords.confirmPaymentTitle")}
+          confirmText={t("admin.commissionRecords.confirm")}
+          cancelText={t("admin.common.cancel")}
           onConfirm={confirmMarkPaid}
           loading={saving}
         >
           {selectedRecord && (
             <div className="space-y-4">
               <div className="text-sm text-gray-700 dark:text-gray-300">
-                Đánh dấu bản ghi <span className="font-medium">#{selectedRecord.id}</span> đã được
-                thanh toán.
+                {t("admin.commissionRecords.confirmPaymentDesc", { id: selectedRecord.id })}
               </div>
               <Input
-                label="Mã tham chiếu thanh toán (tùy chọn)"
-                placeholder="Ví dụ: TRANS123456"
+                label={t("admin.commissionRecords.paymentRefLabel")}
+                placeholder={t("admin.commissionRecords.paymentRefPlaceholder")}
                 value={paymentRef}
                 onChange={(e) => setPaymentRef(e.target.value)}
               />
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Sau khi xác nhận trạng thái sẽ chuyển sang "Đã trả".
+                {t("admin.commissionRecords.confirmPaymentNote")}
               </p>
             </div>
           )}
@@ -735,7 +734,7 @@ function CommissionRecordsPage() {
         <Modal
           isOpen={expertDetailsOpen}
           onClose={closeExpertDetails}
-          title={`Chi tiết hoa hồng - ${selectedExpert?.expertName || ""}`}
+          title={t("admin.commissionRecords.commissionDetails", { name: selectedExpert?.expertName || "" })}
           size="large"
           hideConfirm
           hideCancel
@@ -743,13 +742,13 @@ function CommissionRecordsPage() {
           {/* Summary */}
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
-              <div className="text-xs text-emerald-600 dark:text-emerald-400">Đã nhận</div>
+              <div className="text-xs text-emerald-600 dark:text-emerald-400">{t("admin.commissionRecords.received")}</div>
               <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">
                 {formatCurrency(selectedExpert?.totalEarned || 0)}
               </div>
             </div>
             <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-              <div className="text-xs text-amber-600 dark:text-amber-400">Đang chờ</div>
+              <div className="text-xs text-amber-600 dark:text-amber-400">{t("admin.commissionRecords.pending")}</div>
               <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">
                 {formatCurrency(selectedExpert?.totalPending || 0)}
               </div>
@@ -759,7 +758,7 @@ function CommissionRecordsPage() {
           {/* Payment Warning/Button */}
           {selectedExpert?.totalPending > 0 && selectedExpert?.totalPending < 2000 && (
             <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-sm text-amber-700 dark:text-amber-400 mb-4">
-              ⚠️ Cần tối thiểu 2,000đ để thanh toán (hiện tại: {formatCurrency(selectedExpert.totalPending)})
+              ⚠️ {t("admin.commissionRecords.minPaymentWarning", { current: formatCurrency(selectedExpert.totalPending) })}
             </div>
           )}
           {selectedExpert?.totalPending >= 2000 && (
@@ -771,7 +770,7 @@ function CommissionRecordsPage() {
                 }}
                 disabled={creatingBatch}
               >
-                {creatingBatch ? "Đang tạo..." : `Thanh toán ${formatCurrency(selectedExpert.totalPending)}`}
+                {creatingBatch ? t("admin.commissionRecords.creating") : t("admin.commissionRecords.payAmount", { amount: formatCurrency(selectedExpert.totalPending) })}
               </Button>
             </div>
           )}
@@ -779,13 +778,13 @@ function CommissionRecordsPage() {
           {/* Records List */}
           <div className="border-t border-gray-200 dark:border-slate-700 pt-4">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-              Danh sách giao dịch ({expertRecords.length})
+              {t("admin.commissionRecords.transactionList", { count: expertRecords.length })}
             </h3>
             
             {loadingExpertDetails ? (
-              <div className="py-8 text-center text-gray-500">Đang tải...</div>
+              <div className="py-8 text-center text-gray-500">{t("admin.common.loading")}</div>
             ) : expertRecords.length === 0 ? (
-              <div className="py-8 text-center text-gray-500">Không có dữ liệu</div>
+              <div className="py-8 text-center text-gray-500">{t("admin.common.noData")}</div>
             ) : (
               <div className="max-h-96 overflow-y-auto space-y-2">
                     {expertRecords.map((r) => (
@@ -815,11 +814,11 @@ function CommissionRecordsPage() {
                           </div>
                           {r.status === "Paid" ? (
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400">
-                              Đã trả
+                              {t("admin.commissionRecords.statusPaid")}
                             </span>
                           ) : (
                             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-warning-100 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400">
-                              Chờ
+                              {t("admin.commissionRecords.statusPending")}
                             </span>
                           )}
                         </div>
