@@ -5,6 +5,7 @@
 
 import { useState } from "react";
 import { Input, Button } from "@components/common";
+import { useLanguage } from "@contexts/LanguageContext";
 /**
  * SubjectForm component
  * @param {Object} props
@@ -14,20 +15,20 @@ import { Input, Button } from "@components/common";
  * @param {boolean} props.loading - Loading state
  * @param {string} props.submitText - Submit button text (default: "Lưu")
  */
-const LEVEL_OPTIONS = [
-  { value: '', label: 'Chưa chọn' },
-  { value: 'secondary', label: 'Cấp 2 (THCS)' },
-  { value: 'highschool', label: 'Cấp 3 (THPT)' },
-  { value: 'university', label: 'Đại học' },
-];
-
 const SubjectForm = ({
   initialData = { subjectName: "", description: "", level: "" },
   onSubmit,
   onCancel,
   loading = false,
-  submitText = "Lưu",
+  submitText,
 }) => {
+  const { t } = useLanguage();
+  const LEVEL_OPTIONS = [
+    { value: '', label: t("components.subjectForm.levelNotSelected") },
+    { value: 'secondary', label: t("components.subjectForm.levelSecondary") },
+    { value: 'highschool', label: t("components.subjectForm.levelHighschool") },
+    { value: 'university', label: t("components.subjectForm.levelUniversity") },
+  ];
   const [formData, setFormData] = useState({ ...initialData, level: initialData.level || '' });
   const [errors, setErrors] = useState({});
 
@@ -46,16 +47,16 @@ const SubjectForm = ({
 
     // Subject name validation
     if (!formData.subjectName.trim()) {
-      newErrors.subjectName = "Tên môn học là bắt buộc";
+      newErrors.subjectName = t("components.subjectForm.subjectNameRequired");
     } else if (formData.subjectName.trim().length < 3) {
-      newErrors.subjectName = "Tên môn học phải có ít nhất 3 ký tự";
+      newErrors.subjectName = t("components.subjectForm.subjectNameMinLength");
     } else if (formData.subjectName.length > 200) {
-      newErrors.subjectName = "Tên môn học không được vượt quá 200 ký tự";
+      newErrors.subjectName = t("components.subjectForm.subjectNameMaxLength");
     }
 
     // Description validation
     if (formData.description && formData.description.length > 1000) {
-      newErrors.description = "Mô tả không được vượt quá 1000 ký tự";
+      newErrors.description = t("components.subjectForm.descriptionMaxLength");
     }
 
     return newErrors;
@@ -88,7 +89,7 @@ const SubjectForm = ({
           htmlFor="level"
           className="block text-sm font-semibold text-gray-900 dark:text-gray-100"
         >
-          Cấp bậc <span className="text-gray-500 dark:text-gray-400 font-normal">(tùy chọn)</span>
+          {t("components.subjectForm.levelLabel")} <span className="text-gray-500 dark:text-gray-400 font-normal">{t("components.subjectForm.levelOptional")}</span>
         </label>
         <select
           id="level"
@@ -103,7 +104,7 @@ const SubjectForm = ({
             </option>
           ))}
         </select>
-        <p className="text-xs text-gray-500 dark:text-gray-400">Chọn cấp bậc phù hợp để dễ dàng phân loại môn học</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{t("components.subjectForm.levelHint")}</p>
       </div>
 
       <div className="space-y-2">
@@ -111,7 +112,7 @@ const SubjectForm = ({
           htmlFor="subjectName"
           className="block text-sm font-semibold text-gray-900 dark:text-gray-100"
         >
-          Tên môn học <span className="text-red-500">*</span>
+          {t("components.subjectForm.subjectNameLabel")} <span className="text-red-500">*</span>
         </label>
         <input
           id="subjectName"
@@ -119,7 +120,7 @@ const SubjectForm = ({
           name="subjectName"
           value={formData.subjectName}
           onChange={handleChange}
-          placeholder="Ví dụ: Toán Cao Cấp A1"
+          placeholder={t("components.subjectForm.subjectNamePlaceholder")}
           maxLength={200}
           autoFocus
           className={`w-full px-4 py-3 border ${
@@ -127,7 +128,7 @@ const SubjectForm = ({
           } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-gray-900 dark:text-gray-100 dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500`}
         />
         {errors.subjectName && <p className="text-sm text-red-600 mt-1">{errors.subjectName}</p>}
-        <p className="text-xs text-gray-500 dark:text-gray-400">Mô tả ngắn gọn về môn học này...</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{t("components.subjectForm.subjectNameHint")}</p>
       </div>
 
       <div className="space-y-2">
@@ -135,14 +136,14 @@ const SubjectForm = ({
           htmlFor="description"
           className="block text-sm font-semibold text-gray-900 dark:text-gray-100"
         >
-          Mô tả <span className="text-gray-500 dark:text-gray-400 font-normal">(tùy chọn)</span>
+          {t("components.subjectForm.descriptionLabel")} <span className="text-gray-500 dark:text-gray-400 font-normal">{t("components.subjectForm.levelOptional")}</span>
         </label>
         <textarea
           id="description"
           name="description"
           value={formData.description}
           onChange={handleChange}
-          placeholder="Mô tả ngắn gọn về môn học này..."
+          placeholder={t("components.subjectForm.descriptionPlaceholder")}
           rows={4}
           maxLength={1000}
           className={`w-full px-4 py-3 border ${
@@ -151,19 +152,19 @@ const SubjectForm = ({
         />
         {errors.description && <p className="text-sm text-red-600 mt-1">{errors.description}</p>}
         <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-          <span>Thêm mô tả chi tiết về nội dung, mục tiêu của môn học</span>
-          <span className="font-medium">{formData.description.length} / 1000 ký tự</span>
+          <span>{t("components.subjectForm.descriptionHint")}</span>
+          <span className="font-medium">{t("components.subjectForm.charCount", { count: formData.description.length })}</span>
         </div>
       </div>
 
       <div className="flex items-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
-            Hủy
+            {t("common.cancel")}
           </Button>
         )}
         <Button type="submit" variant="primary" loading={loading}>
-          {submitText}
+          {submitText || t("common.save")}
         </Button>
       </div>
     </form>

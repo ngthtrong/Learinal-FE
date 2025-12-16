@@ -7,9 +7,11 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import Button from "@/components/common/Button";
 import { questionSetsService, quizAttemptsService } from "@/services/api";
+import { useLanguage } from "@/contexts/LanguageContext";
 function QuizTakePage() {
   const { setId } = useParams();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   // State
   const [questionSet, setQuestionSet] = useState(null);
@@ -50,7 +52,7 @@ function QuizTakePage() {
 
         setLoading(false);
       } catch (err) {
-        setError(err.response?.data?.message || "Không thể tải bài thi");
+        setError(err.response?.data?.message || t("quizPages.take.errors.loadQuiz"));
         setLoading(false);
       }
     };
@@ -171,7 +173,7 @@ function QuizTakePage() {
         // Navigate to result page
         navigate(`/quiz/${attemptId}/result`, { replace: true });
       } catch (err) {
-        setError(err.response?.data?.message || "Không thể nộp bài");
+        setError(err.response?.data?.message || t("quizPages.take.errors.submit"));
         setSubmitting(false);
       }
     },
@@ -200,7 +202,7 @@ function QuizTakePage() {
     return (
       <div className="quiz-take-page loading">
         <div className="spinner"></div>
-        <p>Đang tải bài thi...</p>
+        <p>{t("quizPages.take.loading")}</p>
       </div>
     );
   }
@@ -210,10 +212,10 @@ function QuizTakePage() {
       <div className="quiz-take-page error">
         <h2 className="flex items-center gap-2">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-          Lỗi
+          {t("quizPages.take.error")}
         </h2>
-        <p>{error || "Không tìm thấy bài thi"}</p>
-        <Button onClick={() => navigate(-1)}>Quay lại</Button>
+        <p>{error || t("quizPages.take.notFound")}</p>
+        <Button onClick={() => navigate(-1)}>{t("quizPages.take.goBack")}</Button>
       </div>
     );
   }
@@ -228,7 +230,7 @@ function QuizTakePage() {
         <div className="quiz-title">
           <h1>{questionSet.title || questionSet.name}</h1>
           <span className="question-count">
-            Câu {currentQuestionIndex + 1}/{totalQuestions}
+            {t("quizPages.take.question")} {currentQuestionIndex + 1}/{totalQuestions}
           </span>
         </div>
         <div className="quiz-controls">
@@ -239,7 +241,7 @@ function QuizTakePage() {
             </div>
           )}
           <Button onClick={() => setShowSubmitConfirm(true)} disabled={submitting}>
-            Nộp bài
+            {t("quizPages.take.submit")}
           </Button>
         </div>
       </header>
@@ -257,13 +259,13 @@ function QuizTakePage() {
         {/* Question Panel */}
         <main className="question-panel">
           <div className="question-header">
-            <h2>Câu {currentQuestionIndex + 1}:</h2>
+            <h2>{t("quizPages.take.question")} {currentQuestionIndex + 1}:</h2>
             <button
               className={`mark-review-btn ${isMarked ? "marked" : ""}`}
               onClick={toggleMarkForReview}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
-              {" "}{isMarked ? "Đã đánh dấu" : "Đánh dấu để xem lại"}
+              {" "}{isMarked ? t("quizPages.take.marked") : t("quizPages.take.markForReview")}
             </button>
           </div>
 
@@ -297,21 +299,21 @@ function QuizTakePage() {
               onClick={() => goToQuestion(currentQuestionIndex - 1)}
               disabled={currentQuestionIndex === 0}
             >
-              ← Câu trước
+              ← {t("quizPages.take.prevQuestion")}
             </Button>
             <Button
               variant="secondary"
               onClick={() => goToQuestion(currentQuestionIndex + 1)}
               disabled={currentQuestionIndex === totalQuestions - 1}
             >
-              Câu sau →
+              {t("quizPages.take.nextQuestion")} →
             </Button>
           </div>
         </main>
 
         {/* Sidebar - Question Overview */}
         <aside className="question-overview">
-          <h3>Tổng quan</h3>
+          <h3>{t("quizPages.take.overview.title")}</h3>
           <div className="questions-grid">
             {questionSet.questions.map((q, index) => {
               const answered = userAnswers[q._id] !== undefined;
@@ -336,24 +338,24 @@ function QuizTakePage() {
               <span className="stat-icon answered">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </span>
-              <span>Đã làm: {answeredCount}</span>
+              <span>{t("quizPages.take.overview.answered")}: {answeredCount}</span>
             </div>
             <div className="stat-item">
               <span className="stat-icon unanswered">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
               </span>
-              <span>Chưa làm: {totalQuestions - answeredCount}</span>
+              <span>{t("quizPages.take.overview.unanswered")}: {totalQuestions - answeredCount}</span>
             </div>
             <div className="stat-item">
               <span className="stat-icon marked">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
               </span>
-              <span>Đánh dấu: {markedForReview.size}</span>
+              <span>{t("quizPages.take.overview.marked")}: {markedForReview.size}</span>
             </div>
           </div>
 
           <Button variant="outline" fullWidth onClick={() => goToQuestion(0)}>
-            Xem lại tất cả
+            {t("quizPages.take.overview.reviewAll")}
           </Button>
         </aside>
       </div>
@@ -362,20 +364,20 @@ function QuizTakePage() {
       {showSubmitConfirm && (
         <div className="modal-overlay" onClick={() => setShowSubmitConfirm(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Xác nhận nộp bài</h2>
+            <h2>{t("quizPages.take.submitConfirm.title")}</h2>
             <p>
-              Bạn đã hoàn thành {answeredCount}/{totalQuestions} câu hỏi.
+              {t("quizPages.take.submitConfirm.completed", { answered: answeredCount, total: totalQuestions })}
               {answeredCount < totalQuestions && (
-                <strong> Còn {totalQuestions - answeredCount} câu chưa làm.</strong>
+                <strong> {t("quizPages.take.submitConfirm.remaining", { count: totalQuestions - answeredCount })}</strong>
               )}
             </p>
-            <p>Bạn có chắc chắn muốn nộp bài không?</p>
+            <p>{t("quizPages.take.submitConfirm.confirm")}</p>
             <div className="modal-actions">
               <Button variant="secondary" onClick={() => setShowSubmitConfirm(false)}>
-                Hủy
+                {t("quizPages.take.submitConfirm.cancel")}
               </Button>
               <Button onClick={confirmSubmit} loading={submitting}>
-                Nộp bài
+                {t("quizPages.take.submit")}
               </Button>
             </div>
           </div>

@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "@/components/common/Button";
 import DocumentIcon from "@/components/icons/DocumentIcon";
 import UploadIcon from "@/components/icons/UploadIcon";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const UPLOAD_CONSTRAINTS = {
   maxFileSize: 20 * 1024 * 1024, // 20MB
@@ -25,6 +26,7 @@ const UPLOAD_CONSTRAINTS = {
 
 function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({}); // { fileIndex: progress }
@@ -53,7 +55,7 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
         const excess = selectedFiles.length - documentLimit.remaining;
         setLimitWarning({
           type: "exceed",
-          message: `Bạn đang chọn ${selectedFiles.length} file nhưng chỉ còn ${documentLimit.remaining} slot trống (đang có ${documentLimit.currentCount}/${documentLimit.maxAllowed} tài liệu). Vui lòng xóa ${excess} file hoặc nâng cấp gói đăng ký.`,
+          message: t("components.documentUpload.documentLimitWarning", { remaining: documentLimit.remaining }) + ` (${documentLimit.currentCount}/${documentLimit.maxAllowed})`,
           excess,
           remaining: documentLimit.remaining,
         });
@@ -63,7 +65,7 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
     } else {
       setLimitWarning(null);
     }
-  }, [selectedFiles.length, documentLimit]);
+  }, [selectedFiles.length, documentLimit, t]);
 
   const checkDocumentLimit = async () => {
     try {
@@ -76,7 +78,7 @@ function DocumentUpload({ subjectId, onUploadSuccess, onCancel }) {
       if (!limit.isUnlimited && !limit.canUpload) {
         setLimitWarning({
           type: "full",
-          message: `Môn học này đã đạt giới hạn tài liệu (${limit.currentCount}/${limit.maxAllowed}). Vui lòng xóa bớt tài liệu hoặc nâng cấp gói đăng ký để tải lên thêm.`,
+          message: t("components.documentUpload.documentLimitReached") + ` (${limit.currentCount}/${limit.maxAllowed})`,
           remaining: 0,
         });
       }

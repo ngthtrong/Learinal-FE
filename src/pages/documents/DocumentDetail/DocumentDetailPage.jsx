@@ -3,10 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import {Footer} from "@/components/layout";
 import documentsService from "@/services/api/documents.service";
 import Button from "@/components/common/Button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function DocumentDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
   const [document, setDocument] = useState(null);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,7 @@ function DocumentDetailPage() {
         }
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Không thể tải thông tin tài liệu");
+      setError(err.response?.data?.message || t("documents.detail.loadError"));
     } finally {
       setLoading(false);
     }
@@ -41,10 +43,10 @@ function DocumentDetailPage() {
 
   const getStatusBadge = (status) => {
     const statusMap = {
-      Uploading: { text: "Đang tải lên", color: "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300" },
-      Processing: { text: "Đang xử lý", color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300" },
-      Completed: { text: "Hoàn thành", color: "bg-success-100 dark:bg-green-900/30 text-success-800 dark:text-green-300" },
-      Error: { text: "Lỗi", color: "bg-error-100 dark:bg-red-900/30 text-error-800 dark:text-red-300" },
+      Uploading: { text: t("documents.status.uploading"), color: "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300" },
+      Processing: { text: t("documents.status.processing"), color: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300" },
+      Completed: { text: t("documents.status.completed"), color: "bg-success-100 dark:bg-green-900/30 text-success-800 dark:text-green-300" },
+      Error: { text: t("documents.status.error"), color: "bg-error-100 dark:bg-red-900/30 text-error-800 dark:text-red-300" },
     };
     const config = statusMap[status] || statusMap.Error;
     return (
@@ -72,7 +74,7 @@ function DocumentDetailPage() {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
+    return new Date(dateString).toLocaleDateString(language === "vi" ? "vi-VN" : "en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -96,8 +98,8 @@ function DocumentDetailPage() {
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-error-100 dark:bg-error-900/30 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-error-600 dark:text-error-400"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
           </div>
-          <p className="text-sm sm:text-base lg:text-lg text-error-600 dark:text-red-400 font-medium">{error || "Không tìm thấy tài liệu"}</p>
-          <Button onClick={() => navigate(-1)}>Quay lại</Button>
+          <p className="text-sm sm:text-base lg:text-lg text-error-600 dark:text-red-400 font-medium">{error || t("documents.detail.notFound")}</p>
+          <Button onClick={() => navigate(-1)}>{t("documents.detail.back")}</Button>
         </div>
       </div>
     );
@@ -109,7 +111,7 @@ function DocumentDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
         <div className="bg-white dark:bg-slate-800 shadow-sm border border-gray-200 dark:border-slate-700 rounded-lg px-4 sm:px-6 py-4 sm:py-6 mb-4 sm:mb-6">
           <Button variant="secondary" onClick={() => navigate(-1)}>
-            ← Quay lại
+            {t("documents.detail.back")}
           </Button>
         </div>
       </div>
@@ -125,22 +127,22 @@ function DocumentDetailPage() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">Kích thước:</span>{" "}
+                  <span className="text-gray-600 dark:text-gray-400">{t("documents.detail.fileSize")}:</span>{" "}
                   <span className="font-medium text-gray-900 dark:text-gray-100">{document.fileSize} MB</span>
                 </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">Loại file:</span>{" "}
+                  <span className="text-gray-600 dark:text-gray-400">{t("documents.detail.fileType")}:</span>{" "}
                   <span className="font-medium text-gray-900 dark:text-gray-100">{document.fileType}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600 dark:text-gray-400">Ngày tải lên:</span>{" "}
+                  <span className="text-gray-600 dark:text-gray-400">{t("documents.detail.uploadDate")}:</span>{" "}
                   <span className="font-medium text-gray-900 dark:text-gray-100">
                     {formatDate(document.uploadedAt)}
                   </span>
                 </div>
                 {document.processedAt && (
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Ngày xử lý:</span>{" "}
+                    <span className="text-gray-600 dark:text-gray-400">{t("documents.detail.processDate")}:</span>{" "}
                     <span className="font-medium text-gray-900 dark:text-gray-100">
                       {formatDate(document.processedAt)}
                     </span>
@@ -155,7 +157,7 @@ function DocumentDetailPage() {
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="inline-block w-5 h-5 border-3 border-warning-600 dark:border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
               <p className="text-warning-800 dark:text-yellow-300 font-medium">
-                Tài liệu đang được xử lý. Vui lòng quay lại sau.
+                {t("documents.detail.processing")}
               </p>
             </div>
           </div>
@@ -165,7 +167,7 @@ function DocumentDetailPage() {
             <div className="flex items-start gap-2 sm:gap-3">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-error-600 dark:text-red-400 flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
               <div>
-                <p className="text-error-800 dark:text-red-300 font-medium">Đã xảy ra lỗi khi xử lý tài liệu</p>
+                <p className="text-error-800 dark:text-red-300 font-medium">{t("documents.detail.processingError")}</p>
                 {document.errorMessage && (
                   <p className="text-error-600 dark:text-red-400 text-sm mt-1">{document.errorMessage}</p>
                 )}
@@ -185,7 +187,7 @@ function DocumentDetailPage() {
                 onClick={() => setActiveTab("info")}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                Thông tin
+                {t("documents.detail.tabs.info")}
               </button>
               <button
                 className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm md:text-base transition-colors inline-flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
@@ -196,7 +198,7 @@ function DocumentDetailPage() {
                 onClick={() => setActiveTab("summary")}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[18px] sm:h-[18px]"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
-                Tóm tắt
+                {t("documents.detail.tabs.summary")}
               </button>
               <button
                 className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 font-medium text-xs sm:text-sm md:text-base transition-colors inline-flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
@@ -207,38 +209,38 @@ function DocumentDetailPage() {
                 onClick={() => setActiveTab("text")}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-[18px] sm:h-[18px]"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
-                Nội dung
+                {t("documents.detail.tabs.content")}
               </button>
             </div>
             <div className="p-4 sm:p-6 lg:p-8">
               {activeTab === "info" && (
                 <div className="space-y-4 sm:space-y-6">
                   <div>
-                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Thông tin tài liệu</h2>
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">{t("documents.detail.info.title")}</h2>
                     <div className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-700 dark:text-gray-300">
                       <p>
-                        <strong className="text-gray-900 dark:text-gray-100">Tên file gốc:</strong> {document.originalFileName}
+                        <strong className="text-gray-900 dark:text-gray-100">{t("documents.detail.info.originalFileName")}:</strong> {document.originalFileName}
                       </p>
                       <p>
-                        <strong className="text-gray-900 dark:text-gray-100">Kích thước:</strong> {document.fileSize} MB
+                        <strong className="text-gray-900 dark:text-gray-100">{t("documents.detail.info.size")}:</strong> {document.fileSize} MB
                       </p>
                       <p>
-                        <strong className="text-gray-900 dark:text-gray-100">Định dạng:</strong> {document.fileType}
+                        <strong className="text-gray-900 dark:text-gray-100">{t("documents.detail.info.format")}:</strong> {document.fileType}
                       </p>
                       <p>
-                        <strong className="text-gray-900 dark:text-gray-100">Trạng thái:</strong> {getStatusBadge(document.status)}
+                        <strong className="text-gray-900 dark:text-gray-100">{t("documents.detail.info.status")}:</strong> {getStatusBadge(document.status)}
                       </p>
                       <p>
-                        <strong className="text-gray-900 dark:text-gray-100">Ngày tải lên:</strong> {formatDate(document.uploadedAt)}
+                        <strong className="text-gray-900 dark:text-gray-100">{t("documents.detail.info.uploadDate")}:</strong> {formatDate(document.uploadedAt)}
                       </p>
                       {document.processedAt && (
                         <p>
-                          <strong className="text-gray-900 dark:text-gray-100">Ngày xử lý xong:</strong> {formatDate(document.processedAt)}
+                          <strong className="text-gray-900 dark:text-gray-100">{t("documents.detail.info.processDate")}:</strong> {formatDate(document.processedAt)}
                         </p>
                       )}
                       {document.extractedText && (
                         <p>
-                          <strong className="text-gray-900 dark:text-gray-100">Độ dài nội dung:</strong> {document.extractedText.length} ký tự
+                          <strong className="text-gray-900 dark:text-gray-100">{t("documents.detail.info.contentLength")}:</strong> {document.extractedText.length} {t("documents.detail.info.characters")}
                         </p>
                       )}
                     </div>
@@ -248,7 +250,7 @@ function DocumentDetailPage() {
               {activeTab === "summary" && (
                 <div className="space-y-4 sm:space-y-6">
                   <div>
-                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Tóm tắt tài liệu</h2>
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">{t("documents.detail.summary.title")}</h2>
                     {summary?.summaryFull ? (
                       <div className="prose dark:prose-invert max-w-none">
                         <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
@@ -260,7 +262,7 @@ function DocumentDetailPage() {
                         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-slate-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
                           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
                         </div>
-                        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">Chưa có tóm tắt cho tài liệu này</p>
+                        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">{t("documents.detail.summary.empty")}</p>
                       </div>
                     )}
                   </div>
@@ -269,7 +271,7 @@ function DocumentDetailPage() {
               {activeTab === "text" && (
                 <div className="space-y-4 sm:space-y-6">
                   <div>
-                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Nội dung trích xuất</h2>
+                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">{t("documents.detail.content.title")}</h2>
                     {document.extractedText ? (
                       <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-4 sm:p-6 border border-gray-200 dark:border-slate-700">
                         <pre className="whitespace-pre-wrap font-mono text-xs sm:text-sm text-gray-800 dark:text-gray-200 leading-relaxed overflow-x-auto">
@@ -281,7 +283,7 @@ function DocumentDetailPage() {
                         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 dark:bg-slate-700 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
                           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-12 sm:h-12 text-gray-400 dark:text-gray-500"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
                         </div>
-                        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">Không có nội dung văn bản được trích xuất</p>
+                        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">{t("documents.detail.content.empty")}</p>
                       </div>
                     )}
                   </div>

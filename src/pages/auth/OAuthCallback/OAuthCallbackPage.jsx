@@ -6,6 +6,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
+import { useLanguage } from "@contexts/LanguageContext";
 import { useToast } from "@components/common";
 import { oauthService } from "@services/api";
 import { APP_CONFIG } from "@config/app.config";
@@ -15,6 +16,7 @@ const OAuthCallbackPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { updateUser } = useAuth();
+  const { t } = useLanguage();
   const toast = useToast();
   const [status, setStatus] = useState("processing");
   const [error, setError] = useState("");
@@ -53,31 +55,31 @@ const OAuthCallbackPage = () => {
 
         setStatus("error");
 
-        let errorMessage = "Đăng nhập thất bại";
+        let errorMessage = t("auth.oauthCallback.failed");
         switch (errorParam) {
           case "access_denied":
-            errorMessage = "Bạn đã từ chối quyền truy cập";
+            errorMessage = t("auth.oauthCallback.accessDenied");
             break;
           case "invalid_request":
-            errorMessage = "Yêu cầu không hợp lệ";
+            errorMessage = t("auth.oauthCallback.invalidRequest");
             break;
           case "unauthorized_client":
-            errorMessage = "Ứng dụng không được phép truy cập";
+            errorMessage = t("auth.oauthCallback.unauthorizedClient");
             break;
           case "unsupported_response_type":
-            errorMessage = "Loại phản hồi không được hỗ trợ";
+            errorMessage = t("auth.oauthCallback.unsupportedResponseType");
             break;
           case "invalid_scope":
-            errorMessage = "Phạm vi quyền không hợp lệ";
+            errorMessage = t("auth.oauthCallback.invalidScope");
             break;
           case "server_error":
-            errorMessage = "Lỗi máy chủ OAuth";
+            errorMessage = t("auth.oauthCallback.serverError");
             break;
           case "temporarily_unavailable":
-            errorMessage = "Dịch vụ OAuth tạm thời không khả dụng";
+            errorMessage = t("auth.oauthCallback.temporarilyUnavailable");
             break;
           default:
-            errorMessage = errorDescription || `Lỗi: ${errorParam}`;
+            errorMessage = errorDescription || `Error: ${errorParam}`;
         }
 
         setError(errorMessage);
@@ -120,7 +122,7 @@ const OAuthCallbackPage = () => {
       updateUser(response.user);
 
       setStatus("success");
-      toast.showSuccess("Đăng nhập thành công!");
+      toast.showSuccess(t("auth.oauthCallback.success"));
 
       // Clean up processed code after successful login
       sessionStorage.removeItem(processedKey);
@@ -163,8 +165,8 @@ const OAuthCallbackPage = () => {
         {status === "processing" && (
           <div className="space-y-3 sm:space-y-4">
             <div className="inline-block w-10 h-10 sm:w-12 sm:h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Đang xử lý đăng nhập...</h2>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Vui lòng đợi trong giây lát</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{t("auth.oauthCallback.processing")}</h2>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t("auth.oauthCallback.pleaseWait")}</p>
           </div>
         )}
 
@@ -173,8 +175,8 @@ const OAuthCallbackPage = () => {
             <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-green-100 dark:bg-green-900/30 rounded-full text-2xl sm:text-4xl text-green-600 dark:text-green-400">
               ✓
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Đăng nhập thành công!</h2>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Đang chuyển hướng...</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{t("auth.oauthCallback.success")}</h2>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{t("auth.oauthCallback.redirecting")}</p>
           </div>
         )}
 
@@ -183,9 +185,9 @@ const OAuthCallbackPage = () => {
             <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-red-100 dark:bg-red-900/30 rounded-full text-2xl sm:text-4xl text-red-600 dark:text-red-400">
               ✗
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Đăng nhập thất bại</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{t("auth.oauthCallback.failed")}</h2>
             <p className="text-sm sm:text-base text-red-600 dark:text-red-400">{error}</p>
-            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Đang quay lại trang đăng nhập...</p>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{t("auth.oauthCallback.returningToLogin")}</p>
           </div>
         )}
       </div>

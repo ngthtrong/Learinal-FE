@@ -5,17 +5,20 @@
 
 import React from "react";
 import { getPasswordStrength } from "@/utils/validators";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const PasswordStrengthIndicator = ({ password }) => {
+  const { t } = useLanguage();
+
   if (!password) return null;
 
   const { strength, score } = getPasswordStrength(password);
 
   const strengthLabels = {
-    weak: "Yếu",
-    medium: "Trung bình",
-    strong: "Mạnh",
-    "very-strong": "Rất mạnh",
+    weak: t("components.passwordStrength.weak"),
+    medium: t("components.passwordStrength.medium"),
+    strong: t("components.passwordStrength.strong"),
+    "very-strong": t("components.passwordStrength.veryStrong"),
   };
 
   const strengthColors = {

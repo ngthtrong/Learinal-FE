@@ -310,7 +310,7 @@ const PublicSetsPage = () => {
                     {/* Creator & Subject info */}
                     <div className="text-sm text-gray-700 dark:text-gray-400 mb-3 space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">Tạo bởi:</span>
+                        <span className="font-medium">{t("publicSets.createdBy")}</span>
                         <span className="flex items-center gap-1">
                           {creatorName}
                           {isExpertSet && (
@@ -322,7 +322,7 @@ const PublicSetsPage = () => {
                       </div>
                       {subjectName && (
                         <div>
-                          <span className="font-medium">Môn học:</span> {subjectName}
+                          <span className="font-medium">{t("publicSets.subject")}</span> {subjectName}
                         </div>
                       )}
                     </div>
@@ -331,21 +331,21 @@ const PublicSetsPage = () => {
                     <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2 items-center">
                       {questionCount > 0 && (
                         <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 text-xs font-medium rounded-full bg-primary-500/20 text-primary-700 dark:text-primary-300 border border-primary-500/30">
-                          {questionCount} câu hỏi
+                          {questionCount} {t("publicSets.questions")}
                         </span>
                       )}
                       {difficulty && (
                         <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30">
                           {difficulty === "Easy"
-                            ? "Dễ"
+                            ? t("publicSets.difficultyEasy")
                             : difficulty === "Hard"
-                            ? "Khó"
-                            : "Trung bình"}
+                            ? t("publicSets.difficultyHard")
+                            : t("publicSets.difficultyMedium")}
                         </span>
                       )}
                       <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-green-500/20 text-green-700 dark:text-green-300 border border-green-500/30 inline-flex items-center gap-1">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path><path d="M2 12h20"></path></svg>
-                        Chung
+                        {t("publicSets.public")}
                       </span>
                     </div>
 
@@ -359,7 +359,7 @@ const PublicSetsPage = () => {
                         className="w-1/2 px-3 py-2 text-sm font-medium text-gray-900 dark:text-white bg-white dark:bg-slate-700 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600 hover:border-primary-500 dark:hover:border-primary-500 transition-all shadow-sm inline-flex items-center justify-center gap-1.5"
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        Xem chi tiết
+                        {t("publicSets.viewDetails")}
                       </button>
                       <button
                         onClick={(e) => {

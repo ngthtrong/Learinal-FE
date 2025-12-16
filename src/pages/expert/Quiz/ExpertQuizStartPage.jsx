@@ -9,6 +9,7 @@ import questionSetsService from "@/services/api/questionSets.service";
 import Button from "@/components/common/Button";
 import { useToast } from "@/components/common";
 import { useActiveQuiz } from "@/contexts/ActiveQuizContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function ExpertQuizStartPage() {
   const { id } = useParams();
@@ -16,13 +17,14 @@ function ExpertQuizStartPage() {
   const location = useLocation();
   const toast = useToast();
   const { startQuizTimer } = useActiveQuiz();
+  const { t } = useLanguage();
   const [questionSet, setQuestionSet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
 
   useEffect(() => {
     if (!id || id === 'undefined') {
-      toast.showError("ID bộ đề không hợp lệ");
+      toast.showError(t("expertPages.quiz.start.invalidId"));
       navigate('/expert/question-sets');
       return;
     }
@@ -39,7 +41,7 @@ function ExpertQuizStartPage() {
       setQuestionSet(data);
     } catch (err) {
       console.error("Failed to fetch question set:", err);
-      toast.showError(err?.response?.data?.message || "Không thể tải bộ đề");
+      toast.showError(err?.response?.data?.message || t("expertPages.quiz.start.loadError"));
       setTimeout(() => navigate('/expert/question-sets'), 2000);
     } finally {
       setLoading(false);
@@ -50,7 +52,7 @@ function ExpertQuizStartPage() {
     try {
       console.log("Starting quiz with id:", id);
       if (!id || id === 'undefined') {
-        toast.showError("ID bộ đề không hợp lệ");
+        toast.showError(t("expertPages.quiz.start.invalidId"));
         navigate('/expert/question-sets');
         return;
       }
@@ -80,7 +82,7 @@ function ExpertQuizStartPage() {
       
       // Navigate to expert quiz taking page
       if (!attemptId) {
-        throw new Error("Không nhận được ID của bài làm");
+        throw new Error(t("expertPages.quiz.start.attemptIdError"));
       }
       
       console.log("Navigating to quiz take page with attemptId:", attemptId);
@@ -93,7 +95,7 @@ function ExpertQuizStartPage() {
       });
     } catch (err) {
       console.error("Start quiz error:", err);
-      toast.showError(err?.response?.data?.message || "Không thể bắt đầu làm bài");
+      toast.showError(err?.response?.data?.message || t("expertPages.quiz.start.startError"));
       navigate('/expert/question-sets');
     } finally {
       setStarting(false);
@@ -105,7 +107,7 @@ function ExpertQuizStartPage() {
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-600">Đang tải...</p>
+          <p className="text-gray-600">{t("expertPages.quiz.start.loading")}</p>
         </div>
       </div>
     );
@@ -134,23 +136,23 @@ function ExpertQuizStartPage() {
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">{questionSet.description}</p>
             )}
             <div className="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400">
-              👨‍🏫 Chế độ Expert - Làm bài thử
+              {t("expertPages.quiz.start.expertMode")}
             </div>
           </div>
 
           <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Thông tin bài thi</h2>
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">{t("expertPages.quiz.start.quizInfo")}</h2>
             <div className="space-y-2 sm:space-y-3 text-sm sm:text-base">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Số câu hỏi:</span>
+                <span className="text-gray-600">{t("expertPages.quiz.start.questionCount")}</span>
                 <span className="font-medium text-gray-900">
-                  {questionSet.questionCount || questionSet.questions?.length || 0} câu
+                  {questionSet.questionCount || questionSet.questions?.length || 0} {t("expertPages.quiz.start.questionsUnit")}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Trạng thái:</span>
+                <span className="text-gray-600">{t("expertPages.quiz.start.status")}</span>
                 <span className="font-medium text-gray-900">
-                  {questionSet.status === "Draft" ? "Bản nháp" : "Công khai"}
+                  {questionSet.status === "Draft" ? t("expertPages.quiz.start.statusDraft") : t("expertPages.quiz.start.statusPublic")}
                 </span>
               </div>
             </div>
@@ -162,11 +164,11 @@ function ExpertQuizStartPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
               <div className="text-xs sm:text-sm text-blue-800 dark:text-blue-300">
-                <p className="font-medium mb-1">Lưu ý:</p>
+                <p className="font-medium mb-1">{t("expertPages.quiz.start.notice")}</p>
                 <ul className="list-disc list-inside space-y-0.5 sm:space-y-1">
-                  <li>Đây là chế độ làm bài thử dành cho Expert</li>
-                  <li>Kết quả sẽ được lưu lại để bạn xem lại</li>
-                  <li>Bạn có thể làm lại bài nhiều lần</li>
+                  <li>{t("expertPages.quiz.start.notice1")}</li>
+                  <li>{t("expertPages.quiz.start.notice2")}</li>
+                  <li>{t("expertPages.quiz.start.notice3")}</li>
                 </ul>
               </div>
             </div>
@@ -179,14 +181,14 @@ function ExpertQuizStartPage() {
               disabled={starting}
               className="w-full sm:flex-1 order-2 sm:order-1"
             >
-              Quay lại
+              {t("expertPages.quiz.start.goBack")}
             </Button>
             <Button
               onClick={handleStartQuiz}
               disabled={starting}
               className="w-full sm:flex-1 order-1 sm:order-2"
             >
-              {starting ? "Đang bắt đầu..." : "Bắt đầu làm bài"}
+              {starting ? t("expertPages.quiz.start.starting") : t("expertPages.quiz.start.startQuiz")}
             </Button>
           </div>
         </div>

@@ -5,10 +5,12 @@
  */
 
 import { useActiveQuiz } from "@/contexts/ActiveQuizContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function ActiveQuizBanner() {
   const { activeQuiz, timeRemaining, isAutoSubmitting } = useActiveQuiz();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -64,7 +66,7 @@ function ActiveQuizBanner() {
 
       {/* Quiz info */}
       <div className="flex flex-col">
-        <span className="text-xs opacity-90">Đang làm bài:</span>
+        <span className="text-xs opacity-90">{t("components.activeQuizBanner.takingQuiz")}</span>
         <span className="font-medium text-sm truncate max-w-[150px] sm:max-w-[250px]">
           {activeQuiz.questionSetTitle}
         </span>
@@ -72,7 +74,7 @@ function ActiveQuizBanner() {
 
       {/* Time remaining */}
       <div className={`font-bold text-lg tabular-nums ${isCritical ? "text-white" : ""}`}>
-        {isAutoSubmitting ? "Đang nộp..." : formatTime(timeRemaining)}
+        {isAutoSubmitting ? t("components.activeQuizBanner.submitting") : formatTime(timeRemaining)}
       </div>
 
       {/* Return button */}
@@ -87,7 +89,7 @@ function ActiveQuizBanner() {
                 : "bg-white text-primary-600 hover:bg-primary-100"
           }`}
         >
-          Quay lại
+          {t("components.activeQuizBanner.returnButton")}
         </button>
       )}
     </div>

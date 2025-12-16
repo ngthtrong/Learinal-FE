@@ -7,10 +7,12 @@ import { useNavigate } from "react-router-dom";
 import { Button, Input, useToast } from "@/components/common";
 import documentsService from "@/services/api/documents.service";
 import questionSetsService from "@/services/api/questionSets.service";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function ExpertCreateByUploadPage() {
   const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
+  const { t } = useLanguage();
   
   const [step, setStep] = useState(1); // 1: Upload, 2: Preview & Edit, 3: Done
   const [uploading, setUploading] = useState(false);
@@ -40,7 +42,7 @@ function ExpertCreateByUploadPage() {
 
   const handleUpload = async () => {
     if (!file) {
-      showError("Vui lòng chọn file");
+      showError(t("expertPages.createByUpload.errors.selectFile"));
       return;
     }
 
@@ -53,11 +55,11 @@ function ExpertCreateByUploadPage() {
       const docId = response?.data?.id || response?.id;
       
       setUploadedDocId(docId);
-      showSuccess("Upload thành công! Nhập thông tin bộ đề");
+      showSuccess(t("expertPages.createByUpload.success.uploaded"));
       setStep(2);
     } catch (err) {
       console.error("Upload failed:", err);
-      showError(err?.response?.data?.message || "Upload thất bại");
+      showError(err?.response?.data?.message || t("expertPages.createByUpload.errors2.uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -65,7 +67,7 @@ function ExpertCreateByUploadPage() {
 
   const handleGenerate = async () => {
     if (!title.trim()) {
-      showError("Vui lòng nhập tiêu đề");
+      showError(t("expertPages.createByUpload.errors.enterTitle"));
       return;
     }
 
@@ -84,11 +86,11 @@ function ExpertCreateByUploadPage() {
       const generatedQuestions = response?.questions || [];
       
       setQuestions(generatedQuestions);
-      showSuccess("Đã tạo câu hỏi! Xem và chỉnh sửa trước khi lưu");
+      showSuccess(t("expertPages.createByUpload.success.generated"));
       setStep(3);
     } catch (err) {
       console.error("Generation failed:", err);
-      showError(err?.response?.data?.message || "Tạo câu hỏi thất bại");
+      showError(err?.response?.data?.message || t("expertPages.createByUpload.errors2.generateFailed"));
     } finally {
       setGenerating(false);
     }
@@ -108,7 +110,7 @@ function ExpertCreateByUploadPage() {
 
   const handleSave = async () => {
     if (questions.length === 0) {
-      showError("Không có câu hỏi để lưu");
+      showError(t("expertPages.createByUpload.errors.noQuestions"));
       return;
     }
 
@@ -124,11 +126,11 @@ function ExpertCreateByUploadPage() {
       const response = await questionSetsService.createQuestionSet(payload);
       const setId = response?.data?.id || response?.id;
       
-      showSuccess("Đã lưu bộ đề thành công!");
+      showSuccess(t("expertPages.createByUpload.success.saved"));
       navigate(`/question-sets/${setId}`);
     } catch (err) {
       console.error("Save failed:", err);
-      showError(err?.response?.data?.message || "Lưu bộ đề thất bại");
+      showError(err?.response?.data?.message || t("expertPages.createByUpload.errors2.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -140,24 +142,24 @@ function ExpertCreateByUploadPage() {
         {/* Header */}
         <div className="mb-6">
           <Button variant="secondary" onClick={() => navigate("/expert/question-sets")} className="w-full sm:w-auto">
-            ← Quay lại
+            {t("expertPages.common.goBack")}
           </Button>
         </div>
 
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Tạo bộ đề từ tài liệu
+            {t("expertPages.createByUpload.pageTitle")}
           </h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-6 sm:mb-8">
-            Upload tài liệu và AI sẽ tạo câu hỏi, bạn có thể chỉnh sửa trước khi lưu
+            {t("expertPages.createByUpload.pageSubtitle")}
           </p>
 
           {/* Progress Steps */}
           <div className="flex items-center justify-between mb-8">
             {[
-              { num: 1, label: "Upload tài liệu" },
-              { num: 2, label: "Thông tin bộ đề" },
-              { num: 3, label: "Xem & Chỉnh sửa" },
+              { num: 1, label: t("expertPages.createByUpload.steps.upload") },
+              { num: 2, label: t("expertPages.createByUpload.steps.info") },
+              { num: 3, label: t("expertPages.createByUpload.steps.preview") },
             ].map((s, i) => (
               <div key={s.num} className="flex items-center flex-1">
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
@@ -186,7 +188,7 @@ function ExpertCreateByUploadPage() {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Chọn tài liệu
+                  {t("expertPages.createByUpload.step1.selectFile")}
                 </label>
                 <input
                   type="file"
@@ -195,14 +197,14 @@ function ExpertCreateByUploadPage() {
                   className="block w-full text-sm text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-slate-600 rounded-lg cursor-pointer bg-gray-50 dark:bg-slate-700 focus:outline-none"
                 />
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Hỗ trợ: PDF, DOCX, TXT (tối đa 10MB)
+                  {t("expertPages.createByUpload.step1.fileTypes")}
                 </p>
               </div>
 
               {file && (
                 <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
                   <p className="text-sm text-blue-800 dark:text-blue-300">
-                    <span className="font-medium">File đã chọn:</span> {file.name}
+                    <span className="font-medium">{t("expertPages.createByUpload.step1.selectedFile")}</span> {file.name}
                   </p>
                 </div>
               )}
@@ -212,7 +214,7 @@ function ExpertCreateByUploadPage() {
                 disabled={!file || uploading}
                 className="w-full"
               >
-                {uploading ? "Đang upload..." : "Upload và tiếp tục"}
+                {uploading ? t("expertPages.createByUpload.step1.uploading") : t("expertPages.createByUpload.step1.uploadContinue")}
               </Button>
             </div>
           )}
@@ -221,8 +223,8 @@ function ExpertCreateByUploadPage() {
           {step === 2 && (
             <div className="space-y-6">
               <Input
-                label="Tiêu đề bộ đề"
-                placeholder="Nhập tiêu đề..."
+                label={t("expertPages.createByUpload.step2.title")}
+                placeholder={t("expertPages.createByUpload.step2.titlePlaceholder")}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
@@ -230,12 +232,12 @@ function ExpertCreateByUploadPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Mô tả
+                  {t("expertPages.createByUpload.step2.description")}
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Mô tả ngắn về bộ đề..."
+                  placeholder={t("expertPages.createByUpload.step2.descriptionPlaceholder")}
                   rows="3"
                   className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
@@ -244,7 +246,7 @@ function ExpertCreateByUploadPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Số câu hỏi
+                    {t("expertPages.createByUpload.step2.numQuestions")}
                   </label>
                   <input
                     type="number"
@@ -258,44 +260,44 @@ function ExpertCreateByUploadPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Độ khó
+                    {t("expertPages.createByUpload.step2.difficulty")}
                   </label>
                   <select
                     value={difficulty}
                     onChange={(e) => setDifficulty(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                   >
-                    <option value="Easy">Dễ</option>
-                    <option value="Medium">Trung bình</option>
-                    <option value="Hard">Khó</option>
+                    <option value="Easy">{t("expertPages.createByUpload.difficulty.easy")}</option>
+                    <option value="Medium">{t("expertPages.createByUpload.difficulty.medium")}</option>
+                    <option value="Hard">{t("expertPages.createByUpload.difficulty.hard")}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Loại câu hỏi
+                    {t("expertPages.createByUpload.step2.questionType")}
                   </label>
                   <select
                     value={questionType}
                     onChange={(e) => setQuestionType(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                   >
-                    <option value="multiple-choice">Trắc nghiệm</option>
-                    <option value="true-false">Đúng/Sai</option>
+                    <option value="multiple-choice">{t("expertPages.createByUpload.questionTypes.multipleChoice")}</option>
+                    <option value="true-false">{t("expertPages.createByUpload.questionTypes.trueFalse")}</option>
                   </select>
                 </div>
               </div>
 
               <div className="flex gap-3">
                 <Button variant="secondary" onClick={() => setStep(1)}>
-                  ← Quay lại
+                  {t("expertPages.common.goBack")}
                 </Button>
                 <Button
                   onClick={handleGenerate}
                   disabled={!title.trim() || generating}
                   className="flex-1"
                 >
-                  {generating ? "Đang tạo câu hỏi..." : "Tạo câu hỏi"}
+                  {generating ? t("expertPages.createByUpload.step2.generating") : t("expertPages.createByUpload.step2.generate")}
                 </Button>
               </div>
             </div>
@@ -306,7 +308,7 @@ function ExpertCreateByUploadPage() {
             <div className="space-y-6">
               <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                 <p className="text-sm text-green-800 dark:text-green-300">
-                  ✓ Đã tạo {questions.length} câu hỏi. Xem và chỉnh sửa trước khi lưu.
+                  {t("expertPages.createByUpload.step3.generated", { count: questions.length })}
                 </p>
               </div>
 
@@ -315,16 +317,16 @@ function ExpertCreateByUploadPage() {
                   <div key={qIdx} className="border border-gray-200 dark:border-slate-700 rounded-lg p-4 bg-gray-50 dark:bg-slate-900">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        Câu #{qIdx + 1}
+                        {t("expertPages.createByUpload.step3.question", { num: qIdx + 1 })}
                       </span>
                       <select
                         value={q.difficultyLevel || "Medium"}
                         onChange={(e) => handleQuestionChange(qIdx, "difficultyLevel", e.target.value)}
                         className="text-xs px-2 py-1 border border-gray-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
                       >
-                        <option value="Easy">Dễ</option>
-                        <option value="Medium">Trung bình</option>
-                        <option value="Hard">Khó</option>
+                        <option value="Easy">{t("expertPages.createByUpload.difficulty.easy")}</option>
+                        <option value="Medium">{t("expertPages.createByUpload.difficulty.medium")}</option>
+                        <option value="Hard">{t("expertPages.createByUpload.difficulty.hard")}</option>
                       </select>
                     </div>
 
@@ -337,7 +339,7 @@ function ExpertCreateByUploadPage() {
 
                     <div className="space-y-2">
                       <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">
-                        Phương án (Click radio để chọn đáp án đúng)
+                        {t("expertPages.createByUpload.step3.options")}
                       </div>
                       {q.options?.map((opt, oIdx) => (
                         <div key={oIdx} className="flex items-center gap-2">
@@ -368,7 +370,7 @@ function ExpertCreateByUploadPage() {
                     {q.explanation && (
                       <div className="mt-3">
                         <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                          Giải thích
+                          {t("expertPages.createByUpload.step3.explanation")}
                         </label>
                         <textarea
                           value={q.explanation || ""}
@@ -384,14 +386,14 @@ function ExpertCreateByUploadPage() {
 
               <div className="flex gap-3">
                 <Button variant="secondary" onClick={() => setStep(2)}>
-                  ← Quay lại
+                  {t("expertPages.common.goBack")}
                 </Button>
                 <Button
                   onClick={handleSave}
                   disabled={saving}
                   className="flex-1"
                 >
-                  {saving ? "Đang lưu..." : "Lưu bộ đề"}
+                  {saving ? t("expertPages.createByUpload.step3.saving") : t("expertPages.createByUpload.step3.save")}
                 </Button>
               </div>
             </div>

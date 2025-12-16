@@ -3,6 +3,7 @@ import Button from "./Button";
 import { contentFlagsService } from "@/services/api";
 import { useToast } from "./ToastContainer";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 /**
  * Report Content Modal
@@ -10,24 +11,25 @@ import { getErrorMessage } from "@/utils/errorHandler";
  */
 const ReportContentModal = ({ isOpen, onClose, onSuccess, contentType, contentId, contentTitle }) => {
   const toast = useToast();
+  const { t } = useLanguage();
   const [submitting, setSubmitting] = useState(false);
   const [reason, setReason] = useState("Inaccurate");
   const [description, setDescription] = useState("");
 
   const reasons = [
-    { value: "Inaccurate", label: "Nội dung sai lệch/không chính xác" },
-    { value: "Inappropriate", label: "Nội dung không phù hợp" },
-    { value: "Spam", label: "Spam/Nội dung rác" },
-    { value: "Offensive", label: "Ngôn từ xúc phạm" },
-    { value: "Copyright", label: "Vi phạm bản quyền" },
-    { value: "Other", label: "Lý do khác" },
+    { value: "Inaccurate", labelKey: "reasonInaccurate" },
+    { value: "Inappropriate", labelKey: "reasonInappropriate" },
+    { value: "Spam", labelKey: "reasonSpam" },
+    { value: "Offensive", labelKey: "reasonOffensive" },
+    { value: "Copyright", labelKey: "reasonCopyright" },
+    { value: "Other", labelKey: "reasonOther" },
   ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!description.trim()) {
-      toast.showError("Vui lòng mô tả chi tiết vấn đề");
+      toast.showError(t("components.reportContentModal.descriptionRequired"));
       return;
     }
 
@@ -40,7 +42,7 @@ const ReportContentModal = ({ isOpen, onClose, onSuccess, contentType, contentId
         description: description.trim(),
       });
 
-      toast.showSuccess("Đã gửi báo cáo. Chúng tôi sẽ xem xét và phản hồi sớm nhất.");
+      toast.showSuccess(t("components.reportContentModal.successMessage"));
       setDescription("");
       setReason("Inaccurate");
       
@@ -93,17 +95,17 @@ const ReportContentModal = ({ isOpen, onClose, onSuccess, contentType, contentId
           <form onSubmit={handleSubmit} className="px-6 py-5">
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2" id="modal-title">
-                Báo cáo vấn đề
+                {t("components.reportContentModal.title")}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Đang báo cáo: <strong className="text-gray-900 dark:text-gray-100">{contentTitle}</strong>
+                {t("components.reportContentModal.reportingLabel")} <strong className="text-gray-900 dark:text-gray-100">{contentTitle}</strong>
               </p>
             </div>
 
             {/* Reason Selection */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Lý do báo cáo <span className="text-red-500">*</span>
+                {t("components.reportContentModal.reasonLabel")} <span className="text-red-500">*</span>
               </label>
               <select
                 value={reason}
@@ -113,7 +115,7 @@ const ReportContentModal = ({ isOpen, onClose, onSuccess, contentType, contentId
               >
                 {reasons.map((r) => (
                   <option key={r.value} value={r.value}>
-                    {r.label}
+                    {t(`components.reportContentModal.${r.labelKey}`)}
                   </option>
                 ))}
               </select>
@@ -122,12 +124,12 @@ const ReportContentModal = ({ isOpen, onClose, onSuccess, contentType, contentId
             {/* Description */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Mô tả chi tiết <span className="text-red-500">*</span>
+                {t("components.reportContentModal.descriptionLabel")} <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Vui lòng mô tả cụ thể vấn đề bạn gặp phải (câu hỏi nào sai, sai như thế nào, v.v...)"
+                placeholder={t("components.reportContentModal.descriptionPlaceholder")}
                 rows={4}
                 maxLength={500}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none"
@@ -145,11 +147,11 @@ const ReportContentModal = ({ isOpen, onClose, onSuccess, contentType, contentId
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div className="text-sm text-blue-800 dark:text-blue-300">
-                  <p className="font-semibold mb-1">Quy trình xử lý:</p>
+                  <p className="font-semibold mb-1">{t("components.reportContentModal.processTitle")}</p>
                   <ul className="list-disc list-inside space-y-1 text-xs">
-                    <li>Admin sẽ xem xét báo cáo của bạn</li>
-                    <li>Nếu hợp lệ, yêu cầu sẽ được gửi đến Expert để sửa lỗi</li>
-                    <li>Bạn sẽ nhận thông báo khi có cập nhật</li>
+                    <li>{t("components.reportContentModal.processStep1")}</li>
+                    <li>{t("components.reportContentModal.processStep2")}</li>
+                    <li>{t("components.reportContentModal.processStep3")}</li>
                   </ul>
                 </div>
               </div>
@@ -163,7 +165,7 @@ const ReportContentModal = ({ isOpen, onClose, onSuccess, contentType, contentId
                 className="flex-1 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
                 disabled={submitting}
               >
-                {submitting ? "Đang gửi..." : "Gửi báo cáo"}
+                {submitting ? t("components.reportContentModal.submitting") : t("components.reportContentModal.submitButton")}
               </Button>
               <Button
                 type="button"
@@ -172,7 +174,7 @@ const ReportContentModal = ({ isOpen, onClose, onSuccess, contentType, contentId
                 className="flex-1"
                 disabled={submitting}
               >
-                Hủy
+                {t("components.reportContentModal.cancelButton")}
               </Button>
             </div>
           </form>

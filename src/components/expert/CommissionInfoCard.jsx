@@ -5,8 +5,10 @@
 import { useState } from "react";
 import CoinsIcon from "@/components/icons/CoinsIcon";
 import DashboardIcon from "@/components/icons/DashboardIcon";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const CommissionInfoCard = () => {
+  const { t } = useLanguage();
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -14,17 +16,17 @@ const CommissionInfoCard = () => {
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-lg font-semibold text-primary-800 dark:text-primary-200 mb-2">
-            💡 Cách tính hoa hồng
+            {t("components.commissionInfoCard.title")}
           </h3>
           <p className="text-sm text-primary-700 dark:text-primary-300">
-            Hệ thống Hybrid Model = Fixed Rate + Revenue Bonus
+            {t("components.commissionInfoCard.subtitle")}
           </p>
         </div>
         <button
           onClick={() => setExpanded(!expanded)}
           className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
         >
-          {expanded ? "Thu gọn" : "Xem chi tiết"}
+          {expanded ? t("components.commissionInfoCard.collapse") : t("components.commissionInfoCard.viewDetails")}
         </button>
       </div>
 
@@ -36,21 +38,21 @@ const CommissionInfoCard = () => {
               <CoinsIcon size={18} className="text-white" />
             </div>
             <div>
-              <h4 className="font-medium text-blue-700 dark:text-blue-300">Fixed Rate</h4>
+              <h4 className="font-medium text-blue-700 dark:text-blue-300">{t("components.commissionInfoCard.fixedRateTitle")}</h4>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Thu nhập cố định mỗi lần có người làm quiz:
+                {t("components.commissionInfoCard.fixedRateDesc")}
               </p>
               <ul className="text-sm mt-2 space-y-1">
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-blue-500"></span>
                   <span className="text-gray-700 dark:text-gray-300">
-                    <strong>Published:</strong> 300₫/lượt - Bạn tự tạo và publish bộ đề
+                    <strong>{t("components.commissionInfoCard.published")}:</strong> {t("components.commissionInfoCard.publishedDesc")}
                   </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-purple-500"></span>
                   <span className="text-gray-700 dark:text-gray-300">
-                    <strong>Validated:</strong> 150₫/lượt - Bạn kiểm duyệt bộ đề của Learner
+                    <strong>{t("components.commissionInfoCard.validated")}:</strong> {t("components.commissionInfoCard.validatedDesc")}
                   </span>
                 </li>
               </ul>
@@ -63,26 +65,26 @@ const CommissionInfoCard = () => {
               <DashboardIcon size={18} className="text-white" />
             </div>
             <div>
-              <h4 className="font-medium text-amber-700 dark:text-amber-300">Revenue Bonus</h4>
+              <h4 className="font-medium text-amber-700 dark:text-amber-300">{t("components.commissionInfoCard.revenueBonusTitle")}</h4>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Thưởng thêm khi content đạt <strong>&gt;100 lượt/tháng</strong>:
+                {t("components.commissionInfoCard.revenueBonusDesc")}
               </p>
               <ul className="text-sm mt-2 space-y-1">
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-blue-500"></span>
                   <span className="text-gray-700 dark:text-gray-300">
-                    <strong>Published:</strong> +5% doanh thu từ lượt vượt ngưỡng
+                    <strong>{t("components.commissionInfoCard.published")}:</strong> {t("components.commissionInfoCard.publishedBonus")}
                   </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-purple-500"></span>
                   <span className="text-gray-700 dark:text-gray-300">
-                    <strong>Validated:</strong> +2% doanh thu từ lượt vượt ngưỡng
+                    <strong>{t("components.commissionInfoCard.validated")}:</strong> {t("components.commissionInfoCard.validatedBonus")}
                   </span>
                 </li>
               </ul>
               <p className="text-xs text-gray-500 dark:text-gray-500 mt-2 italic">
-                * Bonus được tính vào đầu tháng sau cho tháng trước
+                {t("components.commissionInfoCard.bonusNote")}
               </p>
             </div>
           </div>
@@ -90,26 +92,26 @@ const CommissionInfoCard = () => {
           {/* Example */}
           <div className="p-3 bg-gray-50 dark:bg-gray-800/80 rounded-lg border border-gray-200 dark:border-gray-700">
             <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              📊 Ví dụ: Bạn có bộ đề Published với 250 lượt/tháng
+              {t("components.commissionInfoCard.exampleTitle")}
             </h4>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-gray-500 dark:text-gray-400">Fixed:</span>
+                <span className="text-gray-500 dark:text-gray-400">{t("components.commissionInfoCard.fixedLabel")}</span>
                 <span className="ml-2 text-blue-600 dark:text-blue-400 font-medium">
-                  250 × 300₫ = 75,000₫
+                  {t("components.commissionInfoCard.fixedCalc")}
                 </span>
               </div>
               <div>
-                <span className="text-gray-500 dark:text-gray-400">Bonus:</span>
+                <span className="text-gray-500 dark:text-gray-400">{t("components.commissionInfoCard.bonusLabel")}</span>
                 <span className="ml-2 text-amber-600 dark:text-amber-400 font-medium">
-                  (250-100) × 500₫ × 5% = 3,750₫
+                  {t("components.commissionInfoCard.bonusCalc")}
                 </span>
               </div>
             </div>
             <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
-              <span className="text-gray-600 dark:text-gray-400">Tổng thu nhập:</span>
+              <span className="text-gray-600 dark:text-gray-400">{t("components.commissionInfoCard.totalIncome")}</span>
               <span className="ml-2 text-emerald-600 dark:text-emerald-400 font-bold">
-                78,750₫
+                {t("components.commissionInfoCard.totalAmount")}
               </span>
             </div>
           </div>

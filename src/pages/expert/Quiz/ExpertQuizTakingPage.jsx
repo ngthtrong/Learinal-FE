@@ -1,7 +1,3 @@
-/**
- * Expert Quiz Taking Page
- * Copy of QuizTakingPage but uses expert navigation routes
- */
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import questionSetsService from "@/services/api/questionSets.service";
@@ -10,12 +6,14 @@ import Button from "@/components/common/Button";
 import { useToast, Modal } from "@/components/common";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { useActiveQuiz } from "@/contexts/ActiveQuizContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function ExpertQuizTakingPage() {
   const { attemptId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const toast = useToast();
+  const { t } = useLanguage();
   const { startQuizTimer, clearActiveQuiz, timeRemaining: contextTimeRemaining, isActiveQuiz } = useActiveQuiz();
 
   // Settings from QuizStartPage (initial values, may be updated from attempt data)
@@ -106,7 +104,7 @@ function ExpertQuizTakingPage() {
       
       // ✅ Check if attempt is already completed - prevent re-taking
       if (attempt.isCompleted) {
-        toast.showWarning("Bài thi này đã được nộp. Chuyển đến trang kết quả...");
+        toast.showWarning(t("expertPages.quiz.taking.alreadySubmitted"));
         setTimeout(() => {
           navigate(`/expert/quiz/result/${attemptId}`, { replace: true });
         }, 1500);
@@ -131,7 +129,7 @@ function ExpertQuizTakingPage() {
 
         if (remaining <= 0) {
           // Time already expired - auto submit
-          toast.showWarning("Thời gian làm bài đã hết! Đang tự động nộp bài...");
+          toast.showWarning(t("expertPages.quiz.taking.timeExpiredAutoSubmit"));
           setTimerEnabled(true);
           setLocalTimeRemaining(0);
           // Let the timer effect handle auto-submit
@@ -175,7 +173,7 @@ function ExpertQuizTakingPage() {
 
   const loadQuestions = (qSet) => {
     if (!qSet || !qSet.questions) {
-      toast.showError("Không tìm thấy câu hỏi");
+      toast.showError(t("expertPages.quiz.taking.questionsNotFound"));
       return;
     }
 
@@ -195,7 +193,7 @@ function ExpertQuizTakingPage() {
     if (autoSubmitRef.current) return;
     autoSubmitRef.current = true;
 
-    toast.showInfo("Hết thời gian! Đang tự động nộp bài...");
+    toast.showInfo(t("expertPages.quiz.taking.timeUpAutoSubmit"));
 
     try {
       setSubmitting(true);
@@ -299,7 +297,7 @@ function ExpertQuizTakingPage() {
       clearActiveQuiz();
 
       if (!isAutoSubmit) {
-        toast.showSuccess("Nộp bài thành công!");
+        toast.showSuccess(t("expertPages.quiz.taking.submitSuccess"));
       }
 
       // Navigate to expert result page
@@ -329,7 +327,7 @@ function ExpertQuizTakingPage() {
       <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="inline-block w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin"></div>
-          <p className="text-gray-600 dark:text-gray-400">Đang tải bài thi...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t("expertPages.quiz.taking.loadingQuiz")}</p>
         </div>
       </div>
     );
@@ -339,8 +337,8 @@ function ExpertQuizTakingPage() {
     return (
       <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Không có câu hỏi</h2>
-          <Button onClick={() => navigate("/expert/question-sets")}>← Quay lại</Button>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("expertPages.quiz.taking.noQuestions")}</h2>
+          <Button onClick={() => navigate("/expert/question-sets")}>{t("expertPages.common.goBack")}</Button>
         </div>
       </div>
     );
@@ -362,16 +360,16 @@ function ExpertQuizTakingPage() {
                   {questionSet.title}
                 </h1>
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
-                  👨‍🏫 Expert
+                  👨‍🏫 {t("expertPages.quiz.taking.expertBadge")}
                 </span>
               </div>
               <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                 <span className="flex items-center gap-1">
-                  <span className="font-medium">Tổng số câu:</span> {questions.length}
+                  <span className="font-medium">{t("expertPages.quiz.taking.totalQuestions")}</span> {questions.length}
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
-                  <span className="font-medium">Đã trả lời:</span>
+                  <span className="font-medium">{t("expertPages.quiz.taking.answered")}</span>
                   <span className="text-primary-600 font-bold">
                     {answeredCount}/{questions.length}
                   </span>
@@ -401,7 +399,7 @@ function ExpertQuizTakingPage() {
           ></div>
         </div>
         <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 text-xs font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-slate-700 px-2 py-0.5 rounded shadow-sm">
-          {answeredCount}/{questions.length} câu ({Math.round(progress)}%)
+          {t("expertPages.quiz.taking.progressText", { answered: answeredCount, total: questions.length, percent: Math.round(progress) })}
         </div>
       </div>
 
@@ -425,12 +423,12 @@ function ExpertQuizTakingPage() {
                 >
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-lg font-bold text-primary-600 dark:text-primary-400">
-                      Câu hỏi {qIndex + 1}
+                      {t("expertPages.quiz.taking.questionLabel", { num: qIndex + 1 })}
                     </span>
                     {userAnswers[questionKey] !== undefined && (
                       <span className="inline-flex items-center gap-1 px-3 py-1 bg-success-100 dark:bg-success-900/30 text-success-700 dark:text-success-400 rounded-full text-sm font-medium">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Đã trả lời
+                        {t("expertPages.quiz.taking.answeredBadge")}
                       </span>
                     )}
                   </div>
@@ -486,7 +484,7 @@ function ExpertQuizTakingPage() {
           <div className="lg:col-span-1">
             <div className="sticky top-36 bg-white dark:bg-slate-800 rounded-xl shadow-medium border border-gray-200 dark:border-slate-700 p-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
-                Danh sách câu hỏi
+                {t("expertPages.quiz.taking.questionNav")}
               </h3>
               <div className="grid grid-cols-5 gap-2 mb-6">
                 {questions.map((q, index) => {
@@ -516,11 +514,11 @@ function ExpertQuizTakingPage() {
 
               <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Đã làm:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">{t("expertPages.quiz.taking.done")}</span>
                   <span className="text-lg font-bold text-success-600 dark:text-green-400">{answeredCount}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Chưa làm:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">{t("expertPages.quiz.taking.notDone")}</span>
                   <span className="text-lg font-bold text-gray-500 dark:text-gray-400">
                     {questions.length - answeredCount}
                   </span>
@@ -543,7 +541,7 @@ function ExpertQuizTakingPage() {
           >
             <span className="inline-flex items-center gap-2">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-              Nộp bài ({answeredCount}/{questions.length})
+              {t("expertPages.quiz.taking.submitBtn", { answered: answeredCount, total: questions.length })}
             </span>
           </Button>
         </div>
@@ -553,29 +551,23 @@ function ExpertQuizTakingPage() {
       <Modal
         isOpen={showSubmitModal}
         onClose={() => setShowSubmitModal(false)}
-        title="Xác nhận nộp bài"
+        title={t("expertPages.quiz.taking.confirmTitle")}
       >
         <div className="space-y-6">
           <div className="text-center">
-            <p className="text-gray-700 dark:text-gray-300 text-lg">
-              Bạn đã trả lời <strong className="text-primary-600 dark:text-primary-400">{answeredCount}</strong> /{" "}
-              <strong className="dark:text-gray-100">{questions.length}</strong> câu hỏi.
-            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-lg" dangerouslySetInnerHTML={{ __html: t("expertPages.quiz.taking.confirmMessage", { answered: answeredCount, total: questions.length }) }} />
           </div>
           {answeredCount < questions.length && (
             <div className="bg-warning-50 dark:bg-yellow-900/20 border border-warning-200 dark:border-yellow-800 rounded-lg p-4">
               <p className="text-warning-800 dark:text-yellow-300 flex items-start gap-2">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                <span>
-                  Còn <strong>{questions.length - answeredCount}</strong> câu chưa trả lời. Bạn có
-                  chắc muốn nộp bài không?
-                </span>
+                <span dangerouslySetInnerHTML={{ __html: t("expertPages.quiz.taking.unansweredWarning", { count: questions.length - answeredCount }) }} />
               </p>
             </div>
           )}
           <div className="flex items-center justify-end gap-3 pt-4">
             <Button variant="secondary" onClick={() => setShowSubmitModal(false)}>
-              Hủy
+              {t("expertPages.quiz.taking.cancelBtn")}
             </Button>
             <Button
               variant="primary"
@@ -585,7 +577,7 @@ function ExpertQuizTakingPage() {
               }}
               loading={submitting}
             >
-              Nộp bài
+              {t("expertPages.quiz.taking.submitConfirmBtn")}
             </Button>
           </div>
         </div>

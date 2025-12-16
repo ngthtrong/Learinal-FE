@@ -8,10 +8,12 @@ import { useParams, useNavigate } from "react-router";
 import Button from "@/components/common/Button";
 import { quizAttemptsService, questionSetsService } from "@/services/api";
 import { getErrorMessage } from "@/utils/errorHandler";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function ExpertQuizResultPage() {
   const { attemptId } = useParams();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   // State
   const [attempt, setAttempt] = useState(null);
@@ -291,7 +293,7 @@ function ExpertQuizResultPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-slate-900">
         <div className="w-12 h-12 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-600 dark:text-gray-400 font-medium">Đang tải kết quả...</p>
+        <p className="text-gray-600 dark:text-gray-400 font-medium">{t("expertPages.quiz.result.loadingResult")}</p>
       </div>
     );
   }
@@ -311,13 +313,13 @@ function ExpertQuizResultPage() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Đã xảy ra lỗi
+            {t("expertPages.quiz.result.errorOccurred")}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            {error || "Không tìm thấy kết quả bài thi"}
+            {error || t("expertPages.quiz.result.resultNotFound")}
           </p>
           <Button onClick={() => navigate("/expert/question-sets")} className="w-full justify-center">
-            Quay lại
+            {t("expertPages.quiz.result.goBack")}
           </Button>
         </div>
       </div>
@@ -350,17 +352,17 @@ function ExpertQuizResultPage() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-              Kết quả bài thi
+              {t("expertPages.quiz.result.pageTitle")}
             </h1>
             <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-700">
-              👨‍🏫 Expert
+              👨‍🏫 {t("expertPages.quiz.result.expertBadge")}
             </span>
           </div>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             {questionSet?.title ||
               attempt?.questionSet?.title ||
               attempt?.questionSet?.name ||
-              "Chi tiết kết quả"}
+              t("expertPages.quiz.result.detailsDefault")}
           </p>
         </div>
 
@@ -395,14 +397,14 @@ function ExpertQuizResultPage() {
                       {formattedScore}
                     </span>
                     <span className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mt-1">
-                      Điểm
+                      {t("expertPages.quiz.result.score")}
                     </span>
                   </div>
                 </div>
 
                 <div className="text-center">
                   <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                    Độ chính xác
+                    {t("expertPages.quiz.result.accuracy")}
                   </div>
                   <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     {scorePercentage}%
@@ -412,7 +414,7 @@ function ExpertQuizResultPage() {
 
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg">
-                  <span className="text-gray-600 dark:text-gray-400">Tổng số câu</span>
+                  <span className="text-gray-600 dark:text-gray-400">{t("expertPages.quiz.result.totalQuestions")}</span>
                   <span className="font-bold text-gray-900 dark:text-gray-100">{stats.total}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800">
@@ -430,7 +432,7 @@ function ExpertQuizResultPage() {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    Đúng
+                    {t("expertPages.quiz.result.correct")}
                   </span>
                   <span className="font-bold text-green-700 dark:text-green-400">{stats.correct}</span>
                 </div>
@@ -449,7 +451,7 @@ function ExpertQuizResultPage() {
                         d="M6 18L18 6M6 6l12 12"
                       />
                     </svg>
-                    Sai
+                    {t("expertPages.quiz.result.incorrect")}
                   </span>
                   <span className="font-bold text-red-700 dark:text-red-400">{stats.incorrect}</span>
                 </div>
@@ -468,7 +470,7 @@ function ExpertQuizResultPage() {
                         d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                       />
                     </svg>
-                    Chưa làm
+                    {t("expertPages.quiz.result.unanswered")}
                   </span>
                   <span className="font-bold text-gray-700 dark:text-gray-300">
                     {stats.unanswered}
@@ -494,14 +496,14 @@ function ExpertQuizResultPage() {
                       d="M4 4v5h.051M20.418 9c-.775-4.256-4.499-7.5-8.918-7.5-5.25 0-9.5 4.25-9.5 9.5 0 2.79 1.213 5.308 3.118 7.05M20 20v-5h-.051M3.582 15c.775 4.256 4.499 7.5 8.918 7.5 5.25 0 9.5-4.25 9.5-9.5 0-2.79-1.213-5.308-3.118-7.05"
                     />
                   </svg>
-                  Làm lại bài thi
+                  {t("expertPages.quiz.result.retryBtn")}
                 </Button>
                 <Button
                   variant="secondary"
                   onClick={() => navigate("/expert/question-sets")}
                   className="w-full justify-center py-3 text-base"
                 >
-                  Về trang bộ đề
+                  {t("expertPages.quiz.result.backToSets")}
                 </Button>
               </div>
             </div>
@@ -519,7 +521,7 @@ function ExpertQuizResultPage() {
                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
               >
-                Tất cả ({stats.total})
+                {t("expertPages.quiz.result.filterAll", { count: stats.total })}
               </button>
               <button
                 onClick={() => setFilter("correct")}
@@ -529,7 +531,7 @@ function ExpertQuizResultPage() {
                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
               >
-                Đúng ({stats.correct})
+                {t("expertPages.quiz.result.filterCorrect", { count: stats.correct })}
               </button>
               <button
                 onClick={() => setFilter("incorrect")}
@@ -539,7 +541,7 @@ function ExpertQuizResultPage() {
                     : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50"
                 }`}
               >
-                Sai ({stats.incorrect})
+                {t("expertPages.quiz.result.filterIncorrect", { count: stats.incorrect })}
               </button>
             </div>
 
@@ -563,7 +565,7 @@ function ExpertQuizResultPage() {
                     </svg>
                   </div>
                   <p className="text-gray-500 dark:text-gray-400 text-lg">
-                    Không có câu hỏi nào trong mục này
+                    {t("expertPages.quiz.result.noQuestionsInFilter")}
                   </p>
                 </div>
               ) : (
@@ -583,14 +585,14 @@ function ExpertQuizResultPage() {
                     question?.questionText ||
                     question?.content ||
                     answer?.questionText ||
-                    "Không tìm thấy nội dung câu hỏi";
+                    t("expertPages.quiz.result.questionNotFound");
                   const options = question?.options || answer?.options || [];
 
                   // Determine card styling based on status
                   let cardBorderClass = "border-gray-100 dark:border-gray-700";
                   let badgeClass = "bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300";
                   let badgeIcon = null;
-                  let badgeText = "Chưa trả lời";
+                  let badgeText = t("expertPages.quiz.result.statusUnanswered");
 
                   if (isCorrect) {
                     cardBorderClass = "border-green-200 dark:border-green-800 ring-1 ring-green-50 dark:ring-green-900/30";
@@ -610,7 +612,7 @@ function ExpertQuizResultPage() {
                         />
                       </svg>
                     );
-                    badgeText = "Đúng";
+                    badgeText = t("expertPages.quiz.result.statusCorrect");
                   } else if (!isUnanswered) {
                     cardBorderClass = "border-red-200 dark:border-red-800 ring-1 ring-red-50 dark:ring-red-900/30";
                     badgeClass = "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300";
@@ -629,7 +631,7 @@ function ExpertQuizResultPage() {
                         />
                       </svg>
                     );
-                    badgeText = "Sai";
+                    badgeText = t("expertPages.quiz.result.statusIncorrect");
                   }
 
                   return (
@@ -726,12 +728,12 @@ function ExpertQuizResultPage() {
 
                               {isCorrectAnswer && (
                                 <span className="absolute right-4 text-xs font-medium text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/40 px-2 py-1 rounded">
-                                  Đáp án đúng
+                                  {t("expertPages.quiz.result.correctAnswerBadge")}
                                 </span>
                               )}
                               {isUserAnswer && !isCorrect && (
                                 <span className="absolute right-4 text-xs font-medium text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/40 px-2 py-1 rounded">
-                                  Bạn chọn
+                                  {t("expertPages.quiz.result.yourChoiceBadge")}
                                 </span>
                               )}
                             </div>
@@ -760,7 +762,7 @@ function ExpertQuizResultPage() {
                             </div>
                             <div>
                               <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wide mb-1">
-                                Giải thích
+                                {t("expertPages.quiz.result.explanation")}
                               </h4>
                               <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                                 {answer?.explanation || question?.explanation}
