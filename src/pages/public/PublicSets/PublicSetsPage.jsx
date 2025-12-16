@@ -424,8 +424,14 @@ const PublicSetsPage = () => {
       {/* Premium Required Modal */}
       {showPremiumModal && (
         <PremiumRequiredModal
-          onClose={() => setShowPremiumModal(false)}
-          onUpgrade={() => navigate("/subscriptions/plans")}
+          onClose={() => {
+            setShowPremiumModal(false);
+            // When user clicks "Hủy", stay on current page (/public)
+          }}
+          onUpgrade={() => {
+            setShowPremiumModal(false);
+            navigate("/subscriptions/plans");
+          }}
         />
       )}
     </div>

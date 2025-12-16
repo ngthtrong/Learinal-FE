@@ -338,7 +338,10 @@ function QuizStartPage() {
       {/* Premium Required Modal */}
       {showPremiumModal && (
         <PremiumRequiredModal 
-          onClose={() => setShowPremiumModal(false)}
+          onClose={() => {
+            setShowPremiumModal(false);
+            navigate("/public"); // Quay về trang /public khi bấm Hủy
+          }}
           onUpgrade={() => {
             setShowPremiumModal(false);
             navigate("/subscriptions/plans");
